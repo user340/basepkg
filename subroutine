@@ -16,6 +16,7 @@ prog="${0##*/}"
 rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
+sets="${OBJ}/releasedir/${machine_arch}/binary/sets"
 
 if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
 	pkgtoolversion="$(awk '/PKGTOOLS_VERSION/ {print $3}' \
@@ -25,6 +26,9 @@ else
 fi
 
 # functions
+
+extract_tarball(){
+}
 
 make_list(){
 	for i in "$@"
