@@ -1,0 +1,2 @@
+# basepkg
+NetBSD system packages
