@@ -1,0 +1,133 @@
+#!/bin/sh
+
+# valiables
+
+: ${SRC:=/usr/src}
+: ${OBJ:=/usr/obj}
+: ${PKGSRC:=/usr/pkgsrc}
+: ${PACKAGES:=./packages}
+host="$(hostname)"
+machine_arch="$(uname -m)"
+opsys="$(uname)"
+osversion="$(uname -r)"
+pkgname="$(echo $1 | sed 's/\///')"
+pkgtoolversion=""
+prog="${0##*/}"
+rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $'
+utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
+user="${USER:-root}"
+
+if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
+	pkgtoolversion="$(awk '/PKGTOOLS_VERSION/ {print $3}' \
+	${PKGSRC}/pkgtools/pkg_install/files/lib/version.h)"
+else
+	pkgtoolversion="20160410"
+fi
+
+# functions
+
+make_list(){
+	for i in "$@"
+	do
+  	echo "making $i package contents list..."
+		if [ ! -d list ]; then
+			mkdir list
+		fi	
+		find $i -type d | grep -v "mtree" | \
+  	grep -v "obsolete" | sed "s/^$i\///g" > list/dir.$i
+		find $i -type f | grep -v "mtree" | \
+  	grep -v "obsolete" | sed "s/^$i\///g" > list/file.$i
+		if [ $i != "base" ]; then
+			grep -x -f list/dir.base list/dir.$i > list/dir.$i.duplicate
+			diff list/dir.$i list/dir.$i.duplicate | \
+			awk '$1 == "<" {print $2}' > list/dir.$i.tmp
+			rm -f list/dir.$1.duplicate list/dir.$i
+			mv list/dir.$i.tmp list/dir.$i
+		fi
+	done
+}
+
+make_BUILD_INFO(){
+	for i in "$@"
+	do
+  	echo "making $i package build infomation..."
+		echo "OPSYS=$opsys" > $i/+BUILD_INFO
+		echo "OS_VERSION=$osversion" >> $i/+BUILD_INFO
+		echo "OBJECT_FMT=ELF" >> $i/+BUILD_INFO
+		echo "MACHINE_ARCH=$machine_arch" >> $i/+BUILD_INFO
+		echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> $i/+BUILD_INFO
+		echo "PKGTOOLS_VERSION=$pkgtoolversion" >> $i/+BUILD_INFO
+	done
+}
+
+make_COMMENT(){
+	for i in "$@"
+	do
+  	echo "making $i package comment..."
+		echo "System Package for $i" > $i/+COMMENT
+	done
+}
+
+make_CONTENTS(){
+	for i in "$@"
+	do
+  	echo "making $i package contents from list..."
+		echo "@name $i-`sh ${SRC}/sys/conf/osrelease.sh`" > $i/+CONTENTS
+		echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
+		>> $i/+CONTENTS
+		echo "@comment Packaged using ${prog} ${rcsid}" >> $i/+CONTENTS
+		echo "@cwd /" >> $i/+CONTENTS
+
+		# directory
+		cat list/dir.$i | \
+		awk '{print "@exec install -d -o root -g wheel -m 0755 %D"$1}' \
+		>> $i/+CONTENTS
+
+		# file
+		cat list/file.$i | grep -v '+[A-Z]' >> $i/+CONTENTS
+
+		if [ $i != "base" ]; then
+			sed -i '5d' $i/+CONTENTS
+		fi
+	done
+}
+
+make_DESC(){
+	for i in "$@"
+	do
+  	echo "making $i package description..."
+		echo "NetBSD base system" > $i/+DESC
+		echo "" >> $i/+DESC
+		echo "Homepage:" >> $i/+DESC
+		echo "http://www.netbsd.org/" >> $i/+DESC
+	done
+}
+
+make_PKG(){
+	for i in "$@"
+	do
+  	echo "making $i package using pkg_create..."
+		pkg_create -l -U -B $i/+BUILD_INFO -c $i/+COMMENT \
+		-d $i/+DESC -f $i/+CONTENTS $i 
+  	mv $i.tgz ./${PACKAGES}/$i.tgz
+	done
+}
+
+clean_plus_file(){
+	for i in "$@"
+	do
+		if [ -f $1/+BUILD_INFO ]; then
+			rm -f $1/+BUILD_INFO
+		fi
+		if [ -f $1/+CONTENTS ]; then
+			rm -f $1/+CONTENTS
+		fi
+		if [ -f $1/+COMMENT ]; then
+			rm -f $1/+COMMENT
+		fi
+		if [ -f $1/+DESC ]; then
+			rm -f $1/+DESC
+		fi
+	done
+}
+
