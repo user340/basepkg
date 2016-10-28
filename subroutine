@@ -10,13 +10,13 @@ host="$(hostname)"
 machine_arch="$(uname -m)"
 opsys="$(uname)"
 osversion="$(uname -r)"
-pkgname="$(echo $1 | sed 's/\///')"
 pkgtoolversion=""
 prog="${0##*/}"
 rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 sets="${OBJ}/releasedir/${machine_arch}/binary/sets"
+
 
 if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
 	pkgtoolversion="$(awk '/PKGTOOLS_VERSION/ {print $3}' \
@@ -27,26 +27,23 @@ fi
 
 # functions
 
-extract_tarball(){
-}
-
 make_list(){
 	for i in "$@"
 	do
   	echo "making $i package contents list..."
-		if [ ! -d list ]; then
-			mkdir list
+		if [ ! -d ./work/list ]; then
+			mkdir ./work/list
 		fi	
-		find $i -type d | grep -v "mtree" | \
-  	grep -v "obsolete" | sed "s/^$i\///g" > list/dir.$i
-		find $i -type f | grep -v "mtree" | \
-  	grep -v "obsolete" | sed "s/^$i\///g" > list/file.$i
+		find work/$i -type d | grep -v "mtree" | grep -v -e "^work/$1$"|\
+  	grep -v "obsolete" | sed "s/^work\/$i\///g" > work/list/dir.$i
+		find work/$i -type f | grep -v "mtree" | \
+  	grep -v "obsolete" | sed "s/^work\/$i\///g" > work/list/file.$i
 		if [ $i != "base" ]; then
-			grep -x -f list/dir.base list/dir.$i > list/dir.$i.duplicate
-			diff list/dir.$i list/dir.$i.duplicate | \
-			awk '$1 == "<" {print $2}' > list/dir.$i.tmp
-			rm -f list/dir.$1.duplicate list/dir.$i
-			mv list/dir.$i.tmp list/dir.$i
+			grep -x -f work/list/dir.base work/list/dir.$i > work/list/dir.$i.duplicate
+			diff work/list/dir.$i work/list/dir.$i.duplicate | \
+			awk '$1 == "<" {print $2}' > work/list/dir.$i.tmp
+			rm -f work/list/dir.$1.duplicate work/list/dir.$i
+			mv work/list/dir.$i.tmp work/list/dir.$i
 		fi
 	done
 }
@@ -55,12 +52,12 @@ make_BUILD_INFO(){
 	for i in "$@"
 	do
   	echo "making $i package build infomation..."
-		echo "OPSYS=$opsys" > $i/+BUILD_INFO
-		echo "OS_VERSION=$osversion" >> $i/+BUILD_INFO
-		echo "OBJECT_FMT=ELF" >> $i/+BUILD_INFO
-		echo "MACHINE_ARCH=$machine_arch" >> $i/+BUILD_INFO
-		echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> $i/+BUILD_INFO
-		echo "PKGTOOLS_VERSION=$pkgtoolversion" >> $i/+BUILD_INFO
+		echo "OPSYS=$opsys" > ./work/$i/+BUILD_INFO
+		echo "OS_VERSION=$osversion" >> ./work/$i/+BUILD_INFO
+		echo "OBJECT_FMT=ELF" >> ./work/$i/+BUILD_INFO
+		echo "MACHINE_ARCH=$machine_arch" >> ./work/$i/+BUILD_INFO
+		echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> ./work/$i/+BUILD_INFO
+		echo "PKGTOOLS_VERSION=$pkgtoolversion" >> ./work/$i/+BUILD_INFO
 	done
 }
 
@@ -68,7 +65,7 @@ make_COMMENT(){
 	for i in "$@"
 	do
   	echo "making $i package comment..."
-		echo "System Package for $i" > $i/+COMMENT
+		echo "System Package for $i" > ./work/$i/+COMMENT
 	done
 }
 
@@ -76,22 +73,22 @@ make_CONTENTS(){
 	for i in "$@"
 	do
   	echo "making $i package contents from list..."
-		echo "@name $i-`sh ${SRC}/sys/conf/osrelease.sh`" > $i/+CONTENTS
+		echo "@name $i-`sh ${SRC}/sys/conf/osrelease.sh`" > work/$i/+CONTENTS
 		echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
-		>> $i/+CONTENTS
-		echo "@comment Packaged using ${prog} ${rcsid}" >> $i/+CONTENTS
-		echo "@cwd /" >> $i/+CONTENTS
+		>> ./work/$i/+CONTENTS
+		echo "@comment Packaged using ${prog} ${rcsid}" >> ./work/$i/+CONTENTS
+		echo "@cwd /" >> ./work/$i/+CONTENTS
 
 		# directory
-		cat list/dir.$i | \
+		cat ./work/list/dir.$i | \
 		awk '{print "@exec install -d -o root -g wheel -m 0755 %D"$1}' \
-		>> $i/+CONTENTS
+		>> ./work/$i/+CONTENTS
 
 		# file
-		cat list/file.$i | grep -v '+[A-Z]' >> $i/+CONTENTS
+		cat ./work/list/file.$i | grep -v '+[A-Z]' >> ./work/$i/+CONTENTS
 
 		if [ $i != "base" ]; then
-			sed -i '5d' $i/+CONTENTS
+			sed -i '5d' ./work/$i/+CONTENTS
 		fi
 	done
 }
