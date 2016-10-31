@@ -80,8 +80,11 @@ make_CONTENTS(){
 		echo "@cwd /" >> ./work/$i/+CONTENTS
 
 		# directory
+		if [ $i = "base" ]; then\
+			echo "@exec install -d -o root -g wheel -m 0755 %D" >> ./work/base/+CONTENTS
+		fi
 		cat ./work/list/dir.$i | \
-		awk '{print "@exec install -d -o root -g wheel -m 0755 %D"$1}' \
+		awk '{print "@exec install -d -o root -g wheel -m 0755 %D/"$1}' \
 		>> ./work/$i/+CONTENTS
 
 		# file
@@ -97,10 +100,10 @@ make_DESC(){
 	for i in "$@"
 	do
   	echo "making $i package description..."
-		echo "NetBSD base system" > $i/+DESC
-		echo "" >> $i/+DESC
-		echo "Homepage:" >> $i/+DESC
-		echo "http://www.netbsd.org/" >> $i/+DESC
+		echo "NetBSD base system" > work/$i/+DESC
+		echo "" >> work/$i/+DESC
+		echo "Homepage:" >> work/$i/+DESC
+		echo "http://www.netbsd.org/" >> work/$i/+DESC
 	done
 }
 
@@ -108,26 +111,26 @@ make_PKG(){
 	for i in "$@"
 	do
   	echo "making $i package using pkg_create..."
-		pkg_create -l -U -B $i/+BUILD_INFO -c $i/+COMMENT \
-		-d $i/+DESC -f $i/+CONTENTS $i 
-  	mv $i.tgz ./${PACKAGES}/$i.tgz
+		pkg_create -l -U -B work/$i/+BUILD_INFO -c work/$i/+COMMENT \
+		-d work/$i/+DESC -f work/$i/+CONTENTS work/$i 
+  	mv work/$i.tgz ./${PACKAGES}/$i.tgz
 	done
 }
 
 clean_plus_file(){
 	for i in "$@"
 	do
-		if [ -f $1/+BUILD_INFO ]; then
-			rm -f $1/+BUILD_INFO
+		if [ -f work/$1/+BUILD_INFO ]; then
+			rm -f work/$1/+BUILD_INFO
 		fi
-		if [ -f $1/+CONTENTS ]; then
-			rm -f $1/+CONTENTS
+		if [ -f work/$1/+CONTENTS ]; then
+			rm -f work/$1/+CONTENTS
 		fi
-		if [ -f $1/+COMMENT ]; then
-			rm -f $1/+COMMENT
+		if [ -f work/$1/+COMMENT ]; then
+			rm -f work/$1/+COMMENT
 		fi
-		if [ -f $1/+DESC ]; then
-			rm -f $1/+DESC
+		if [ -f work/$1/+DESC ]; then
+			rm -f work/$1/+DESC
 		fi
 	done
 }
