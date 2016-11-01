@@ -78,19 +78,19 @@ make_CONTENTS(){
 		echo "@cwd /" >> ./work/$i/+CONTENTS
 
 		# directory
-		if [ $i = "base" ]; then\
-			echo "@exec install -d -o root -g wheel -m 0755 %D" >> ./work/base/+CONTENTS
-		fi
+		#if [ $i = "base" ]; then\
+		#	echo "@exec install -d -o root -g wheel -m 0755 %D" >> ./work/base/+CONTENTS
+		#fi
 		cat ./work/list/dir.$i | \
-		awk '{print "@exec install -d -o root -g wheel -m 0755 %D/"$1}' \
+		awk '{print "@exec install -d -o root -g wheel -m 0755 "$1}' \
 		>> ./work/$i/+CONTENTS
 
 		# file
 		cat ./work/list/file.$i | grep -v '+[A-Z]' >> ./work/$i/+CONTENTS
 
-		if [ $i != "base" ]; then
-			sed -i '5d' ./work/$i/+CONTENTS
-		fi
+		#if [ $i != "base" ]; then
+		#	sed -i '5d' ./work/$i/+CONTENTS
+		#fi
 	done
 }
 

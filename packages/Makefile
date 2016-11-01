@@ -10,7 +10,7 @@ BIOSBOOT?=	bootxx_ffsv2
 IMG_DIR?=	image.${ARCH}
 
 # About Bootable Image
-IMAGE=				NetBSD_desktop
+IMAGE=				netbsd-desktop.img
 IMAGEMB?=			4096 # 4096 MB
 SWAPMB?=			256 # 256 MB
 IMAGESECTORS!=		expr ${IMAGEMB} \* 1024 \* 1024 / 512
@@ -75,7 +75,12 @@ create_bootable_image:
 
 	test -d ${IMG_DIR} || mkdir -p ${IMG_DIR}
 	mv ${IMAGE} ${IMG_DIR}/${IMAGE}.img
+	gzip -9 ${IMG_DIR}/${IMAGE}.img
 
 image: install_base create_bootable_image
 
 clean:
+	rm -f work.diskproto
+	rm -f work.fstab
+	rm -fr work/*
+	rm -fr ${IMG_DIR}/*
