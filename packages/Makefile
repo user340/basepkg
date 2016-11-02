@@ -74,10 +74,13 @@ create_bootable_image:
 	${TOOL_DIR}/bin/nbdisklabel -R -F -M amd64 -B le ${IMAGE} work.diskproto
 
 	test -d ${IMG_DIR} || mkdir -p ${IMG_DIR}
-	mv ${IMAGE} ${IMG_DIR}/${IMAGE}.img
-	gzip -9 ${IMG_DIR}/${IMAGE}.img
+	mv ${IMAGE} ${IMG_DIR}/${IMAGE}
+	gzip -9 ${IMG_DIR}/${IMAGE}
 
 image: install_base create_bootable_image
+
+write:
+	gzcat ${IMG_DIR}/${IMAGE}.gz | dd of=/dev/sd0d bs=64k
 
 clean:
 	rm -f work.diskproto
