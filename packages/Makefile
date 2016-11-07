@@ -6,7 +6,8 @@ VERSION=	`${BSDSRCDIR}/sys/conf/osrelease.sh`
 TOOL_DIR?=	/usr/tools
 WORK_DIR?=	${.CURDIR}/work
 MDEC?=		${OBJ_DIR}/destdir.${ARCH}/usr/mdec
-BIOSBOOT?=	bootxx_ffsv2
+BIOSBOOT?=	bootxx_ffsv1
+BOOT?= ${MDEC}/boot
 IMG_DIR?=	image.${ARCH}
 
 # About Bootable Image
@@ -49,6 +50,7 @@ install_base:
 	@ echo "Base System Binary Installed."
 
 create_bootable_image:
+	cp -f ${BOOT} ${WORK_DIR}/boot
 	${TOOL_DIR}/bin/nbsed "s/@@BOOTDISK@@/sd0/" < \
 	${BSDSRCDIR}/distrib/common/bootimage/fstab.in > work.fstab
 	cp work.fstab ${.CURDIR}/work/etc/fstab
