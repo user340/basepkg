@@ -7,7 +7,6 @@ TOOL_DIR?=	/usr/tools
 WORK_DIR?=	${.CURDIR}/work
 MDEC?=		${OBJ_DIR}/destdir.${ARCH}/usr/mdec
 BIOSBOOT?=	bootxx_ffsv1
-BOOT?= ${MDEC}/boot
 IMG_DIR?=	image.${ARCH}
 
 # About Bootable Image
@@ -31,7 +30,7 @@ BSDPARTSECTORS!=	expr ${IMAGESECTORS} - ${LABELSECTORS}
 BASE_BIN=	  base
 BASE_BIN+=	comp
 BASE_BIN+=	etc
-BASE_BIN+=	game
+BASE_BIN+=	games
 BASE_BIN+=	kern-GENERIC
 BASE_BIN+=	man
 BASE_BIN+=	misc
@@ -50,7 +49,8 @@ install_base:
 	@ echo "Base System Binary Installed."
 
 create_bootable_image:
-	cp -f ${BOOT} ${WORK_DIR}/boot
+	cp -f ${MDEC}/boot ${WORK_DIR}/boot
+	(cd ${WORK_DIR}/dev ; sh ${WORK_DIR}/dev/MAKEDEV all)
 	${TOOL_DIR}/bin/nbsed "s/@@BOOTDISK@@/sd0/" < \
 	${BSDSRCDIR}/distrib/common/bootimage/fstab.in > work.fstab
 	cp work.fstab ${.CURDIR}/work/etc/fstab
@@ -82,7 +82,7 @@ create_bootable_image:
 image: install_base create_bootable_image
 
 write:
-	gzcat ${IMG_DIR}/${IMAGE}.gz | dd of=/dev/sd0d bs=64k
+	gzcat ${IMG_DIR}/${IMAGE}.gz | dd of=/dev/rsd0d bs=64k
 
 clean:
 	rm -f work.diskproto
