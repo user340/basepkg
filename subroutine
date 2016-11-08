@@ -5,7 +5,8 @@
 : ${PKGSRC:=/usr/pkgsrc}
 : ${PACKAGES:=./packages}
 host="$(hostname)"
-machine_arch="$(uname -m)"
+machine="$(uname -m)"
+machine_arch="$(uname -p)"
 opsys="$(uname)"
 osversion="$(uname -r)"
 pkgtoolversion=""
@@ -13,8 +14,7 @@ prog="${0##*/}"
 rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
-sets="${OBJ}/releasedir/${machine_arch}/binary/sets"
-
+sets="${OBJ}/releasedir/${machine}/binary/sets"
 
 if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
 	pkgtoolversion="$(awk '/PKGTOOLS_VERSION/ {print $3}' \
@@ -32,17 +32,17 @@ make_list(){
 		if [ ! -d ./work/list ]; then
 			mkdir ./work/list
 		fi	
-		find work/$i -type d | grep -v "mtree" | grep -v -e "^work/$1$"|\
-  	grep -v "obsolete" | sed "s/^work\/$i\///g" > work/list/dir.$i
+		#find work/$i -type d | grep -v "mtree" | grep -v -e "^work/$1$"|\
+  	#grep -v "obsolete" | sed "s/^work\/$i\///g" > work/list/dir.$i
 		find work/$i -type f | grep -v "mtree" | \
   	grep -v "obsolete" | sed "s/^work\/$i\///g" > work/list/file.$i
-		if [ $i != "base" ]; then
-			grep -x -f work/list/dir.base work/list/dir.$i > work/list/dir.$i.duplicate
-			diff work/list/dir.$i work/list/dir.$i.duplicate | \
-			awk '$1 == "<" {print $2}' > work/list/dir.$i.tmp
-			rm -f work/list/dir.$1.duplicate work/list/dir.$i
-			mv work/list/dir.$i.tmp work/list/dir.$i
-		fi
+		#if [ $i != "base" ]; then
+		#	grep -x -f work/list/dir.base work/list/dir.$i > work/list/dir.$i.duplicate
+		#	diff work/list/dir.$i work/list/dir.$i.duplicate | \
+		#	awk '$1 == "<" {print $2}' > work/list/dir.$i.tmp
+		#	rm -f work/list/dir.$1.duplicate work/list/dir.$i
+		#	mv work/list/dir.$i.tmp work/list/dir.$i
+		#fi
 	done
 }
 
@@ -76,14 +76,6 @@ make_CONTENTS(){
 		>> ./work/$i/+CONTENTS
 		echo "@comment Packaged using ${prog} ${rcsid}" >> ./work/$i/+CONTENTS
 		echo "@cwd /" >> ./work/$i/+CONTENTS
-
-		# directory
-		#if [ $i = "base" ]; then\
-		#	echo "@exec install -d -o root -g wheel -m 0755 %D" >> ./work/base/+CONTENTS
-		#fi
-		cat ./work/list/dir.$i | \
-		awk '{print "@exec install -d -o root -g wheel -m 0755 "$1}' \
-		>> ./work/$i/+CONTENTS
 
 		# file
 		cat ./work/list/file.$i | grep -v '+[A-Z]' >> ./work/$i/+CONTENTS
