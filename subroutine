@@ -30,19 +30,10 @@ make_list(){
 	do
   	echo "making $i package contents list..."
 		if [ ! -d ./work/list ]; then
-			mkdir ./work/list
+			mkdir -p ./work/list
 		fi	
-		#find work/$i -type d | grep -v "mtree" | grep -v -e "^work/$1$"|\
-  	#grep -v "obsolete" | sed "s/^work\/$i\///g" > work/list/dir.$i
 		find work/$i -type f | grep -v "mtree" | \
   	grep -v "obsolete" | sed "s/^work\/$i\///g" > work/list/file.$i
-		#if [ $i != "base" ]; then
-		#	grep -x -f work/list/dir.base work/list/dir.$i > work/list/dir.$i.duplicate
-		#	diff work/list/dir.$i work/list/dir.$i.duplicate | \
-		#	awk '$1 == "<" {print $2}' > work/list/dir.$i.tmp
-		#	rm -f work/list/dir.$1.duplicate work/list/dir.$i
-		#	mv work/list/dir.$i.tmp work/list/dir.$i
-		#fi
 	done
 }
 
@@ -76,13 +67,7 @@ make_CONTENTS(){
 		>> ./work/$i/+CONTENTS
 		echo "@comment Packaged using ${prog} ${rcsid}" >> ./work/$i/+CONTENTS
 		echo "@cwd /" >> ./work/$i/+CONTENTS
-
-		# file
 		cat ./work/list/file.$i | grep -v '+[A-Z]' >> ./work/$i/+CONTENTS
-
-		#if [ $i != "base" ]; then
-		#	sed -i '5d' ./work/$i/+CONTENTS
-		#fi
 	done
 }
 
