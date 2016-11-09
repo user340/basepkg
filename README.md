@@ -32,7 +32,7 @@ NetBSD packaged base system
 ``# cd /usr/pkgsrc/pkgtools/pkg_install``  
 ``# make install clean clean-depends``  
 ### 3. run basepkg utility
-``# cd ${PATH}/${TO}/basepkg
+``# cd ${PATH}/${TO}/basepkg``  
 ``# ./extract.sh``  
 ``# ./runit.sh``  
 ### 4. install any packages
