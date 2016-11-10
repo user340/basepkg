@@ -87,7 +87,7 @@ make_PKG(){
 	do
   	echo "making $i package using pkg_create..."
 		pkg_create -l -U -B work/$i/+BUILD_INFO -c work/$i/+COMMENT \
-		-d work/$i/+DESC -f work/$i/+CONTENTS work/$i 
+		-d work/$i/+DESC -f work/$i/+CONTENTS -I / -p ${PWD}/work/$i work/$i 
   	mv work/$i.tgz ./${PACKAGES}/$i.tgz
 	done
 }
