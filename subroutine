@@ -37,6 +37,24 @@ make_list(){
 	done
 }
 
+split_base_list(){
+	for i in "$@"
+	do
+		sed "s/@@name@@/$i/g" ./work/awk/split.awk > ./work/awk/"$i".awk
+		awk -f ./work/awk/"$i".awk ./work/list/file.base > ./work/list/file."$i"
+		rm -f ./work/awk/"$i".awk
+	done
+}
+
+split_comp_list(){
+	for i in "$@"
+	do
+		sed "s/@@name@@/$i/g" ./work/awk/split.awk > ./work/awk/"$i".awk
+		awk -f ./work/awk/"$i".awk ./work/list/file.comp > ./work/list/file."$i"
+		rm -f ./work/awk/"$i".awk
+	done
+}
+
 make_BUILD_INFO(){
 	for i in "$@"
 	do
