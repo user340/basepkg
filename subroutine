@@ -1,3 +1,4 @@
+#!/bin/sh
 # valiables
 
 : ${SRC:=/usr/src}
@@ -38,21 +39,18 @@ make_list(){
 }
 
 split_base_list(){
-	for i in "$@"
-	do
-		sed "s/@@name@@/$i/g" ./work/awk/split.awk > ./work/awk/"$i".awk
-		awk -f ./work/awk/"$i".awk ./work/list/file.base > ./work/list/file."$i"
-		rm -f ./work/awk/"$i".awk
-	done
-}
-
-split_comp_list(){
-	for i in "$@"
-	do
-		sed "s/@@name@@/$i/g" ./work/awk/split.awk > ./work/awk/"$i".awk
-		awk -f ./work/awk/"$i".awk ./work/list/file.comp > ./work/list/file."$i"
-		rm -f ./work/awk/"$i".awk
-	done
+	awk '$1 ~ /^bin\// {print $1}' ./work/list/file.base > ./work/list/file.base-bin
+	awk '$1 ~ /^etc\// {print $1}' ./work/list/file.base > ./work/list/file.release
+	awk '$1 ~ /^lib\// {print $1}' ./work/list/file.base > ./work/list/file.base-lib
+	awk '$1 ~ /^libdata\// {print $1}' ./work/list/file.base > ./work/list/file.base-libdata
+	awk '$1 ~ /^libexec\// {print $1}' ./work/list/file.base > ./work/list/file.base-libexec
+	awk '$1 ~ /^rescue\// {print $1}' ./work/list/file.base > ./work/list/file.rescue
+	awk '$1 ~ /^sbin\// {print $1}' ./work/list/file.base > ./work/list/file.base-sbin
+	awk '$1 ~ /^usr\/bin\// {print $1}' ./work/list/file.base >> ./work/list/file.base-bin
+	awk '$1 ~ /^usr\/lib\// {print $1}' ./work/list/file.base >> ./work/list/file.base-libexec
+	awk '$1 ~ /^usr\/mdec\// {print $1}' ./work/list/file.base > ./work/list/file.mdec
+	awk '$1 ~ /^usr\/sbin\// {print $1}' ./work/list/file.base >> ./work/list/file.base-sbin
+	awk '$1 ~ /^usr\/share\// {print $1}' ./work/list/file.base > ./work/list/file.shares
 }
 
 make_BUILD_INFO(){

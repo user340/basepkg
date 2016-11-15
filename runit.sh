@@ -1,11 +1,9 @@
+. "./subroutine"
 #!/bin/sh
-./make_basepkg.sh base
-./make_basepkg.sh comp
-./make_basepkg.sh etc
-./make_basepkg.sh games
-./make_basepkg.sh kern-GENERIC
-./make_basepkg.sh man
-./make_basepkg.sh misc
-./make_basepkg.sh modules
-./make_basepkg.sh tests
-./make_basepkg.sh text
+clean_plus_file base comp etc games kern-GENERIC man misc modules tests text
+make_list base comp etc games kern-GENERIC man misc modules tests text
+make_BUILD_INFO base comp etc games kern-GENERIC man misc modules tests text
+make_COMMENT base comp etc games kern-GENERIC man misc modules tests text
+make_CONTENTS base comp etc games kern-GENERIC man misc modules tests text
+make_DESC base comp etc games kern-GENERIC man misc modules tests text
+make_PKG base comp etc games kern-GENERIC man misc modules tests text
