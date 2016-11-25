@@ -23,7 +23,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
 # What is this
-NetBSD packaged base system
+NetBSD packaged base system 
+Testing on virtual machines or dedicated testing machines is strongly encouraged.
 ## How to use
 ### 1. make binary sets
 ``# cd /usr/src``  

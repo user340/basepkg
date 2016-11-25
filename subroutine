@@ -38,21 +38,6 @@ make_list(){
 	done
 }
 
-split_base_list(){
-	awk '$1 ~ /^bin\// {print $1}' ./work/list/file.base > ./work/list/file.base-bin
-	awk '$1 ~ /^etc\// {print $1}' ./work/list/file.base > ./work/list/file.release
-	awk '$1 ~ /^lib\// {print $1}' ./work/list/file.base > ./work/list/file.base-lib
-	awk '$1 ~ /^libdata\// {print $1}' ./work/list/file.base > ./work/list/file.base-libdata
-	awk '$1 ~ /^libexec\// {print $1}' ./work/list/file.base > ./work/list/file.base-libexec
-	awk '$1 ~ /^rescue\// {print $1}' ./work/list/file.base > ./work/list/file.rescue
-	awk '$1 ~ /^sbin\// {print $1}' ./work/list/file.base > ./work/list/file.base-sbin
-	awk '$1 ~ /^usr\/bin\// {print $1}' ./work/list/file.base >> ./work/list/file.base-bin
-	awk '$1 ~ /^usr\/lib\// {print $1}' ./work/list/file.base >> ./work/list/file.base-libexec
-	awk '$1 ~ /^usr\/mdec\// {print $1}' ./work/list/file.base > ./work/list/file.mdec
-	awk '$1 ~ /^usr\/sbin\// {print $1}' ./work/list/file.base >> ./work/list/file.base-sbin
-	awk '$1 ~ /^usr\/share\// {print $1}' ./work/list/file.base > ./work/list/file.shares
-}
-
 make_BUILD_INFO(){
 	for i in "$@"
 	do
