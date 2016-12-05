@@ -96,17 +96,17 @@ make_PKG(){
 clean_plus_file(){
 	for i in "$@"
 	do
-		if [ -f work/$1/+BUILD_INFO ]; then
-			rm -f work/$1/+BUILD_INFO
+		if [ -f work/$i/+BUILD_INFO ]; then
+			rm -f work/$i/+BUILD_INFO
 		fi
-		if [ -f work/$1/+CONTENTS ]; then
-			rm -f work/$1/+CONTENTS
+		if [ -f work/$i/+CONTENTS ]; then
+			rm -f work/$i/+CONTENTS
 		fi
-		if [ -f work/$1/+COMMENT ]; then
-			rm -f work/$1/+COMMENT
+		if [ -f work/$i/+COMMENT ]; then
+			rm -f work/$i/+COMMENT
 		fi
-		if [ -f work/$1/+DESC ]; then
-			rm -f work/$1/+DESC
+		if [ -f work/$i/+DESC ]; then
+			rm -f work/$i/+DESC
 		fi
 	done
 }
