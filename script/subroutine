@@ -66,19 +66,16 @@ make_list(){
 ###################################################
 # make_BUILD_INFO -- Output String For +BUILD_INFO
 #
-# Argument: Packages Name
+# Argument: Set/Packages Name (ex. base/openssl)
 ###################################################
 make_BUILD_INFO(){
-	for i in "$@"
-	do
-  	echo "making $i package build infomation..."
-		echo "OPSYS=$opsys" > ./work/$i/+BUILD_INFO
-		echo "OS_VERSION=$osversion" >> ./work/$i/+BUILD_INFO
-		echo "OBJECT_FMT=ELF" >> ./work/$i/+BUILD_INFO
-		echo "MACHINE_ARCH=$machine_arch" >> ./work/$i/+BUILD_INFO
-		echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> ./work/$i/+BUILD_INFO
-		echo "PKGTOOLS_VERSION=$pkgtoolversion" >> ./work/$i/+BUILD_INFO
-	done
+	echo "making $1 package build infomation..."
+	echo "OPSYS=$opsys" > ./sets/$1/+BUILD_INFO
+	echo "OS_VERSION=$osversion" >> ./sets/$1/+BUILD_INFO
+	echo "OBJECT_FMT=ELF" >> ./sets/$1/+BUILD_INFO
+	echo "MACHINE_ARCH=$machine_arch" >> ./sets/$1/+BUILD_INFO
+	echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> ./sets/$1/+BUILD_INFO
+	echo "PKGTOOLS_VERSION=$pkgtoolversion" >> ./sets/$1/+BUILD_INFO
 }
 
 #############################################
@@ -87,11 +84,8 @@ make_BUILD_INFO(){
 # Argument: Packages Name
 #############################################
 make_COMMENT(){
-	for i in "$@"
-	do
-  	echo "making $i package comment..."
-		echo "System Package for $i" > ./work/$i/+COMMENT
-	done
+	echo "making $i package comment..."
+	echo "System Package for $i" > ./sets/$i/+COMMENT
 }
 
 ###############################################
