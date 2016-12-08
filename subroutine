@@ -26,6 +26,15 @@ fi
 
 # functions
 
+make_dirtree() {
+	arch_file=""
+	if [ $machine = "amd64" ]; then
+		arch_file="$SRC/etc/mtree/NetBSD.dist.$machine_arch" # XXX Only, amd64
+	fi
+	cat $SRC/etc/mtree/NetBSD.dist.base $arch_file | mtree -C | sed 's/^\.\///g' | \
+	awk '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1 }'
+}
+
 make_list(){
 	for i in "$@"
 	do
