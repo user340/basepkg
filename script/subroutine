@@ -84,8 +84,8 @@ make_BUILD_INFO(){
 # Argument: Packages Name
 #############################################
 make_COMMENT(){
-	echo "making $i package comment..."
-	echo "System Package for $i" > ./sets/$i/+COMMENT
+	echo "making $1 package comment..."
+	echo "System Package for $1" > ./sets/$1/+COMMENT
 }
 
 ###############################################
@@ -94,16 +94,14 @@ make_COMMENT(){
 # Argument: Packages Name
 ###############################################
 make_CONTENTS(){
-	for i in "$@"
-	do
-  	echo "making $i package contents from list..."
-		echo "@name $i-`sh ${SRC}/sys/conf/osrelease.sh`" > work/$i/+CONTENTS
-		echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
-		>> ./work/$i/+CONTENTS
-		echo "@comment Packaged using ${prog} ${rcsid}" >> ./work/$i/+CONTENTS
-		echo "@cwd /" >> ./work/$i/+CONTENTS
-		cat ./work/list/file.$i | grep -v '+[A-Z]' >> ./work/$i/+CONTENTS
-	done
+	set_name=`echo $1 | awk 'BEGIN{FS="/"} {print $1}'`
+	pkg_name=`echo $1 | awk 'BEGIN{FS="/"} {print $2}'`
+	echo "making $1 package contents from list..."
+	echo "@name $set_name-$pkg_name-`sh ${SRC}/sys/conf/osrelease.sh`" > sets/$1/+CONTENTS
+	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ./sets/$1/+CONTENTS
+	echo "@comment Packaged using ${prog} ${rcsid}" >> ./sets/$1/+CONTENTS
+	echo "@cwd /" >> ./sets/$1/+CONTENTS
+	cat ./sets/$1/$pkg_name.list | grep -v '+[A-Z]' >> ./sets/$1/+CONTENTS
 }
 
 #######################################
@@ -112,14 +110,11 @@ make_CONTENTS(){
 # Argument: Packages Name
 #######################################
 make_DESC(){
-	for i in "$@"
-	do
-  	echo "making $i package description..."
-		echo "NetBSD base system" > work/$i/+DESC
-		echo "" >> work/$i/+DESC
-		echo "Homepage:" >> work/$i/+DESC
-		echo "http://www.netbsd.org/" >> work/$i/+DESC
-	done
+	echo "making $1 package description..."
+	echo "NetBSD base system" > sets/$1/+DESC
+	echo "" >> sets/$1/+DESC
+	echo "Homepage:" >> sets/$1/+DESC
+	echo "http://www.netbsd.org/" >> sets/$1/+DESC
 }
 
 #####################################
@@ -128,13 +123,12 @@ make_DESC(){
 # Argument: Packages Name
 #####################################
 make_PKG(){
-	for i in "$@"
-	do
-  	echo "making $i package using pkg_create..."
-		pkg_create -l -U -B work/$i/+BUILD_INFO -c work/$i/+COMMENT \
-		-d work/$i/+DESC -f work/$i/+CONTENTS -I / -p ${PWD}/work/$i work/$i 
-  	mv work/$i.tgz ./${PACKAGES}/$i.tgz
-	done
+	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}'`
+	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}'`
+ 	echo "making $1 package using pkg_create..."
+ 	pkg_create -l -U -B sets/$1/+BUILD_INFO -c sets/$1/+COMMENT \
+ 	-d sets/$1/+DESC -f sets/$1/+CONTENTS -I / -p ${PWD}/work/$setname $setname-$pkgname
+ 	mv ./$setname-$pkgname.tgz ${PACKAGES}/$setname-$pkgname.tgz
 }
 
 ######################################################

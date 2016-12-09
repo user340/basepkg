@@ -1,13 +1,7 @@
-etc/openssl
-etc/openssl/certs
-etc/openssl/misc
-etc/openssl/private
 lib/libcrypto.so
 lib/libcrypto.so.8
 lib/libcrypto.so.8.5
 usr/bin/openssl
-usr/include/crypto
-usr/include/openssl
 usr/lib/libcrypto.so
 usr/lib/libcrypto.so.8
 usr/lib/libcrypto.so.8.5
@@ -29,4 +23,3 @@ usr/lib/i386/libevent_openssl.so.4
 usr/lib/i386/libevent_openssl.so.4.0
 usr/lib/i386/libssl.so.10
 usr/lib/i386/libssl.so.10.6
-usr/share/examples/openssl
