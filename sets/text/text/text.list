@@ -1,4 +1,3 @@
-etc/mtree/set.text
 usr/bin/addftinfo
 usr/bin/checknr
 usr/bin/eqn

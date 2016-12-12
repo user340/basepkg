@@ -1,4 +1,3 @@
-etc/mtree/set.tests
 usr/tests/atf/atf-c/atf_c_test
 usr/tests/atf/atf-c/Atffile
 usr/tests/atf/atf-c/macros_h_test.c
