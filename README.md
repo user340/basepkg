@@ -26,16 +26,3 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 NetBSD packaged base system 
 Testing on virtual machines or dedicated testing machines is strongly encouraged.
 ## How to use
-### 1. make binary sets
-``# cd /usr/src``  
-``# ./build.sh -O ../obj -T ../tools sets``  
-### 2. install pkg_install
-``# cd /usr/pkgsrc/pkgtools/pkg_install``  
-``# make install clean clean-depends``  
-### 3. run basepkg utility
-``# cd ${PATH}/${TO}/basepkg``  
-``# ./extract.sh``  
-``# ./runit.sh``  
-### 4. install any packages
-``# cd ${PATH}/${TO}/basepkg/packages``  
-``# pkg_add base comp ...``
