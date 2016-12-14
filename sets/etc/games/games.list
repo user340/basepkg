@@ -1,0 +1,16 @@
+var/games/battlestar.log
+var/games/atc_score
+var/games/robots_roll
+var/games/cfscores
+var/games/criblog
+var/games/snakerawscores
+var/games/rogue.scores
+var/games/saillog
+var/games/snake.log
+var/games/hackdir/record
+var/games/larn/lscore12.0
+var/games/larn/llog12.0
+var/games/larn/playerids
+var/games/tetris.scores
+var/games/phantasia/scoreboard
+var/games/phantasia/characs

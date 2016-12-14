@@ -26,6 +26,21 @@ man_mans() {
 	done
 }
 
+comp_mans() {
+	for i in man1 man2 man3 man5 man7 man8 man9
+	do
+		find ./work/comp/usr/share/man/$i -type f | sed 's/^\.\/work\/comp\///g' > ./sets/comp/$i/$i.list
+	done
+	for i in html1 html2 html3 html5 html7 html8 html9
+	do
+		find ./work/comp/usr/share/man/$i -type f | sed 's/^\.\/work\/comp\///g' > ./sets/comp/$i/$i.list
+	done
+}
+
+base_rescue() {
+	find ./work/base/rescue -type f | sed 's/^\.\/work\/base\///g' > ./sets/base/rescue/rescue.list
+}
+
 if [ $# != 1 ]; then
 	echo "Argument?"
 	exit 1
@@ -40,6 +55,11 @@ case $1 in
 						 ;;
 	man_mans) man_mans
 					  ;;
+	comp_mans) comp_mans
+						;;
+	base_rescue)
+						base_rescue
+						;;
 	*) echo "not found"
 	   exit 1
 	   ;;

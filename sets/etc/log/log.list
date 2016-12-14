@@ -1,0 +1,11 @@
+var/log/authlog
+var/log/cron
+var/log/lastlog
+var/log/lastlogx
+var/log/lpd-errs
+var/log/maillog
+var/log/messages
+var/log/secure
+var/log/wtmp
+var/log/wtmpx
+var/log/xferlog
