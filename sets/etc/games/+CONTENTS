@@ -1,0 +1,20 @@
+@name etc-games-7.0.2
+@comment Packaged at 2016-12-14 19:03 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+var/games/battlestar.log
+var/games/atc_score
+var/games/robots_roll
+var/games/cfscores
+var/games/criblog
+var/games/snakerawscores
+var/games/rogue.scores
+var/games/saillog
+var/games/snake.log
+var/games/hackdir/record
+var/games/larn/lscore12.0
+var/games/larn/llog12.0
+var/games/larn/playerids
+var/games/tetris.scores
+var/games/phantasia/scoreboard
+var/games/phantasia/characs

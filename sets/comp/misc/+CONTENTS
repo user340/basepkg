@@ -1,0 +1,9 @@
+@name comp-misc-7.0.2
+@comment Packaged at 2016-12-14 19:03 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/misc/indent.pro
+usr/share/misc/menu_sys.def
+usr/share/misc/msg_sys.def
+usr/share/misc/operator
+usr/share/misc/style

@@ -1,0 +1,15 @@
+@name misc-dict-7.0.2
+@comment Packaged at 2016-12-14 19:03 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/dict/README
+usr/share/dict/american
+usr/share/dict/british
+usr/share/dict/eign
+usr/share/dict/propernames
+usr/share/dict/special/math
+usr/share/dict/special/netbsd
+usr/share/dict/stop
+usr/share/dict/web2
+usr/share/dict/web2a
+usr/share/dict/words

@@ -1,0 +1,56 @@
+@name comp-html1-7.0.2
+@comment Packaged at 2016-12-14 19:03 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/man/html1/cc.html
+usr/share/man/html1/addr2line.html
+usr/share/man/html1/ar.html
+usr/share/man/html1/as.html
+usr/share/man/html1/asa.html
+usr/share/man/html1/c++.html
+usr/share/man/html1/c++filt.html
+usr/share/man/html1/c89.html
+usr/share/man/html1/c99.html
+usr/share/man/html1/crunchgen.html
+usr/share/man/html1/cccp.html
+usr/share/man/html1/config.html
+usr/share/man/html1/g++.html
+usr/share/man/html1/lex.html
+usr/share/man/html1/crunchide.html
+usr/share/man/html1/cvs.html
+usr/share/man/html1/elf2aout.html
+usr/share/man/html1/elf2ecoff.html
+usr/share/man/html1/elfedit.html
+usr/share/man/html1/fgen.html
+usr/share/man/html1/flex.html
+usr/share/man/html1/fpr.html
+usr/share/man/html1/gcc.html
+usr/share/man/html1/gcore.html
+usr/share/man/html1/gcov.html
+usr/share/man/html1/gdb.html
+usr/share/man/html1/genassym.html
+usr/share/man/html1/gprof.html
+usr/share/man/html1/ld.html
+usr/share/man/html1/openssl_ocsp.html
+usr/share/man/html1/lint.html
+usr/share/man/html1/lorder.html
+usr/share/man/html1/luac.html
+usr/share/man/html1/menuc.html
+usr/share/man/html1/mkstr.html
+usr/share/man/html1/msgc.html
+usr/share/man/html1/nbperf.html
+usr/share/man/html1/nm.html
+usr/share/man/html1/objcopy.html
+usr/share/man/html1/objdump.html
+usr/share/man/html1/unifdefall.html
+usr/share/man/html1/ranlib.html
+usr/share/man/html1/rcs2log.html
+usr/share/man/html1/readelf.html
+usr/share/man/html1/rpcgen.html
+usr/share/man/html1/size.html
+usr/share/man/html1/strings.html
+usr/share/man/html1/strip.html
+usr/share/man/html1/tsort.html
+usr/share/man/html1/unifdef.html
+usr/share/man/html1/xstr.html
+usr/share/man/html1/yacc.html

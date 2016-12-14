@@ -1,0 +1,8 @@
+@name base-if_athn-7.0.2
+@comment Packaged at 2016-12-14 19:03 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+libdata/firmware/if_athn/athn-ar7010
+libdata/firmware/if_athn/athn-ar7010-11
+libdata/firmware/if_athn/athn-ar9271
+libdata/firmware/if_athn/athn-license

@@ -1,2 +1,2 @@
-etc/dev/MAKEDEV
-etc/dev/MAKEDEV.local
+dev/MAKEDEV
+dev/MAKEDEV.local

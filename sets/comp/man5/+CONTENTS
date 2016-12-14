@@ -1,0 +1,17 @@
+@name comp-man5-7.0.2
+@comment Packaged at 2016-12-14 19:03 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/man/man5/ldap.conf.5
+usr/share/man/man5/config.5
+usr/share/man/man5/cpio.5
+usr/share/man/man5/cvs.5
+usr/share/man/man5/config.samples.5
+usr/share/man/man5/mk.conf.5
+usr/share/man/man5/ldif.5
+usr/share/man/man5/mech.5
+usr/share/man/man5/mtree.5
+usr/share/man/man5/libarchive-formats.5
+usr/share/man/man5/statvfs.5
+usr/share/man/man5/ranlib.5
+usr/share/man/man5/tar.5

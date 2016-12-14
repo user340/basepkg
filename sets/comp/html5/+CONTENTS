@@ -1,0 +1,17 @@
+@name comp-html5-7.0.2
+@comment Packaged at 2016-12-14 19:03 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/man/html5/config.samples.html
+usr/share/man/html5/config.html
+usr/share/man/html5/ldap.conf.html
+usr/share/man/html5/cpio.html
+usr/share/man/html5/cvs.html
+usr/share/man/html5/ldif.html
+usr/share/man/html5/mech.html
+usr/share/man/html5/mtree.html
+usr/share/man/html5/libarchive-formats.html
+usr/share/man/html5/mk.conf.html
+usr/share/man/html5/ranlib.html
+usr/share/man/html5/statvfs.html
+usr/share/man/html5/tar.html

@@ -1,0 +1,56 @@
+@name comp-man1-7.0.2
+@comment Packaged at 2016-12-14 19:03 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/man/man1/cc.1
+usr/share/man/man1/addr2line.1
+usr/share/man/man1/ar.1
+usr/share/man/man1/as.1
+usr/share/man/man1/asa.1
+usr/share/man/man1/c++.1
+usr/share/man/man1/c++filt.1
+usr/share/man/man1/c89.1
+usr/share/man/man1/c99.1
+usr/share/man/man1/crunchgen.1
+usr/share/man/man1/cccp.1
+usr/share/man/man1/config.1
+usr/share/man/man1/g++.1
+usr/share/man/man1/lex.1
+usr/share/man/man1/crunchide.1
+usr/share/man/man1/cvs.1
+usr/share/man/man1/elf2aout.1
+usr/share/man/man1/elf2ecoff.1
+usr/share/man/man1/elfedit.1
+usr/share/man/man1/fgen.1
+usr/share/man/man1/flex.1
+usr/share/man/man1/fpr.1
+usr/share/man/man1/gcc.1
+usr/share/man/man1/genassym.1
+usr/share/man/man1/gcore.1
+usr/share/man/man1/gcov.1
+usr/share/man/man1/gdb.1
+usr/share/man/man1/gprof.1
+usr/share/man/man1/ld.1
+usr/share/man/man1/objcopy.1
+usr/share/man/man1/lint.1
+usr/share/man/man1/lorder.1
+usr/share/man/man1/luac.1
+usr/share/man/man1/menuc.1
+usr/share/man/man1/mkstr.1
+usr/share/man/man1/msgc.1
+usr/share/man/man1/nbperf.1
+usr/share/man/man1/nm.1
+usr/share/man/man1/openssl_ocsp.1
+usr/share/man/man1/objdump.1
+usr/share/man/man1/rcs2log.1
+usr/share/man/man1/ranlib.1
+usr/share/man/man1/unifdefall.1
+usr/share/man/man1/readelf.1
+usr/share/man/man1/rpcgen.1
+usr/share/man/man1/size.1
+usr/share/man/man1/strings.1
+usr/share/man/man1/strip.1
+usr/share/man/man1/tsort.1
+usr/share/man/man1/unifdef.1
+usr/share/man/man1/xstr.1
+usr/share/man/man1/yacc.1

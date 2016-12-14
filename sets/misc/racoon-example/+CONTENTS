@@ -1,0 +1,20 @@
+@name misc-racoon-example-7.0.2
+@comment Packaged at 2016-12-14 19:03 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/examples/racoon/roadwarrior/client/phase1-down.sh
+usr/share/examples/racoon/roadwarrior/client/phase1-up.sh
+usr/share/examples/racoon/roadwarrior/client/racoon.conf
+usr/share/examples/racoon/roadwarrior/README
+usr/share/examples/racoon/roadwarrior/server/racoon.conf-radius
+usr/share/examples/racoon/roadwarrior/server/racoon.conf
+usr/share/examples/racoon/FAQ
+usr/share/examples/racoon/racoon.conf.sample-gssapi
+usr/share/examples/racoon/README.certificate
+usr/share/examples/racoon/README.gssapi
+usr/share/examples/racoon/README.plainrsa
+usr/share/examples/racoon/psk.txt.sample
+usr/share/examples/racoon/racoon.conf.sample
+usr/share/examples/racoon/racoon.conf.sample-inherit
+usr/share/examples/racoon/racoon.conf.sample-natt
+usr/share/examples/racoon/racoon.conf.sample-plainrsa
