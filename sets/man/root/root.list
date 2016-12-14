@@ -594,3 +594,4 @@
 @exec install -d -o root -g wheel -m 0755 usr/share/man/man8/x68k
 @exec install -d -o root -g wheel -m 0755 usr/share/man/man8/x86
 @exec install -d -o root -g wheel -m 0755 usr/share/man/man9lua
+usr/share/man/style.css

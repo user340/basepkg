@@ -1,0 +1,13 @@
+usr/share/man/man3lua/gpio.attach.3lua
+usr/share/man/man3lua/gpio.3lua
+usr/share/man/man3lua/gpio.close.3lua
+usr/share/man/man3lua/gpio.info.3lua
+usr/share/man/man3lua/gpio.open.3lua
+usr/share/man/man3lua/gpio.read.3lua
+usr/share/man/man3lua/gpio.set.3lua
+usr/share/man/man3lua/gpio.toggle.3lua
+usr/share/man/man3lua/gpio.unset.3lua
+usr/share/man/man3lua/gpio.write.3lua
+usr/share/man/man3lua/intro.3lua
+usr/share/man/man3lua/sqlite.3lua
+usr/share/man/man3lua/syslog.3lua
