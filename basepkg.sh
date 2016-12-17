@@ -141,7 +141,7 @@ make_pkgdir() {
 		( 
 		 cd  ./sets/$i ;
 		 awk '$1 !~ /^#/{print $1 " " $2}' $lists/$i/mi | sort -k2 | \
-		 awk '{print $2}' | uniq | xargs mkdir
+		 awk '{print $2}' | uniq | awk '$1 !~ /^-/{print $0}' | xargs mkdir
 		)
 	done
 }
