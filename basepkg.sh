@@ -146,6 +146,34 @@ make_pkgdir() {
 	done
 }
 
+###################################
+# make_list -- Make Packages Lists
+###################################l
+make_list() {
+	if [ ! -d ./.work ]; then
+		mkdir .work
+	fi
+	for i in `ls $lists | grep -v '^[A-Z]'`
+	do
+		if [ ! -d ./.work/$i ]; then
+			mkdir ./.work/$i
+		fi
+		awk '$1 !~ /^#/{print $1 " " $2}' $lists/$i/mi | \
+		sort -k2 | sed 's/^\.\///g'  | \
+		awk ' 
+		{
+			if($2 in lists)
+				lists[$2] = $1 " " lists[$2]
+			else
+				lists[$2] = $1
+		}
+		END {
+			for(pkg in lists)
+				print pkg, lists[pkg]
+		}' > ./.work/$i/lists
+	done
+}
+
 ######################################################
 # clean_plus_file -- Remove Packages Information File
 #
@@ -192,6 +220,7 @@ case $1 in
 					 make_DESC
 					 make_PKG
 	         ;;
-	test)		 test_func ;;
+	lists)		make_list
+			;;
 	*) usage ;;
 esac
