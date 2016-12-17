@@ -18,6 +18,7 @@ rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 sets="${OBJ}/releasedir/${machine}/binary/sets"
+lists="${SRC}/distrib/sets/lists"
 
 if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
 	pkgtoolversion="$(awk '/PKGTOOLS_VERSION/ {print $3}' \
@@ -123,6 +124,28 @@ make_PKG(){
  	mv ./$setname-$pkgname.tgz ${PACKAGES}/$setname-$pkgname.tgz
 }
 
+################################################
+# make_pkgdir -- create packages name directory
+#
+# Argument: None.
+################################################
+make_pkgdir() {
+	for i in `ls $lists | grep -v '^[A-Z]'`
+	do
+		if [ ! -d ./sets/$i ]; then
+			mkdir ./sets/$i
+		fi
+		if [ ! -f $lists/$i/mi ]; then
+			continue
+		fi
+		( 
+		 cd  ./sets/$i ;
+		 awk '$1 !~ /^#/{print $1 " " $2}' $lists/$i/mi | sort -k2 | \
+		 awk '{print $2}' | uniq | xargs mkdir
+		)
+	done
+}
+
 ######################################################
 # clean_plus_file -- Remove Packages Information File
 #
@@ -159,6 +182,8 @@ fi
 case $1 in
 	root) create_root_list base comp etc games man misc modules tests text
 	      ;;
+	pkgdir) make_pkgdir
+			;;
 	clean) clean_plus_file ;;
 	extract) extract_base ;;
 	pkg)     make_BUILD_INFO
