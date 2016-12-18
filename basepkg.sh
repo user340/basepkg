@@ -184,6 +184,20 @@ make_PKG(){
 	 mv ./$setname-$pkgname.tgz ${PACKAGES}/$setname-$pkgname.tgz
 }
 
+make_packages() {
+	for i in `ls ./sets`
+	do
+		for j in `ls ./sets/$i`
+		do
+			echo "Package $i/$j Creating..."
+			make_BUILD_INFO $i/$j
+			make_COMMENT $i/$j
+			make_CONTENTS $i/$j
+			make_DESC $i/$j
+		done
+	done
+}
+
 ######################################################
 # clean_plus_file -- Remove Packages Information File
 #
@@ -223,11 +237,7 @@ case $1 in
 			make_pkgdir
 			;;
 	pkg)		 
-			#make_BUILD_INFO
-			#make_COMMENT
-			make_CONTENTS base/base-sys-root
-			#make_DESC
-			#make_PKG
+			make_packages
 			;;
 	list)
 			make_list
