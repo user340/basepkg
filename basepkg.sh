@@ -184,6 +184,12 @@ make_PKG(){
 	 mv ./$setname-$pkgname.tgz ${PACKAGES}/$setname-$pkgname.tgz
 }
 
+############################################
+# make_packages -- make_* Functions Wrapper
+#                  Run It if make Packages
+#
+# Argument: None.
+############################################
 make_packages() {
 	for i in `ls ./sets`
 	do
@@ -215,13 +221,13 @@ clean_plus_file(){
 usage() {
 	echo "usage: ./basepkg.sh operation"
 	echo " Create packages operations"
-	echo "		dir				create packages directory"
-	echo "		list			 create packages list"
-	echo "		pkg				create packages"
+	echo "   dir       create packages directory"
+	echo "   list      create packages list"
+	echo "   pkg       create packages"
 	echo ""
 	echo " Other operations"
-	echo "		clean			remove information files"
-	echo "		extract		extract base binary"
+	echo "   clean     remove information files"
+	echo "   extract   extract base binary"
 	exit 1
 }
 
@@ -234,21 +240,21 @@ fi
 ###############
 case $1 in
 	dir) 
-			make_pkgdir
-			;;
+		make_pkgdir
+		;;
 	pkg)		 
-			make_packages
-			;;
+		make_packages
+		;;
 	list)
-			make_list
-			;;
+		make_list
+		;;
 	clean)
-			clean_plus_file
-			;;
+		clean_plus_file
+		;;
 	extract)
-			extract_base
-			;;
+		extract_base
+		;;
 	*)
-			usage
-			;;
+		usage
+		;;
 esac
