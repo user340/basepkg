@@ -138,6 +138,7 @@ make_CONTENTS() {
 	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ./sets/$1/+CONTENTS
 	echo "@comment Packaged using ${prog} ${rcsid}" >> ./sets/$1/+CONTENTS
 	echo "@cwd /" >> ./sets/$1/+CONTENTS
+	# XXX: This package may be empty package
 	cat ./sets/$1/$pkgname.list | while read i
 	do
 		filetype=`file ./work/$setname/$i | awk '{print $2}'`
