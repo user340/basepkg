@@ -28,7 +28,8 @@ Testing on virtual machines or dedicated testing machines is strongly encouraged
 ## How to use
 ### 1. Build NetBSD
 In this procedure, NetBSD source sets is in /usr/src, NetBSD build-tools is in /usr/tools,  
-NetBSD compiled objects is in /usr/obj . And machine is amd64, machine archtecture is x86\_64.  
+NetBSD compiled objects is in /usr/obj .  
+And NetBSD Version is 7.0.2, machine is amd64, machine archtecture is x86\_64.  
   
 First, Download NetBSD Source Sets and Extract to /usr/src.  
 ```# cd /```  
@@ -43,10 +44,12 @@ First, Download NetBSD Source Sets and Extract to /usr/src.
 ```# ./build.sh -O ../obj -T ../tools sets```
 
 ### 2. Extract NetBSD Binary Sets to Working Directory
+Second, Extract binary sets to working directory using basepkg.sh script.  
 ```# cd /path/to/basepkg```  
 ```# ./basepkg.sh extract```
 
 ### 3. Make Packages
+Third, Run basepkg.sh script with options.  
 ```# ./basepkg.sh dir```  
 ```# ./basepkg.sh list```  
 ```# ./basepkg.sh pkg```  
