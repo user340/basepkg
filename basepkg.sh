@@ -49,7 +49,7 @@ make_pkgdir() {
 	for i in `ls $lists | grep -v '^[A-Z]'`
 	do
 		if [ ! -d ./sets/$i ]; then
-			mkdir ./sets/$i
+			mkdir -p ./sets/$i
 		fi
 		if [ ! -f $lists/$i/mi ]; then
 			continue
@@ -94,7 +94,7 @@ make_list() {
 	do
 		for k in `ls ./sets/$j`
 		do
-			grep "$k" ./.work/$j/lists | sed 's/ /\n/g' | \
+			grep "$k" ./.work/$j/lists | tr ' ' '\n' | \
 			awk 'NR != 1{print $0}' > ./sets/$j/$k/$k.list
 		done
 	done
@@ -106,7 +106,6 @@ make_list() {
 # Argument: <basename>/<pkgname> (Ex. base/base-sys-root)
 ##########################################################
 make_BUILD_INFO(){
-	echo "making $1 package build infomation..."
 	echo "OPSYS=$opsys" > ./sets/$1/+BUILD_INFO
 	echo "OS_VERSION=$osversion" >> ./sets/$1/+BUILD_INFO
 	echo "OBJECT_FMT=ELF" >> ./sets/$1/+BUILD_INFO
@@ -121,7 +120,6 @@ make_BUILD_INFO(){
 # Argument: Packages Name (Ex. base/base-sys-root)
 ###################################################
 make_COMMENT(){
-	echo "making $1 package comment..."
 	echo "System Package for $1" > ./sets/$1/+COMMENT
 }
 
@@ -136,7 +134,6 @@ make_CONTENTS() {
 	fi
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}'`
-	echo "making $1 package contents from list..."
 	echo "@name $pkgname-`sh ${SRC}/sys/conf/osrelease.sh`" > sets/$1/+CONTENTS
 	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ./sets/$1/+CONTENTS
 	echo "@comment Packaged using ${prog} ${rcsid}" >> ./sets/$1/+CONTENTS
@@ -144,16 +141,20 @@ make_CONTENTS() {
 	cat ./sets/$1/$pkgname.list | while read i
 	do
 		filetype=`file ./work/$setname/$i | awk '{print $2}'`
-		if [ $filetype = "directory" ]; then
+		if [ $filetype = directory ]; then
 			filename=`echo $i | sed 's%\/%\\\/%g'`
 			awk '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ./work/$setname/etc/mtree/set.$setname | \
 			sed 's%^\.\/%%' | \
-			awk '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> \
-			./sets/$1/tmp.list
+			awk '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ./sets/$1/tmp.list
+		elif [ $filetype = cannot ]; then
+			continue
 		else
 			echo $i >> ./sets/$1/tmp.list
 		fi
 	done
+	if [ ! -f $i/$j/tmp.list ]; then
+		return 1
+	fi
 	sort ./sets/$1/tmp.list >> ./sets/$1/+CONTENTS
 }
 
@@ -163,7 +164,6 @@ make_CONTENTS() {
 # Argument: Packages Name
 #######################################
 make_DESC(){
-	echo "making $1 package description..."
 	echo "NetBSD base system" > sets/$1/+DESC
 	echo "" >> sets/$1/+DESC
 	echo "Homepage:" >> sets/$1/+DESC
@@ -178,10 +178,18 @@ make_DESC(){
 make_PKG(){
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}'`
-	 echo "making $1 package using pkg_create..."
-	 pkg_create -l -U -B sets/$1/+BUILD_INFO -c sets/$1/+COMMENT \
-	 -d sets/$1/+DESC -f sets/$1/+CONTENTS -I / -p ${PWD}/work/$setname $setname-$pkgname
-	 mv ./$setname-$pkgname.tgz ${PACKAGES}/$setname-$pkgname.tgz
+	pkg_create -l -U -B sets/$1/+BUILD_INFO -c sets/$1/+COMMENT \
+	-d sets/$1/+DESC -f sets/$1/+CONTENTS -I / -p ${PWD}/work/$setname $pkgname
+	if [ $? != 0 ]; then
+		return $?
+	fi
+	if [ ! -d ${PACKAGES} ]; then
+	  mkdir ${PACKAGES}
+	fi
+	if [ ! -d ${PACKAGES}/$setname ]; then
+	  mkdir -p ${PACKAGES}/$setname
+	fi
+	mv ./$pkgname.tgz ${PACKAGES}/$setname/$pkgname.tgz
 }
 
 ############################################
@@ -200,6 +208,7 @@ make_packages() {
 			make_COMMENT $i/$j
 			make_CONTENTS $i/$j
 			make_DESC $i/$j
+			make_PKG $i/$j
 		done
 	done
 }
