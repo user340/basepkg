@@ -230,13 +230,13 @@ clean_plus_file(){
 usage() {
 	echo "usage: ./basepkg.sh operation"
 	echo " Create packages operations"
+	echo "   extract   extract base binary"
 	echo "   dir       create packages directory"
 	echo "   list      create packages list"
 	echo "   pkg       create packages"
 	echo ""
 	echo " Other operations"
 	echo "   clean     remove information files"
-	echo "   extract   extract base binary"
 	exit 1
 }
 

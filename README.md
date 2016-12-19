@@ -26,3 +26,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 NetBSD packaged base system 
 Testing on virtual machines or dedicated testing machines is strongly encouraged.
 ## How to use
+### 1. Build NetBSD
+In this procedure, NetBSD source sets is in /usr/src, NetBSD build-tools is in /usr/tools,  
+NetBSD compiled objects is in /usr/obj . And machine is amd64, machine archtecture is x86\_64.  
+  
+First, Download NetBSD Source Sets and Extract to /usr/src.  
+```# cd /```  
+```# ftp ftp://ftp.netbsd.org/pub/NetBSD/NetBSD-7.0/source/```  
+```ftp> mget *.tgz```  
+```ftp> bye```  
+```# ls | grep 'tgz$' | xargs -n 1 tar zxf```  
+```# ls | grep 'tgz$' | xargs rm```  
+```# mkdir /usr/obj /usr/tools ; cd /usr/src```  
+```# ./build.sh -O ../obj -T ../tools tools```  
+```# ./build.sh -O ../obj -T ../tools distribution```  
+```# ./build.sh -O ../obj -T ../tools sets```
+
+### 2. Extract NetBSD Binary Sets to Working Directory
+```# cd /path/to/basepkg```  
+```# ./basepkg.sh extract```
+
+### 3. Make Packages
+```# ./basepkg.sh dir```  
+```# ./basepkg.sh list```  
+```# ./basepkg.sh pkg```  
+Packages are created under the basepkg/packages directory.
+
+### 4. How to Install Packages?
+Example, installing base/base-sys-root.  
+```# pkg_add packages/base/base-sys-root```
