@@ -43,18 +43,25 @@ First, Download NetBSD Source Sets and Extract to /usr/src.
 ```# ./build.sh -O ../obj -T ../tools distribution```  
 ```# ./build.sh -O ../obj -T ../tools sets```
 
-### 2. Extract NetBSD Binary Sets to Working Directory
-Second, Extract binary sets to working directory using basepkg.sh script.  
+### 2. Install pkgtools/pkg_install From pkgsrc
+```# cd /usr```  
+```# ftp ftp://ftp.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.gz```  
+```# tar zxf pkgsrc.tar.gz && rm pkgsrc.tar.gz```  
+```# cd pkgsrc/pkgtools/pkg_install```  
+```# make install clean clean-depends```
+
+### 3. Extract NetBSD Binary Sets to Working Directory
+Extract binary sets to working directory using basepkg.sh script.  
 ```# cd /path/to/basepkg```  
 ```# ./basepkg.sh extract```
 
-### 3. Make Packages
-Third, Run basepkg.sh script with options.  
+### 4. Make Packages
+Run basepkg.sh script with options.  
 ```# ./basepkg.sh dir```  
 ```# ./basepkg.sh list```  
 ```# ./basepkg.sh pkg```  
 Packages are created under the basepkg/packages directory.
 
-### 4. How to Install Packages?
+### 5. How to Install Packages?
 Example, installing base/base-sys-root.  
 ```# pkg_add packages/base/base-sys-root```
