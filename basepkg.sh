@@ -17,7 +17,7 @@ prog="${0##*/}"
 rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
-sets="${OBJ}/releasedir/amd64/binary/sets"
+sets="${OBJ}/releasedir/${machine}/binary/sets"
 lists="${SRC}/distrib/sets/lists"
 
 if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
@@ -46,6 +46,7 @@ extract_base() {
 # Argument: None.
 ################################################
 make_pkgdir() {
+	listfile=""
 	for i in `ls $lists | grep -v '^[A-Z]'`
 	do
 		if [ ! -d ./sets/$i ]; then
@@ -54,9 +55,14 @@ make_pkgdir() {
 		if [ ! -f $lists/$i/mi ]; then
 			continue
 		fi
+		if [ -f $lists/$i/md.$machine ]; then
+			listfile="$lists/$i/md.$machine $lists/$i/mi"
+		else
+			listfile="$lists/$i/mi"
+		fi
 		( 
 		 cd	./sets/$i ;
-		 awk '$1 !~ /^#/{print $1 " " $2}' $lists/$i/mi | sort -k2 | \
+		 cat $listfile | awk '$1 !~ /^#/{print $1 " " $2}' | sort -k2 | \
 		 awk '{print $2}' | uniq | awk '$1 !~ /^-/{print $0}' | xargs mkdir
 		)
 	done
@@ -68,6 +74,7 @@ make_pkgdir() {
 # Argument: None.
 ###################################
 make_list() {
+	listfile=""
 	if [ ! -d ./.work ]; then
 		mkdir .work
 	fi
@@ -76,7 +83,12 @@ make_list() {
 		if [ ! -d ./.work/$i ]; then
 			mkdir ./.work/$i
 		fi
-		awk '$1 !~ /^#/{print $1 " " $2}' $lists/$i/mi | \
+		if [ -f $lists/$i/md.$machine ]; then
+			listfile="$lists/$i/md.$machine $lists/$i/mi"
+		else
+			listfile="$lists/$i/mi"
+		fi
+		cat $listfile | awk '$1 !~ /^#/{print $1 " " $2}' | \
 		sort -k2 | sed 's/^\.\///g'	| \
 		awk ' 
 		{
