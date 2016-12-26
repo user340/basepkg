@@ -165,7 +165,7 @@ make_CONTENTS() {
 			echo $i >> ./sets/$1/tmp.list
 		fi
 	done
-	if [ ! -f $i/$j/tmp.list ]; then
+	if [ ! -f ./sets/$1/tmp.list ]; then
 		return 1
 	fi
 	sort ./sets/$1/tmp.list >> ./sets/$1/+CONTENTS
