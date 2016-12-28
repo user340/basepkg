@@ -183,11 +183,16 @@ make_DESC(){
 	echo "http://www.netbsd.org/" >> sets/$1/+DESC
 }
 
-#####################################
+########################################################
 # make_PKG -- Create Package Tarball
 #
 # Argument: Packages Name
-#####################################
+#
+# XXX: If /var files packaging, pkg_create failed.
+#      Need root privilege.
+# XXX: If packages name include ".", pkg_create failed.
+#      Example: tests-usr.bin-debug packages
+########################################################
 make_PKG(){
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}'`
@@ -275,6 +280,10 @@ case $1 in
 		;;
 	extract)
 		extract_base
+		;;
+	root)
+		make_rootpriv_testspackages
+		make_rootpriv_etcspackages
 		;;
 	*)
 		usage
