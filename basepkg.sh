@@ -63,7 +63,7 @@ make_pkgdir() {
 		( 
 		 cd	./sets/$i ;
 		 cat $listfile | awk '$1 !~ /^#/{print $1 " " $2}' | sort -k2 | \
-		 awk '{print $2}' | uniq | awk '$1 !~ /^-/{print $0}' | xargs mkdir
+		 awk '{print $2}' | uniq | awk '$1 !~ /^-/{print $0}' | sed 's/\./-/g' | xargs mkdir
 		)
 	done
 }
@@ -91,6 +91,11 @@ make_list() {
 		cat $listfile | awk '$1 !~ /^#/{print $1 " " $2}' | \
 		sort -k2 | sed 's/^\.\///g'	| \
 		awk ' 
+		# $1 - file name
+		# $2 - package name
+		$2 ~ /\./ {
+			gsub(/\./, "-", $2)
+		}
 		{
 			if($2 in lists)
 				lists[$2] = $1 " " lists[$2]
@@ -144,8 +149,8 @@ make_CONTENTS() {
 	if [ -f ./sets/$1/tmp.list ]; then
 		rm ./sets/$1/tmp.list
 	fi
-	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}'`
-	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}'`
+	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
+	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
 	echo "@name $pkgname-`sh ${SRC}/sys/conf/osrelease.sh`" > sets/$1/+CONTENTS
 	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ./sets/$1/+CONTENTS
 	echo "@comment Packaged using ${prog} ${rcsid}" >> ./sets/$1/+CONTENTS
@@ -194,8 +199,8 @@ make_DESC(){
 #      Example: tests-usr.bin-debug packages
 ########################################################
 make_PKG(){
-	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}'`
-	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}'`
+	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
+	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
 	pkg_create -l -U -B sets/$1/+BUILD_INFO -c sets/$1/+COMMENT \
 	-d sets/$1/+DESC -f sets/$1/+CONTENTS -I / -p ${PWD}/work/$setname $pkgname
 	if [ $? != 0 ]; then
