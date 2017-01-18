@@ -43,12 +43,16 @@ First, Download NetBSD Source Sets and Extract to /usr/src.
 ```# ./build.sh -O ../obj -T ../tools distribution```  
 ```# ./build.sh -O ../obj -T ../tools sets```
 
-### 2. Install pkgtools/pkg_install From pkgsrc
+### 2. Install pkgtools/pkg_install From pkgsrc or pkgin
 ```# cd /usr```  
 ```# ftp ftp://ftp.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.gz```  
 ```# tar zxf pkgsrc.tar.gz && rm pkgsrc.tar.gz```  
 ```# cd pkgsrc/pkgtools/pkg_install```  
 ```# make install clean clean-depends```
+
+or
+
+```# pkgin install pkg_install```
 
 ### 3. Extract NetBSD Binary Sets to Working Directory
 Extract binary sets to working directory using basepkg.sh script.  
