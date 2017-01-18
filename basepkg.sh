@@ -195,8 +195,6 @@ make_DESC(){
 #
 # XXX: If /var files packaging, pkg_create failed.
 #      Need root privilege.
-# XXX: If packages name include ".", pkg_create failed.
-#      Example: tests-usr.bin-debug packages
 ########################################################
 make_PKG(){
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
@@ -285,10 +283,6 @@ case $1 in
 		;;
 	extract)
 		extract_base
-		;;
-	root)
-		make_rootpriv_testspackages
-		make_rootpriv_etcspackages
 		;;
 	*)
 		usage
