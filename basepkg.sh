@@ -181,7 +181,7 @@ make_CONTENTS() {
 #
 # Argument: Packages Name
 #######################################
-make_DESC(){
+make_DESC() {
 	echo "NetBSD base system" > sets/$1/+DESC
 	echo "" >> sets/$1/+DESC
 	echo "Homepage:" >> sets/$1/+DESC
@@ -196,7 +196,7 @@ make_DESC(){
 # XXX: If /var files packaging, pkg_create failed.
 #      Need root privilege.
 ########################################################
-make_PKG(){
+make_PKG() {
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
 	pkg_create -l -U -B sets/$1/+BUILD_INFO -c sets/$1/+COMMENT \
@@ -239,7 +239,7 @@ make_packages() {
 #
 # Argument: None.
 ######################################################
-clean_plus_file(){
+clean_plus_file() {
 	find ./sets -name '\+[A-Z]*' | xargs rm -f
 }
 
