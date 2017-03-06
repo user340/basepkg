@@ -1,0 +1,7 @@
+usr/libdata/debug/usr/libexec/makekey.debug
+usr/libdata/debug/usr/bin/openssl.debug
+usr/libdata/debug/usr/bin/netpgpverify.debug
+usr/libdata/debug/usr/bin/netpgpkeys.debug
+usr/libdata/debug/usr/bin/netpgp.debug
+usr/libdata/debug/usr/bin/nbsvtool.debug
+usr/libdata/debug/usr/bin/bdes.debug

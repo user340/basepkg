@@ -1,0 +1,86 @@
+libdata/firmware/zyd/zyd-zd1211b
+libdata/firmware/zyd/zyd-zd1211
+libdata/firmware/zyd/zd1211-license
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/zyd
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/upgt
+libdata/firmware/run/run-rt3071
+libdata/firmware/run/run-rt2870
+libdata/firmware/run/run-license
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/run
+libdata/firmware/rum/rum-rt2573
+libdata/firmware/rum/rum-license
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/rum
+libdata/firmware/ral/ral-rt2661
+libdata/firmware/ral/ral-rt2561s
+libdata/firmware/ral/ral-rt2561
+libdata/firmware/ral/ral-license
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/ral
+libdata/firmware/if_wpi/iwlwifi-3945.ucode
+libdata/firmware/if_wpi/README.iwlwifi-3945-ucode
+libdata/firmware/if_wpi/LICENSE.iwlwifi-3945-ucode
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/if_wpi
+libdata/firmware/if_urtwn/rtl8192cfwU.bin
+libdata/firmware/if_urtwn/rtl8192cfw.bin
+libdata/firmware/if_urtwn/rtl8188eufw.bin
+libdata/firmware/if_urtwn/Realtek-Firmware-License.txt
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/if_urtwn
+libdata/firmware/if_otus/otus-main
+libdata/firmware/if_otus/otus-license
+libdata/firmware/if_otus/otus-init
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/if_otus
+libdata/firmware/if_iwn/iwlwifi-6050-5.ucode
+libdata/firmware/if_iwn/iwlwifi-6000g2b-6.ucode
+libdata/firmware/if_iwn/iwlwifi-6000g2a-5.ucode
+libdata/firmware/if_iwn/iwlwifi-6000-4.ucode
+libdata/firmware/if_iwn/iwlwifi-5150-2.ucode
+libdata/firmware/if_iwn/iwlwifi-5000-2.ucode
+libdata/firmware/if_iwn/iwlwifi-4965-2.ucode
+libdata/firmware/if_iwn/iwlwifi-2030-6.ucode
+libdata/firmware/if_iwn/iwlwifi-2000-6.ucode
+libdata/firmware/if_iwn/iwlwifi-135-6.ucode
+libdata/firmware/if_iwn/iwlwifi-105-6.ucode
+libdata/firmware/if_iwn/iwlwifi-1000-3.ucode
+libdata/firmware/if_iwn/iwlwifi-100-5.ucode
+libdata/firmware/if_iwn/README.iwlwifi-6050-ucode
+libdata/firmware/if_iwn/README.iwlwifi-6000g2b-ucode
+libdata/firmware/if_iwn/README.iwlwifi-6000g2a-ucode
+libdata/firmware/if_iwn/README.iwlwifi-6000-ucode
+libdata/firmware/if_iwn/README.iwlwifi-5150-ucode
+libdata/firmware/if_iwn/README.iwlwifi-5000-ucode
+libdata/firmware/if_iwn/README.iwlwifi-4965-ucode
+libdata/firmware/if_iwn/README.iwlwifi-2030-ucode
+libdata/firmware/if_iwn/README.iwlwifi-2000-ucode
+libdata/firmware/if_iwn/README.iwlwifi-135-ucode
+libdata/firmware/if_iwn/README.iwlwifi-105-ucode
+libdata/firmware/if_iwn/README.iwlwifi-1000-ucode
+libdata/firmware/if_iwn/README.iwlwifi-100-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-6050-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-6000g2b-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-6000g2a-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-6000-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-5150-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-5000-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-4965-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-2030-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-2000-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-135-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-105-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-1000-ucode
+libdata/firmware/if_iwn/LICENSE.iwlwifi-100-ucode
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/if_iwn
+libdata/firmware/if_iwi/ipw2200-sniffer.fw
+libdata/firmware/if_iwi/ipw2200-ibss.fw
+libdata/firmware/if_iwi/ipw2200-bss.fw
+libdata/firmware/if_iwi/LICENSE.ipw2200-fw
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/if_iwi
+libdata/firmware/if_ipw/ipw2100-1.2.fw
+libdata/firmware/if_ipw/ipw2100-1.2-p.fw
+libdata/firmware/if_ipw/ipw2100-1.2-i.fw
+libdata/firmware/if_ipw/LICENSE
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/if_ipw
+libdata/firmware/if_athn/athn-license
+libdata/firmware/if_athn/athn-ar9271
+libdata/firmware/if_athn/athn-ar7010-11
+libdata/firmware/if_athn/athn-ar7010
+@exec install -d -o root -g wheel -m 0755 libdata/firmware/if_athn
+@exec install -d -o root -g wheel -m 0755 libdata/firmware

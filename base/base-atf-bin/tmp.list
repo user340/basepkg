@@ -1,0 +1,8 @@
+usr/share/atf/atf-run.hooks
+usr/libexec/atf-check
+usr/bin/atf-version
+usr/bin/atf-sh
+usr/bin/atf-run
+usr/bin/atf-report
+usr/bin/atf-config
+@exec install -d -o root -g wheel -m 0755 etc/atf

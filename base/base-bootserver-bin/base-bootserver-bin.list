@@ -1,0 +1,14 @@
+usr/sbin/rpc.bootparamd
+usr/sbin/rbootd
+usr/sbin/rarpd
+usr/sbin/ndbootd
+usr/sbin/moptrace
+usr/sbin/mopprobe
+usr/sbin/mopd
+usr/sbin/mopcopy
+usr/sbin/mopchk
+usr/sbin/isibootd
+usr/sbin/bootptest
+usr/sbin/bootpgw
+usr/sbin/bootpef
+usr/sbin/bootpd

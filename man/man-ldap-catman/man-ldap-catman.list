@@ -1,0 +1,10 @@
+usr/share/man/cat1/ldapwhoami.0
+usr/share/man/cat1/ldapurl.0
+usr/share/man/cat1/ldapsearch.0
+usr/share/man/cat1/ldappasswd.0
+usr/share/man/cat1/ldapmodrdn.0
+usr/share/man/cat1/ldapmodify.0
+usr/share/man/cat1/ldapexop.0
+usr/share/man/cat1/ldapdelete.0
+usr/share/man/cat1/ldapcompare.0
+usr/share/man/cat1/ldapadd.0

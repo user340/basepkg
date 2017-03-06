@@ -1,0 +1,4 @@
+@exec install -d -o root -g wheel -m 0700 etc/openssl/private
+@exec install -d -o root -g wheel -m 0755 etc/openssl/misc
+@exec install -d -o root -g wheel -m 0755 etc/openssl/certs
+@exec install -d -o root -g wheel -m 0755 etc/openssl

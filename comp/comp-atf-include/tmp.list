@@ -1,0 +1,2 @@
+@exec install -d -o root -g wheel -m 0755 usr/include/atf-c
+@exec install -d -o root -g wheel -m 0755 usr/include/atf-c

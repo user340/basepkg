@@ -1,0 +1,8 @@
+usr/libdata/debug/usr/sbin/rndc.debug
+usr/libdata/debug/usr/sbin/rndc-confgen.debug
+usr/libdata/debug/usr/sbin/named.debug
+usr/libdata/debug/usr/sbin/named-journalprint.debug
+usr/libdata/debug/usr/sbin/named-checkzone.debug
+usr/libdata/debug/usr/sbin/named-checkconf.debug
+usr/libdata/debug/usr/sbin/ddns-confgen.debug
+usr/libdata/debug/usr/bin/delv.debug

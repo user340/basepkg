@@ -1,0 +1,6 @@
+usr/libdata/debug/usr/sbin/rpc.statd.debug
+usr/libdata/debug/usr/sbin/rpc.pcnfsd.debug
+usr/libdata/debug/usr/sbin/rpc.lockd.debug
+usr/libdata/debug/usr/sbin/nfsd.debug
+usr/libdata/debug/usr/sbin/mountd.debug
+usr/libdata/debug/usr/libexec/rpc.rquotad.debug

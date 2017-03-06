@@ -1,0 +1,24 @@
+usr/tests/usr.sbin/useradd/t_useradd
+usr/tests/usr.sbin/useradd/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/usr.sbin/useradd
+usr/tests/usr.sbin/traceroute/t_traceroute
+usr/tests/usr.sbin/traceroute/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/usr.sbin/traceroute
+usr/tests/usr.sbin/tcpdump/t_tcpdump
+usr/tests/usr.sbin/tcpdump/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/usr.sbin/tcpdump
+usr/tests/usr.sbin/mtree/t_mtree
+usr/tests/usr.sbin/mtree/netbsd6_d_create.out
+usr/tests/usr.sbin/mtree/mtree_d_create.out
+usr/tests/usr.sbin/mtree/d_merge_C_M_S.out
+usr/tests/usr.sbin/mtree/d_merge_C_M.out
+usr/tests/usr.sbin/mtree/d_merge.in
+usr/tests/usr.sbin/mtree/d_convert_D_S.out
+usr/tests/usr.sbin/mtree/d_convert_D.out
+usr/tests/usr.sbin/mtree/d_convert_C_S.out
+usr/tests/usr.sbin/mtree/d_convert_C.out
+usr/tests/usr.sbin/mtree/d_convert.in
+usr/tests/usr.sbin/mtree/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/usr.sbin/mtree
+usr/tests/usr.sbin/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/usr.sbin

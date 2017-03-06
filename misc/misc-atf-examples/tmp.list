@@ -1,0 +1,3 @@
+usr/share/examples/atf/tests-results.css
+usr/share/examples/atf/atf-run.hooks
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/atf

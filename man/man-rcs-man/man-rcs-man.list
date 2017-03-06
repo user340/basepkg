@@ -1,0 +1,11 @@
+usr/share/man/man5/rcsfile.5
+usr/share/man/man1/rlog.1
+usr/share/man/man1/rcsmerge.1
+usr/share/man/man1/rcslog.1
+usr/share/man/man1/rcsintro.1
+usr/share/man/man1/rcsfreeze.1
+usr/share/man/man1/rcsdiff.1
+usr/share/man/man1/rcsclean.1
+usr/share/man/man1/rcs.1
+usr/share/man/man1/co.1
+usr/share/man/man1/ci.1

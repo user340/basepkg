@@ -1,0 +1,22 @@
+@exec install -d -o root -g wheel -m 0755 var/www
+@exec install -d -o root -g wheel -m 0111 var/spool/ftp/hidden
+@exec install -d -o root -g wheel -m 0755 var/spool/ftp/etc
+@exec install -d -o root -g wheel -m 0755 var/spool/ftp/bin
+@exec install -d -o root -g wheel -m 0755 var/spool/ftp
+@exec install -d -o root -g wheel -m 0755 var/rwho
+@exec install -d -o root -g wheel -m 0755 var/log/rdist
+sbin/setkey
+sbin/rump.route
+sbin/rump.ping
+sbin/rump.ifconfig
+sbin/rtsol
+sbin/rrestore
+sbin/route
+sbin/pppoectl
+sbin/ping6
+sbin/ping
+sbin/ipppctl
+sbin/ifconfig
+sbin/brconfig
+bin/rcp
+bin/rcmd

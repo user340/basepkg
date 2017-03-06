@@ -1,0 +1,13 @@
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/smm/setup
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/smm
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref9/nfs
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref9/net
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref8/timed
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref8/lpd
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref7/quotas
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref5/timed
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref1/config
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/papers/morris78-password
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/papers/mckusick85-fsck
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/papers/mckusick84-ffs
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/papers

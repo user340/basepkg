@@ -1,0 +1,6 @@
+@exec install -d -o root -g wheel -m 0755 usr/share/tmac/mm
+@exec install -d -o root -g wheel -m 0755 usr/share/tmac/mdoc
+@exec install -d -o root -g wheel -m 0755 usr/share/tmac
+@exec install -d -o root -g wheel -m 0755 usr/share/ms
+usr/share/misc/vgrindefs.db
+@exec install -d -o root -g wheel -m 0755 usr/share/me

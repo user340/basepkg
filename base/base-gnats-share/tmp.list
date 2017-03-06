@@ -1,0 +1,3 @@
+usr/share/gnats/send-pr.el
+usr/share/gnats/netbsd
+@exec install -d -o root -g wheel -m 0755 usr/share/gnats

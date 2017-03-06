@@ -123,12 +123,12 @@ make_list() {
 # Argument: <basename>/<pkgname> (Ex. base/base-sys-root)
 ##########################################################
 make_BUILD_INFO(){
-	echo "OPSYS=$opsys" > ./sets/$1/+BUILD_INFO
-	echo "OS_VERSION=$osversion" >> ./sets/$1/+BUILD_INFO
-	echo "OBJECT_FMT=ELF" >> ./sets/$1/+BUILD_INFO
-	echo "MACHINE_ARCH=$machine_arch" >> ./sets/$1/+BUILD_INFO
-	echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> ./sets/$1/+BUILD_INFO
-	echo "PKGTOOLS_VERSION=$pkgtoolversion" >> ./sets/$1/+BUILD_INFO
+	echo "OPSYS=$opsys" > ./$1/+BUILD_INFO
+	echo "OS_VERSION=$osversion" >> ./$1/+BUILD_INFO
+	echo "OBJECT_FMT=ELF" >> ./$1/+BUILD_INFO
+	echo "MACHINE_ARCH=$machine_arch" >> ./$1/+BUILD_INFO
+	echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> ./$1/+BUILD_INFO
+	echo "PKGTOOLS_VERSION=$pkgtoolversion" >> ./$1/+BUILD_INFO
 }
 
 ###################################################
@@ -137,7 +137,7 @@ make_BUILD_INFO(){
 # Argument: Packages Name (Ex. base/base-sys-root)
 ###################################################
 make_COMMENT(){
-	echo "System Package for $1" > ./sets/$1/+COMMENT
+	echo "System Package for $1" > ./$1/+COMMENT
 }
 
 ###################################################
@@ -146,34 +146,34 @@ make_COMMENT(){
 # Argument: Packages Name (Ex. base/base-sys-root)
 ###################################################
 make_CONTENTS() {
-	if [ -f ./sets/$1/tmp.list ]; then
-		rm ./sets/$1/tmp.list
+	if [ -f ./$1/tmp.list ]; then
+		rm ./$1/tmp.list
 	fi
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
-	echo "@name $pkgname-`sh ${SRC}/sys/conf/osrelease.sh`" > sets/$1/+CONTENTS
-	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ./sets/$1/+CONTENTS
-	echo "@comment Packaged using ${prog} ${rcsid}" >> ./sets/$1/+CONTENTS
-	echo "@cwd /" >> ./sets/$1/+CONTENTS
+	echo "@name $pkgname-`sh ${SRC}/sys/conf/osrelease.sh`" > ./$1/+CONTENTS
+	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ./$1/+CONTENTS
+	echo "@comment Packaged using ${prog} ${rcsid}" >> ./$1/+CONTENTS
+	echo "@cwd /" >> ./$1/+CONTENTS
 	# XXX: This package may be empty package
-	cat ./sets/$1/$pkgname.list | while read i
+	cat ./$1/$pkgname.list | while read i
 	do
 		filetype=`file ./work/$setname/$i | awk '{print $2}'`
 		if [ $filetype = directory ]; then
 			filename=`echo $i | sed 's%\/%\\\/%g'`
 			awk '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ./work/$setname/etc/mtree/set.$setname | \
 			sed 's%^\.\/%%' | \
-			awk '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ./sets/$1/tmp.list
+			awk '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ./$1/tmp.list
 		elif [ $filetype = cannot ]; then
 			continue
 		else
-			echo $i >> ./sets/$1/tmp.list
+			echo $i >> ./$1/tmp.list
 		fi
 	done
-	if [ ! -f ./sets/$1/tmp.list ]; then
+	if [ ! -f ./$1/tmp.list ]; then
 		return 1
 	fi
-	sort ./sets/$1/tmp.list >> ./sets/$1/+CONTENTS
+	sort ./$1/tmp.list >> ./sets/$1/+CONTENTS
 }
 
 #######################################
@@ -182,10 +182,10 @@ make_CONTENTS() {
 # Argument: Packages Name
 #######################################
 make_DESC() {
-	echo "NetBSD base system" > sets/$1/+DESC
-	echo "" >> sets/$1/+DESC
-	echo "Homepage:" >> sets/$1/+DESC
-	echo "http://www.netbsd.org/" >> sets/$1/+DESC
+	echo "NetBSD base system" > ./$1/+DESC
+	echo "" >> ./$1/+DESC
+	echo "Homepage:" >> ./$1/+DESC
+	echo "http://www.netbsd.org/" >> ./$1/+DESC
 }
 
 ########################################################
@@ -199,8 +199,8 @@ make_DESC() {
 make_PKG() {
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
-	pkg_create -l -U -B sets/$1/+BUILD_INFO -c sets/$1/+COMMENT \
-	-d sets/$1/+DESC -f sets/$1/+CONTENTS -I / -p ${PWD}/work/$setname $pkgname
+	pkg_create -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
+	-d $1/+DESC -f $1/+CONTENTS -I / -p ${PWD}/work/$setname $pkgname
 	if [ $? != 0 ]; then
 		return $?
 	fi

@@ -1,0 +1,21 @@
+usr/share/locale/lt_LT.UTF-8/LC_TIME
+usr/share/locale/lt_LT.UTF-8/LC_NUMERIC
+usr/share/locale/lt_LT.UTF-8/LC_MONETARY
+usr/share/locale/lt_LT.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/lt_LT.UTF-8/LC_MESSAGES
+usr/share/locale/lt_LT.UTF-8/LC_CTYPE
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/lt_LT.UTF-8
+usr/share/locale/lt_LT.ISO8859-4/LC_TIME
+usr/share/locale/lt_LT.ISO8859-4/LC_NUMERIC
+usr/share/locale/lt_LT.ISO8859-4/LC_MONETARY
+usr/share/locale/lt_LT.ISO8859-4/LC_MESSAGES/SYS_LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/lt_LT.ISO8859-4/LC_MESSAGES
+usr/share/locale/lt_LT.ISO8859-4/LC_CTYPE
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/lt_LT.ISO8859-4
+usr/share/locale/lt_LT.ISO8859-13/LC_TIME
+usr/share/locale/lt_LT.ISO8859-13/LC_NUMERIC
+usr/share/locale/lt_LT.ISO8859-13/LC_MONETARY
+usr/share/locale/lt_LT.ISO8859-13/LC_MESSAGES/SYS_LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/lt_LT.ISO8859-13/LC_MESSAGES
+usr/share/locale/lt_LT.ISO8859-13/LC_CTYPE
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/lt_LT.ISO8859-13

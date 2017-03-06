@@ -1,0 +1,3 @@
+var/yp/binding
+var/yp
+bin/domainname

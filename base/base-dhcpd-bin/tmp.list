@@ -1,0 +1,5 @@
+usr/share/dhcpd/pxe.defs
+@exec install -d -o root -g wheel -m 0755 usr/share/dhcpd
+usr/sbin/omshell
+usr/sbin/dhcrelay
+usr/sbin/dhcpd

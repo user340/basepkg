@@ -1,0 +1,2 @@
+@exec install -d -o root -g wheel -m 0755 usr/tests/share/examples/lutok
+@exec install -d -o root -g wheel -m 0755 usr/tests/lib/liblutok

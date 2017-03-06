@@ -1,0 +1,9 @@
+usr/libdata/debug/usr/bin/radioctl.debug
+usr/libdata/debug/usr/bin/mixerctl.debug
+usr/libdata/debug/usr/bin/midirecord.debug
+usr/libdata/debug/usr/bin/midiplay.debug
+usr/libdata/debug/usr/bin/cdplay.debug
+usr/libdata/debug/usr/bin/audiorecord.debug
+usr/libdata/debug/usr/bin/audioplay.debug
+usr/libdata/debug/usr/bin/audioctl.debug
+usr/libdata/debug/usr/bin/audiocfg.debug

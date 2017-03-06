@@ -1,0 +1,3 @@
+var/spool/postfix/etc
+var/spool/postfix
+var/db/postfix

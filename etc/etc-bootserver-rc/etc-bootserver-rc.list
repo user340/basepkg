@@ -1,0 +1,6 @@
+etc/rc.d/rbootd
+etc/rc.d/rarpd
+etc/rc.d/ndbootd
+etc/rc.d/mopd
+etc/rc.d/isibootd
+etc/rc.d/bootparams

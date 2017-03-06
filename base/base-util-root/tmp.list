@@ -1,0 +1,37 @@
+@exec install -d -o root -g wheel -m 01777 var/tmp/vi.recover
+@exec install -d -o root -g wheel -m 0750 var/quotas
+@exec install -d -o root -g wheel -m 0755 var/preserve
+@exec install -d -o root -g wheel -m 0755 var/msgs
+bin/test
+bin/tar
+bin/sync
+bin/stty
+bin/sleep
+bin/sh
+bin/rump.dd
+bin/rmdir
+bin/rm
+bin/pwd
+bin/ps
+bin/pax
+bin/mv
+bin/mt
+bin/mkdir
+bin/ls
+bin/ln
+bin/ksh
+bin/kill
+bin/hostname
+bin/expr
+bin/ed
+bin/echo
+bin/df
+bin/dd
+bin/date
+bin/csh
+bin/cpio
+bin/cp
+bin/chmod
+bin/chio
+bin/cat
+bin/[

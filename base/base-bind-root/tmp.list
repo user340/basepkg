@@ -1,0 +1,16 @@
+@exec install -d -o root -g wheel -m 0775 var/run/named
+@exec install -d -o root -g wheel -m 0775 var/run/lwresd
+@exec install -d -o root -g wheel -m 01775 var/chroot/named/var/tmp
+@exec install -d -o root -g wheel -m 0775 var/chroot/named/var/run/named
+@exec install -d -o root -g wheel -m 0775 var/chroot/named/var/run/lwresd
+@exec install -d -o root -g wheel -m 0775 var/chroot/named/var/run
+@exec install -d -o root -g wheel -m 0755 var/chroot/named/var
+@exec install -d -o root -g wheel -m 0755 var/chroot/named/usr/libexec
+@exec install -d -o root -g wheel -m 0755 var/chroot/named/usr
+@exec install -d -o root -g wheel -m 0775 var/chroot/named/etc/namedb/keys
+@exec install -d -o root -g wheel -m 0775 var/chroot/named/etc/namedb/cache
+@exec install -d -o root -g wheel -m 0755 var/chroot/named/etc/namedb
+@exec install -d -o root -g wheel -m 0755 var/chroot/named/etc
+@exec install -d -o root -g wheel -m 0755 var/chroot/named/dev
+@exec install -d -o root -g wheel -m 0755 var/chroot/named
+@exec install -d -o root -g wheel -m 0755 etc/namedb

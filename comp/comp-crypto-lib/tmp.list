@@ -1,0 +1,3 @@
+usr/lib/pkgconfig/openssl.pc
+usr/lib/pkgconfig/libssl.pc
+usr/lib/pkgconfig/libcrypto.pc

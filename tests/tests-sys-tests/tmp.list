@@ -1,0 +1,10 @@
+usr/tests/sys/rc/t_rc_d_cli
+usr/tests/sys/rc/h_simple
+usr/tests/sys/rc/h_args
+usr/tests/sys/rc/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/sys/rc
+usr/tests/sys/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/sys
+usr/tests/share/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/share
+@exec install -d -o root -g wheel -m 0755 usr/tests/modules

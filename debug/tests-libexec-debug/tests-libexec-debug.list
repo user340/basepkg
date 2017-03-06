@@ -1,0 +1,10 @@
+usr/libdata/debug/usr/tests/libexec/ld.elf_so/t_dlvsym.debug
+usr/libdata/debug/usr/tests/libexec/ld.elf_so/t_dlinfo.debug
+usr/libdata/debug/usr/tests/libexec/ld.elf_so/t_dlerror-false.debug
+usr/libdata/debug/usr/tests/libexec/ld.elf_so/t_dlerror-cleared.debug
+usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_locking.debug
+usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_dl_symver_v2.debug
+usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_dl_symver_v1.debug
+usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_dl_symver_v0.debug
+usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_df_1_noopen2.debug
+usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_df_1_noopen1.debug

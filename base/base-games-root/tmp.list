@@ -1,0 +1,6 @@
+@exec install -d -o root -g wheel -m 0775 var/games/sail
+@exec install -d -o root -g wheel -m 0775 var/games/phantasia
+@exec install -d -o root -g wheel -m 0775 var/games/larn
+@exec install -d -o root -g wheel -m 0770 var/games/hackdir/save
+@exec install -d -o root -g wheel -m 0775 var/games/hackdir
+@exec install -d -o root -g wheel -m 0775 var/games

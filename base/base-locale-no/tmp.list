@@ -1,0 +1,7 @@
+usr/share/nls/no/libc.cat
+@exec install -d -o root -g wheel -m 0755 usr/share/nls/no
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/no@nynorsk/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/no@nynorsk
+usr/share/locale/no/LC_MESSAGES/grep.mo
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/no/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/no

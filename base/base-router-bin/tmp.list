@@ -1,0 +1,8 @@
+usr/sbin/rtadvd
+usr/sbin/route6d
+usr/sbin/mrouted
+usr/sbin/mrinfo
+usr/sbin/ldpd
+usr/sbin/faithd
+usr/sbin/altqstat
+usr/sbin/altqd

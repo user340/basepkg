@@ -1,0 +1,7 @@
+usr/libdata/debug/usr/libexec/atf-exec.debug
+usr/libdata/debug/usr/libexec/atf-check.debug
+usr/libdata/debug/usr/bin/atf-version.debug
+usr/libdata/debug/usr/bin/atf-sh.debug
+usr/libdata/debug/usr/bin/atf-run.debug
+usr/libdata/debug/usr/bin/atf-report.debug
+usr/libdata/debug/usr/bin/atf-config.debug

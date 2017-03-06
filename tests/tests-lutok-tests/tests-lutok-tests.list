@@ -1,0 +1,13 @@
+usr/tests/share/examples/lutok/examples_test
+usr/tests/share/examples/lutok/Kyuafile
+usr/tests/share/examples/lutok/Atffile
+usr/tests/share/examples/lutok
+usr/tests/lib/liblutok/state_test
+usr/tests/lib/liblutok/stack_cleaner_test
+usr/tests/lib/liblutok/operations_test
+usr/tests/lib/liblutok/exceptions_test
+usr/tests/lib/liblutok/debug_test
+usr/tests/lib/liblutok/c_gate_test
+usr/tests/lib/liblutok/Kyuafile
+usr/tests/lib/liblutok/Atffile
+usr/tests/lib/liblutok

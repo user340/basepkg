@@ -1,0 +1,2 @@
+@exec install -d -o root -g wheel -m 0755 var/spool/output/lpd
+@exec install -d -o root -g wheel -m 0755 var/spool/output

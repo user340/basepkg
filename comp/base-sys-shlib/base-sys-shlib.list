@@ -1,0 +1,4 @@
+usr/lib/i386/libiscsi.so
+usr/lib/i386/libcrypto_rc5.so
+usr/lib/i386/libcrypto.so
+usr/lib/i386/libasan.so

@@ -1,0 +1,6 @@
+usr/sbin/sendmail
+usr/sbin/mailwrapper
+usr/bin/purgestat
+usr/bin/newaliases
+usr/bin/mailq
+usr/bin/hoststat

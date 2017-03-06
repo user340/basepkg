@@ -1,0 +1,3 @@
+etc/rc.d/nfslocking
+etc/rc.d/nfsd
+etc/rc.d/mountd

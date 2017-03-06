@@ -1,0 +1,33 @@
+usr/tests/sbin/sysctl/t_sysctl
+usr/tests/sbin/sysctl/t_perm
+usr/tests/sbin/sysctl/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/sbin/sysctl
+usr/tests/sbin/route/t_missing
+usr/tests/sbin/route/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/sbin/route
+usr/tests/sbin/resize_ffs/testdata.tar.gz.base64
+usr/tests/sbin/resize_ffs/testdata.md5
+usr/tests/sbin/resize_ffs/t_shrink_swapped
+usr/tests/sbin/resize_ffs/t_shrink
+usr/tests/sbin/resize_ffs/t_grow_swapped
+usr/tests/sbin/resize_ffs/t_grow
+usr/tests/sbin/resize_ffs/t_check
+usr/tests/sbin/resize_ffs/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/sbin/resize_ffs
+usr/tests/sbin/newfs_msdos/t_create
+usr/tests/sbin/newfs_msdos/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/sbin/newfs_msdos
+usr/tests/sbin/newfs/t_enable_quotas
+usr/tests/sbin/newfs/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/sbin/newfs
+usr/tests/sbin/ifconfig/t_nonexistent
+usr/tests/sbin/ifconfig/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/sbin/ifconfig
+usr/tests/sbin/fsck_ffs/t_enable_quotas
+usr/tests/sbin/fsck_ffs/t_check_quotas
+usr/tests/sbin/fsck_ffs/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/sbin/fsck_ffs
+usr/tests/sbin/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/sbin
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/sbin/resize_ffs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/sbin

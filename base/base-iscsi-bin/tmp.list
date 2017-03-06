@@ -1,0 +1,4 @@
+usr/sbin/iscsi-target
+usr/sbin/iscsi-initiator
+sbin/iscsid
+sbin/iscsictl

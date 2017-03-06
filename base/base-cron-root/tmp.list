@@ -1,0 +1,5 @@
+@exec install -d -o root -g wheel -m 0700 var/cron/tabs
+@exec install -d -o root -g wheel -m 0755 var/cron
+@exec install -d -o root -g wheel -m 0700 var/at/spool
+@exec install -d -o root -g wheel -m 0700 var/at/jobs
+@exec install -d -o root -g wheel -m 0755 var/at

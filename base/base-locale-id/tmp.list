@@ -1,0 +1,2 @@
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/id/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/id

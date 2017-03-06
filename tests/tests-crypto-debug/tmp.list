@@ -1,0 +1,3 @@
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/crypto/opencrypto
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/crypto/libcrypto
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/crypto

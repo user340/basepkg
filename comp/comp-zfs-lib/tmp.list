@@ -1,0 +1,6 @@
+usr/lib/libzpool.a
+usr/lib/libzfs.a
+usr/lib/libuutil.a
+usr/lib/libumem.a
+usr/lib/libnvpair.a
+usr/lib/libavl.a

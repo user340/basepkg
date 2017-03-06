@@ -1,0 +1,17 @@
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/vfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/union
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/umapfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/tmpfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/puffs/h_dtfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/puffs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/ptyfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/psshfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/nullfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/nfs/nfsservice
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/nfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/msdosfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/lfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/kernfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/hfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/fifofs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/ffs

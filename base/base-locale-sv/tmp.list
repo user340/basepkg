@@ -1,0 +1,25 @@
+usr/share/nls/sv/libc.cat
+@exec install -d -o root -g wheel -m 0755 usr/share/nls/sv
+usr/share/locale/sv_SE.UTF-8/LC_TIME
+usr/share/locale/sv_SE.UTF-8/LC_NUMERIC
+usr/share/locale/sv_SE.UTF-8/LC_MONETARY
+usr/share/locale/sv_SE.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/sv_SE.UTF-8/LC_MESSAGES
+usr/share/locale/sv_SE.UTF-8/LC_CTYPE
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/sv_SE.UTF-8
+usr/share/locale/sv_SE.ISO8859-15/LC_TIME
+usr/share/locale/sv_SE.ISO8859-15/LC_NUMERIC
+usr/share/locale/sv_SE.ISO8859-15/LC_MONETARY
+usr/share/locale/sv_SE.ISO8859-15/LC_MESSAGES/SYS_LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/sv_SE.ISO8859-15/LC_MESSAGES
+usr/share/locale/sv_SE.ISO8859-15/LC_CTYPE
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/sv_SE.ISO8859-15
+usr/share/locale/sv_SE.ISO8859-1/LC_TIME
+usr/share/locale/sv_SE.ISO8859-1/LC_NUMERIC
+usr/share/locale/sv_SE.ISO8859-1/LC_MONETARY
+usr/share/locale/sv_SE.ISO8859-1/LC_MESSAGES/SYS_LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/sv_SE.ISO8859-1/LC_MESSAGES
+usr/share/locale/sv_SE.ISO8859-1/LC_CTYPE
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/sv_SE.ISO8859-1
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/sv/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/sv

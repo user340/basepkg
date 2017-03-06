@@ -1,0 +1,3 @@
+@exec install -d -o root -g wheel -m 0755 usr/libexec/ching
+@exec install -d -o root -g wheel -m 0750 usr/games/hide
+@exec install -d -o root -g wheel -m 0755 usr/games

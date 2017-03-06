@@ -1,0 +1,4 @@
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_helper_symver_dso2
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_helper_symver_dso1
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_helper_symver_dso0
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/libexec/ld.elf_so

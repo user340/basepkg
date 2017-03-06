@@ -1,0 +1,17 @@
+usr/libdata/debug/usr/tests/fs/vfs
+usr/libdata/debug/usr/tests/fs/union
+usr/libdata/debug/usr/tests/fs/umapfs
+usr/libdata/debug/usr/tests/fs/tmpfs
+usr/libdata/debug/usr/tests/fs/puffs/h_dtfs
+usr/libdata/debug/usr/tests/fs/puffs
+usr/libdata/debug/usr/tests/fs/ptyfs
+usr/libdata/debug/usr/tests/fs/psshfs
+usr/libdata/debug/usr/tests/fs/nullfs
+usr/libdata/debug/usr/tests/fs/nfs/nfsservice
+usr/libdata/debug/usr/tests/fs/nfs
+usr/libdata/debug/usr/tests/fs/msdosfs
+usr/libdata/debug/usr/tests/fs/lfs
+usr/libdata/debug/usr/tests/fs/kernfs
+usr/libdata/debug/usr/tests/fs/hfs
+usr/libdata/debug/usr/tests/fs/fifofs
+usr/libdata/debug/usr/tests/fs/ffs

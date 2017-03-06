@@ -1,0 +1,3 @@
+usr/tests/games/t_factor
+usr/tests/games/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/games

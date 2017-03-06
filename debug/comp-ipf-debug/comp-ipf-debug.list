@@ -1,0 +1,9 @@
+usr/libdata/debug/usr/sbin/iptest.debug
+usr/libdata/debug/usr/sbin/ipsend.debug
+usr/libdata/debug/usr/sbin/ipresend.debug
+usr/libdata/debug/usr/sbin/ipnat.debug
+usr/libdata/debug/usr/sbin/ipmon.debug
+usr/libdata/debug/usr/sbin/ipftest.debug
+usr/libdata/debug/usr/sbin/ipfstat.debug
+usr/libdata/debug/usr/sbin/ipfs.debug
+usr/libdata/debug/sbin/ipf.debug

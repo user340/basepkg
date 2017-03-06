@@ -1,0 +1,7 @@
+@exec install -d -o root -g wheel -m 0755 usr/share/games/quiz.db
+@exec install -d -o root -g wheel -m 0755 usr/share/games/larn
+@exec install -d -o root -g wheel -m 0755 usr/share/games/fortune
+@exec install -d -o root -g wheel -m 0755 usr/share/games/ching
+@exec install -d -o root -g wheel -m 0755 usr/share/games/boggle
+@exec install -d -o root -g wheel -m 0755 usr/share/games/atc
+@exec install -d -o root -g wheel -m 0755 usr/share/games

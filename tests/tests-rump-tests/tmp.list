@@ -1,0 +1,33 @@
+usr/tests/rump/rumpvfs/t_p2kifs
+usr/tests/rump/rumpvfs/t_etfs
+usr/tests/rump/rumpvfs/t_basic
+usr/tests/rump/rumpvfs/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/rump/rumpvfs
+usr/tests/rump/rumpnet/t_shmif
+usr/tests/rump/rumpnet/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/rump/rumpnet
+usr/tests/rump/rumpkern/t_vm
+usr/tests/rump/rumpkern/t_tsleep
+usr/tests/rump/rumpkern/t_threads
+usr/tests/rump/rumpkern/t_sp
+usr/tests/rump/rumpkern/t_signals
+usr/tests/rump/rumpkern/t_modlinkset
+usr/tests/rump/rumpkern/t_modcmd
+usr/tests/rump/rumpkern/t_lwproc
+usr/tests/rump/rumpkern/t_kern
+usr/tests/rump/rumpkern/t_copy
+usr/tests/rump/rumpkern/h_server/h_simpleserver
+@exec install -d -o root -g wheel -m 0755 usr/tests/rump/rumpkern/h_server
+usr/tests/rump/rumpkern/h_client/h_stresscli
+usr/tests/rump/rumpkern/h_client/h_simplecli
+usr/tests/rump/rumpkern/h_client/h_sigcli
+usr/tests/rump/rumpkern/h_client/h_reconcli
+usr/tests/rump/rumpkern/h_client/h_forkcli
+@exec install -d -o root -g wheel -m 0755 usr/tests/rump/rumpkern/h_client
+usr/tests/rump/rumpkern/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/rump/rumpkern
+usr/tests/rump/modautoload/t_modautoload
+usr/tests/rump/modautoload/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/rump/modautoload
+usr/tests/rump/Atffile
+@exec install -d -o root -g wheel -m 0755 usr/tests/rump

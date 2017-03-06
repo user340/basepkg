@@ -1,0 +1,6 @@
+var/games/sail
+var/games/phantasia
+var/games/larn
+var/games/hackdir/save
+var/games/hackdir
+var/games

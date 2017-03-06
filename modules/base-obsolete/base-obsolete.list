@@ -1,0 +1,10 @@
+@MODULEDIR@/portal/portal.kmod
+@MODULEDIR@/portal
+@MODULEDIR@/npf_ext_normalise/npf_ext_normalise.kmod
+@MODULEDIR@/npf_ext_normalise
+@MODULEDIR@/luacore/luacore.kmod
+@MODULEDIR@/luacore
+@MODULEDIR@/ksem/ksem.kmod
+@MODULEDIR@/ksem
+@MODULEDIR@/dirhash/dirhash.kmod
+@MODULEDIR@/dirhash

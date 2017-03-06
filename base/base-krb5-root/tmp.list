@@ -1,0 +1,2 @@
+@exec install -d -o root -g wheel -m 0755 var/heimdal
+@exec install -d -o root -g wheel -m 0755 etc/kerberosV
