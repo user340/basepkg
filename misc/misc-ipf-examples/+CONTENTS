@@ -1,0 +1,29 @@
+@name misc-ipf-examples-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/examples/ipf/BASIC.NAT
+usr/share/examples/ipf/BASIC_1.FW
+usr/share/examples/ipf/BASIC_2.FW
+usr/share/examples/ipf/example.1
+usr/share/examples/ipf/example.10
+usr/share/examples/ipf/example.11
+usr/share/examples/ipf/example.12
+usr/share/examples/ipf/example.13
+usr/share/examples/ipf/example.2
+usr/share/examples/ipf/example.3
+usr/share/examples/ipf/example.4
+usr/share/examples/ipf/example.5
+usr/share/examples/ipf/example.6
+usr/share/examples/ipf/example.7
+usr/share/examples/ipf/example.8
+usr/share/examples/ipf/example.9
+usr/share/examples/ipf/example.sr
+usr/share/examples/ipf/firewall
+usr/share/examples/ipf/ftp-proxy
+usr/share/examples/ipf/ftppxy
+usr/share/examples/ipf/mkfilters
+usr/share/examples/ipf/nat-setup
+usr/share/examples/ipf/nat.eg
+usr/share/examples/ipf/server
+usr/share/examples/ipf/tcpstate

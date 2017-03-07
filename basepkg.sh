@@ -173,7 +173,7 @@ make_CONTENTS() {
 	if [ ! -f ./$1/tmp.list ]; then
 		return 1
 	fi
-	sort ./$1/tmp.list >> ./sets/$1/+CONTENTS
+	sort ./$1/tmp.list >> ./$1/+CONTENTS
 }
 
 #######################################
@@ -220,9 +220,9 @@ make_PKG() {
 # Argument: None.
 ############################################
 make_packages() {
-	for i in `ls ./sets`
+	for i in base comp debug etc games man misc modules
 	do
-		for j in `ls ./sets/$i`
+		for j in `ls ./$i`
 		do
 			echo "Package $i/$j Creating..."
 			make_BUILD_INFO $i/$j

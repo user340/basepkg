@@ -1,0 +1,26 @@
+@name misc-reference-share-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/dict/README
+usr/share/dict/american
+usr/share/dict/british
+usr/share/dict/eign
+usr/share/dict/propernames
+usr/share/dict/special/math
+usr/share/dict/special/netbsd
+usr/share/dict/stop
+usr/share/dict/web2
+usr/share/dict/web2a
+usr/share/dict/words
+usr/share/misc/NetBSD.el
+usr/share/misc/airport
+usr/share/misc/birthtoken
+usr/share/misc/country
+usr/share/misc/domains
+usr/share/misc/flowers
+usr/share/misc/inter.phone
+usr/share/misc/language
+usr/share/misc/na.phone
+usr/share/misc/na.postal
+usr/share/misc/zipcodes

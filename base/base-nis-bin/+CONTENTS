@@ -1,0 +1,26 @@
+@name base-nis-bin-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/bin/innetgr
+usr/bin/netgroup
+usr/bin/ypcat
+usr/bin/ypmatch
+usr/bin/yppasswd
+usr/bin/ypwhich
+usr/sbin/makedbm
+usr/sbin/mkalias
+usr/sbin/mknetid
+usr/sbin/netgroup_mkdb
+usr/sbin/revnetgroup
+usr/sbin/rpc.yppasswdd
+usr/sbin/stdethers
+usr/sbin/stdhosts
+usr/sbin/ypbind
+usr/sbin/ypinit
+usr/sbin/yppoll
+usr/sbin/yppush
+usr/sbin/ypserv
+usr/sbin/ypset
+usr/sbin/yptest
+usr/sbin/ypxfr

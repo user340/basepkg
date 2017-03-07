@@ -1,0 +1,21 @@
+@name man-sysutil-man-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/man/man5/newsyslog.conf.5
+usr/share/man/man8/adduser.8
+usr/share/man/man8/fasthalt.8
+usr/share/man/man8/halt.8
+usr/share/man/man8/irda.8
+usr/share/man/man8/macppc/ofwboot.elf.8
+usr/share/man/man8/macppc/ofwboot.xcf.8
+usr/share/man/man8/makedev.8
+usr/share/man/man8/makedev.local.8
+usr/share/man/man8/mount_ufs.8
+usr/share/man/man8/poweroff.8
+usr/share/man/man8/quotadump.8
+usr/share/man/man8/quotaoff.8
+usr/share/man/man8/scan_lfs.8
+usr/share/man/man8/swapon.8
+usr/share/man/man8/vndconfig.8
+usr/share/man/man8/zzz.8

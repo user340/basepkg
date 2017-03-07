@@ -1,0 +1,8 @@
+@name tests-libexec-debug-7.0.2
+@comment Packaged at 2017-03-07 13:58 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/libexec/ld.elf_so
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_helper_symver_dso0
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_helper_symver_dso1
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/libexec/ld.elf_so/h_helper_symver_dso2

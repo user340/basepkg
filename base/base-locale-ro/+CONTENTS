@@ -1,0 +1,20 @@
+@name base-locale-ro-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ro
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ro/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ro_RO.ISO8859-2
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ro_RO.ISO8859-2/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ro_RO.UTF-8
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ro_RO.UTF-8/LC_MESSAGES
+usr/share/locale/ro_RO.ISO8859-2/LC_CTYPE
+usr/share/locale/ro_RO.ISO8859-2/LC_MESSAGES/SYS_LC_MESSAGES
+usr/share/locale/ro_RO.ISO8859-2/LC_MONETARY
+usr/share/locale/ro_RO.ISO8859-2/LC_NUMERIC
+usr/share/locale/ro_RO.ISO8859-2/LC_TIME
+usr/share/locale/ro_RO.UTF-8/LC_CTYPE
+usr/share/locale/ro_RO.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES
+usr/share/locale/ro_RO.UTF-8/LC_MONETARY
+usr/share/locale/ro_RO.UTF-8/LC_NUMERIC
+usr/share/locale/ro_RO.UTF-8/LC_TIME

@@ -1,0 +1,34 @@
+@name tests-include-tests-7.0.2
+@comment Packaged at 2017-03-07 13:58 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/include
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/include/machine
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/include/sys
+@exec install -d -o root -g wheel -m 0755 usr/tests/include
+@exec install -d -o root -g wheel -m 0755 usr/tests/include/machine
+@exec install -d -o root -g wheel -m 0755 usr/tests/include/sys
+usr/tests/include/Atffile
+usr/tests/include/d_bitstring_27.out
+usr/tests/include/d_bitstring_32.out
+usr/tests/include/d_bitstring_49.out
+usr/tests/include/d_bitstring_64.out
+usr/tests/include/d_bitstring_67.out
+usr/tests/include/d_bitstring_8.out
+usr/tests/include/machine/Atffile
+usr/tests/include/machine/t_bswap
+usr/tests/include/sys/Atffile
+usr/tests/include/sys/t_bitops
+usr/tests/include/sys/t_bootblock
+usr/tests/include/sys/t_cdefs
+usr/tests/include/sys/t_socket
+usr/tests/include/sys/t_tree
+usr/tests/include/sys/t_types
+usr/tests/include/t_bitstring
+usr/tests/include/t_errno
+usr/tests/include/t_glob
+usr/tests/include/t_inttypes
+usr/tests/include/t_limits
+usr/tests/include/t_netdb
+usr/tests/include/t_paths
+usr/tests/include/t_stdint

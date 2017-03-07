@@ -1,0 +1,18 @@
+@name comp-krb5-proflib-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/lib/libasn1_p.a
+usr/lib/libcom_err_p.a
+usr/lib/libgssapi_p.a
+usr/lib/libheimbase_p.a
+usr/lib/libheimntlm_p.a
+usr/lib/libhx509_p.a
+usr/lib/libkadm5clnt_p.a
+usr/lib/libkadm5srv_p.a
+usr/lib/libkafs_p.a
+usr/lib/libkdc_p.a
+usr/lib/libkrb5_p.a
+usr/lib/libroken_p.a
+usr/lib/libsl_p.a
+usr/lib/libwind_p.a

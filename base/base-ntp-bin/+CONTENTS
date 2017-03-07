@@ -1,0 +1,12 @@
+@name base-ntp-bin-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/sbin/ntp-keygen
+usr/sbin/ntpd
+usr/sbin/ntpdate
+usr/sbin/ntpdc
+usr/sbin/ntpq
+usr/sbin/ntptime
+usr/sbin/ntptrace
+usr/sbin/sntp

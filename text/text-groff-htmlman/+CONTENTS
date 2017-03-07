@@ -1,0 +1,11 @@
+@name text-groff-htmlman-7.0.2
+@comment Packaged at 2017-03-07 13:58 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/man/html5/tmac.html
+usr/share/man/html7/man.html
+usr/share/man/html7/mdoc.samples.html
+usr/share/man/html7/me.html
+usr/share/man/html7/mm.html
+usr/share/man/html7/mmse.html
+usr/share/man/html7/ms.html

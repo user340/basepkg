@@ -1,0 +1,10 @@
+@name etc-sys-defaults-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+etc/defaults/daily.conf
+etc/defaults/monthly.conf
+etc/defaults/pkgpath.conf
+etc/defaults/rc.conf
+etc/defaults/security.conf
+etc/defaults/weekly.conf

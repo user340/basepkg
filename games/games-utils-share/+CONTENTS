@@ -1,0 +1,30 @@
+@name games-utils-share-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/games/fortune/farber
+usr/share/games/fortune/farber.dat
+usr/share/games/fortune/fortunes
+usr/share/games/fortune/fortunes-o
+usr/share/games/fortune/fortunes-o.dat
+usr/share/games/fortune/fortunes.dat
+usr/share/games/fortune/fortunes2
+usr/share/games/fortune/fortunes2-o
+usr/share/games/fortune/fortunes2-o.dat
+usr/share/games/fortune/fortunes2.dat
+usr/share/games/fortune/limerick
+usr/share/games/fortune/limerick-o
+usr/share/games/fortune/limerick-o.dat
+usr/share/games/fortune/limerick.dat
+usr/share/games/fortune/netbsd
+usr/share/games/fortune/netbsd-o
+usr/share/games/fortune/netbsd-o.dat
+usr/share/games/fortune/netbsd-tips
+usr/share/games/fortune/netbsd-tips.dat
+usr/share/games/fortune/netbsd.dat
+usr/share/games/fortune/startrek
+usr/share/games/fortune/startrek.dat
+usr/share/games/fortune/unamerican-o
+usr/share/games/fortune/unamerican-o.dat
+usr/share/games/fortune/zippy
+usr/share/games/fortune/zippy.dat

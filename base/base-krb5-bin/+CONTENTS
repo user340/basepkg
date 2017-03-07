@@ -1,0 +1,31 @@
+@name base-krb5-bin-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/bin/gsstool
+usr/bin/hxtool
+usr/bin/kcc
+usr/bin/kdestroy
+usr/bin/kgetcred
+usr/bin/kinit
+usr/bin/klist
+usr/bin/kpasswd
+usr/bin/krb5-config
+usr/bin/kvno
+usr/bin/string2key
+usr/bin/verify_krb5_conf
+usr/libexec/digest-service
+usr/libexec/hpropd
+usr/libexec/ipropd-master
+usr/libexec/ipropd-slave
+usr/libexec/kadmind
+usr/libexec/kpasswdd
+usr/sbin/hprop
+usr/sbin/iprop-log
+usr/sbin/kadmin
+usr/sbin/kcm
+usr/sbin/kdc
+usr/sbin/kdigest
+usr/sbin/kimpersonate
+usr/sbin/kstash
+usr/sbin/ktutil

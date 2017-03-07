@@ -1,0 +1,7 @@
+@name man-cron-htmlman-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/man/html1/atq.html
+usr/share/man/html1/atrm.html
+usr/share/man/html1/batch.html

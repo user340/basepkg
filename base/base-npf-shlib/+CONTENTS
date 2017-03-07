@@ -1,0 +1,14 @@
+@name base-npf-shlib-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+@exec install -d -o root -g wheel -m 0755 lib/i386/npf
+lib/i386/npf/ext_log.so
+lib/i386/npf/ext_log.so.0
+lib/i386/npf/ext_log.so.0.0
+lib/i386/npf/ext_normalize.so
+lib/i386/npf/ext_normalize.so.0
+lib/i386/npf/ext_normalize.so.0.0
+lib/i386/npf/ext_rndblock.so
+lib/i386/npf/ext_rndblock.so.0
+lib/i386/npf/ext_rndblock.so.0.0

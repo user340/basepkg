@@ -1,0 +1,66 @@
+@name base-netutil-bin-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+@exec install -d -o root -g wheel -m 0755 etc/racoon
+usr/bin/dig
+usr/bin/ftp
+usr/bin/getaddrinfo
+usr/bin/host
+usr/bin/netstat
+usr/bin/nslookup
+usr/bin/nsupdate
+usr/bin/rdist
+usr/bin/rlogin
+usr/bin/rsh
+usr/bin/rump.netstat
+usr/bin/rup
+usr/bin/ruptime
+usr/bin/rusers
+usr/bin/rwall
+usr/bin/rwho
+usr/bin/talk
+usr/bin/telnet
+usr/bin/tftp
+usr/bin/whois
+usr/libexec/bozohttpd
+usr/libexec/fingerd
+usr/libexec/ftpd
+usr/libexec/httpd
+usr/libexec/identd
+usr/libexec/ntalkd
+usr/libexec/rexecd
+usr/libexec/rlogind
+usr/libexec/rshd
+usr/libexec/telnetd
+usr/libexec/tftpd
+usr/sbin/arp
+usr/sbin/cnwctl
+usr/sbin/ifmcstat
+usr/sbin/ifwatchd
+usr/sbin/inetd
+usr/sbin/lmcconfig
+usr/sbin/map-mbone
+usr/sbin/mld6query
+usr/sbin/mtrace
+usr/sbin/ndp
+usr/sbin/pvcsif
+usr/sbin/pvctxctl
+usr/sbin/racoon
+usr/sbin/racoonctl
+usr/sbin/rdate
+usr/sbin/rip6query
+usr/sbin/rtquery
+usr/sbin/rtsold
+usr/sbin/rump.traceroute
+usr/sbin/rwhod
+usr/sbin/srtconfig
+usr/sbin/tcpdchk
+usr/sbin/tcpdmatch
+usr/sbin/tcpdrop
+usr/sbin/tcpdump
+usr/sbin/traceroute
+usr/sbin/traceroute6
+usr/sbin/trpt
+usr/sbin/wakeonlan
+usr/sbin/wire-test

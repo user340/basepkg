@@ -1,0 +1,57 @@
+@name base-locale-ru-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_BY.CP1251
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_BY.CP1251/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_BY.UTF-8
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_BY.UTF-8/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_RU.CP1251
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_RU.CP1251/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_RU.CP866
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_RU.CP866/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_RU.ISO8859-5
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_RU.ISO8859-5/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_RU.KOI8-R
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_RU.KOI8-R/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_RU.UTF-8
+@exec install -d -o root -g wheel -m 0755 usr/share/locale/ru_RU.UTF-8/LC_MESSAGES
+@exec install -d -o root -g wheel -m 0755 usr/share/nls/ru_RU.KOI8-R
+usr/share/locale/ru/LC_MESSAGES/grep.mo
+usr/share/locale/ru_BY.CP1251/LC_CTYPE
+usr/share/locale/ru_BY.CP1251/LC_MESSAGES/SYS_LC_MESSAGES
+usr/share/locale/ru_BY.CP1251/LC_MONETARY
+usr/share/locale/ru_BY.CP1251/LC_NUMERIC
+usr/share/locale/ru_BY.CP1251/LC_TIME
+usr/share/locale/ru_BY.UTF-8/LC_CTYPE
+usr/share/locale/ru_BY.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES
+usr/share/locale/ru_BY.UTF-8/LC_MONETARY
+usr/share/locale/ru_BY.UTF-8/LC_NUMERIC
+usr/share/locale/ru_BY.UTF-8/LC_TIME
+usr/share/locale/ru_RU.CP1251/LC_CTYPE
+usr/share/locale/ru_RU.CP1251/LC_MESSAGES/SYS_LC_MESSAGES
+usr/share/locale/ru_RU.CP1251/LC_MONETARY
+usr/share/locale/ru_RU.CP1251/LC_NUMERIC
+usr/share/locale/ru_RU.CP1251/LC_TIME
+usr/share/locale/ru_RU.CP866/LC_CTYPE
+usr/share/locale/ru_RU.CP866/LC_MESSAGES/SYS_LC_MESSAGES
+usr/share/locale/ru_RU.CP866/LC_MONETARY
+usr/share/locale/ru_RU.CP866/LC_NUMERIC
+usr/share/locale/ru_RU.CP866/LC_TIME
+usr/share/locale/ru_RU.ISO8859-5/LC_CTYPE
+usr/share/locale/ru_RU.ISO8859-5/LC_MESSAGES/SYS_LC_MESSAGES
+usr/share/locale/ru_RU.ISO8859-5/LC_MONETARY
+usr/share/locale/ru_RU.ISO8859-5/LC_NUMERIC
+usr/share/locale/ru_RU.ISO8859-5/LC_TIME
+usr/share/locale/ru_RU.KOI8-R/LC_CTYPE
+usr/share/locale/ru_RU.KOI8-R/LC_MESSAGES/SYS_LC_MESSAGES
+usr/share/locale/ru_RU.KOI8-R/LC_MONETARY
+usr/share/locale/ru_RU.KOI8-R/LC_NUMERIC
+usr/share/locale/ru_RU.KOI8-R/LC_TIME
+usr/share/locale/ru_RU.UTF-8/LC_CTYPE
+usr/share/locale/ru_RU.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES
+usr/share/locale/ru_RU.UTF-8/LC_MONETARY
+usr/share/locale/ru_RU.UTF-8/LC_NUMERIC
+usr/share/locale/ru_RU.UTF-8/LC_TIME

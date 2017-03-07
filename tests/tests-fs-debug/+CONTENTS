@@ -1,0 +1,28 @@
+@name tests-fs-debug-7.0.2
+@comment Packaged at 2017-03-07 13:58 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/dev
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/dev/audio
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/dev/cgd
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/dev/md
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/dev/scsipi
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/dev/sysmon
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/ffs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/fifofs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/hfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/kernfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/lfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/msdosfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/nfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/nfs/nfsservice
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/nullfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/psshfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/ptyfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/puffs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/puffs/h_dtfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/tmpfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/umapfs
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/union
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/fs/vfs

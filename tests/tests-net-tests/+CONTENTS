@@ -1,0 +1,62 @@
+@name tests-net-tests-7.0.2
+@comment Packaged at 2017-03-07 13:58 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+@exec install -d -o root -g wheel -m 0755 usr/tests/net
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/bpf
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/bpfilter
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/bpfjit
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/carp
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/fdpass
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/icmp
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/if
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/if_loop
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/mpls
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/net
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/npf
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/route
+@exec install -d -o root -g wheel -m 0755 usr/tests/net/sys
+usr/tests/net/Atffile
+usr/tests/net/bpf/Atffile
+usr/tests/net/bpf/t_bpf
+usr/tests/net/bpf/t_div-by-zero
+usr/tests/net/bpf/t_mbuf
+usr/tests/net/bpfilter/Atffile
+usr/tests/net/bpfilter/t_bpfilter
+usr/tests/net/bpfjit/Atffile
+usr/tests/net/bpfjit/t_bpfjit
+usr/tests/net/bpfjit/t_cop
+usr/tests/net/bpfjit/t_extmem
+usr/tests/net/bpfjit/t_mbuf
+usr/tests/net/carp/Atffile
+usr/tests/net/carp/t_basic
+usr/tests/net/fdpass/Atffile
+usr/tests/net/fdpass/fdpass32
+usr/tests/net/fdpass/fdpass64
+usr/tests/net/fdpass/t_fdpass
+usr/tests/net/icmp/Atffile
+usr/tests/net/icmp/t_forward
+usr/tests/net/icmp/t_forward
+usr/tests/net/icmp/t_ping
+usr/tests/net/icmp/t_ping2
+usr/tests/net/if/Atffile
+usr/tests/net/if/t_compat
+usr/tests/net/if_loop/Atffile
+usr/tests/net/if_loop/t_pr
+usr/tests/net/mpls/Atffile
+usr/tests/net/mpls/t_ldp_regen
+usr/tests/net/mpls/t_mpls_fw
+usr/tests/net/mpls/t_rfc4182
+usr/tests/net/net/Atffile
+usr/tests/net/net/t_pktinfo
+usr/tests/net/net/t_raw
+usr/tests/net/net/t_tcp
+usr/tests/net/net/t_udp
+usr/tests/net/net/t_unix
+usr/tests/net/npf/Atffile
+usr/tests/net/npf/npftest.conf
+usr/tests/net/npf/t_npf
+usr/tests/net/route/Atffile
+usr/tests/net/route/t_change
+usr/tests/net/sys/Atffile
+usr/tests/net/sys/t_rfc6056

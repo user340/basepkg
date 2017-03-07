@@ -1,0 +1,14 @@
+@name tests-sys-tests-7.0.2
+@comment Packaged at 2017-03-07 13:58 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+@exec install -d -o root -g wheel -m 0755 usr/tests/modules
+@exec install -d -o root -g wheel -m 0755 usr/tests/share
+@exec install -d -o root -g wheel -m 0755 usr/tests/sys
+@exec install -d -o root -g wheel -m 0755 usr/tests/sys/rc
+usr/tests/share/Atffile
+usr/tests/sys/Atffile
+usr/tests/sys/rc/Atffile
+usr/tests/sys/rc/h_args
+usr/tests/sys/rc/h_simple
+usr/tests/sys/rc/t_rc_d_cli

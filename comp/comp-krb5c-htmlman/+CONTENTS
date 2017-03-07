@@ -1,0 +1,9 @@
+@name comp-krb5c-htmlman-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/share/man/html3/krb5_verify_opt_set_service.html
+usr/share/man/html3/krb5_verify_user_lrealm.html
+usr/share/man/html3/krb5_verify_user_opt.html
+usr/share/man/html3/krb5_vlog.html
+usr/share/man/html3/krb5_vlog_msg.html

@@ -1,0 +1,10 @@
+@name comp-zfs-proflib-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+usr/lib/libavl_p.a
+usr/lib/libnvpair_p.a
+usr/lib/libumem_p.a
+usr/lib/libuutil_p.a
+usr/lib/libzfs_p.a
+usr/lib/libzpool_p.a

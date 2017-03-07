@@ -1,0 +1,26 @@
+@name base-netutil-root-7.0.2
+@comment Packaged at 2017-03-07 14:45 UTC by uki@
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
+@cwd /
+@exec install -d -o root -g wheel -m 0111 var/spool/ftp/hidden
+@exec install -d -o root -g wheel -m 0755 var/log/rdist
+@exec install -d -o root -g wheel -m 0755 var/rwho
+@exec install -d -o root -g wheel -m 0755 var/spool/ftp
+@exec install -d -o root -g wheel -m 0755 var/spool/ftp/bin
+@exec install -d -o root -g wheel -m 0755 var/spool/ftp/etc
+@exec install -d -o root -g wheel -m 0755 var/www
+bin/rcmd
+bin/rcp
+sbin/brconfig
+sbin/ifconfig
+sbin/ipppctl
+sbin/ping
+sbin/ping6
+sbin/pppoectl
+sbin/route
+sbin/rrestore
+sbin/rtsol
+sbin/rump.ifconfig
+sbin/rump.ping
+sbin/rump.route
+sbin/setkey
