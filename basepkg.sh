@@ -18,7 +18,8 @@ rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 sets="${OBJ}/releasedir/${machine}/binary/sets"
-lists="${SRC}/distrib/sets/lists"
+lists="${PWD}/lists"
+bases="base comp debug etc games man misc modules tests text xbase xcomp xdebug xetc xfont xserver"
 
 if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
 	pkgtoolversion="$(awk '/PKGTOOLS_VERSION/ {print $3}' \
@@ -49,8 +50,8 @@ make_pkgdir() {
 	listfile=""
 	for i in `ls $lists | grep -v '^[A-Z]'`
 	do
-		if [ ! -d ./sets/$i ]; then
-			mkdir -p ./sets/$i
+		if [ ! -d ./$i ]; then
+			mkdir -p ./$i
 		fi
 		if [ ! -f $lists/$i/mi ]; then
 			continue
@@ -107,12 +108,12 @@ make_list() {
 				print pkg, lists[pkg]
 		}' > ./.work/$i/lists
 	done
-	for j in `ls ./sets`
+	for j in $bases
 	do
-		for k in `ls ./sets/$j`
+		for k in $j
 		do
 			grep "$k" ./.work/$j/lists | tr ' ' '\n' | \
-			awk 'NR != 1{print $0}' > ./sets/$j/$k/$k.list
+			awk 'NR != 1{print $0}' > ./$j/$k/$k.list
 		done
 	done
 }
@@ -242,7 +243,7 @@ make_packages() {
 # Argument: None.
 ######################################################
 clean_plus_file() {
-	find ./sets -name '\+[A-Z]*' | xargs rm -f
+	find . -name '\+[A-Z]*' | xargs rm -f
 }
 
 ########################################
