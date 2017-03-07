@@ -1,4 +1,3 @@
-NetBSD base system
-
-Homepage:
-http://www.netbsd.org/
+This contains the gcc backend for Objective C programming. With this
+package installed, it is possible to compile Objective C programs with
+the cc(1) or gcc(1) commands.

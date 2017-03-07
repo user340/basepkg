@@ -1,4 +1,2 @@
-NetBSD base system
-
-Homepage:
-http://www.netbsd.org/
+This contains data files installed in /var and used by C language
+programming utilities.

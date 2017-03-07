@@ -1,4 +1,1 @@
-NetBSD base system
-
-Homepage:
-http://www.netbsd.org/
+configuration files for the mailwrapper(8) program for multiple mailer support

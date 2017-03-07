@@ -137,7 +137,7 @@ make_BUILD_INFO(){
 # Argument: Packages Name (Ex. base/base-sys-root)
 ###################################################
 make_COMMENT(){
-	echo "System Package for $1" > ./$1/+COMMENT
+	test -f ./$1/+COMMENT || echo "System Package for $1" > ./$1/+COMMENT
 }
 
 ###################################################
@@ -182,10 +182,12 @@ make_CONTENTS() {
 # Argument: Packages Name
 #######################################
 make_DESC() {
-	echo "NetBSD base system" > ./$1/+DESC
-	echo "" >> ./$1/+DESC
-	echo "Homepage:" >> ./$1/+DESC
-	echo "http://www.netbsd.org/" >> ./$1/+DESC
+	if [ ! -f ./$1/+DESC ]; then
+		echo "NetBSD base system" > ./$1/+DESC
+		echo "" >> ./$1/+DESC
+		echo "Homepage:" >> ./$1/+DESC
+		echo "http://www.netbsd.org/" >> ./$1/+DESC
+	fi
 }
 
 ########################################################

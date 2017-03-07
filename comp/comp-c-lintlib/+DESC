@@ -1,4 +1,2 @@
-NetBSD base system
-
-Homepage:
-http://www.netbsd.org/
+This package contains library description files for use with the lint(1)
+C language syntax checker.

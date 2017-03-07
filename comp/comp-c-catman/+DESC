@@ -1,4 +1,12 @@
-NetBSD base system
+This package includes formatted manual pages for compilers and tools for
+the C programming language:
 
-Homepage:
-http://www.netbsd.org/
+	c89, c99, cc, gcc - C compilers
+
+	flex, lex - lexical analyzer generator
+
+	lint - C program validator
+
+	rpcgen - RPC stub generator
+
+	yacc - parser generator

@@ -1,4 +1,1 @@
-NetBSD base system
-
-Homepage:
-http://www.netbsd.org/
+static libraries and shared library links for compiling applications with i18n support
