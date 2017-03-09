@@ -1,5 +1,5 @@
 @name tests-asm-tests-7.0.2
-@comment Packaged at 2017-03-07 13:58 UTC by uki@
+@comment Packaged at 2017-03-09 01:35 UTC by uki@
 @comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
 @cwd /
 @exec install -d -o root -g wheel -m 0755 usr/tests/share/examples

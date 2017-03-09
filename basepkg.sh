@@ -36,7 +36,9 @@ fi
 extract_base() {
 	for i in `ls $sets | grep 'tgz$' | sed 's/\.tgz//g'`
 	do
-		test -d ./work/$i || mkdir -p ./work/$i
+		if [ ! -d ./work/$i ]; then
+			mkdir -p ./work/$i
+		fi
 		tar zxvf $sets/$i.tgz -C ./work/$i
 	done
 }
@@ -62,7 +64,7 @@ make_pkgdir() {
 			listfile="$lists/$i/mi"
 		fi
 		( 
-		 cd	./sets/$i ;
+		 cd	./$i ;
 		 cat $listfile | awk '$1 !~ /^#/{print $1 " " $2}' | sort -k2 | \
 		 awk '{print $2}' | uniq | awk '$1 !~ /^-/{print $0}' | sed 's/\./-/g' | xargs mkdir
 		)
@@ -138,7 +140,9 @@ make_BUILD_INFO(){
 # Argument: Packages Name (Ex. base/base-sys-root)
 ###################################################
 make_COMMENT(){
-	test -f ./$1/+COMMENT || echo "System Package for $1" > ./$1/+COMMENT
+	if [ ! -f ./$1/+COMMENT ]; then
+		echo "System Package for $1" > ./$1/+COMMENT
+	fi
 }
 
 ###################################################
@@ -148,7 +152,7 @@ make_COMMENT(){
 ###################################################
 make_CONTENTS() {
 	if [ -f ./$1/tmp.list ]; then
-		rm ./$1/tmp.list
+		rm -f ./$1/tmp.list
 	fi
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
@@ -223,7 +227,7 @@ make_PKG() {
 # Argument: None.
 ############################################
 make_packages() {
-	for i in base comp debug etc games man misc modules
+	for i in $bases
 	do
 		for j in `ls ./$i`
 		do
@@ -235,15 +239,6 @@ make_packages() {
 			make_PKG $i/$j
 		done
 	done
-}
-
-######################################################
-# clean_plus_file -- Remove Packages Information File
-#
-# Argument: None.
-######################################################
-clean_plus_file() {
-	find . -name '\+[A-Z]*' | xargs rm -f
 }
 
 ########################################
@@ -258,9 +253,6 @@ usage() {
 	echo "   dir       create packages directory"
 	echo "   list      create packages list"
 	echo "   pkg       create packages"
-	echo ""
-	echo " Other operations"
-	echo "   clean     remove information files"
 	exit 1
 }
 
@@ -280,9 +272,6 @@ case $1 in
 		;;
 	list)
 		make_list
-		;;
-	clean)
-		clean_plus_file
 		;;
 	extract)
 		extract_base
