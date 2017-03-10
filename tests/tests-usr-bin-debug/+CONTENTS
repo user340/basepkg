@@ -1,7 +1,0 @@
-@name tests-usr-bin-debug-7.0.2
-@comment Packaged at 2017-03-09 01:35 UTC by uki@
-@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $
-@cwd /
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/usr.bin
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/usr.bin/id
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/usr.bin/netpgpverify

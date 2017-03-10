@@ -1,5 +1,0 @@
-var/chroot/ntpd/var/run
-var/chroot/ntpd/var/db
-var/chroot/ntpd/var
-var/chroot/ntpd/dev
-var/chroot/ntpd

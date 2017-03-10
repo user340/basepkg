@@ -1,6 +1,0 @@
-@exec install -d -o root -g wheel -m 0755 usr/share/kyua-cli/store
-@exec install -d -o root -g wheel -m 0755 usr/share/kyua-cli/misc
-@exec install -d -o root -g wheel -m 0755 usr/share/kyua-cli
-@exec install -d -o root -g wheel -m 0755 usr/share/kyua-atf-compat
-usr/bin/atf-run
-usr/bin/atf-report

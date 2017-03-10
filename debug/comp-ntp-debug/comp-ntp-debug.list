@@ -1,7 +1,0 @@
-usr/libdata/debug/usr/sbin/sntp.debug
-usr/libdata/debug/usr/sbin/ntptime.debug
-usr/libdata/debug/usr/sbin/ntpq.debug
-usr/libdata/debug/usr/sbin/ntpdc.debug
-usr/libdata/debug/usr/sbin/ntpdate.debug
-usr/libdata/debug/usr/sbin/ntpd.debug
-usr/libdata/debug/usr/sbin/ntp-keygen.debug

@@ -1,2 +1,0 @@
-sbin/slattach
-@exec install -d -o root -g wheel -m 0755 etc/sliphome

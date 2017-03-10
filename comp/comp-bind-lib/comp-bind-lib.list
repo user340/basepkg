@@ -1,9 +1,0 @@
-usr/lib/liblwres.a
-usr/lib/libisccfg.a
-usr/lib/libisccc.a
-usr/lib/libisc_p.a
-usr/lib/libisc.a
-usr/lib/libirs_p.a
-usr/lib/libirs.a
-usr/lib/libdns.a
-usr/lib/libbind9.a

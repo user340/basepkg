@@ -1,3 +1,0 @@
-usr/share/misc/terminfo.cdb
-usr/share/misc/terminfo
-@exec install -d -o root -g wheel -m 0755 usr/share/misc

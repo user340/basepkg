@@ -1,9 +1,0 @@
-usr/bin/rlog
-usr/bin/rcsmerge
-usr/bin/rcslog
-usr/bin/rcsfreeze
-usr/bin/rcsdiff
-usr/bin/rcsclean
-usr/bin/rcs
-usr/bin/co
-usr/bin/ci

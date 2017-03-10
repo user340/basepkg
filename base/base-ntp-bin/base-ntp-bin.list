@@ -1,8 +1,0 @@
-usr/sbin/sntp
-usr/sbin/ntptrace
-usr/sbin/ntptime
-usr/sbin/ntpq
-usr/sbin/ntpdc
-usr/sbin/ntpdate
-usr/sbin/ntpd
-usr/sbin/ntp-keygen

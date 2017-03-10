@@ -1,9 +1,0 @@
-usr/bin/radioctl
-usr/bin/mixerctl
-usr/bin/midirecord
-usr/bin/midiplay
-usr/bin/cdplay
-usr/bin/audiorecord
-usr/bin/audioplay
-usr/bin/audioctl
-usr/bin/audiocfg

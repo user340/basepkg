@@ -1,4 +1,0 @@
-@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref1/kyua/kyua-testers
-@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref1/kyua/kyua-cli
-@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref1/kyua/kyua-atf-compat
-@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref1/kyua

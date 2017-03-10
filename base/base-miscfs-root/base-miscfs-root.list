@@ -1,7 +1,0 @@
-sbin/mount_union
-sbin/mount_umap
-sbin/mount_tmpfs
-sbin/mount_ptyfs
-sbin/mount_overlay
-sbin/mount_null
-sbin/mount_fdesc

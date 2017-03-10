@@ -1,6 +1,0 @@
-etc/namedb/root.cache
-etc/namedb/loopback.v6
-etc/namedb/localhost
-etc/namedb/bind.keys
-etc/namedb/127
-etc/named.conf

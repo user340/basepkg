@@ -1,2 +1,0 @@
-usr/share/atf/libatf-sh.subr
-@exec install -d -o root -g wheel -m 0755 usr/share/atf

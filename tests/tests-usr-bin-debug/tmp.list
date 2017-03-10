@@ -1,3 +1,0 @@
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/usr.bin/netpgpverify
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/usr.bin/id
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/usr.bin

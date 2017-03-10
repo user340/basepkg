@@ -1,3 +1,0 @@
-@exec install -d -o root -g wheel -m 0755 var/spool/postfix/etc
-@exec install -d -o root -g wheel -m 0755 var/spool/postfix
-@exec install -d -o root -g wheel -m 0755 var/db/postfix

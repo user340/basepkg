@@ -1,4 +1,0 @@
-usr/share/examples/wsmoused/wsmoused.conf
-@exec install -d -o root -g wheel -m 0755 usr/share/examples/wsmoused
-@exec install -d -o root -g wheel -m 0755 usr/share/examples/syslogd
-@exec install -d -o root -g wheel -m 0755 usr/share/examples/smbfs

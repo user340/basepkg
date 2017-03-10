@@ -1,1 +1,0 @@
-@exec install -d -o root -g wheel -m 0755 usr/share/examples/kyua-cli

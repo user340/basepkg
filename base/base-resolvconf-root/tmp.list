@@ -1,6 +1,0 @@
-sbin/resolvconf
-libexec/resolvconf/unbound
-libexec/resolvconf/named
-libexec/resolvconf/libc
-libexec/resolvconf/dnsmasq
-@exec install -d -o root -g wheel -m 0755 libexec/resolvconf

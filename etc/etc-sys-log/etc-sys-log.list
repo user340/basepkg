@@ -1,9 +1,0 @@
-var/run/utmpx
-var/run/utmp
-var/log/wtmpx
-var/log/wtmp
-var/log/secure
-var/log/messages
-var/log/lastlogx
-var/log/lastlog
-var/log/authlog

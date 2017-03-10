@@ -1,2 +1,0 @@
-usr/share/nls/Pig/libc.cat
-@exec install -d -o root -g wheel -m 0755 usr/share/nls/Pig

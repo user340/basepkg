@@ -1,8 +1,0 @@
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/atf/tools
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/atf/test-programs
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/atf/formats
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/atf/atf-c/detail
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/atf/atf-c/detail
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/atf/atf-c
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/atf/atf-c
-@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/tests/atf

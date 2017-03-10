@@ -1,7 +1,0 @@
-usr/libexec/makekey
-usr/bin/openssl
-usr/bin/netpgpverify
-usr/bin/netpgpkeys
-usr/bin/netpgp
-usr/bin/nbsvtool
-usr/bin/bdes

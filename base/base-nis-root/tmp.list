@@ -1,3 +1,0 @@
-@exec install -d -o root -g wheel -m 0755 var/yp/binding
-@exec install -d -o root -g wheel -m 0755 var/yp
-bin/domainname
