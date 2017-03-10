@@ -60,23 +60,9 @@ make_directories_of_package() {
 	done
 }
 
-make_list() {
-	listfile=""
-	if [ ! -d ./.work ]; then
-		mkdir .work
-	fi
-	for i in `ls $lists | grep -v '^[A-Z]'`
+make_contents_list() {
+	for i in $category
 	do
-		if [ ! -d ./.work/$i ]; then
-			mkdir ./.work/$i
-		fi
-		if [ -f $lists/$i/md.$machine ]; then
-			listfile="$lists/$i/md.$machine $lists/$i/mi"
-		else
-			listfile="$lists/$i/mi"
-		fi
-		cat $listfile | awk '$1 !~ /^#/{print $1 " " $2}' | \
-		sort -k2 | sed 's/^\.\///g'	| \
 		awk ' 
 		# $1 - file name
 		# $2 - package name
@@ -92,14 +78,14 @@ make_list() {
 		END {
 			for(pkg in lists)
 				print pkg, lists[pkg]
-		}' > ./.work/$i/lists
+		}' $i/FILES > ./$i/CATEGORIZED
 	done
-	for j in $category
+	for i in $category
 	do
-		for k in $j
+		for j in `ls ./$i | grep '^[a-z]'`
 		do
-			grep "$k" ./.work/$j/lists | tr ' ' '\n' | \
-			awk 'NR != 1{print $0}' > ./$j/$k/$k.list
+			grep "$j" ./$i/CATEGORIZED | tr ' ' '\n' | \
+			awk 'NR != 1{print $0}' > ./$i/$j/$j.FILES
 		done
 	done
 }
@@ -206,18 +192,18 @@ if [ $# != 1 ]; then
 fi
 
 case $1 in
+	extract)
+		extract_base_binaries
+		;;
 	dir) 
 		split_category_from_lists
 		make_directories_of_package
 		;;
+	list)
+		make_contents_list
+		;;
 	pkg)		 
 		make_packages
-		;;
-	list)
-		make_list
-		;;
-	extract)
-		extract_base_binaries
 		;;
 	*)
 		usage
