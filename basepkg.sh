@@ -121,7 +121,7 @@ make_CONTENTS() {
 	echo "@comment Packaged using ${prog} ${rcsid}" >> ./$1/+CONTENTS
 	echo "@cwd /" >> ./$1/+CONTENTS
 	# XXX: This package may be empty package
-	cat ./$1/$pkgname.list | while read i
+	cat ./$1/$pkgname.FILES | while read i
 	do
 		filetype=`file ./work/$setname/$i | awk '{print $2}'`
 		if [ $filetype = directory ]; then
@@ -164,13 +164,13 @@ make_PKG() {
 	if [ ! -d ${PACKAGES}/$setname ]; then
 	  mkdir -p ${PACKAGES}/$setname
 	fi
-	mv ./$pkgname.tgz ${PACKAGES}/$setname/$pkgname.tgz
+	mv ./$pkgname.tgz ${PACKAGES}/$setname/$pkgname-$osversion.tgz
 }
 
 make_packages() {
 	for i in $category
 	do
-		for j in `ls ./$i`
+		for j in `ls ./$i | grep -E '^[a-z]+'`
 		do
 			echo "Package $i/$j Creating..."
 			make_BUILD_INFO $i/$j
