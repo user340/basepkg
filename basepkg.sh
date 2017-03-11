@@ -15,7 +15,7 @@ rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 sets="${OBJ}/releasedir/${machine}/binary/sets"
-lists="${PWD}/lists"
+lists="${PWD}/database/lists"
 category="base comp etc games man misc text"
 
 if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
@@ -38,15 +38,19 @@ extract_base_binaries() {
 split_category_from_lists() {
 	for i in $category
 	do
-		test -d ./$i || mkdir ./$i
-		test -f ./$i/$i-files || rm -f ./$i/FILES
-		for j in `ls ./lists`
+		if [ ! -d ./$i ]; then
+			mkdir ./$i
+		fi
+		if [ -f ./$i/FILES ]; then
+			rm -f ./$i/FILES
+		fi
+		for j in `ls $lists`
 		do
-			grep -E "$i-[a-z]+-[a-z]+" ./lists/$j/mi | \
+			grep -E "$i-[a-z]+-[a-z]+" $lists/$j/mi | \
 			sed -e 's/^\.\///' -e '/^#/d' >> ./$i/FILES
 	
-			test -f ./lists/$j/md.$machine && grep -E "$i-[a-z]+-[a-z]+" \
-			./lists/$j/md.$machine | sed -e 's/^\.\///' -e '/^#/d' \
+			test -f $lists/$j/md.$machine && grep -E "$i-[a-z]+-[a-z]+" \
+			$lists/$j/md.$machine | sed -e 's/^\.\///' -e '/^#/d' \
 			>> ./$i/FILES
 		done
 	done
@@ -85,7 +89,8 @@ make_contents_list() {
 		for j in `ls ./$i | grep '^[a-z]'`
 		do
 			grep "$j" ./$i/CATEGORIZED | tr ' ' '\n' | \
-			awk 'NR != 1{print $0}' > ./$i/$j/$j.FILES
+			awk 'NR != 1{print $0}' | sort | \
+			grep -v -E "x$i-[a-z]+-[a-z]+" > ./$i/$j/$j.FILES
 		done
 	done
 }
