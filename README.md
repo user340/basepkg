@@ -69,3 +69,4 @@ Packages are created under the basepkg/packages directory.
 ### 5. How to Install Packages?
 Example, installing base/base-sys-root.  
 ```# pkg_add packages/base/base-sys-root```
+

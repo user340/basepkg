@@ -1,8 +1,5 @@
 #!/bin/sh
 
-############
-# Valiables
-############
 : ${SRC:=/usr/src}
 : ${OBJ:=/usr/obj}
 : ${PKGSRC:=/usr/pkgsrc}
@@ -18,7 +15,8 @@ rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 sets="${OBJ}/releasedir/${machine}/binary/sets"
-lists="${SRC}/distrib/sets/lists"
+lists="${PWD}/database/lists"
+category="base comp etc games man misc text"
 
 if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
 	pkgtoolversion="$(awk '/PKGTOOLS_VERSION/ {print $3}' \
@@ -27,69 +25,51 @@ else
 	pkgtoolversion="20160410"
 fi
 
-###########################################
-# extract_base -- Extract Base Binary Sets
-#
-# Argument: None.
-###########################################
-extract_base() {
-	for i in `ls $sets | grep 'tgz$' | sed 's/\.tgz//g'`
+# "extract" option using following function.
+extract_base_binaries() {
+	for i in `ls ${sets} | grep 'tgz$' | sed 's/\.tgz//g'`
 	do
-		test -d ./work/$i || mkdir -p ./work/$i
-		tar zxvf $sets/$i.tgz -C ./work/$i
+		if [ ! -d ./work/${i} ]; then
+			mkdir -p ./work/${i}
+		fi
+		tar zxvf ${sets}/${i}.tgz -C ./work/$i
 	done
 }
 
-################################################
-# make_pkgdir -- create packages name directory
-#
-# Argument: None.
-################################################
-make_pkgdir() {
-	listfile=""
-	for i in `ls $lists | grep -v '^[A-Z]'`
+# "dir" option using following functions.
+split_category_from_lists() {
+	for i in $category
 	do
-		if [ ! -d ./sets/$i ]; then
-			mkdir -p ./sets/$i
+		if [ ! -d ./$i ]; then
+			mkdir ./$i
 		fi
-		if [ ! -f $lists/$i/mi ]; then
-			continue
+		if [ -f ./$i/FILES ]; then
+			rm -f ./$i/FILES
 		fi
-		if [ -f $lists/$i/md.$machine ]; then
-			listfile="$lists/$i/md.$machine $lists/$i/mi"
-		else
-			listfile="$lists/$i/mi"
-		fi
-		( 
-		 cd	./sets/$i ;
-		 cat $listfile | awk '$1 !~ /^#/{print $1 " " $2}' | sort -k2 | \
-		 awk '{print $2}' | uniq | awk '$1 !~ /^-/{print $0}' | sed 's/\./-/g' | xargs mkdir
-		)
+		for j in `ls $lists`
+		do
+			grep -E "$i-[a-z]+-[a-z]+" $lists/$j/mi | \
+			sed -e 's/^\.\///' -e '/^#/d' >> ./$i/FILES
+	
+			test -f $lists/$j/md.$machine && grep -E "$i-[a-z]+-[a-z]+" \
+			$lists/$j/md.$machine | sed -e 's/^\.\///' -e '/^#/d' \
+			>> ./$i/FILES
+		done
 	done
 }
 
-###################################
-# make_list -- Make Packages Lists
-#
-# Argument: None.
-###################################
-make_list() {
-	listfile=""
-	if [ ! -d ./.work ]; then
-		mkdir .work
-	fi
-	for i in `ls $lists | grep -v '^[A-Z]'`
+make_directories_of_package() {
+	for i in $category
 	do
-		if [ ! -d ./.work/$i ]; then
-			mkdir ./.work/$i
-		fi
-		if [ -f $lists/$i/md.$machine ]; then
-			listfile="$lists/$i/md.$machine $lists/$i/mi"
-		else
-			listfile="$lists/$i/mi"
-		fi
-		cat $listfile | awk '$1 !~ /^#/{print $1 " " $2}' | \
-		sort -k2 | sed 's/^\.\///g'	| \
+		awk '{print $2}' ./$i/FILES | sort | uniq | \
+		xargs -n 1 -I % mkdir ./$i/%
+	done
+}
+
+# "list" option using following function.
+make_contents_list() {
+	for i in $category
+	do
 		awk ' 
 		# $1 - file name
 		# $2 - package name
@@ -105,102 +85,80 @@ make_list() {
 		END {
 			for(pkg in lists)
 				print pkg, lists[pkg]
-		}' > ./.work/$i/lists
+		}' $i/FILES > ./$i/CATEGORIZED
 	done
-	for j in `ls ./sets`
+	for i in $category
 	do
-		for k in `ls ./sets/$j`
+		for j in `ls ./$i | grep '^[a-z]'`
 		do
-			grep "$k" ./.work/$j/lists | tr ' ' '\n' | \
-			awk 'NR != 1{print $0}' > ./sets/$j/$k/$k.list
+			grep "$j" ./$i/CATEGORIZED | tr ' ' '\n' | \
+			awk 'NR != 1{print $0}' | sort | \
+			grep -v -E "x$i-[a-z]+-[a-z]+" > ./$i/$j/$j.FILES
 		done
 	done
 }
 
-##########################################################
-# make_BUILD_INFO -- Output String For +BUILD_INFO
-#
-# Argument: <basename>/<pkgname> (Ex. base/base-sys-root)
-##########################################################
+# "pkg" option using following functions.
 make_BUILD_INFO(){
-	echo "OPSYS=$opsys" > ./sets/$1/+BUILD_INFO
-	echo "OS_VERSION=$osversion" >> ./sets/$1/+BUILD_INFO
-	echo "OBJECT_FMT=ELF" >> ./sets/$1/+BUILD_INFO
-	echo "MACHINE_ARCH=$machine_arch" >> ./sets/$1/+BUILD_INFO
-	echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> ./sets/$1/+BUILD_INFO
-	echo "PKGTOOLS_VERSION=$pkgtoolversion" >> ./sets/$1/+BUILD_INFO
+	echo "OPSYS=$opsys" > ./$1/+BUILD_INFO
+	echo "OS_VERSION=$osversion" >> ./$1/+BUILD_INFO
+	echo "OBJECT_FMT=ELF" >> ./$1/+BUILD_INFO
+	echo "MACHINE_ARCH=$machine_arch" >> ./$1/+BUILD_INFO
+	echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> ./$1/+BUILD_INFO
+	echo "PKGTOOLS_VERSION=$pkgtoolversion" >> ./$1/+BUILD_INFO
 }
 
-###################################################
-# make_COMMENT -- Output String For +COMMENT
-#
-# Argument: Packages Name (Ex. base/base-sys-root)
-###################################################
 make_COMMENT(){
-	echo "System Package for $1" > ./sets/$1/+COMMENT
+	if [ ! -f ./$1/+COMMENT ]; then
+		echo "System Package for $1" > ./$1/+COMMENT
+	fi
 }
 
-###################################################
-# make_CONTENTS -- Output String For +CONTENTS
-#
-# Argument: Packages Name (Ex. base/base-sys-root)
-###################################################
 make_CONTENTS() {
-	if [ -f ./sets/$1/tmp.list ]; then
-		rm ./sets/$1/tmp.list
+	if [ -f ./$1/tmp.list ]; then
+		rm -f ./$1/tmp.list
 	fi
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
-	echo "@name $pkgname-`sh ${SRC}/sys/conf/osrelease.sh`" > sets/$1/+CONTENTS
-	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ./sets/$1/+CONTENTS
-	echo "@comment Packaged using ${prog} ${rcsid}" >> ./sets/$1/+CONTENTS
-	echo "@cwd /" >> ./sets/$1/+CONTENTS
+	echo "@name $pkgname-`sh ${SRC}/sys/conf/osrelease.sh`" > ./$1/+CONTENTS
+	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ./$1/+CONTENTS
+	echo "@comment Packaged using ${prog} ${rcsid}" >> ./$1/+CONTENTS
+	echo "@cwd /" >> ./$1/+CONTENTS
 	# XXX: This package may be empty package
-	cat ./sets/$1/$pkgname.list | while read i
+	cat ./$1/$pkgname.FILES | while read i
 	do
 		filetype=`file ./work/$setname/$i | awk '{print $2}'`
 		if [ $filetype = directory ]; then
 			filename=`echo $i | sed 's%\/%\\\/%g'`
 			awk '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ./work/$setname/etc/mtree/set.$setname | \
 			sed 's%^\.\/%%' | \
-			awk '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ./sets/$1/tmp.list
+			awk '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ./$1/tmp.list
 		elif [ $filetype = cannot ]; then
 			continue
 		else
-			echo $i >> ./sets/$1/tmp.list
+			echo $i >> ./$1/tmp.list
 		fi
 	done
-	if [ ! -f ./sets/$1/tmp.list ]; then
+	if [ ! -f ./$1/tmp.list ]; then
 		return 1
 	fi
-	sort ./sets/$1/tmp.list >> ./sets/$1/+CONTENTS
+	sort ./$1/tmp.list >> ./$1/+CONTENTS
 }
 
-#######################################
-# make_DESC -- Output String For +DESC
-#
-# Argument: Packages Name
-#######################################
-make_DESC(){
-	echo "NetBSD base system" > sets/$1/+DESC
-	echo "" >> sets/$1/+DESC
-	echo "Homepage:" >> sets/$1/+DESC
-	echo "http://www.netbsd.org/" >> sets/$1/+DESC
+make_DESC() {
+	if [ ! -f ./$1/+DESC ]; then
+		echo "NetBSD base system" > ./$1/+DESC
+		echo "" >> ./$1/+DESC
+		echo "Homepage:" >> ./$1/+DESC
+		echo "http://www.netbsd.org/" >> ./$1/+DESC
+	fi
 }
 
-########################################################
-# make_PKG -- Create Package Tarball
-#
-# Argument: Packages Name
-#
-# XXX: If /var files packaging, pkg_create failed.
-#      Need root privilege.
-########################################################
-make_PKG(){
+make_PKG() {
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
-	pkg_create -l -U -B sets/$1/+BUILD_INFO -c sets/$1/+COMMENT \
-	-d sets/$1/+DESC -f sets/$1/+CONTENTS -I / -p ${PWD}/work/$setname $pkgname
+	pkg_create -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
+	-d $1/+DESC -f $1/+CONTENTS -I / -p ${PWD}/work/$setname $pkgname
 	if [ $? != 0 ]; then
 		return $?
 	fi
@@ -210,19 +168,13 @@ make_PKG(){
 	if [ ! -d ${PACKAGES}/$setname ]; then
 	  mkdir -p ${PACKAGES}/$setname
 	fi
-	mv ./$pkgname.tgz ${PACKAGES}/$setname/$pkgname.tgz
+	mv ./$pkgname.tgz ${PACKAGES}/$setname/$pkgname-`sh ${SRC}/sys/conf/osrelease.sh`.tgz
 }
 
-############################################
-# make_packages -- make_* Functions Wrapper
-#                  Run It if make Packages
-#
-# Argument: None.
-############################################
 make_packages() {
-	for i in `ls ./sets`
+	for i in ${category}
 	do
-		for j in `ls ./sets/$i`
+		for j in `ls ./${i} | grep -E '^[a-z]+'`
 		do
 			echo "Package $i/$j Creating..."
 			make_BUILD_INFO $i/$j
@@ -234,30 +186,25 @@ make_packages() {
 	done
 }
 
-######################################################
-# clean_plus_file -- Remove Packages Information File
-#
-# Argument: None.
-######################################################
-clean_plus_file(){
-	find ./sets -name '\+[A-Z]*' | xargs rm -f
+# "clean" option using following functions.
+clean_packages() {
+	rm -fr ${PACKAGES}
 }
 
-########################################
-# usage -- Print How to Use This Script
-#
-# Argument: None.
-########################################
+clean_categories() {
+	for i in ${category}
+	do
+		rm -fr ${i}
+	done
+}
+
 usage() {
-	echo "usage: ./basepkg.sh operation"
-	echo " Create packages operations"
+	echo "usage: ./basepkg.sh <option>"
+	echo " Options:"
 	echo "   extract   extract base binary"
 	echo "   dir       create packages directory"
 	echo "   list      create packages list"
 	echo "   pkg       create packages"
-	echo ""
-	echo " Other operations"
-	echo "   clean     remove information files"
 	exit 1
 }
 
@@ -265,24 +212,29 @@ if [ $# != 1 ]; then
 	usage
 fi
 
-###############
-# MAIN PROCESS
-###############
 case $1 in
+	extract)
+		extract_base_binaries
+		;;
 	dir) 
-		make_pkgdir
+		split_category_from_lists
+		make_directories_of_package
+		;;
+	list)
+		make_contents_list
 		;;
 	pkg)		 
 		make_packages
 		;;
-	list)
-		make_list
+	all)
+		split_category_from_lists
+		make_directories_of_package
+		make_contents_list
+		make_packages
 		;;
 	clean)
-		clean_plus_file
-		;;
-	extract)
-		extract_base
+		clean_packages
+		clean_categories
 		;;
 	*)
 		usage
