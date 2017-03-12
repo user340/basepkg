@@ -27,12 +27,12 @@ fi
 
 # "extract" option using following function.
 extract_base_binaries() {
-	for i in `ls $sets | grep 'tgz$' | sed 's/\.tgz//g'`
+	for i in `ls ${sets} | grep 'tgz$' | sed 's/\.tgz//g'`
 	do
-		if [ ! -d ./work/$i ]; then
-			mkdir -p ./work/$i
+		if [ ! -d ./work/${i} ]; then
+			mkdir -p ./work/${i}
 		fi
-		tar zxvf $sets/$i.tgz -C ./work/$i
+		tar zxvf ${sets}/${i}.tgz -C ./work/$i
 	done
 }
 
@@ -168,13 +168,13 @@ make_PKG() {
 	if [ ! -d ${PACKAGES}/$setname ]; then
 	  mkdir -p ${PACKAGES}/$setname
 	fi
-	mv ./$pkgname.tgz ${PACKAGES}/$setname/$pkgname-$osversion.tgz
+	mv ./$pkgname.tgz ${PACKAGES}/$setname/$pkgname-`sh ${SRC}/sys/conf/osrelease.sh`.tgz
 }
 
 make_packages() {
-	for i in $category
+	for i in ${category}
 	do
-		for j in `ls ./$i | grep -E '^[a-z]+'`
+		for j in `ls ./${i} | grep -E '^[a-z]+'`
 		do
 			echo "Package $i/$j Creating..."
 			make_BUILD_INFO $i/$j
@@ -183,6 +183,18 @@ make_packages() {
 			make_DESC $i/$j
 			make_PKG $i/$j
 		done
+	done
+}
+
+# "clean" option using following functions.
+clean_packages() {
+	rm -fr ${PACKAGES}
+}
+
+clean_categories() {
+	for i in ${category}
+	do
+		rm -fr ${i}
 	done
 }
 
@@ -213,6 +225,16 @@ case $1 in
 		;;
 	pkg)		 
 		make_packages
+		;;
+	all)
+		split_category_from_lists
+		make_directories_of_package
+		make_contents_list
+		make_packages
+		;;
+	clean)
+		clean_packages
+		clean_categories
 		;;
 	*)
 		usage
