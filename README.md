@@ -77,7 +77,7 @@ you have to make pkg_summary.gz.
 ```# cd packages/games```  
 ```# pkg_info -X * > pkg_summary```  
 ```# gzip pkg_summary```  
-Then, edit /usr/pkg/etc/pkgin/repositories.conf and update pkgin.
+Then, edit /usr/pkg/etc/pkgin/repositories.conf and update pkgin.  
 ```# echo "file:///path/to/basepkg/packages/games" >> /usr/pkg/etc/pkgin/repositories.conf```  
 ```# pkgin update```  
 Let's install the package through pkgin :-)  
