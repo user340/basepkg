@@ -25,7 +25,7 @@ else
 	pkgtoolversion="20160410"
 fi
 
-# Use "extract" option.
+# "extract" option using following function.
 extract_base_binaries() {
 	for i in `ls $sets | grep 'tgz$' | sed 's/\.tgz//g'`
 	do
@@ -36,7 +36,7 @@ extract_base_binaries() {
 	done
 }
 
-# Use "dir" option firstly.
+# "dir" option using following functions.
 split_category_from_lists() {
 	for i in $category
 	do
@@ -58,7 +58,6 @@ split_category_from_lists() {
 	done
 }
 
-# Use "dir" option secondly.
 make_directories_of_package() {
 	for i in $category
 	do
@@ -67,6 +66,7 @@ make_directories_of_package() {
 	done
 }
 
+# "list" option using following function.
 make_contents_list() {
 	for i in $category
 	do
@@ -98,6 +98,7 @@ make_contents_list() {
 	done
 }
 
+# "pkg" option using following functions.
 make_BUILD_INFO(){
 	echo "OPSYS=$opsys" > ./$1/+BUILD_INFO
 	echo "OS_VERSION=$osversion" >> ./$1/+BUILD_INFO
@@ -186,8 +187,8 @@ make_packages() {
 }
 
 usage() {
-	echo "usage: ./basepkg.sh operation"
-	echo " Create packages operations"
+	echo "usage: ./basepkg.sh <option>"
+	echo " Options:"
 	echo "   extract   extract base binary"
 	echo "   dir       create packages directory"
 	echo "   list      create packages list"
