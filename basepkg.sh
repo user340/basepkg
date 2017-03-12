@@ -25,6 +25,7 @@ else
 	pkgtoolversion="20160410"
 fi
 
+# Use "extract" option.
 extract_base_binaries() {
 	for i in `ls $sets | grep 'tgz$' | sed 's/\.tgz//g'`
 	do
@@ -35,6 +36,7 @@ extract_base_binaries() {
 	done
 }
 
+# Use "dir" option firstly.
 split_category_from_lists() {
 	for i in $category
 	do
@@ -56,6 +58,7 @@ split_category_from_lists() {
 	done
 }
 
+# Use "dir" option secondly.
 make_directories_of_package() {
 	for i in $category
 	do
