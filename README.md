@@ -66,7 +66,19 @@ Run basepkg.sh script with options.
 ```# ./basepkg.sh pkg```  
 Packages are created under the basepkg/packages directory.
 
-### 5. How to Install Packages?
+### 5. How to Install Package?
 Example, installing base/base-sys-root.  
 ```# pkg_add packages/base/base-sys-root```
 
+### 6. Can I install the package using pkgin?
+Yes, you can.  
+Example, "games" categorized package install to system using pkgin,  
+you have to make pkg_summary.gz.  
+```# cd packages/games```  
+```# pkg_info -X * > pkg_summary```  
+```# gzip pkg_summary```  
+Then, edit /usr/pkg/etc/pkgin/repositories.conf and update pkgin.  
+```# echo "file:///path/to/basepkg/packages/games" >> /usr/pkg/etc/pkgin/repositories.conf```  
+```# pkgin update```  
+Let's install the package through pkgin :-)  
+```# pkgin in games-games-bin```
