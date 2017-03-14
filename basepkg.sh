@@ -49,12 +49,12 @@ split_category_from_lists() {
 		for j in `ls ${lists}`
 		do
 			grep -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/mi | \
-			grep -v "obsolete" | \
+			awk '$3 !~ /obsolete/ {print}' | \
 			sed -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
 	
 			if [ -f ${lists}/${j}/md.${machine} ]; then
 				grep -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/md.${machine} | \
-				grep -v "obsolete" | \
+				awk '$3 !~ /obsolete/ {print}' | \
 				sed -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
 			fi
 		done
