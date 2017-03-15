@@ -107,12 +107,14 @@ make_contents_list() {
 
 # "pkg" option using following functions.
 make_BUILD_INFO(){
-	echo "OPSYS=${opsys}" > ./$1/+BUILD_INFO
-	echo "OS_VERSION=${osversion}" >> ./$1/+BUILD_INFO
-	echo "OBJECT_FMT=ELF" >> ./$1/+BUILD_INFO
-	echo "MACHINE_ARCH=${machine_arch}" >> ./$1/+BUILD_INFO
-	echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> ./$1/+BUILD_INFO
-	echo "PKGTOOLS_VERSION=${pkgtoolversion}" >> ./$1/+BUILD_INFO
+	cat > ./$1/+BUILD_INFO << _BUILD_INFO_
+OPSYS=${opsys}
+OS_VERSION=${osversion}
+OBJECT_FMT=ELF
+MACHINE_ARCH=${machine_arch}
+MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}
+PKGTOOLS_VERSION=${pkgtoolversion}
+_BUILD_INFO_
 }
 
 make_CONTENTS() {
@@ -126,7 +128,6 @@ make_CONTENTS() {
 	>> ./$1/+CONTENTS
 	echo "@comment Packaged using ${prog} ${rcsid}" >> ./$1/+CONTENTS
 	echo "@cwd /" >> ./$1/+CONTENTS
-	# XXX: This package may be empty package
 	cat ./$1/${pkgname}.FILES | while read i
 	do
 		filetype=`file ./work/$setname/${i} | awk '{print $2}'`
@@ -202,6 +203,7 @@ usage() {
 	cat <<_usage_
 
 Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
+                   [--pkg packages]
                   operation
 
  Operation:
@@ -220,6 +222,8 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
                 [Default: /usr/src]
     --pkgsrc    Set PKGSRC to check pkg_install version.
                 [Default: /usr/pkgsrc]
+    --pkg       Set packages root directory; sets a PACKAGES pattern.
+                [Default: ./packages]
 
 _usage_
 	exit 1
@@ -256,6 +260,15 @@ do
 				exit 1
 			fi
 			PKGSRC=$2
+			shift
+			shift
+			;;
+		'--pkg' )
+			if [ -z $2 ]; then
+				echo "What is $1 parameter?" 1>&2
+				exit 1
+			fi
+			PACKAGES=$2
 			shift
 			shift
 			;;
