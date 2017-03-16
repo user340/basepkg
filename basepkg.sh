@@ -1,9 +1,8 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-: ${SRC:=/usr/src}
-: ${OBJ:=/usr/obj}
-: ${PKGSRC:=/usr/pkgsrc}
-: ${PACKAGES:=./packages}
+SRC="/usr/src"
+PKGSRC="/usr/pkgsrc"
+PACKAGES="./packages"
 host="$(hostname)"
 machine="$(uname -m)"
 machine_arch="$(uname -p)"
@@ -11,12 +10,17 @@ opsys="$(uname)"
 osversion="$(uname -r)"
 pkgtoolversion=""
 prog="${0##*/}"
-rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 enomoto Exp $'
+rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
-sets="${OBJ}/releasedir/${machine}/binary/sets"
-lists="${PWD}/database/lists"
+sets="/usr/obj/releasedir/${machine}/binary/sets"
+database="${PWD}/database"
+lists="${database}/lists"
+comments="${database}/comments"
+descrs="${database}/descrs"
+deps="${database}/deps"
 category="base comp etc games man misc text"
+progname=${0##*/}
 
 if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
 	pkgtoolversion="$(awk '/PKGTOOLS_VERSION/ {print $3}' \
@@ -103,18 +107,14 @@ make_contents_list() {
 
 # "pkg" option using following functions.
 make_BUILD_INFO(){
-	echo "OPSYS=${opsys}" > ./$1/+BUILD_INFO
-	echo "OS_VERSION=${osversion}" >> ./$1/+BUILD_INFO
-	echo "OBJECT_FMT=ELF" >> ./$1/+BUILD_INFO
-	echo "MACHINE_ARCH=${machine_arch}" >> ./$1/+BUILD_INFO
-	echo "MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}" >> ./$1/+BUILD_INFO
-	echo "PKGTOOLS_VERSION=${pkgtoolversion}" >> ./$1/+BUILD_INFO
-}
-
-make_COMMENT(){
-	if [ ! -f ./$1/+COMMENT ]; then
-		echo "System Package for $1" > ./$1/+COMMENT
-	fi
+	cat > ./$1/+BUILD_INFO << _BUILD_INFO_
+OPSYS=${opsys}
+OS_VERSION=${osversion}
+OBJECT_FMT=ELF
+MACHINE_ARCH=${machine_arch}
+MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}
+PKGTOOLS_VERSION=${pkgtoolversion}
+_BUILD_INFO_
 }
 
 make_CONTENTS() {
@@ -128,7 +128,6 @@ make_CONTENTS() {
 	>> ./$1/+CONTENTS
 	echo "@comment Packaged using ${prog} ${rcsid}" >> ./$1/+CONTENTS
 	echo "@cwd /" >> ./$1/+CONTENTS
-	# XXX: This package may be empty package
 	cat ./$1/${pkgname}.FILES | while read i
 	do
 		filetype=`file ./work/$setname/${i} | awk '{print $2}'`
@@ -149,13 +148,10 @@ make_CONTENTS() {
 	sort ./$1/tmp.list >> ./$1/+CONTENTS
 }
 
-make_DESC() {
-	if [ ! -f ./$1/+DESC ]; then
-		echo "NetBSD base system" > ./$1/+DESC
-		echo "" >> ./$1/+DESC
-		echo "Homepage:" >> ./$1/+DESC
-		echo "http://www.netbsd.org/" >> ./$1/+DESC
-	fi
+make_DESC_and_COMMENT() {
+	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
+	grep ${pkgname} ${descrs} | sed -e "s/${pkgname} //" > ./$1/+DESC
+	grep ${pkgname} ${comments} | sed -e "s/${pkgname} //" > ./$1/+COMMENT
 }
 
 make_PKG() {
@@ -183,9 +179,8 @@ make_packages() {
 		do
 			echo "Package ${i}/${j} Creating..."
 			make_BUILD_INFO ${i}/${j}
-			make_COMMENT ${i}/${j}
 			make_CONTENTS ${i}/${j}
-			make_DESC ${i}/${j}
+			make_DESC_and_COMMENT ${i}/${j}
 			make_PKG ${i}/${j}
 		done
 	done
@@ -205,17 +200,89 @@ clean_categories() {
 
 # self-explanatorily :-)
 usage() {
-	echo "usage: ./basepkg.sh <option>"
-	echo " Options:"
-	echo "   extract  extract base binary"
-	echo "   dir      create packages directory"
-	echo "   list     create packages list"
-	echo "   pkg      create packages"
-	echo "   all      running dir,list,pkg options"
-	echo "   clean    remove all packages and created directories"
+	cat <<_usage_
+
+Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
+                   [--pkg packages]
+                  operation
+
+ Operation:
+    extract     Extract base binary.
+    dir         Create packages directory.
+    list        Create packages list.
+    pkg         Create packages.
+    all         Running dir,list,pkg options.
+    clean       Remove all packages and created directories.
+
+ Options:
+    -h | --help Show this message and exit.
+    --sets      Set sets to extract tarballs.
+                [Default: /usr/obj/releasedir/${machine}/binary/sets]
+    --src       Set SRC to NetBSD source directory.
+                [Default: /usr/src]
+    --pkgsrc    Set PKGSRC to check pkg_install version.
+                [Default: /usr/pkgsrc]
+    --pkg       Set packages root directory; sets a PACKAGES pattern.
+                [Default: ./packages]
+
+_usage_
 	exit 1
 }
 
+# parse long-options
+for OPT in $@
+do
+	case ${OPT} in
+		'-h'|'--help' )
+			usage
+			;;
+		'--sets' )
+			if [ -z $2 ]; then
+				echo "What is $1 parameter?" 1>&2
+				exit 1
+			fi
+			sets=$2
+			shift
+			shift
+			;;
+		'--src' )
+			if [ -z $2 ]; then
+				echo "What is $1 parameter?" 1>&2
+				exit 1
+			fi
+			SRC=$2
+			shift
+			shift
+			;;
+		'--pkgsrc' )
+			if [ -z $2 ]; then
+				echo "What is $1 parameter?" 1>&2
+				exit 1
+			fi
+			PKGSRC=$2
+			shift
+			shift
+			;;
+		'--pkg' )
+			if [ -z $2 ]; then
+				echo "What is $1 parameter?" 1>&2
+				exit 1
+			fi
+			PACKAGES=$2
+			shift
+			shift
+			;;
+		'-'|'--' )
+			shift
+			break
+			;;
+		* )
+			break
+			;;
+	esac
+done
+
+# operation
 case $1 in
 	extract)
 		extract_base_binaries
