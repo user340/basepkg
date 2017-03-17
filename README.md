@@ -75,7 +75,8 @@ Then I recommend use ```-K /var/db/basepkg``` option
 for discriminate between pkgsrc's package and basepkg's package.  
 ```# pkg_add -K /var/db/basepkg packages/base/base-sys-root```  
 Or, use utils/bpkg_add script instead of pkg_add.  
-```# sh utils/bpkg_add packages/base/base-sys-root```
+```# sh utils/bpkg_add packages/base/base-sys-root```  
+This script is pkg_add wrapper.
 
 ### 6. Can I install the package using pkgin?
 Yes, you can.  
