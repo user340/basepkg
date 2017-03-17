@@ -1,14 +1,13 @@
 #!/usr/bin/env sh
 
 SRC="/usr/src"
-PKGSRC="/usr/pkgsrc"
 PACKAGES="./packages"
 host="$(hostname)"
 machine="$(uname -m)"
 machine_arch="$(uname -p)"
 opsys="$(uname)"
 osversion="$(uname -r)"
-pkgtoolversion=""
+pkgtoolversion="$(pkg_add -V)"
 prog="${0##*/}"
 rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
@@ -21,13 +20,6 @@ descrs="${database}/descrs"
 deps="${database}/deps"
 category="base comp etc games man misc text"
 progname=${0##*/}
-
-if [ -f ${PKGSRC}/pkgtools/pkg_install/files/lib/version.h ]; then
-	pkgtoolversion="$(awk '/PKGTOOLS_VERSION/ {print $3}' \
-	${PKGSRC}/pkgtools/pkg_install/files/lib/version.h)"
-else
-	pkgtoolversion="20160410"
-fi
 
 # "extract" option using following function.
 extract_base_binaries() {
@@ -220,8 +212,6 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
                 [Default: /usr/obj/releasedir/${machine}/binary/sets]
     --src       Set SRC to NetBSD source directory.
                 [Default: /usr/src]
-    --pkgsrc    Set PKGSRC to check pkg_install version.
-                [Default: /usr/pkgsrc]
     --pkg       Set packages root directory; sets a PACKAGES pattern.
                 [Default: ./packages]
 
@@ -251,15 +241,6 @@ do
 				exit 1
 			fi
 			SRC=$2
-			shift
-			shift
-			;;
-		'--pkgsrc' )
-			if [ -z $2 ]; then
-				echo "What is $1 parameter?" 1>&2
-				exit 1
-			fi
-			PKGSRC=$2
 			shift
 			shift
 			;;
