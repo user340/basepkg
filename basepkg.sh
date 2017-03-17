@@ -138,6 +138,7 @@ make_CONTENTS() {
 		return 1
 	fi
 	sort ./$1/tmp.list >> ./$1/+CONTENTS
+	rm -f ./$1/tmp.list
 }
 
 make_DESC_and_COMMENT() {
@@ -180,13 +181,31 @@ make_packages() {
 
 # "clean" option using following functions.
 clean_packages() {
-	rm -fr ${PACKAGES}
+	for i in ${category}
+	do
+		ls ${PACKAGES}/${i} | grep -E 'tgz$' | \
+		xargs -I % rm -f ${PACKAGES}/${i}/%
+		rmdir ${PACKAGES}/${i}
+	done
+	rmdir ${PACKAGES}
 }
 
 clean_categories() {
 	for i in ${category}
 	do
-		rm -fr ${i}
+		test -f ./${i}/FILES && rm -f ./${i}/FILES
+		test -f ./${i}/CATEGORIZED && rm -f ./${i}/CATEGORIZED
+		for j in `ls ./${i}`
+		do
+			test -f ./${i}/${j}/+BUILD_INFO && rm -f ./${i}/${j}/+BUILD_INFO
+			test -f ./${i}/${j}/+COMMENT && rm -f ./${i}/${j}/+COMMENT
+			test -f ./${i}/${j}/+CONTENTS && rm -f ./${i}/${j}/+CONTENTS
+			test -f ./${i}/${j}/+DESC && rm -f ./${i}/${j}/+DESC
+			test -f ./${i}/${j}/tmp.list && rm -f ./${i}/${j}/tmp.list
+			test -f ./${i}/${j}/${j}.FILES && rm -f ./${i}/${j}/${j}.FILES
+			rmdir ./${i}/${j}
+		done
+		rmdir ./${i}
 	done
 }
 
@@ -199,21 +218,22 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
                   operation
 
  Operation:
-    extract     Extract base binary.
-    dir         Create packages directory.
-    list        Create packages list.
-    pkg         Create packages.
-    all         Running dir,list,pkg options.
-    clean       Remove all packages and created directories.
+    extract             Extract base binary.
+    dir                 Create packages directory.
+    list                Create packages list.
+    pkg                 Create packages.
+    all                 Running dir,list,pkg options.
+	cleanpkg            Remove all packages.
+    cleanall            Remove all packages and created directories.
 
  Options:
-    -h | --help Show this message and exit.
-    --sets      Set sets to extract tarballs.
-                [Default: /usr/obj/releasedir/${machine}/binary/sets]
-    --src       Set SRC to NetBSD source directory.
-                [Default: /usr/src]
-    --pkg       Set packages root directory; sets a PACKAGES pattern.
-                [Default: ./packages]
+    --help              Show this message and exit.
+    --sets              Set sets to extract tarballs.
+                        [Default: /usr/obj/releasedir/${machine}/binary/sets]
+    --src               Set SRC to NetBSD source directory.
+                        [Default: /usr/src]
+    --pkg               Set packages root directory; sets a PACKAGES pattern.
+                        [Default: ./packages]
 
 _usage_
 	exit 1
@@ -284,7 +304,13 @@ case $1 in
 		make_contents_list
 		make_packages
 		;;
-	clean)
+	cleanpkg)
+		clean_packages
+		;;
+	cleandir)
+		clean_categories
+		;;
+	cleanall)
 		clean_packages
 		clean_categories
 		;;
