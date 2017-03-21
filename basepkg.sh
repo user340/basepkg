@@ -8,6 +8,7 @@ machine_arch="$(uname -p)"
 opsys="$(uname)"
 osversion="$(uname -r)"
 pkgtoolversion="$(pkg_add -V)"
+osrelease="$(sh ${SRC}/sys/conf/osrelease.sh)"
 rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
@@ -112,7 +113,7 @@ culc_deps() {
 	grep -E "^$1" ${deps} > /dev/null 2>&1 || \
 	(echo "$1: package name not found." 1>&2 && exit 1)
 	depend="$(grep -E "^$1" ${deps} | awk '{print $2}')"
-	echo "@pkgdep ${depend}>=${pkgtoolversion}" >> $2
+	echo "@pkgdep ${depend}>=${osrelease}" >> $2
 	if [ ${depend} = "base-sys-root" ]; then
 		return 0
 	fi
@@ -127,7 +128,7 @@ make_CONTENTS() {
 	fi
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
-	echo "@name ${pkgname}-`sh ${SRC}/sys/conf/osrelease.sh`" > ./$1/+CONTENTS
+	echo "@name ${pkgname}-${osrelease}" > ./$1/+CONTENTS
 	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
 	>> ./$1/+CONTENTS
 	echo "@comment Packaged using ${progname} ${rcsid}" >> ./$1/+CONTENTS
@@ -172,7 +173,7 @@ make_PKG() {
 	  mkdir -p ${PACKAGES}/${setname}
 	fi
 	mv ./${pkgname}.tgz \
-	${PACKAGES}/${setname}/${pkgname}-`sh ${SRC}/sys/conf/osrelease.sh`.tgz
+	${PACKAGES}/${setname}/${pkgname}-${osrelease}.tgz
 }
 
 make_packages() {
