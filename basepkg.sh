@@ -110,8 +110,11 @@ _BUILD_INFO_
 }
 
 culc_deps() {
-	grep -E "^$1" ${deps} > /dev/null 2>&1 || \
-	(echo "$1: package name not found." 1>&2 && exit 1)
+	grep -E "^$1" ${deps} > /dev/null 2>&1
+	if [ $? -eq 1 ]; then
+		echo "$1:Unknown package dependency." 1>&2
+		return 1
+	fi
 	depend="$(grep -E "^$1" ${deps} | awk '{print $2}')"
 	echo "@pkgdep ${depend}>=${osrelease}" >> $2
 	if [ ${depend} = "base-sys-root" ]; then
@@ -194,10 +197,18 @@ make_packages() {
 clean_packages() {
 	for i in ${category}
 	do
+		if [ ! -d ${PACKAGES}/${i} ]; then
+			echo "${PACKAGES}/${i}: not found. ignore." 1>&2
+			continue
+		fi
 		ls ${PACKAGES}/${i} | grep -E 'tgz$' | \
 		xargs -I % rm -f ${PACKAGES}/${i}/%
 		rmdir ${PACKAGES}/${i}
 	done
+	if [ ! -d ${PACKAGES} ]; then
+		echo "${PACKAGES}: not found. ignore." 1>&2
+		return 1
+	fi
 	rmdir ${PACKAGES}
 }
 
