@@ -250,8 +250,8 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
     list                Create packages list.
     pkg                 Create packages.
     all                 Running dir,list,pkg options.
-	cleanpkg            Remove all packages.
-	cleandir            Remove all categorized directories.
+    cleanpkg            Remove all packages.
+    cleandir            Remove all categorized directories.
     cleanall            Remove all packages and categorized directories.
 
  Options:
