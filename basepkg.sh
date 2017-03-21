@@ -8,7 +8,6 @@ machine_arch="$(uname -p)"
 opsys="$(uname)"
 osversion="$(uname -r)"
 pkgtoolversion="$(pkg_add -V)"
-prog="${0##*/}"
 rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $'
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
@@ -109,16 +108,30 @@ PKGTOOLS_VERSION=${pkgtoolversion}
 _BUILD_INFO_
 }
 
+culc_deps() {
+	grep -E "^$1" ${deps} > /dev/null 2>&1 || \
+	(echo "$1: package name not found." 1>&2 && exit 1)
+	depend="$(grep -E "^$1" ${deps} | awk '{print $2}')"
+	echo "@pkgdep ${depend}>=${pkgtoolversion}" >> $2
+	if [ ${depend} = "base-sys-root" ]; then
+		return 0
+	fi
+	culc_deps ${depend} $2
+}
+
 make_CONTENTS() {
-	if [ -f ./$1/tmp.list ]; then
-		rm -f ./$1/tmp.list
+	TMPFILE=`mktemp -q`
+	if [ $? -ne 0 ]; then
+		echo "$0: Can't create temp file, exiting..."
+		exit 1
 	fi
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
 	echo "@name ${pkgname}-`sh ${SRC}/sys/conf/osrelease.sh`" > ./$1/+CONTENTS
 	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
 	>> ./$1/+CONTENTS
-	echo "@comment Packaged using ${prog} ${rcsid}" >> ./$1/+CONTENTS
+	echo "@comment Packaged using ${progname} ${rcsid}" >> ./$1/+CONTENTS
+	culc_deps ${pkgname} ./$1/+CONTENTS
 	echo "@cwd /" >> ./$1/+CONTENTS
 	cat ./$1/${pkgname}.FILES | while read i
 	do
@@ -127,18 +140,15 @@ make_CONTENTS() {
 			filename=`echo ${i} | sed 's%\/%\\\/%g'`
 			awk '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ./work/${setname}/etc/mtree/set.${setname} | \
 			sed 's%^\.\/%%' | \
-			awk '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ./$1/tmp.list
+			awk '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ${TMPFILE}
 		elif [ ${filetype} = cannot ]; then
 			continue
 		else
-			echo ${i} >> ./$1/tmp.list
+			echo ${i} >> ${TMPFILE}
 		fi
 	done
-	if [ ! -f ./$1/tmp.list ]; then
-		return 1
-	fi
-	sort ./$1/tmp.list >> ./$1/+CONTENTS
-	rm -f ./$1/tmp.list
+	sort ${TMPFILE} >> ./$1/+CONTENTS
+	rm -f ${TMPFILE}
 }
 
 make_DESC_and_COMMENT() {
@@ -201,7 +211,6 @@ clean_categories() {
 			test -f ./${i}/${j}/+COMMENT && rm -f ./${i}/${j}/+COMMENT
 			test -f ./${i}/${j}/+CONTENTS && rm -f ./${i}/${j}/+CONTENTS
 			test -f ./${i}/${j}/+DESC && rm -f ./${i}/${j}/+DESC
-			test -f ./${i}/${j}/tmp.list && rm -f ./${i}/${j}/tmp.list
 			test -f ./${i}/${j}/${j}.FILES && rm -f ./${i}/${j}/${j}.FILES
 			rmdir ./${i}/${j}
 		done
@@ -224,7 +233,8 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
     pkg                 Create packages.
     all                 Running dir,list,pkg options.
 	cleanpkg            Remove all packages.
-    cleanall            Remove all packages and created directories.
+	cleandir            Remove all categorized directories.
+    cleanall            Remove all packages and categorized directories.
 
  Options:
     --help              Show this message and exit.
