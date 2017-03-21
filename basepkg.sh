@@ -20,6 +20,7 @@ descrs="${database}/descrs"
 deps="${database}/deps"
 category="base comp etc games man misc text"
 progname=${0##*/}
+target="${category}"
 
 # "extract" option using following function.
 extract_base_binaries() {
@@ -115,7 +116,14 @@ culc_deps() {
 		echo "$1:Unknown package dependency." 1>&2
 		return 1
 	fi
+	# XXX: "base-dhcpd-bin", "comp-util-share",
+	#      "misc-amd-examples" and "misc-sys-examples" packages has
+	#      two or more dependency. So, when these packages are creating,
+	#      this script do unexpected work.
 	depend="$(grep -E "^$1" ${deps} | awk '{print $2}')"
+	if [ ! $depend ]; then
+		return 1
+	fi
 	echo "@pkgdep ${depend}>=${osrelease}" >> $2
 	if [ ${depend} = "base-sys-root" ]; then
 		return 0
@@ -180,7 +188,7 @@ make_PKG() {
 }
 
 make_packages() {
-	for i in ${category}
+	for i in ${target}
 	do
 		for j in `ls ./${i} | grep -E '^[a-z]+'`
 		do
@@ -198,7 +206,6 @@ clean_packages() {
 	for i in ${category}
 	do
 		if [ ! -d ${PACKAGES}/${i} ]; then
-			echo "${PACKAGES}/${i}: not found. ignore." 1>&2
 			continue
 		fi
 		ls ${PACKAGES}/${i} | grep -E 'tgz$' | \
@@ -206,7 +213,6 @@ clean_packages() {
 		rmdir ${PACKAGES}/${i}
 	done
 	if [ ! -d ${PACKAGES} ]; then
-		echo "${PACKAGES}: not found. ignore." 1>&2
 		return 1
 	fi
 	rmdir ${PACKAGES}
@@ -256,6 +262,8 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
                         [Default: /usr/src]
     --pkg               Set packages root directory; sets a PACKAGES pattern.
                         [Default: ./packages]
+    --target            Set target packaging category.
+                        [Default: "${category}"]
 
 _usage_
 	exit 1
@@ -292,6 +300,15 @@ do
 				exit 1
 			fi
 			PACKAGES=$2
+			shift
+			shift
+			;;
+		'--target' )
+			if [ -z $2 ]; then
+				echo "What is $1 parameter?" 1>&2
+				exit 1
+			fi
+			target="$2"
 			shift
 			shift
 			;;
