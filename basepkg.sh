@@ -18,6 +18,7 @@ lists="${database}/lists"
 comments="${database}/comments"
 descrs="${database}/descrs"
 deps="${database}/deps"
+tmp_deps="/tmp/culldeps"
 category="base comp etc games man misc text"
 progname=${0##*/}
 target="${category}"
@@ -116,19 +117,29 @@ culc_deps() {
 		echo "$1:Unknown package dependency." 1>&2
 		return 1
 	fi
-	# XXX: "base-dhcpd-bin", "comp-util-share",
-	#      "misc-amd-examples" and "misc-sys-examples" packages has
-	#      two or more dependency. So, when these packages are creating,
-	#      this script do unexpected work.
-	depend="$(grep -E "^$1" ${deps} | awk '{print $2}')"
-	if [ ! $depend ]; then
-		return 1
+	TMPFILE=`mktemp -q`
+	if [ $? -ne 0 ]; then
+		echo "$0: Can't create temp file, exiting..." 1>&2
+		exit 1
 	fi
-	echo "@pkgdep ${depend}>=${osrelease}" >> $2
-	if [ ${depend} = "base-sys-root" ]; then
-		return 0
+	grep -E "^$1" ${deps} | awk '{print $2}' > ${TMPFILE}
+	# XXX: too many temp files in /tmp
+	cat ${TMPFILE} | while read depend
+	do
+		if [ ! "${depend}" ]; then
+			rm ${TMPFILE}
+			return 1
+		fi
+		echo "@pkgdep ${depend}>=${osrelease}" >> ${tmp_deps}
+		if [ "${depend}" = "base-sys-root" ]; then
+			rm ${TMPFILE}
+			return 0
+		fi
+		culc_deps ${depend}
+	done
+	if [ -f ${TMPFILE} ]; then
+		rm -f ${TMPFILE}
 	fi
-	culc_deps ${depend} $2
 }
 
 make_CONTENTS() {
@@ -143,7 +154,13 @@ make_CONTENTS() {
 	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
 	>> ./$1/+CONTENTS
 	echo "@comment Packaged using ${progname} ${rcsid}" >> ./$1/+CONTENTS
-	culc_deps ${pkgname} ./$1/+CONTENTS
+	if [ -f ${tmp_deps} ]; then
+		rm -f ${tmp_deps}
+	fi
+	culc_deps ${pkgname}
+	if [ -f ${tmp_deps} ]; then
+		sort ${tmp_deps} | uniq >> ./$1/+CONTENTS
+	fi
 	echo "@cwd /" >> ./$1/+CONTENTS
 	cat ./$1/${pkgname}.FILES | while read i
 	do
