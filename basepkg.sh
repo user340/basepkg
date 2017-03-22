@@ -117,29 +117,26 @@ culc_deps() {
 		echo "$1:Unknown package dependency." 1>&2
 		return 1
 	fi
-	TMPFILE=`mktemp -q`
+	TMP=`mktemp -q`
 	if [ $? -ne 0 ]; then
 		echo "$0: Can't create temp file, exiting..." 1>&2
 		exit 1
 	fi
-	grep -E "^$1" ${deps} | awk '{print $2}' > ${TMPFILE}
+	grep -E "^$1" ${deps} | awk '{print $2}' > ${TMP}
 	# XXX: too many temp files in /tmp
-	cat ${TMPFILE} | while read depend
+	cat ${TMP} | while read depend
 	do
 		if [ ! "${depend}" ]; then
-			rm ${TMPFILE}
+			rm -f ${TMP}
 			return 1
 		fi
 		echo "@pkgdep ${depend}>=${osrelease}" >> ${tmp_deps}
 		if [ "${depend}" = "base-sys-root" ]; then
-			rm ${TMPFILE}
+			rm ${TMP}
 			return 0
 		fi
 		culc_deps ${depend}
 	done
-	if [ -f ${TMPFILE} ]; then
-		rm -f ${TMPFILE}
-	fi
 }
 
 make_CONTENTS() {
