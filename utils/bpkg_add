@@ -11,8 +11,10 @@ progname=${0##*/}
 
 if [ $# != 1 ]; then
 	cat << _usage_
-Usage: ${progname} package
+${progname}: `echo ${progname} | sed 's/^b//'`'s wrapper.
+Usage: ${progname} pkgname
 _usage_
+exit 2
 fi
 
 case "${progname}" in

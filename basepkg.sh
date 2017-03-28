@@ -186,7 +186,7 @@ make_DESC_and_COMMENT() {
 make_PKG() {
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
-	pkg_create -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
+	pkg_create -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
 	-d $1/+DESC -f $1/+CONTENTS -I / -p ${PWD}/work/${setname} ${pkgname}
 	if [ $? != 0 ]; then
 		return $?
