@@ -1,0 +1,22 @@
+#!/bin/sh
+
+SELF=$0
+TMPPKG_PREFIX=`pwd`/.tmppkg
+: ${PKG_PREFIX=@PREFIX@}
+
+case ${STAGE} in
+POST-INSTALL)
+	sed -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | sort -u |
+	while read file f_flags f_eg f_mode f_user f_group; do
+		case $file in
+		"") confinue ;;
+		[!/]*) file="${TMPPKG_PREFIX}/$file" ;;
+		esac
+		if [ ! -d ${TMPPKG_PREFIX} ]; then
+			mkdir ${TMPPKG_PREFIX}
+		fi
+	done
+	;;
+esac
+
+exit 0
