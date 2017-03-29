@@ -1,20 +1,35 @@
 #!/bin/sh
 
 SELF=$0
-TMPPKG_PREFIX=`pwd`/.tmppkg
+CURDIR=`pwd`
+PKG_METADATA_DIR="${2-${CURDIR}}"
+: ${PKGNAME=${PKG_METADATA_DIR##*/}}
+: ${PKG_DBDIR=${PKG_METADATA_DIR%/*}}
+: ${PKG_REFCOUNT_DBDIR=${PKG_DBDIR}.refcount}
+PKG_REFCOUNT_FILES_DBDIR="${PKG_REFCOUNT_DBDIR}/files"
+WORK_PREFIX=${CURDIR}/.work
 : ${PKG_PREFIX=@PREFIX@}
 
 case ${STAGE} in
 POST-INSTALL)
 	sed -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | sort -u |
 	while read file f_flags f_eg f_mode f_user f_group; do
-		case $file in
-		"") confinue ;;
-		[!/]*) file="${TMPPKG_PREFIX}/$file" ;;
+		case ${file} in
+			"") confinue ;;
+			[!/]*) file="${PKG_PREFIX}/${file}" ;;
 		esac
-		if [ ! -d ${TMPPKG_PREFIX} ]; then
-			mkdir ${TMPPKG_PREFIX}
-		fi
+		case ${f_flags} in
+			*c*) ;;
+			*) continue;;
+		esac
+		case ${f_eg} in
+			"") continue ;;
+			[!/]*) f_eg="${PKG_PREFIX}/${f_eg}"
+		esac
+		case ${f_mode}${$f_user}${f_group} in
+			"") ;;
+			* ) echo "${f_mode} ${f_user} ${f_group}" > perms ;;
+		esac
 	done
 	;;
 esac
