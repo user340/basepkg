@@ -1,6 +1,11 @@
 #!/bin/sh
 
-SELF=$0
+SELF="$0"
+PKGNAME="$1"
+STAGE="$2"
+shift
+shift
+
 CURDIR=`pwd`
 PKG_METADATA_DIR="${2-${CURDIR}}"
 : ${PKGNAME=${PKG_METADATA_DIR##*/}}
