@@ -22,6 +22,8 @@ tmp_deps="/tmp/culldeps"
 category="base comp etc games man misc text"
 progname=${0##*/}
 target="${category}"
+prefix="/usr/pkg"
+basedir="basepkg"
 
 # "extract" option using following function.
 extract_base_binaries() {
@@ -158,7 +160,7 @@ make_CONTENTS() {
 	if [ -f ${tmp_deps} ]; then
 		sort ${tmp_deps} | uniq >> ./$1/+CONTENTS
 	fi
-	echo "@cwd /" >> ./$1/+CONTENTS
+	echo "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
 	cat ./$1/${pkgname}.FILES | while read i
 	do
 		filetype=`file ./work/$setname/${i} | awk '{print $2}'`
@@ -278,6 +280,8 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
                         [Default: ./packages]
     --target            Set target packaging category.
                         [Default: "${category}"]
+    --prefix            Set package's prefix.
+                        [Default: "${prefix}"]
 
 _usage_
 	exit 1
@@ -323,6 +327,15 @@ do
 				exit 1
 			fi
 			target="$2"
+			shift
+			shift
+			;;
+		'--prefix' )
+			if [ -z $2 ]; then
+				echo "What is $1 parameter?" 1>&2
+				exit 1
+			fi
+			prefix="$2"
 			shift
 			shift
 			;;
