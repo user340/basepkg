@@ -21,11 +21,9 @@ deps="${database}/deps"
 tmp_deps="/tmp/culldeps"
 category="base comp etc games man misc text"
 progname=${0##*/}
-target="${category}"
 prefix="/usr/pkg"
 basedir="basepkg/root"
 pkg_db="/var/db/basepkg"
-copy="faise"
 
 # "extract" option use following function.
 extract_base_binaries() {
@@ -206,7 +204,7 @@ do_pkg_create() {
 }
 
 make_packages() {
-	for i in ${target}
+	for i in ${category}
 	do
 		for j in `ls ./${i} | grep -E '^[a-z]+'`
 		do
@@ -286,7 +284,7 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
                         [Default: /usr/src]
     --pkg               Set packages root directory; sets a PACKAGES pattern.
                         [Default: ./packages]
-    --target            Set target packaging category.
+    --category          Set category.
                         [Default: "${category}"]
     --prefix            Set package's prefix.
                         [Default: "${prefix}"]
@@ -329,12 +327,12 @@ do
 			shift
 			shift
 			;;
-		'--target' )
+		'--category' )
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
 				exit 1
 			fi
-			target="$2"
+			category="$2"
 			shift
 			shift
 			;;
