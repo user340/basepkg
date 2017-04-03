@@ -23,9 +23,11 @@ category="base comp etc games man misc text"
 progname=${0##*/}
 target="${category}"
 prefix="/usr/pkg"
-basedir="basepkg"
+basedir="basepkg/root"
+pkg_db="/var/db/basepkg"
+copy="faise"
 
-# "extract" option using following function.
+# "extract" option use following function.
 extract_base_binaries() {
 	for i in `ls ${sets} | grep 'tgz$' | sed 's/\.tgz//g'`
 	do
@@ -36,7 +38,7 @@ extract_base_binaries() {
 	done
 }
 
-# "dir" option using following functions.
+# "dir" option use following functions.
 split_category_from_lists() {
 	for i in ${category}
 	do
@@ -69,7 +71,7 @@ make_directories_of_package() {
 	done
 }
 
-# "list" option using following function.
+# "list" option use following function.
 make_contents_list() {
 	for i in ${category}
 	do
@@ -101,7 +103,7 @@ make_contents_list() {
 	done
 }
 
-# "pkg" option using following functions.
+# "pkg" option use following functions.
 make_BUILD_INFO(){
 	cat > ./$1/+BUILD_INFO << _BUILD_INFO_
 OPSYS=${opsys}
@@ -185,22 +187,22 @@ make_DESC_and_COMMENT() {
 	grep ${pkgname} ${comments} | sed -e "s/${pkgname} //" > ./$1/+COMMENT
 }
 
-make_PKG() {
+do_pkg_create() {
 	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
 	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
-	pkg_create -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
-	-d $1/+DESC -f $1/+CONTENTS -I / -p ${PWD}/work/${setname} ${pkgname}
+	pkg_create -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT -d $1/+DESC \
+	-f $1/+CONTENTS -p ${PWD}/work/${setname} -K ${pkg_db} ${pkgname}
 	if [ $? != 0 ]; then
 		return $?
 	fi
 	if [ ! -d ${PACKAGES} ]; then
 	  mkdir ${PACKAGES}
 	fi
-	if [ ! -d ${PACKAGES}/${setname} ]; then
-	  mkdir -p ${PACKAGES}/${setname}
+	if [ ! -d ${PACKAGES}/All ]; then
+	  mkdir -p ${PACKAGES}/All
 	fi
 	mv ./${pkgname}.tgz \
-	${PACKAGES}/${setname}/${pkgname}-${osrelease}.tgz
+	${PACKAGES}/All/${pkgname}-${osrelease}.tgz
 }
 
 make_packages() {
@@ -212,22 +214,27 @@ make_packages() {
 			make_BUILD_INFO ${i}/${j}
 			make_CONTENTS ${i}/${j}
 			make_DESC_and_COMMENT ${i}/${j}
-			make_PKG ${i}/${j}
+			do_pkg_create ${i}/${j}
 		done
 	done
 }
 
-# "clean" option using following functions.
+# "install" option use following functions.
+do_pkg_add() {
+	if [ -d ${prefix}/${basedir} ]; then
+		mkdir -p ${prefix}/${basedir}
+	fi
+	pkg_add -K ${pkg_db} -p ${prefix}/${basedir} $@
+}
+
+# "clean" option use following functions.
 clean_packages() {
-	for i in ${category}
-	do
-		if [ ! -d ${PACKAGES}/${i} ]; then
-			continue
-		fi
-		ls ${PACKAGES}/${i} | grep -E 'tgz$' | \
-		xargs -I % rm -f ${PACKAGES}/${i}/%
-		rmdir ${PACKAGES}/${i}
-	done
+	if [ ! -d ${PACKAGES}/All ]; then
+		continue
+	fi
+	ls ${PACKAGES}/${i} | grep -E 'tgz$' | \
+	xargs -I % rm -f ${PACKAGES}/All/%
+	rmdir ${PACKAGES}/All
 	if [ ! -d ${PACKAGES} ]; then
 		return 1
 	fi
@@ -266,6 +273,7 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
     list                Create packages list.
     pkg                 Create packages.
     all                 Running dir,list,pkg options.
+    install             Install packages to system.
     cleanpkg            Remove all packages.
     cleandir            Remove all categorized directories.
     cleanall            Remove all packages and categorized directories.
@@ -369,6 +377,9 @@ case $1 in
 		make_directories_of_package
 		make_contents_list
 		make_packages
+		;;
+	install)
+		do_pkg_add $2
 		;;
 	cleanpkg)
 		clean_packages
