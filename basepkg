@@ -127,8 +127,7 @@ culc_deps() {
 	fi
 	grep -E "^$1" ${deps} | cut -d ' ' -f 2 > ${TMP}
 	# XXX: too many temp files in /tmp
-	cat ${TMP} | while read depend
-	do
+	cat ${TMP} | while read depend; do
 		if [ ! "${depend}" ]; then
 			rm -f ${TMP}
 			return 1
@@ -162,9 +161,8 @@ make_CONTENTS() {
 		sort ${tmp_deps} | uniq >> ./$1/+CONTENTS
 	fi
 	echo "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
-	cat ./$1/${pkgname}.FILES | while read i
-	do
-		filetype=`file ./work/$setname/${i} | cut -d ' ' -f 2
+	cat ./$1/${pkgname}.FILES | while read i; do
+		filetype=`file ./work/$setname/${i} | cut -d ' ' -f 2`
 		if [ ${filetype} = directory ]; then
 			filename=`echo ${i} | sed 's%\/%\\\/%g'`
 			awk '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ./work/${setname}/etc/mtree/set.${setname} | \
@@ -222,13 +220,13 @@ do_pkg_add() {
 		mkdir -p ${prefix}/${basedir}
 	fi
 	pkg_add -K ${pkg_db} -p ${prefix}/${basedir} $@
-	if [ $touch_system = "true" ]; then
-		for i in $@; do
-			cat ${pkg_db}/${i}/+CONTENTS | grep -v -e '^@' -e '^\+' |
-			while read contents; do
-			done
-		done
-	fi
+	#if [ $touch_system = "true" ]; then
+	#	for i in $@; do
+	#		cat ${pkg_db}/${i}/+CONTENTS | grep -v -e '^@' -e '^\+' |
+	#		while read contents; do
+	#		done
+	#	done
+	#fi
 }
 
 # "delete" option use following functions.
@@ -256,12 +254,10 @@ clean_packages() {
 }
 
 clean_categories() {
-	for i in ${category}
-	do
+	for i in ${category}; do
 		test -f ./${i}/FILES && rm -f ./${i}/FILES
 		test -f ./${i}/CATEGORIZED && rm -f ./${i}/CATEGORIZED
-		for j in `ls ./${i}`
-		do
+		for j in `ls ./${i}`; do
 			test -f ./${i}/${j}/+BUILD_INFO && rm -f ./${i}/${j}/+BUILD_INFO
 			test -f ./${i}/${j}/+COMMENT && rm -f ./${i}/${j}/+COMMENT
 			test -f ./${i}/${j}/+CONTENTS && rm -f ./${i}/${j}/+CONTENTS
