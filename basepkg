@@ -24,6 +24,7 @@ progname=${0##*/}
 prefix="/usr/pkg"
 basedir="basepkg/root"
 pkg_db="/var/db/basepkg"
+touch_system="false"
 
 # "extract" option use following function.
 extract_base_binaries() {
@@ -222,12 +223,20 @@ do_pkg_add() {
 	if [ -d ${prefix}/${basedir} ]; then
 		mkdir -p ${prefix}/${basedir}
 	fi
-	pkg_add -K ${pkg_db} -P ${prefix}/${basedir} $@
+	pkg_add -K ${pkg_db} -p ${prefix}/${basedir} $@
+	if [ $touch_system = "true" ]; then
+		# copy work ${prefix}/${basedir} to /
+	fi
 }
 
 # "delete" option use following functions.
 do_pkg_delete() {
-	pkg_delete -K ${pkg_db} -P ${prefix}/${basedir} $@
+	if [ $touch_system = "true" ]; then
+		real_prefix="/"
+	else
+		real_prefix="${prefix}/${basedir}"
+	fi
+	pkg_delete -K ${pkg_db} -p ${real_prefix} $@
 }
 
 # "clean" option use following functions.
@@ -355,7 +364,7 @@ do
 			shift
 			;;
 		'--system')
-			touch_system=0
+			touch_system="true"
 			shift
 			;;
 		'--database')
