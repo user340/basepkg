@@ -125,7 +125,7 @@ culc_deps() {
 		echo "$0: Can't create temp file, exiting..." 1>&2
 		exit 1
 	fi
-	grep -E "^$1" ${deps} | awk '{print $2}' > ${TMP}
+	grep -E "^$1" ${deps} | cut -d ' ' -f 2 > ${TMP}
 	# XXX: too many temp files in /tmp
 	cat ${TMP} | while read depend
 	do
@@ -148,8 +148,8 @@ make_CONTENTS() {
 		echo "$0: Can't create temp file, exiting..."
 		exit 1
 	fi
-	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
-	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
+	setname=`echo $1 | cut -d '/' -f 1 | sed 's/\./-/g'`
+	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
 	echo "@name ${pkgname}-${osrelease}" > ./$1/+CONTENTS
 	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
 	>> ./$1/+CONTENTS
@@ -164,7 +164,7 @@ make_CONTENTS() {
 	echo "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
 	cat ./$1/${pkgname}.FILES | while read i
 	do
-		filetype=`file ./work/$setname/${i} | awk '{print $2}'`
+		filetype=`file ./work/$setname/${i} | cut -d ' ' -f 2
 		if [ ${filetype} = directory ]; then
 			filename=`echo ${i} | sed 's%\/%\\\/%g'`
 			awk '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ./work/${setname}/etc/mtree/set.${setname} | \
@@ -181,14 +181,14 @@ make_CONTENTS() {
 }
 
 make_DESC_and_COMMENT() {
-	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
+	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
 	grep ${pkgname} ${descrs} | sed -e "s/${pkgname} //" > ./$1/+DESC
 	grep ${pkgname} ${comments} | sed -e "s/${pkgname} //" > ./$1/+COMMENT
 }
 
 do_pkg_create() {
-	setname=`echo $1 | awk 'BEGIN{FS="/"} {print $1}' | sed 's/\./-/g'`
-	pkgname=`echo $1 | awk 'BEGIN{FS="/"} {print $2}' | sed 's/\./-/g'`
+	setname=`echo $1 | cut -d '/' -f 1 | sed 's/\./-/g'`
+	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
 	pkg_create -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT -d $1/+DESC \
 	-f $1/+CONTENTS -p ${PWD}/work/${setname} -K ${pkg_db} ${pkgname}
 	if [ $? != 0 ]; then
@@ -205,10 +205,8 @@ do_pkg_create() {
 }
 
 make_packages() {
-	for i in ${category}
-	do
-		for j in `ls ./${i} | grep -E '^[a-z]+'`
-		do
+	for i in ${category}; do
+		for j in `ls ./${i} | grep -E '^[a-z]+'`; do
 			echo "Package ${i}/${j} Creating..."
 			make_BUILD_INFO ${i}/${j}
 			make_CONTENTS ${i}/${j}
@@ -225,7 +223,11 @@ do_pkg_add() {
 	fi
 	pkg_add -K ${pkg_db} -p ${prefix}/${basedir} $@
 	if [ $touch_system = "true" ]; then
-		# copy work ${prefix}/${basedir} to /
+		for i in $@; do
+			cat ${pkg_db}/${i}/+CONTENTS | grep -v -e '^@' -e '^\+' |
+			while read contents; do
+			done
+		done
 	fi
 }
 
@@ -275,9 +277,10 @@ clean_categories() {
 usage() {
 	cat <<_usage_
 
-Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
-                   [--pkg packages]
-                  operation
+Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
+                   [--pkg packages_dir] [--category category]
+				   [--prefix prefix] [--database database_dir]
+				   operation
 
  Operation:
     extract             Extract base binary.
@@ -286,8 +289,9 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
     pkg                 Create packages.
     all                 Running dir,list,pkg options.
     install             Install packages to ${prefix}/${basedir}.
-                        Not install to /.
+                        If --system option using, install package to /.
 	delete              Uninstall packages at ${prefix}/${basedir}.
+                        If --system option using, delete package from /.
     cleanpkg            Remove all packages.
     cleandir            Remove all categorized directories.
     cleanall            Remove all packages and categorized directories.
@@ -304,6 +308,8 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
                         [Default: "base comp etc games man misc text"]
     --prefix            Set package's prefix.
                         [Default: "/usr/pkg"]
+    --system            If install/delete operation with this option,
+                        install to/delete from /.
     --database          Set pkg_db to package's database.
                         [Default: "/var/db/basepkg"]
 
