@@ -222,7 +222,12 @@ do_pkg_add() {
 	if [ -d ${prefix}/${basedir} ]; then
 		mkdir -p ${prefix}/${basedir}
 	fi
-	pkg_add -K ${pkg_db} -p ${prefix}/${basedir} $@
+	pkg_add -K ${pkg_db} -P ${prefix}/${basedir} $@
+}
+
+# "delete" option use following functions.
+do_pkg_delete() {
+	pkg_delete -K ${pkg_db} -P ${prefix}/${basedir} $@
 }
 
 # "clean" option use following functions.
@@ -271,7 +276,9 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
     list                Create packages list.
     pkg                 Create packages.
     all                 Running dir,list,pkg options.
-    install             Install packages to system.
+    install             Install packages to ${prefix}/${basedir}.
+                        Not install to /.
+	delete              Uninstall packages at ${prefix}/${basedir}.
     cleanpkg            Remove all packages.
     cleandir            Remove all categorized directories.
     cleanall            Remove all packages and categorized directories.
@@ -285,9 +292,11 @@ Usage: ${progname} [--sets sets] [--src src] [--pkgsrc pkgsrc]
     --pkg               Set packages root directory; sets a PACKAGES pattern.
                         [Default: ./packages]
     --category          Set category.
-                        [Default: "${category}"]
+                        [Default: "base comp etc games man misc text"]
     --prefix            Set package's prefix.
-                        [Default: "${prefix}"]
+                        [Default: "/usr/pkg"]
+    --database          Set pkg_db to package's database.
+                        [Default: "/var/db/basepkg"]
 
 _usage_
 	exit 1
@@ -297,10 +306,10 @@ _usage_
 for OPT in $@
 do
 	case ${OPT} in
-		'-h'|'--help' )
+		'-h'|'--help')
 			usage
 			;;
-		'--sets' )
+		'--sets')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
 				exit 1
@@ -309,7 +318,7 @@ do
 			shift
 			shift
 			;;
-		'--src' )
+		'--src')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
 				exit 1
@@ -318,7 +327,7 @@ do
 			shift
 			shift
 			;;
-		'--pkg' )
+		'--pkg')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
 				exit 1
@@ -327,7 +336,7 @@ do
 			shift
 			shift
 			;;
-		'--category' )
+		'--category')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
 				exit 1
@@ -336,7 +345,7 @@ do
 			shift
 			shift
 			;;
-		'--prefix' )
+		'--prefix')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
 				exit 1
@@ -345,11 +354,24 @@ do
 			shift
 			shift
 			;;
-		'-'|'--' )
+		'--system')
+			touch_system=0
+			shift
+			;;
+		'--database')
+			if [ -z $2 ]; then
+				echo "What is $1 parameter?" 1>&2
+				exit 1
+			fi
+			pkg_db="$2"
+			shift
+			shift
+			;;
+		'-'|'--')
 			shift
 			break
 			;;
-		* )
+		*)
 			break
 			;;
 	esac
@@ -378,6 +400,9 @@ case $1 in
 		;;
 	install)
 		do_pkg_add $2
+		;;
+	delete)
+		do_pkg_delete $2
 		;;
 	cleanpkg)
 		clean_packages
