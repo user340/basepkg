@@ -60,9 +60,7 @@ Extract binary sets to working directory using basepkg.sh script.
 ```# ./basepkg.sh extract```
 
 ### 4. Make Packages
-Run basepkg.sh script with options.  
-```# ./basepkg.sh dir```  
-```# ./basepkg.sh list```  
+Run basepkg.sh script with following option.  
 ```# ./basepkg.sh pkg```  
 Packages are created under the basepkg/packages directory.
 

@@ -28,8 +28,7 @@ touch_system="false"
 
 # "extract" option use following function.
 extract_base_binaries() {
-	for i in `ls ${sets} | grep 'tgz$' | sed 's/\.tgz//g'`
-	do
+	for i in `ls ${sets} | grep 'tgz$' | sed 's/\.tgz//g'`; do
 		if [ ! -d ./work/${i} ]; then
 			mkdir -p ./work/${i}
 		fi
@@ -39,16 +38,14 @@ extract_base_binaries() {
 
 # "dir" option use following functions.
 split_category_from_lists() {
-	for i in ${category}
-	do
+	for i in ${category}; do
 		if [ ! -d ./${i} ]; then
 			mkdir ./${i}
 		fi
 		if [ -f ./${i}/FILES ]; then
 			rm -f ./${i}/FILES
 		fi
-		for j in `ls ${lists}`
-		do
+		for j in `ls ${lists}`; do
 			grep -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/mi | \
 			awk '$3 !~ /obsolete/ {print}' | \
 			sed -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
@@ -63,8 +60,7 @@ split_category_from_lists() {
 }
 
 make_directories_of_package() {
-	for i in ${category}
-	do
+	for i in ${category}; do
 		awk '{print $2}' ./${i}/FILES | sort | uniq | \
 		xargs -n 1 -I % mkdir ./${i}/%
 	done
@@ -72,8 +68,7 @@ make_directories_of_package() {
 
 # "list" option use following function.
 make_contents_list() {
-	for i in ${category}
-	do
+	for i in ${category}; do
 		awk ' 
 		# $1 - file name
 		# $2 - package name
@@ -91,10 +86,8 @@ make_contents_list() {
 				print pkg, lists[pkg]
 		}' ${i}/FILES > ./${i}/CATEGORIZED
 	done
-	for i in ${category}
-	do
-		for j in `ls ./${i} | grep '^[a-z]'`
-		do
+	for i in ${category}; do
+		for j in `ls ./${i} | grep '^[a-z]'`; do
 			grep "${j}" ./${i}/CATEGORIZED | tr ' ' '\n' | \
 			awk 'NR != 1{print $0}' | sort | \
 			grep -v -E "x${i}-[a-z]+-[a-z]+" > ./${i}/${j}/${j}.FILES
