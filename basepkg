@@ -220,13 +220,13 @@ do_pkg_add() {
 		mkdir -p ${prefix}/${basedir}
 	fi
 	pkg_add -K ${pkg_db} -p ${prefix}/${basedir} $@
-	#if [ $touch_system = "true" ]; then
-	#	for i in $@; do
-	#		cat ${pkg_db}/${i}/+CONTENTS | grep -v -e '^@' -e '^\+' |
-	#		while read contents; do
-	#		done
-	#	done
-	#fi
+	if [ $touch_system = "true" ]; then
+		for i in $@; do
+			cat ${pkg_db}/${i}/+CONTENTS | grep -v -e '^@' -e '^\+' |
+			while read contents; do
+			done
+		done
+	fi
 }
 
 # "delete" option use following functions.
@@ -280,18 +280,17 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
 
  Operation:
     extract             Extract base binary.
-    dir                 Create packages directory.
-    list                Create packages list.
     pkg                 Create packages.
-    all                 Running dir,list,pkg options.
     install             Install packages to ${prefix}/${basedir}.
                         If --system option using, install package to /.
 	delete              Uninstall packages at ${prefix}/${basedir}.
                         If --system option using, delete package from /.
     cleanpkg            Remove all packages.
-    cleandir            Remove all categorized directories.
-    cleanall            Remove all packages and categorized directories.
 
+ Operation for Developer:
+    dir                 Create packages directory.
+    list                Create packages list.
+    cleandir            Remove all categorized directories.
  Options:
     --help              Show this message and exit.
     --sets              Set sets to extract tarballs.
@@ -403,12 +402,6 @@ case $1 in
 	pkg)		 
 		make_packages
 		;;
-	all)
-		split_category_from_lists
-		make_directories_of_package
-		make_contents_list
-		make_packages
-		;;
 	install)
 		do_pkg_add $2
 		;;
@@ -419,10 +412,6 @@ case $1 in
 		clean_packages
 		;;
 	cleandir)
-		clean_categories
-		;;
-	cleanall)
-		clean_packages
 		clean_categories
 		;;
 	*)

@@ -1,0 +1,18 @@
+@name base-secsh-bin-7.1
+@comment Packaged at 2017-04-04 20:28 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-usr>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/bin/scp
+usr/bin/sftp
+usr/bin/slogin
+usr/bin/ssh
+usr/bin/ssh-add
+usr/bin/ssh-agent
+usr/bin/ssh-keygen
+usr/bin/ssh-keyscan
+usr/libexec/sftp-server
+usr/libexec/ssh-keysign
+usr/libexec/ssh-pkcs11-helper
+usr/sbin/sshd

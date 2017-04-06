@@ -1,0 +1,12 @@
+@name etc-postfix-etc-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-postfix-bin>=7.1
+@pkgdep base-postfix-usr>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-usr>=7.1
+@cwd /usr/pkg/basepkg/root
+etc/mail/aliases
+etc/postfix/README
+etc/postfix/main.cf
+etc/postfix/master.cf

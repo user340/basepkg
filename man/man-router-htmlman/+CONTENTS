@@ -1,0 +1,16 @@
+@name man-router-htmlman-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/share/man/html1/altqstat.html
+usr/share/man/html5/altq.conf.html
+usr/share/man/html5/ldpd.conf.html
+usr/share/man/html5/rtadvd.conf.html
+usr/share/man/html8/altqd.html
+usr/share/man/html8/faithd.html
+usr/share/man/html8/ldpd.html
+usr/share/man/html8/mrouted.html
+usr/share/man/html8/route6d.html
+usr/share/man/html8/routed.html
+usr/share/man/html8/rtadvd.html
+usr/share/man/html8/tbrconfig.html

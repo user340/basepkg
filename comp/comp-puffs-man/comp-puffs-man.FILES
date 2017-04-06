@@ -1,0 +1,9 @@
+usr/share/man/man3/p2k.3
+usr/share/man/man3/puffs.3
+usr/share/man/man3/puffs_cc.3
+usr/share/man/man3/puffs_cred.3
+usr/share/man/man3/puffs_flush.3
+usr/share/man/man3/puffs_framebuf.3
+usr/share/man/man3/puffs_node.3
+usr/share/man/man3/puffs_ops.3
+usr/share/man/man3/puffs_path.3

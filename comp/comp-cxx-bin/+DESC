@@ -1,0 +1,5 @@
+comp-cxx-bin	
+comp-cxx-bin		c++, g++ - C++ compiler
+comp-cxx-bin		c++filt - tool for demangling C++ single function names
+comp-cxx-bin		flex++ - C++ lexical analyzser generator (a C++ version of flex)
+comp-cxx-bin	This package includes compilers and tools for the C++ programming language:

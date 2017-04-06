@@ -1,0 +1,21 @@
+comp-debug-catman	
+comp-debug-catman	
+comp-debug-catman	
+comp-debug-catman	
+comp-debug-catman		-ftest-coverage. These options cause the compiler to insert
+comp-debug-catman		addr2line - translates program addresses into file names and line
+comp-debug-catman		execution profile of C, Pascal, or Fortran77 programs.
+comp-debug-catman		gcov - displays basic block profile / coverage data, if requested
+comp-debug-catman		gdb - is the GNU debugger. The purpose of a debugger such as GDB
+comp-debug-catman		gprof - displays call graph profile data. gprof produces an
+comp-debug-catman		how often each basic block is executed; 
+comp-debug-catman		information in the executable to figure out which file name and
+comp-debug-catman		instrumentation into the object files it generates, which measure
+comp-debug-catman		is to allow you to see what is going on ``inside'' another program
+comp-debug-catman		it crashed;
+comp-debug-catman		line number are associated with a given address;
+comp-debug-catman		numbers. Given an address and an executable, it uses the debugging
+comp-debug-catman		via the C compiler gcc(1) command line options -fprofile-arcs and
+comp-debug-catman		while it executes, or what another program was doing at the moment
+comp-debug-catman	This package contains formatted manual pages on various C programming
+comp-debug-catman	debugging utilities, such as:

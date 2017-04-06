@@ -1,0 +1,32 @@
+@name comp-util-htmlman-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/share/man/html1/ar.html
+usr/share/man/html1/as.html
+usr/share/man/html1/cccp.html
+usr/share/man/html1/config.html
+usr/share/man/html1/elfedit.html
+usr/share/man/html1/fgen.html
+usr/share/man/html1/genassym.html
+usr/share/man/html1/ld.html
+usr/share/man/html1/lorder.html
+usr/share/man/html1/luac.html
+usr/share/man/html1/nbperf.html
+usr/share/man/html1/nm.html
+usr/share/man/html1/objcopy.html
+usr/share/man/html1/objdump.html
+usr/share/man/html1/ranlib.html
+usr/share/man/html1/readelf.html
+usr/share/man/html1/size.html
+usr/share/man/html1/strings.html
+usr/share/man/html1/strip.html
+usr/share/man/html5/config.html
+usr/share/man/html5/config.samples.html
+usr/share/man/html5/cpio.html
+usr/share/man/html5/libarchive-formats.html
+usr/share/man/html5/mk.conf.html
+usr/share/man/html5/mtree.html
+usr/share/man/html5/ranlib.html
+usr/share/man/html5/statvfs.html
+usr/share/man/html5/tar.html

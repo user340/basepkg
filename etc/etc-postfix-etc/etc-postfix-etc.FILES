@@ -1,0 +1,4 @@
+etc/mail/aliases
+etc/postfix/README
+etc/postfix/main.cf
+etc/postfix/master.cf

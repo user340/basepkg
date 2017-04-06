@@ -1,0 +1,12 @@
+@name man-lpr-htmlman-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/share/man/html1/lp.html
+usr/share/man/html1/lpq.html
+usr/share/man/html1/lpr.html
+usr/share/man/html1/lprm.html
+usr/share/man/html1/lptest.html
+usr/share/man/html5/printcap.html
+usr/share/man/html8/lpc.html
+usr/share/man/html8/lpd.html

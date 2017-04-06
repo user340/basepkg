@@ -1,0 +1,17 @@
+@name comp-ipf-include-7.1
+@comment Packaged at 2017-04-04 20:28 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/include/netinet/ip_auth.h
+usr/include/netinet/ip_fil.h
+usr/include/netinet/ip_frag.h
+usr/include/netinet/ip_htable.h
+usr/include/netinet/ip_lookup.h
+usr/include/netinet/ip_nat.h
+usr/include/netinet/ip_pool.h
+usr/include/netinet/ip_proxy.h
+usr/include/netinet/ip_scan.h
+usr/include/netinet/ip_state.h
+usr/include/netinet/ip_sync.h
+usr/include/netinet/ipf_rb.h
+usr/include/netinet/ipl.h

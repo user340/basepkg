@@ -1,0 +1,22 @@
+@name man-locale-man-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-man-share>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/man/man1/gencat.1
+usr/share/man/man1/gettext.1
+usr/share/man/man1/msgattrib.1
+usr/share/man/man1/msgcat.1
+usr/share/man/man1/msgcmp.1
+usr/share/man/man1/msgcomm.1
+usr/share/man/man1/msgconv.1
+usr/share/man/man1/msgen.1
+usr/share/man/man1/msgexec.1
+usr/share/man/man1/msgfmt.1
+usr/share/man/man1/msginit.1
+usr/share/man/man1/msgmerge.1
+usr/share/man/man1/msgunfmt.1
+usr/share/man/man1/msguniq.1
+usr/share/man/man1/xgettext.1

@@ -1,0 +1,12 @@
+@name man-texinfo-htmlman-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/share/man/html1/info.html
+usr/share/man/html1/infokey.html
+usr/share/man/html1/install-info.html
+usr/share/man/html1/makeinfo.html
+usr/share/man/html1/texi2dvi.html
+usr/share/man/html1/texindex.html
+usr/share/man/html5/info.html
+usr/share/man/html5/texinfo.html

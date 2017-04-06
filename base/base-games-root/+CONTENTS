@@ -1,0 +1,11 @@
+@name base-games-root-7.1
+@comment Packaged at 2017-04-04 20:28 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 0770 var/games/hackdir/save
+@exec install -d -o root -g wheel -m 0775 var/games
+@exec install -d -o root -g wheel -m 0775 var/games/hackdir
+@exec install -d -o root -g wheel -m 0775 var/games/larn
+@exec install -d -o root -g wheel -m 0775 var/games/phantasia
+@exec install -d -o root -g wheel -m 0775 var/games/sail

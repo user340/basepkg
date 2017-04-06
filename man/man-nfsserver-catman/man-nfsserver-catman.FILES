@@ -1,0 +1,11 @@
+usr/share/man/cat5/exports.0
+usr/share/man/cat8/lockd.0
+usr/share/man/cat8/mountd.0
+usr/share/man/cat8/nfsd.0
+usr/share/man/cat8/pcnfsd.0
+usr/share/man/cat8/rpc.lockd.0
+usr/share/man/cat8/rpc.pcnfsd.0
+usr/share/man/cat8/rpc.rquotad.0
+usr/share/man/cat8/rpc.statd.0
+usr/share/man/cat8/rquotad.0
+usr/share/man/cat8/statd.0

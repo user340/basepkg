@@ -1,0 +1,7 @@
+.cshrc
+.profile
+etc/csh.cshrc
+etc/csh.login
+etc/csh.logout
+etc/profile
+etc/shrc

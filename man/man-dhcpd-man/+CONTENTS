@@ -1,0 +1,13 @@
+@name man-dhcpd-man-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-man-share>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/man/man1/omshell.1
+usr/share/man/man5/dhcp-options.5
+usr/share/man/man5/dhcpd.conf.5
+usr/share/man/man5/dhcpd.leases.5
+usr/share/man/man8/dhcpd.8
+usr/share/man/man8/dhcrelay.8

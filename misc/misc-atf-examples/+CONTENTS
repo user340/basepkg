@@ -1,0 +1,7 @@
+@name misc-atf-examples-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/atf
+usr/share/examples/atf/atf-run.hooks
+usr/share/examples/atf/tests-results.css

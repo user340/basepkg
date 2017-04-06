@@ -1,0 +1,4 @@
+sbin/zfs
+sbin/zpool
+usr/bin/ztest
+usr/sbin/zdb

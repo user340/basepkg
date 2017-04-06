@@ -1,0 +1,6 @@
+etc/defaults/daily.conf
+etc/defaults/monthly.conf
+etc/defaults/pkgpath.conf
+etc/defaults/rc.conf
+etc/defaults/security.conf
+etc/defaults/weekly.conf

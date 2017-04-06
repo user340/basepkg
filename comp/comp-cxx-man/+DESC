@@ -1,0 +1,6 @@
+comp-cxx-man	
+comp-cxx-man		c++, g++ - C++ compiler
+comp-cxx-man		c++filt - tool for demangling C++ single function names
+comp-cxx-man		flex++ - C++ lexical analyzser generator (a C++ version of flex)
+comp-cxx-man	This contains the manual page source on compilers and tools for the C++
+comp-cxx-man	programming language:

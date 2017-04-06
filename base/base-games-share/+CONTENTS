@@ -1,0 +1,13 @@
+@name base-games-share-7.1
+@comment Packaged at 2017-04-04 20:28 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 0755 usr/share/games
+@exec install -d -o root -g wheel -m 0755 usr/share/games/atc
+@exec install -d -o root -g wheel -m 0755 usr/share/games/boggle
+@exec install -d -o root -g wheel -m 0755 usr/share/games/ching
+@exec install -d -o root -g wheel -m 0755 usr/share/games/fortune
+@exec install -d -o root -g wheel -m 0755 usr/share/games/larn
+@exec install -d -o root -g wheel -m 0755 usr/share/games/quiz.db

@@ -1,0 +1,14 @@
+@name man-atf-htmlman-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/share/man/html1/atf-check.html
+usr/share/man/html1/atf-config.html
+usr/share/man/html1/atf-report.html
+usr/share/man/html1/atf-run.html
+usr/share/man/html1/atf-sh.html
+usr/share/man/html1/atf-test-program.html
+usr/share/man/html1/atf-version.html
+usr/share/man/html4/atf-test-case.html
+usr/share/man/html5/atf-formats.html
+usr/share/man/html7/atf.html

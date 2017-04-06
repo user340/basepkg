@@ -1,0 +1,6 @@
+usr/bin/addr2line
+usr/bin/gcore
+usr/bin/gcov
+usr/bin/gdb
+usr/bin/gdbtui
+usr/bin/gprof

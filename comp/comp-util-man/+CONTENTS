@@ -1,0 +1,38 @@
+@name comp-util-man-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-man-share>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/man/man1/ar.1
+usr/share/man/man1/as.1
+usr/share/man/man1/cccp.1
+usr/share/man/man1/config.1
+usr/share/man/man1/elfedit.1
+usr/share/man/man1/fgen.1
+usr/share/man/man1/genassym.1
+usr/share/man/man1/ld.1
+usr/share/man/man1/lorder.1
+usr/share/man/man1/luac.1
+usr/share/man/man1/nbperf.1
+usr/share/man/man1/nm.1
+usr/share/man/man1/objcopy.1
+usr/share/man/man1/objdump.1
+usr/share/man/man1/ranlib.1
+usr/share/man/man1/readelf.1
+usr/share/man/man1/size.1
+usr/share/man/man1/strings.1
+usr/share/man/man1/strip.1
+usr/share/man/man1/tsort.1
+usr/share/man/man1/unifdef.1
+usr/share/man/man1/unifdefall.1
+usr/share/man/man5/config.5
+usr/share/man/man5/config.samples.5
+usr/share/man/man5/cpio.5
+usr/share/man/man5/libarchive-formats.5
+usr/share/man/man5/mk.conf.5
+usr/share/man/man5/mtree.5
+usr/share/man/man5/ranlib.5
+usr/share/man/man5/statvfs.5
+usr/share/man/man5/tar.5

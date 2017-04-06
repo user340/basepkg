@@ -1,0 +1,10 @@
+comp-cvs-catman	CVS does not just operate on one file at a time or one directory at a
+comp-cvs-catman	This contains groff-formatted manual pages for the CVS revision control
+comp-cvs-catman	changes occurred, etc., like RCS  or SCCS. Unlike the simpler systems,
+comp-cvs-catman	of version controlled files. CVS helps to manage releases and to control
+comp-cvs-catman	system. CVS is a version control system which allows you to keep old
+comp-cvs-catman	the concurrent editing of source files among multiple authors. CVS allows
+comp-cvs-catman	time, but operates on hierarchical collections of directories consisting
+comp-cvs-catman	triggers to enable/log/control various operations and works well over a
+comp-cvs-catman	versions of files (usually source code), keep a log of who, when, and why
+comp-cvs-catman	wide area network (see manual pages).

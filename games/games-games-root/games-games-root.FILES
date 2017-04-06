@@ -1,0 +1,10 @@
+var/games/hackdir/data
+var/games/hackdir/help
+var/games/hackdir/hh
+var/games/hackdir/perm
+var/games/phantasia/gold
+var/games/phantasia/lastdead
+var/games/phantasia/mess
+var/games/phantasia/monsters
+var/games/phantasia/motd
+var/games/phantasia/void

@@ -1,0 +1,5 @@
+usr/share/examples/lutok
+usr/share/examples/lutok/bindings.cpp
+usr/share/examples/lutok/hello.cpp
+usr/share/examples/lutok/interpreter.cpp
+usr/share/examples/lutok/raii.cpp

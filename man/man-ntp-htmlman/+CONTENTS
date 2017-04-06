@@ -1,0 +1,14 @@
+@name man-ntp-htmlman-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/share/man/html1/sntp.html
+usr/share/man/html5/ntp.conf.html
+usr/share/man/html5/ntp.keys.html
+usr/share/man/html8/ntp-keygen.html
+usr/share/man/html8/ntpd.html
+usr/share/man/html8/ntpdate.html
+usr/share/man/html8/ntpdc.html
+usr/share/man/html8/ntpq.html
+usr/share/man/html8/ntptime.html
+usr/share/man/html8/ntptrace.html

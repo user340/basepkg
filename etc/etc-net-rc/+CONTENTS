@@ -1,0 +1,22 @@
+@name etc-net-rc-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@cwd /usr/pkg/basepkg/root
+etc/rc.d/ftp_proxy
+etc/rc.d/ftpd
+etc/rc.d/hostapd
+etc/rc.d/httpd
+etc/rc.d/identd
+etc/rc.d/ifwatchd
+etc/rc.d/inetd
+etc/rc.d/ipsec
+etc/rc.d/network
+etc/rc.d/pf
+etc/rc.d/pf_boot
+etc/rc.d/pflogd
+etc/rc.d/racoon
+etc/rc.d/rtadvd
+etc/rc.d/rtsold
+etc/rc.d/rwho
+etc/rc.d/wpa_supplicant

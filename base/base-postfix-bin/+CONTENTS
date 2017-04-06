@@ -1,0 +1,54 @@
+@name base-postfix-bin-7.1
+@comment Packaged at 2017-04-04 20:28 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-postfix-usr>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-usr>=7.1
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 0755 etc/mail
+@exec install -d -o root -g wheel -m 0755 etc/postfix
+usr/libexec/postfix/anvil
+usr/libexec/postfix/bounce
+usr/libexec/postfix/cleanup
+usr/libexec/postfix/discard
+usr/libexec/postfix/dnsblog
+usr/libexec/postfix/error
+usr/libexec/postfix/flush
+usr/libexec/postfix/lmtp
+usr/libexec/postfix/local
+usr/libexec/postfix/master
+usr/libexec/postfix/oqmgr
+usr/libexec/postfix/pickup
+usr/libexec/postfix/pipe
+usr/libexec/postfix/post-install
+usr/libexec/postfix/postfix-files
+usr/libexec/postfix/postfix-script
+usr/libexec/postfix/postfix-wrapper
+usr/libexec/postfix/postmulti-script
+usr/libexec/postfix/postscreen
+usr/libexec/postfix/proxymap
+usr/libexec/postfix/qmgr
+usr/libexec/postfix/scache
+usr/libexec/postfix/sendmail
+usr/libexec/postfix/showq
+usr/libexec/postfix/smtp
+usr/libexec/postfix/smtpd
+usr/libexec/postfix/spawn
+usr/libexec/postfix/tlsmgr
+usr/libexec/postfix/tlsproxy
+usr/libexec/postfix/trivial-rewrite
+usr/libexec/postfix/verify
+usr/libexec/postfix/virtual
+usr/sbin/postalias
+usr/sbin/postcat
+usr/sbin/postconf
+usr/sbin/postdrop
+usr/sbin/postfix
+usr/sbin/postkick
+usr/sbin/postlock
+usr/sbin/postlog
+usr/sbin/postmap
+usr/sbin/postmulti
+usr/sbin/postqueue
+usr/sbin/postsuper
+usr/sbin/posttls-finger

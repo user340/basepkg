@@ -1,0 +1,28 @@
+@name etc-sysutil-etc-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-usr>=7.1
+@pkgdep base-sysutil-bin>=7.1
+@cwd /usr/pkg/basepkg/root
+etc/disktab
+etc/dumpdates
+etc/envsys.conf
+etc/floppytab
+etc/gettytab
+etc/newsyslog.conf
+etc/powerd/scripts/acadapter
+etc/powerd/scripts/hotkey_button
+etc/powerd/scripts/lid_switch
+etc/powerd/scripts/power_button
+etc/powerd/scripts/reset_button
+etc/powerd/scripts/sensor_battery
+etc/powerd/scripts/sensor_drive
+etc/powerd/scripts/sensor_fan
+etc/powerd/scripts/sensor_indicator
+etc/powerd/scripts/sensor_power
+etc/powerd/scripts/sensor_resistance
+etc/powerd/scripts/sensor_temperature
+etc/powerd/scripts/sensor_voltage
+etc/powerd/scripts/sleep_button
+etc/rmt

@@ -1,0 +1,30 @@
+@name misc-reference-share-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-reference-share>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@pkgdep base-termcap-share>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/dict/README
+usr/share/dict/american
+usr/share/dict/british
+usr/share/dict/eign
+usr/share/dict/propernames
+usr/share/dict/special/math
+usr/share/dict/special/netbsd
+usr/share/dict/stop
+usr/share/dict/web2
+usr/share/dict/web2a
+usr/share/dict/words
+usr/share/misc/NetBSD.el
+usr/share/misc/airport
+usr/share/misc/birthtoken
+usr/share/misc/country
+usr/share/misc/domains
+usr/share/misc/flowers
+usr/share/misc/inter.phone
+usr/share/misc/language
+usr/share/misc/na.phone
+usr/share/misc/na.postal
+usr/share/misc/zipcodes

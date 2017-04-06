@@ -1,0 +1,12 @@
+@name base-ipf-bin-7.1
+@comment Packaged at 2017-04-04 20:28 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/sbin/ipfs
+usr/sbin/ipfstat
+usr/sbin/ipftest
+usr/sbin/ipmon
+usr/sbin/ipnat
+usr/sbin/ipresend
+usr/sbin/ipsend
+usr/sbin/iptest

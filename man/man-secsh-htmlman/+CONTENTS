@@ -1,0 +1,19 @@
+@name man-secsh-htmlman-7.1
+@comment Packaged at 2017-04-03 15:41 UTC by uki@localhost
+@comment Packaged using basepkg.sh $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/share/man/html1/scp.html
+usr/share/man/html1/sftp.html
+usr/share/man/html1/slogin.html
+usr/share/man/html1/ssh-add.html
+usr/share/man/html1/ssh-agent.html
+usr/share/man/html1/ssh-keygen.html
+usr/share/man/html1/ssh-keyscan.html
+usr/share/man/html1/ssh.html
+usr/share/man/html5/moduli.html
+usr/share/man/html5/ssh_config.html
+usr/share/man/html5/sshd_config.html
+usr/share/man/html8/sftp-server.html
+usr/share/man/html8/ssh-keysign.html
+usr/share/man/html8/ssh-pkcs11-helper.html
+usr/share/man/html8/sshd.html

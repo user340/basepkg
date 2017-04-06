@@ -1,0 +1,5 @@
+etc-sys-root
+etc/mtree/set.xetc
+etc/mtree/set.xetc
+var/crash/minfree
+var/db/locate.database

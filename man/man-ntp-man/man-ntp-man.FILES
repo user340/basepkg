@@ -1,0 +1,10 @@
+usr/share/man/man1/sntp.1
+usr/share/man/man5/ntp.conf.5
+usr/share/man/man5/ntp.keys.5
+usr/share/man/man8/ntp-keygen.8
+usr/share/man/man8/ntpd.8
+usr/share/man/man8/ntpdate.8
+usr/share/man/man8/ntpdc.8
+usr/share/man/man8/ntpq.8
+usr/share/man/man8/ntptime.8
+usr/share/man/man8/ntptrace.8
