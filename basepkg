@@ -180,8 +180,14 @@ make_DESC_and_COMMENT() {
 do_pkg_create() {
 	setname=`echo $1 | cut -d '/' -f 1 | sed 's/\./-/g'`
 	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
-	pkg_create -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT -d $1/+DESC \
-	-f $1/+CONTENTS -p ${PWD}/work/${setname} -K ${pkg_db} ${pkgname}
+	if [ -f $1/+INSTALL ]; then
+		install_script="-i $1/+INSTALL"
+	else
+		install_script=""
+	fi
+	pkg_create -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
+	-d $1/+DESC -f $1/+CONTENTS ${install_script} \
+	-p ${PWD}/work/${setname} -K ${pkg_db} ${pkgname}
 	if [ $? != 0 ]; then
 		return $?
 	fi
@@ -215,8 +221,33 @@ do_pkg_add() {
 	pkg_add -K ${pkg_db} -p ${prefix}/${basedir} $@
 	if [ $touch_system = "true" ]; then
 		for i in $@; do
-			cat ${pkg_db}/${i}/+CONTENTS | grep -v -e '^@' -e '^\+' |
-			while read contents; do
+			sed -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${pkg_db}/+INSTALL | sort -u |
+			while read dst src mode user group; do
+				case ${dst} in
+					"") continue ;;
+					[!/]*) dst="/${dst}" ;;
+				esac
+				case ${src} in
+					"") continue ;;
+					[!/]*) src="${prefix}/${basedir}/${src}" ;;
+				esac
+				if [ -f ${src} -a ! -f ${dst} ]; then
+					case ${mode} in
+						"") ;;
+						*) chmod ${mode} ${src} ;;
+					esac
+					case ${user} in
+						"") ;;
+						*) chown ${user} ${src} ;;
+					esac
+					case ${group} in
+						"") ;;
+						*) chgrp ${group} ${src} ;;
+					esac
+					mv ${src} ${dst}
+				elif [ -f ${src} -a -f ${dst} ]; then
+					echo "${dst} is already exist."
+				fi
 			done
 		done
 	fi
@@ -310,8 +341,7 @@ for OPT in $@
 do
 	case ${OPT} in
 		'-h'|'--help')
-			usage
-			;;
+			usage ;;
 		'--sets')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
@@ -319,8 +349,7 @@ do
 			fi
 			sets=$2
 			shift
-			shift
-			;;
+			shift ;;
 		'--src')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
@@ -328,8 +357,7 @@ do
 			fi
 			SRC=$2
 			shift
-			shift
-			;;
+			shift ;;
 		'--pkg')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
@@ -337,8 +365,7 @@ do
 			fi
 			PACKAGES=$2
 			shift
-			shift
-			;;
+			shift ;;
 		'--category')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
@@ -346,8 +373,7 @@ do
 			fi
 			category="$2"
 			shift
-			shift
-			;;
+			shift ;;
 		'--prefix')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
@@ -355,12 +381,10 @@ do
 			fi
 			prefix="$2"
 			shift
-			shift
-			;;
+			shift ;;
 		'--system')
 			touch_system="true"
-			shift
-			;;
+			shift ;;
 		'--database')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
@@ -368,46 +392,34 @@ do
 			fi
 			pkg_db="$2"
 			shift
-			shift
-			;;
+			shift ;;
 		'-'|'--')
 			shift
-			break
-			;;
+			break ;;
 		*)
-			break
-			;;
+			break ;;
 	esac
 done
 
 # operation
 case $1 in
 	extract)
-		extract_base_binaries
-		;;
+		extract_base_binaries ;;
 	dir) 
 		split_category_from_lists
-		make_directories_of_package
-		;;
+		make_directories_of_package ;;
 	list)
-		make_contents_list
-		;;
+		make_contents_list ;;
 	pkg)		 
-		make_packages
-		;;
+		make_packages ;;
 	install)
-		do_pkg_add $2
-		;;
+		do_pkg_add $2 ;;
 	delete)
-		do_pkg_delete $2
-		;;
+		do_pkg_delete $2 ;;
 	cleanpkg)
-		clean_packages
-		;;
+		clean_packages ;;
 	cleandir)
-		clean_categories
-		;;
+		clean_categories ;;
 	*)
-		usage
-		;;
+		usage ;;
 esac
