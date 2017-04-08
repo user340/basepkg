@@ -23,8 +23,9 @@ category="base comp etc games man misc text"
 progname=${0##*/}
 prefix="/usr/pkg"
 basedir="basepkg/root"
-pkg_db="/var/db/basepkg"
+pkgdb="/var/db/basepkg"
 touch_system="false"
+new_package="false"
 
 # "extract" option use following function.
 extract_base_binaries() {
@@ -187,7 +188,7 @@ do_pkg_create() {
 	fi
 	pkg_create -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
 	-d $1/+DESC -f $1/+CONTENTS ${install_script} \
-	-p ${PWD}/work/${setname} -K ${pkg_db} ${pkgname}
+	-p ${PWD}/work/${setname} -K ${pkgdb} ${pkgname}
 	if [ $? != 0 ]; then
 		return $?
 	fi
@@ -205,9 +206,11 @@ make_packages() {
 	for i in ${category}; do
 		for j in `ls ./${i} | grep -E '^[a-z]+'`; do
 			echo "Package ${i}/${j} Creating..."
-			make_BUILD_INFO ${i}/${j}
-			make_CONTENTS ${i}/${j}
-			make_DESC_and_COMMENT ${i}/${j}
+			if [ ${new_package} = "true" ]; then
+				make_BUILD_INFO ${i}/${j}
+				make_CONTENTS ${i}/${j}
+				make_DESC_and_COMMENT ${i}/${j}
+			fi
 			do_pkg_create ${i}/${j}
 		done
 	done
@@ -218,10 +221,10 @@ do_pkg_add() {
 	if [ -d ${prefix}/${basedir} ]; then
 		mkdir -p ${prefix}/${basedir}
 	fi
-	pkg_add -K ${pkg_db} -p ${prefix}/${basedir} $@
+	pkg_add -K ${pkgdb} -p ${prefix}/${basedir} $@
 	if [ $touch_system = "true" ]; then
 		for i in $@; do
-			sed -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${pkg_db}/+INSTALL | sort -u |
+			sed -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${pkgdb}/+INSTALL | sort -u |
 			while read dst src mode user group; do
 				case ${dst} in
 					"") continue ;;
@@ -249,6 +252,32 @@ do_pkg_add() {
 					echo "${dst} is already exist."
 				fi
 			done
+			sed -n "/^\# BIN: /{s/^\# BIN: //;p;}/" ${pkgdb}/+INSTALL | sort -u |
+			while read dst src mode user group; do
+				case ${dst} in
+					"") continue ;;
+					[!/]*) dst="/${dst}" ;;
+				esac
+				case ${src} in
+					"") continue ;;
+					[!/]*) src="${prefix}/${basedir}/${src}" ;;
+				esac
+				if [ -f ${src} ]; then
+					case ${mode} in
+						"") ;;
+						*) chmod ${mode} ${src} ;;
+					esac
+					case ${user} in
+						"") ;;
+						*) chown ${user} ${src} ;;
+					esac
+					case ${group} in
+						"") ;;
+						*) chgrp ${group} ${src} ;;
+					esac
+					mv ${src} ${dst}
+				fi
+			done
 		done
 	fi
 }
@@ -260,7 +289,7 @@ do_pkg_delete() {
 	else
 		real_prefix="${prefix}/${basedir}"
 	fi
-	pkg_delete -K ${pkg_db} -p ${real_prefix} $@
+	pkg_delete -K ${pkgdb} -p ${real_prefix} $@
 }
 
 # "clean" option use following functions.
@@ -329,8 +358,10 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         [Default: "/usr/pkg"]
     --system            If install/delete operation with this option,
                         install to/delete from /.
-    --database          Set pkg_db to package's database.
+    --database          Set pkgdb to package's database.
                         [Default: "/var/db/basepkg"]
+	--new               Set new_package to create 
+                        file of package's information newly.
 
 _usage_
 	exit 1
@@ -385,12 +416,15 @@ do
 		'--system')
 			touch_system="true"
 			shift ;;
+		'--new')
+			new_package="true"
+			shift ;;
 		'--database')
 			if [ -z $2 ]; then
 				echo "What is $1 parameter?" 1>&2
 				exit 1
 			fi
-			pkg_db="$2"
+			pkgdb="$2"
 			shift
 			shift ;;
 		'-'|'--')
