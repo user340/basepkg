@@ -178,6 +178,11 @@ make_DESC_and_COMMENT() {
 	grep ${pkgname} ${comments} | sed -e "s/${pkgname} //" > ./$1/+COMMENT
 }
 
+make_INSTALL() {
+	setname=`echo $1 | cut -d '/' -f 1 | sed 's/\./-/g'`
+	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
+}
+
 do_pkg_create() {
 	setname=`echo $1 | cut -d '/' -f 1 | sed 's/\./-/g'`
 	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
