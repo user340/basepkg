@@ -178,6 +178,31 @@ make_DESC_and_COMMENT() {
 	grep ${pkgname} ${comments} | sed -e "s/${pkgname} //" > ./$1/+COMMENT
 }
 
+make_INSTALL() {
+	setname=`echo $1 | cut -d '/' -f 1 | sed 's/\./-/g'`
+	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
+	if [ -f ${setname}/${pkgname}/+INSTALL ]; then
+		mv ${setname}/${pkgname}/+INSTALL ${setname}/${pkgname}/+INSTALL.old
+	fi
+	if [ -f ${setname}/${pkgname}/+CONTENTS ]; then
+		grep -v -e "^@" ${setname}/${pkgname}/+CONTENTS | while read file; do
+			if [ `echo ${file} | cut -d "/" -f 1` = "etc" ]; then
+				install_type="CONF"
+			else
+				install_type="FILE"
+			fi
+			if [ -f /${file} ]; then
+				mode_user_group=`stat -f '%p %u %g'`
+			else
+				mode_user_group=""
+			fi
+			echo "# ${install_type}: /${file} ${file} ${mode_user_group}"
+		done
+	else
+		return 1
+	fi
+}
+
 do_pkg_create() {
 	setname=`echo $1 | cut -d '/' -f 1 | sed 's/\./-/g'`
 	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
