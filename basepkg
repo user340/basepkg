@@ -196,8 +196,12 @@ make_INSTALL() {
 			else
 				mode_user_group=""
 			fi
-			echo "# ${install_type}: /${file} ${file} ${mode_user_group}"
+			echo "# ${install_type}: /${file} ${file} ${mode_user_group}" \
+			>> ${setname}/${pkgname}/+INSTALL
 		done
+		if [ -f ${setname}/${pkgname}/+INSTALL.old ]; then
+			rm -f ${setname}${pkgname}/+INSTALL.old
+		fi
 	else
 		return 1
 	fi
