@@ -192,7 +192,8 @@ make_INSTALL() {
 				install_type="FILE"
 			fi
 			if [ -f /${file} ]; then
-				mode_user_group=`stat -f '%p %u %g'`
+				mode_user_group=`stat -f '%p %u %g' work/${setname}/${file} | \
+				sed 's/^[0-9]\{3\}//'`
 			else
 				mode_user_group=""
 			fi
@@ -239,6 +240,7 @@ make_packages() {
 				make_BUILD_INFO ${i}/${j}
 				make_CONTENTS ${i}/${j}
 				make_DESC_and_COMMENT ${i}/${j}
+				make_INSTALL ${i}/${j}
 			fi
 			do_pkg_create ${i}/${j}
 		done
