@@ -1,0 +1,9 @@
+# FILE: /usr/bin/audiocfg usr/bin/audiocfg 00 1004 100
+# FILE: /usr/bin/audioctl usr/bin/audioctl 00 1004 100
+# FILE: /usr/bin/audioplay usr/bin/audioplay 00 1004 100
+# FILE: /usr/bin/audiorecord usr/bin/audiorecord 00 1004 100
+# FILE: /usr/bin/cdplay usr/bin/cdplay 00 1004 100
+# FILE: /usr/bin/midiplay usr/bin/midiplay 00 1004 100
+# FILE: /usr/bin/midirecord usr/bin/midirecord 00 1004 100
+# FILE: /usr/bin/mixerctl usr/bin/mixerctl 00 1004 100
+# FILE: /usr/bin/radioctl usr/bin/radioctl 00 1004 100

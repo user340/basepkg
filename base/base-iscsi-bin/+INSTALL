@@ -1,0 +1,4 @@
+# FILE: /sbin/iscsictl sbin/iscsictl 00 1004 100
+# FILE: /sbin/iscsid sbin/iscsid 00 1004 100
+# FILE: /usr/sbin/iscsi-initiator usr/sbin/iscsi-initiator 00 1004 100
+# FILE: /usr/sbin/iscsi-target usr/sbin/iscsi-target 00 1004 100

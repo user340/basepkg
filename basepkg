@@ -188,6 +188,8 @@ make_INSTALL() {
 		grep -v -e "^@" ${setname}/${pkgname}/+CONTENTS | while read file; do
 			if [ `echo ${file} | cut -d "/" -f 1` = "etc" ]; then
 				install_type="CONF"
+			elif [ `echo ${file} | cut -d "/" -f 1` = "boot.cfg" ]; then
+				install_type="CONF"
 			else
 				install_type="FILE"
 			fi
@@ -255,7 +257,8 @@ do_pkg_add() {
 	pkg_add -K ${pkgdb} -p ${prefix}/${basedir} $@
 	if [ $touch_system = "true" ]; then
 		for i in $@; do
-			sed -n "/^\# CONF: /{s/^\# FILE: //;p;}" ${pkgdb}/+INSTALL | sort -u |
+			sed -n "/^\# CONF: /{s/^\# CONF: //;p;}" \
+			{pkgdb}/`echo ${i} | sed 's/\.tgz$//'`/+INSTALL | sort -u |
 			while read dst src mode user group; do
 				case ${dst} in
 					"") continue ;;
@@ -283,7 +286,8 @@ do_pkg_add() {
 					echo "${dst} is already exist."
 				fi
 			done
-			sed -n "/^\# FILE: /{s/^\# BIN: //;p;}/" ${pkgdb}/+INSTALL | sort -u |
+			sed -n "/^\# FILE: /{s/^\# FILE: //;p;}/" \
+			${pkgdb}/`basename ${i} | sed 's/\.tgz$//'`/+INSTALL | sort -u |
 			while read dst src mode user group; do
 				case ${dst} in
 					"") continue ;;

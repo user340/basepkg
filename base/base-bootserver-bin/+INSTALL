@@ -1,0 +1,14 @@
+# FILE: /usr/sbin/bootpd usr/sbin/bootpd 00 1004 100
+# FILE: /usr/sbin/bootpef usr/sbin/bootpef 00 1004 100
+# FILE: /usr/sbin/bootpgw usr/sbin/bootpgw 00 1004 100
+# FILE: /usr/sbin/bootptest usr/sbin/bootptest 00 1004 100
+# FILE: /usr/sbin/isibootd usr/sbin/isibootd 00 1004 100
+# FILE: /usr/sbin/mopchk usr/sbin/mopchk 00 1004 100
+# FILE: /usr/sbin/mopcopy usr/sbin/mopcopy 00 1004 100
+# FILE: /usr/sbin/mopd usr/sbin/mopd 00 1004 100
+# FILE: /usr/sbin/mopprobe usr/sbin/mopprobe 00 1004 100
+# FILE: /usr/sbin/moptrace usr/sbin/moptrace 00 1004 100
+# FILE: /usr/sbin/ndbootd usr/sbin/ndbootd 00 1004 100
+# FILE: /usr/sbin/rarpd usr/sbin/rarpd 00 1004 100
+# FILE: /usr/sbin/rbootd usr/sbin/rbootd 00 1004 100
+# FILE: /usr/sbin/rpc.bootparamd usr/sbin/rpc.bootparamd 00 1004 100
