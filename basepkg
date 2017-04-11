@@ -286,7 +286,7 @@ do_pkg_add() {
 					echo "${dst} is already exist."
 				fi
 			done
-			sed -n "/^\# FILE: /{s/^\# FILE: //;p;}/" \
+			sed -n "/^\# FILE: /{s/^\# FILE: //;p;}" \
 			${pkgdb}/`basename ${i} | sed 's/\.tgz$//'`/+INSTALL | sort -u |
 			while read dst src mode user group; do
 				case ${dst} in
