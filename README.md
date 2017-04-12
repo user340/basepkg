@@ -29,7 +29,7 @@ Testing on virtual machines or dedicated testing machines is strongly encouraged
 ### 1. Build NetBSD
 In this procedure, NetBSD source sets is in /usr/src, NetBSD build-tools is in /usr/tools,  
 NetBSD compiled objects is in /usr/obj .  
-And NetBSD Version is 7.0.2, machine is amd64, machine archtecture is x86\_64.  
+And NetBSD Version is 7.1, machine is amd64, machine archtecture is x86\_64.  
   
 First, Download NetBSD Source Sets and Extract to /usr/src.  
 ```# cd /```  
@@ -55,36 +55,18 @@ or
 ```# pkgin install pkg_install```
 
 ### 3. Extract NetBSD Binary Sets to Working Directory
-Extract binary sets to working directory using basepkg.sh script.  
+Extract binary sets to working directory using basepkg script.  
 ```# cd /path/to/basepkg```  
-```# ./basepkg.sh extract```
+```# ./basepkg extract```
 
 ### 4. Make Packages
-Run basepkg.sh script with following option.  
-```# ./basepkg.sh pkg```  
+Run basepkg script with __pkg__ option.  
+```# ./basepkg pkg```  
 Packages are created under the basepkg/packages directory.
 
 ### 5. How to Install Package?
-Example, installing base/base-sys-root.  
-```# pkg_add packages/base/base-sys-root```  
-But, base-sys-root package's information stored in /v 
-ar/db/pkg.  
-Then I recommend use ```-K /var/db/basepkg``` option  
-for discriminate between pkgsrc's package and basepkg's package.  
-```# pkg_add -K /var/db/basepkg packages/base/base-sys-root```  
-Or, use utils/bpkg_add script instead of pkg_add.  
-```# sh utils/bpkg_add packages/base/base-sys-root```  
-This script is pkg_add wrapper.
-
-### 6. Can I install the package using pkgin?
-Yes, you can.  
-Example, "games" categorized package install to system using pkgin,  
-you have to make pkg_summary.gz.  
-```# cd packages/games```  
-```# pkg_info -X * > pkg_summary```  
-```# gzip pkg_summary```  
-Then, edit /usr/pkg/etc/pkgin/repositories.conf and update pkgin.  
-```# echo "file:///path/to/basepkg/packages/games" >> /usr/pkg/etc/pkgin/repositories.conf```  
-```# pkgin update```  
-Let's install the package through pkgin :-)  
-```# pkgin in games-games-bin```
+Rub basepkg script with __install__ option.  
+```# ./basepkg install packages/All/games-games-bin-7.1.tgz```  
+In default, packages are installed under the /usr/pkg/basepkg/root.  
+If you want to install to the system, use __--system__ option.  
+```# ./basepkg --system install packages/All/games-games-bin-7.1.tgz```
