@@ -1,0 +1,18 @@
+@name man-isdn-man-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-man-share>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/man/man1/dtmfdecode.1
+usr/share/man/man5/isdnd.acct.5
+usr/share/man/man5/isdnd.rates.5
+usr/share/man/man5/isdnd.rc.5
+usr/share/man/man8/ipppctl.8
+usr/share/man/man8/isdnd.8
+usr/share/man/man8/isdnmonitor.8
+usr/share/man/man8/isdntel.8
+usr/share/man/man8/isdntelctl.8
+usr/share/man/man8/isdntrace.8
+usr/share/man/man8/pppoectl.8

@@ -1,0 +1,10 @@
+@name misc-sysutil-examples-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@pkgdep base-sysutil-examples>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/examples/smbfs/dot.nsmbrc
+usr/share/examples/syslogd/all.debug
+usr/share/examples/syslogd/all.newsyslog.conf

@@ -1,0 +1,22 @@
+@name man-puffs-htmlman-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/share/man/html8/mount_9p.html
+usr/share/man/html8/mount_psshfs.html
+usr/share/man/html8/mount_sysctlfs.html
+usr/share/man/html8/rump_cd9660.html
+usr/share/man/html8/rump_efs.html
+usr/share/man/html8/rump_ext2fs.html
+usr/share/man/html8/rump_ffs.html
+usr/share/man/html8/rump_hfs.html
+usr/share/man/html8/rump_lfs.html
+usr/share/man/html8/rump_msdos.html
+usr/share/man/html8/rump_nfs.html
+usr/share/man/html8/rump_ntfs.html
+usr/share/man/html8/rump_smbfs.html
+usr/share/man/html8/rump_syspuffs.html
+usr/share/man/html8/rump_sysvbfs.html
+usr/share/man/html8/rump_tmpfs.html
+usr/share/man/html8/rump_udf.html
+usr/share/man/html8/rump_v7fs.html

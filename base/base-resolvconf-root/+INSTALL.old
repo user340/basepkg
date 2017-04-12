@@ -1,0 +1,5 @@
+# FILE: /libexec/resolvconf/dnsmasq libexec/resolvconf/dnsmasq 00 1004 100
+# FILE: /libexec/resolvconf/libc libexec/resolvconf/libc 00 1004 100
+# FILE: /libexec/resolvconf/named libexec/resolvconf/named 00 1004 100
+# FILE: /libexec/resolvconf/unbound libexec/resolvconf/unbound 00 1004 100
+# FILE: /sbin/resolvconf sbin/resolvconf 00 1004 100

@@ -1,0 +1,5 @@
+usr/sbin/dhcpd
+usr/sbin/dhcrelay
+usr/sbin/omshell
+usr/share/dhcpd
+usr/share/dhcpd/pxe.defs

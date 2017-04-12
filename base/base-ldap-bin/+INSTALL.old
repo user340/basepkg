@@ -1,0 +1,10 @@
+# FILE: /usr/bin/ldapadd usr/bin/ldapadd 00 1004 100
+# FILE: /usr/bin/ldapcompare usr/bin/ldapcompare 00 1004 100
+# FILE: /usr/bin/ldapdelete usr/bin/ldapdelete 00 1004 100
+# FILE: /usr/bin/ldapexop usr/bin/ldapexop 00 1004 100
+# FILE: /usr/bin/ldapmodify usr/bin/ldapmodify 00 1004 100
+# FILE: /usr/bin/ldapmodrdn usr/bin/ldapmodrdn 00 1004 100
+# FILE: /usr/bin/ldappasswd usr/bin/ldappasswd 00 1004 100
+# FILE: /usr/bin/ldapsearch usr/bin/ldapsearch 00 1004 100
+# FILE: /usr/bin/ldapurl usr/bin/ldapurl 00 1004 100
+# FILE: /usr/bin/ldapwhoami usr/bin/ldapwhoami 00 1004 100

@@ -1,0 +1,14 @@
+@name man-ldap-htmlman-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/share/man/html1/ldapadd.html
+usr/share/man/html1/ldapcompare.html
+usr/share/man/html1/ldapdelete.html
+usr/share/man/html1/ldapexop.html
+usr/share/man/html1/ldapmodify.html
+usr/share/man/html1/ldapmodrdn.html
+usr/share/man/html1/ldappasswd.html
+usr/share/man/html1/ldapsearch.html
+usr/share/man/html1/ldapurl.html
+usr/share/man/html1/ldapwhoami.html

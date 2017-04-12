@@ -1,0 +1,12 @@
+comp-c-man	
+comp-c-man	
+comp-c-man	
+comp-c-man	
+comp-c-man	
+comp-c-man		c89, c99, cc, gcc - C compilers
+comp-c-man		flex, lex - lexical analyzer generator
+comp-c-man		lint - C program validator
+comp-c-man		rpcgen - RPC stub generator
+comp-c-man		yacc - program parser generator
+comp-c-man	This package includes the manual pages sources for compilers and tools
+comp-c-man	for the C programming language:

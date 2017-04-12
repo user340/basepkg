@@ -1,0 +1,7 @@
+# FILE: /usr/sbin/daicctl usr/sbin/daicctl 555 1004 100
+# FILE: /usr/sbin/dtmfdecode usr/sbin/dtmfdecode 555 1004 100
+# FILE: /usr/sbin/isdnd usr/sbin/isdnd 555 1004 100
+# FILE: /usr/sbin/isdnmonitor usr/sbin/isdnmonitor 555 1004 100
+# FILE: /usr/sbin/isdntel usr/sbin/isdntel 555 1004 100
+# FILE: /usr/sbin/isdntelctl usr/sbin/isdntelctl 555 1004 100
+# FILE: /usr/sbin/isdntrace usr/sbin/isdntrace 555 1004 100

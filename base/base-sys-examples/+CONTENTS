@@ -1,0 +1,23 @@
+@name base-sys-examples-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/apm
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/blacklist
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/disktab
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/emul
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/emul/linux
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/emul/linux/etc
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/emul/svr4
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/emul/svr4/etc
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/emul/ultrix
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/emul/ultrix/etc
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/getdate
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/lua
+usr/share/examples/blacklist/blacklistd.conf
+usr/share/examples/blacklist/npf.conf
+usr/share/examples/lua/README
+usr/share/examples/lua/gpio.lua
+usr/share/examples/lua/sqlite.lua

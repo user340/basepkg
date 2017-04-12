@@ -1,0 +1,24 @@
+@name base-groff-font-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devX100
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devX100-12
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devX75
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devX75-12
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devascii
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devcp1047
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devdvi
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devdvi/generate
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devhtml
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devkoi8-r
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devlatin1
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devlbp
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devlj4
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devlj4/generate
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devps
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devps/generate
+@exec install -d -o root -g wheel -m 0755 usr/share/groff_font/devutf8

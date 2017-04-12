@@ -1,0 +1,3 @@
+usr/lib/liblber.a
+usr/lib/libldap.a
+usr/lib/libldap_r.a

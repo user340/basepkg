@@ -1,0 +1,6 @@
+# CONF: /etc/defaults/daily.conf etc/defaults/daily.conf 444 1004 100
+# CONF: /etc/defaults/monthly.conf etc/defaults/monthly.conf 444 1004 100
+# CONF: /etc/defaults/pkgpath.conf etc/defaults/pkgpath.conf 444 1004 100
+# CONF: /etc/defaults/rc.conf etc/defaults/rc.conf 444 1004 100
+# CONF: /etc/defaults/security.conf etc/defaults/security.conf 444 1004 100
+# CONF: /etc/defaults/weekly.conf etc/defaults/weekly.conf 444 1004 100

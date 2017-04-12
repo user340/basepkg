@@ -1,0 +1,9 @@
+usr/bin/lp
+usr/bin/lpq
+usr/bin/lpr
+usr/bin/lprm
+usr/libexec/lpr/lpf
+usr/libexec/lpr/pjlfilter
+usr/sbin/lpc
+usr/sbin/lpd
+usr/sbin/lptest

@@ -1,0 +1,12 @@
+usr/share/man/man1/altqstat.1
+usr/share/man/man5/altq.conf.5
+usr/share/man/man5/ldpd.conf.5
+usr/share/man/man5/rtadvd.conf.5
+usr/share/man/man8/altqd.8
+usr/share/man/man8/faithd.8
+usr/share/man/man8/ldpd.8
+usr/share/man/man8/mrouted.8
+usr/share/man/man8/route6d.8
+usr/share/man/man8/routed.8
+usr/share/man/man8/rtadvd.8
+usr/share/man/man8/tbrconfig.8

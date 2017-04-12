@@ -1,0 +1,8 @@
+@name misc-kyua-doc-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref1/kyua
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref1/kyua/kyua-atf-compat
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref1/kyua/kyua-cli
+@exec install -d -o root -g wheel -m 0755 usr/share/doc/reference/ref1/kyua/kyua-testers

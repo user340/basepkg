@@ -1,0 +1,11 @@
+# FILE: /libexec/dhcpcd-hooks/01-test libexec/dhcpcd-hooks/01-test 444 1004 100
+# FILE: /libexec/dhcpcd-hooks/02-dump libexec/dhcpcd-hooks/02-dump 444 1004 100
+# FILE: /libexec/dhcpcd-hooks/10-mtu libexec/dhcpcd-hooks/10-mtu 444 1004 100
+# FILE: /libexec/dhcpcd-hooks/10-wpa_supplicant libexec/dhcpcd-hooks/10-wpa_supplicant 444 1004 100
+# FILE: /libexec/dhcpcd-hooks/15-timezone libexec/dhcpcd-hooks/15-timezone 444 1004 100
+# FILE: /libexec/dhcpcd-hooks/20-resolv.conf libexec/dhcpcd-hooks/20-resolv.conf 444 1004 100
+# FILE: /libexec/dhcpcd-hooks/29-lookup-hostname libexec/dhcpcd-hooks/29-lookup-hostname 444 1004 100
+# FILE: /libexec/dhcpcd-hooks/30-hostname libexec/dhcpcd-hooks/30-hostname 444 1004 100
+# FILE: /libexec/dhcpcd-hooks/50-ntp.conf libexec/dhcpcd-hooks/50-ntp.conf 444 1004 100
+# FILE: /libexec/dhcpcd-run-hooks libexec/dhcpcd-run-hooks 555 1004 100
+# FILE: /sbin/dhcpcd sbin/dhcpcd 555 1004 100

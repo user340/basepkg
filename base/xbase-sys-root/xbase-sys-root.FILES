@@ -1,0 +1,11 @@
+etc/mtree/set.xbase
+var/db/obsolete/xbase
+var/db/obsolete/xbase
+var/db/obsolete/xcomp
+var/db/obsolete/xcomp
+var/db/obsolete/xetc
+var/db/obsolete/xetc
+var/db/obsolete/xfont
+var/db/obsolete/xfont
+var/db/obsolete/xserver
+var/db/obsolete/xserver

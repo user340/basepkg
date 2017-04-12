@@ -1,0 +1,43 @@
+@name base-util-root-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 01777 var/tmp/vi.recover
+@exec install -d -o root -g wheel -m 0750 var/quotas
+@exec install -d -o root -g wheel -m 0755 var/msgs
+@exec install -d -o root -g wheel -m 0755 var/preserve
+bin/[
+bin/cat
+bin/chgrp
+bin/chio
+bin/chmod
+bin/cp
+bin/cpio
+bin/csh
+bin/date
+bin/dd
+bin/df
+bin/echo
+bin/ed
+bin/expr
+bin/hostname
+bin/kill
+bin/ksh
+bin/ln
+bin/ls
+bin/mkdir
+bin/mt
+bin/mv
+bin/pax
+bin/ps
+bin/pwd
+bin/rm
+bin/rmdir
+bin/rump.dd
+bin/sh
+bin/sleep
+bin/stty
+bin/sync
+bin/tar
+bin/test

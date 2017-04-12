@@ -1,0 +1,9 @@
+# FILE: /var/log/authlog var/log/authlog 600 1004 100
+# FILE: /var/log/lastlog var/log/lastlog 644 1004 100
+# FILE: /var/log/lastlogx var/log/lastlogx 644 1004 100
+# FILE: /var/log/messages var/log/messages 644 1004 100
+# FILE: /var/log/secure var/log/secure 600 1004 100
+# FILE: /var/log/wtmp var/log/wtmp 644 1004 100
+# FILE: /var/log/wtmpx var/log/wtmpx 644 1004 100
+# FILE: /var/run/utmp var/run/utmp 644 1004 100
+# FILE: /var/run/utmpx var/run/utmpx 644 1004 100

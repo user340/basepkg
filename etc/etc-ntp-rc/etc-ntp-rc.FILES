@@ -1,0 +1,2 @@
+etc/rc.d/ntpd
+etc/rc.d/ntpdate

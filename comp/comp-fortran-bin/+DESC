@@ -1,0 +1,22 @@
+comp-fortran-bin	
+comp-fortran-bin	
+comp-fortran-bin	
+comp-fortran-bin		FORTRAN 77, also called F77). gcc processes input files through
+comp-fortran-bin		and F77 compilers are integrated; g77 is a program to call gcc
+comp-fortran-bin		asa - interpret carriage-control characters. The asa utility reads
+comp-fortran-bin		assembly, and linking. This manual page contains full descriptions
+comp-fortran-bin		contains summaries of some general-purpose options. For a fuller
+comp-fortran-bin		conventions into files formatted according to UNIX line printer
+comp-fortran-bin		conventions.
+comp-fortran-bin		explanation of the compiler, see gcc(1);
+comp-fortran-bin		f77, fort77, g77 - GNU project Fortran Compiler (v0.5.24). The C
+comp-fortran-bin		files formatted according to Fortran's carriage control
+comp-fortran-bin		files sequentially, mapping FORTRAN carriage-control characters
+comp-fortran-bin		for only F77-specific aspects of the compiler, though it also
+comp-fortran-bin		fpr - print Fortran file utility. fpr is a filter that transforms
+comp-fortran-bin		one or more of four stages: prepro- cessing, compilation,
+comp-fortran-bin		output;
+comp-fortran-bin		to line-printer control sequences, and writes them to the standard
+comp-fortran-bin		with options to recognize programs written in Fortran (ANSI
+comp-fortran-bin	This package contains compilers and tools for the FORTRAN programming
+comp-fortran-bin	language, including the following:

@@ -1,0 +1,15 @@
+@name man-cron-man-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-man-share>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/man/man1/at.1
+usr/share/man/man1/atq.1
+usr/share/man/man1/atrm.1
+usr/share/man/man1/batch.1
+usr/share/man/man1/crontab.1
+usr/share/man/man5/crontab.5
+usr/share/man/man8/atrun.8
+usr/share/man/man8/cron.8

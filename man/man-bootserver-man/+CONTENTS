@@ -1,0 +1,24 @@
+@name man-bootserver-man-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-man-share>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/man/man1/mopchk.1
+usr/share/man/man1/mopcopy.1
+usr/share/man/man1/mopprobe.1
+usr/share/man/man1/moptrace.1
+usr/share/man/man5/bootparams.5
+usr/share/man/man5/bootptab.5
+usr/share/man/man8/bootparamd.8
+usr/share/man/man8/bootpd.8
+usr/share/man/man8/bootpef.8
+usr/share/man/man8/bootpgw.8
+usr/share/man/man8/bootptest.8
+usr/share/man/man8/isibootd.8
+usr/share/man/man8/mopd.8
+usr/share/man/man8/ndbootd.8
+usr/share/man/man8/rarpd.8
+usr/share/man/man8/rbootd.8
+usr/share/man/man8/rpc.bootparamd.8

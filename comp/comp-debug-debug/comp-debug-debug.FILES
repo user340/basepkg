@@ -1,0 +1,10 @@
+usr/libdata/debug/usr/bin/addr2line.debug
+usr/libdata/debug/usr/bin/gcore.debug
+usr/libdata/debug/usr/bin/gcov.debug
+usr/libdata/debug/usr/bin/gdb.debug
+usr/libdata/debug/usr/bin/gdbtui.debug
+usr/libdata/debug/usr/bin/gprof.debug
+usr/libdata/debug/usr/bin/kdump.debug
+usr/libdata/debug/usr/bin/ktrace.debug
+usr/libdata/debug/usr/bin/ktruss.debug
+usr/libdata/debug/usr/sbin/kgmon.debug

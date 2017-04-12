@@ -1,0 +1,4 @@
+# FILE: /usr/sbin/dhcpd usr/sbin/dhcpd 555 1004 100
+# FILE: /usr/sbin/dhcrelay usr/sbin/dhcrelay 555 1004 100
+# FILE: /usr/sbin/omshell usr/sbin/omshell 555 1004 100
+# FILE: /usr/share/dhcpd/pxe.defs usr/share/dhcpd/pxe.defs 444 1004 100

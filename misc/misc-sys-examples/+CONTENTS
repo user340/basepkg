@@ -1,0 +1,32 @@
+@name misc-sys-examples-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-miscfs-examples>=7.1
+@pkgdep base-sys-examples>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/examples/disktab/disktab
+usr/share/examples/emul/linux/etc/LINUX_MAKEDEV
+usr/share/examples/emul/svr4/etc/SVR4_MAKEDEV
+usr/share/examples/emul/svr4/etc/netconfig
+usr/share/examples/emul/svr4/etc/nsswitch.conf
+usr/share/examples/emul/ultrix/etc/svc.conf
+usr/share/examples/getdate/datemsk.template
+usr/share/examples/getdate/posixmsk.example3
+usr/share/examples/getdate/posixmsk.example4
+usr/share/examples/mount_portal/advanced.1
+usr/share/examples/mount_portal/advanced.1.conf
+usr/share/examples/mount_portal/cvs.1
+usr/share/examples/mount_portal/cvs.conf
+usr/share/examples/mount_portal/cvs.sh
+usr/share/examples/mount_portal/fing.c
+usr/share/examples/mount_portal/fs.1
+usr/share/examples/mount_portal/fs.1.conf
+usr/share/examples/mount_portal/overview
+usr/share/examples/mount_portal/rfilter.1
+usr/share/examples/mount_portal/rfilter.2
+usr/share/examples/mount_portal/rfilter.2.conf
+usr/share/examples/mount_portal/sysctlfs.sh
+usr/share/examples/mount_portal/tcp.1
+usr/share/examples/mount_portal/tcp.1.conf

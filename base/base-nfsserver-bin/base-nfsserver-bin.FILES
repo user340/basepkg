@@ -1,0 +1,6 @@
+usr/libexec/rpc.rquotad
+usr/sbin/mountd
+usr/sbin/nfsd
+usr/sbin/rpc.lockd
+usr/sbin/rpc.pcnfsd
+usr/sbin/rpc.statd

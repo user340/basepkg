@@ -1,0 +1,17 @@
+usr/share/man/man1/mopchk.1
+usr/share/man/man1/mopcopy.1
+usr/share/man/man1/mopprobe.1
+usr/share/man/man1/moptrace.1
+usr/share/man/man5/bootparams.5
+usr/share/man/man5/bootptab.5
+usr/share/man/man8/bootparamd.8
+usr/share/man/man8/bootpd.8
+usr/share/man/man8/bootpef.8
+usr/share/man/man8/bootpgw.8
+usr/share/man/man8/bootptest.8
+usr/share/man/man8/isibootd.8
+usr/share/man/man8/mopd.8
+usr/share/man/man8/ndbootd.8
+usr/share/man/man8/rarpd.8
+usr/share/man/man8/rbootd.8
+usr/share/man/man8/rpc.bootparamd.8

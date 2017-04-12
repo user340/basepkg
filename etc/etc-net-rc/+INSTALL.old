@@ -1,0 +1,17 @@
+# CONF: /etc/rc.d/ftp_proxy etc/rc.d/ftp_proxy 555 1004 100
+# CONF: /etc/rc.d/ftpd etc/rc.d/ftpd 555 1004 100
+# CONF: /etc/rc.d/hostapd etc/rc.d/hostapd 555 1004 100
+# CONF: /etc/rc.d/httpd etc/rc.d/httpd 555 1004 100
+# CONF: /etc/rc.d/identd etc/rc.d/identd 555 1004 100
+# CONF: /etc/rc.d/ifwatchd etc/rc.d/ifwatchd 555 1004 100
+# CONF: /etc/rc.d/inetd etc/rc.d/inetd 555 1004 100
+# CONF: /etc/rc.d/ipsec etc/rc.d/ipsec 555 1004 100
+# CONF: /etc/rc.d/network etc/rc.d/network 555 1004 100
+# CONF: /etc/rc.d/pf etc/rc.d/pf 555 1004 100
+# CONF: /etc/rc.d/pf_boot etc/rc.d/pf_boot 555 1004 100
+# CONF: /etc/rc.d/pflogd etc/rc.d/pflogd 555 1004 100
+# CONF: /etc/rc.d/racoon etc/rc.d/racoon 555 1004 100
+# CONF: /etc/rc.d/rtadvd etc/rc.d/rtadvd 555 1004 100
+# CONF: /etc/rc.d/rtsold etc/rc.d/rtsold 555 1004 100
+# CONF: /etc/rc.d/rwho etc/rc.d/rwho 555 1004 100
+# CONF: /etc/rc.d/wpa_supplicant etc/rc.d/wpa_supplicant 555 1004 100

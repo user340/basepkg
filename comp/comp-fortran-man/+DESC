@@ -1,0 +1,22 @@
+comp-fortran-man	
+comp-fortran-man	
+comp-fortran-man	
+comp-fortran-man		FORTRAN 77, also called F77). gcc processes input files through
+comp-fortran-man		and F77 compilers are integrated; g77 is a program to call gcc
+comp-fortran-man		asa - interpret carriage-control characters. The asa utility reads
+comp-fortran-man		assembly, and linking. This manual page contains full descriptions
+comp-fortran-man		contains summaries of some general-purpose options. For a fuller
+comp-fortran-man		conventions into files formatted according to UNIX line printer
+comp-fortran-man		conventions.
+comp-fortran-man		explanation of the compiler, see gcc(1);
+comp-fortran-man		f77, fort77, g77 - GNU project Fortran Compiler (v0.5.24). The C
+comp-fortran-man		files formatted according to Fortran's carriage control
+comp-fortran-man		files sequentially, mapping FORTRAN carriage-control characters
+comp-fortran-man		for only F77-specific aspects of the compiler, though it also
+comp-fortran-man		fpr - print Fortran file utility. fpr is a filter that transforms
+comp-fortran-man		one or more of four stages: prepro- cessing, compilation,
+comp-fortran-man		output;
+comp-fortran-man		to line-printer control sequences, and writes them to the standard
+comp-fortran-man		with options to recognize programs written in Fortran (ANSI
+comp-fortran-man	This package contains manual pages groff sources for compilers and tools for
+comp-fortran-man	the FORTRAN programming language, which include:

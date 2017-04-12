@@ -1,0 +1,70 @@
+@name etc-sys-etc-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 0755 etc/bluetooth
+boot.cfg
+dev/MAKEDEV
+dev/MAKEDEV.local
+etc/bluetooth/btattach.conf
+etc/bluetooth/btdevctl.conf
+etc/bluetooth/hosts
+etc/bluetooth/protocols
+etc/changelist
+etc/daily
+etc/daily.conf
+etc/gpio.conf
+etc/group
+etc/localtime
+etc/locate.conf
+etc/login.conf
+etc/master.passwd
+etc/monthly
+etc/monthly.conf
+etc/motd
+etc/mtree/NetBSD.dist
+etc/mtree/set.etc
+etc/mtree/special
+etc/pam.d/README
+etc/pam.d/display_manager
+etc/pam.d/ftpd
+etc/pam.d/gdm
+etc/pam.d/imap
+etc/pam.d/kde
+etc/pam.d/login
+etc/pam.d/other
+etc/pam.d/passwd
+etc/pam.d/pop3
+etc/pam.d/ppp
+etc/pam.d/rexecd
+etc/pam.d/rsh
+etc/pam.d/sshd
+etc/pam.d/su
+etc/pam.d/system
+etc/pam.d/telnetd
+etc/pam.d/xdm
+etc/pam.d/xserver
+etc/passwd
+etc/passwd.conf
+etc/phones
+etc/pkgpath.conf
+etc/pwd.db
+etc/remote
+etc/security
+etc/security.conf
+etc/shells
+etc/skel/.cshrc
+etc/skel/.login
+etc/skel/.logout
+etc/skel/.profile
+etc/skel/.shrc
+etc/skeykeys
+etc/spwd.db
+etc/sysctl.conf
+etc/syslog.conf
+etc/ttyaction
+etc/ttys
+etc/weekly
+etc/weekly.conf
+etc/wscons.conf

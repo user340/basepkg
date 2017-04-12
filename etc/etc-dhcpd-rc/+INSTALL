@@ -1,0 +1,2 @@
+# CONF: /etc/rc.d/dhcpd etc/rc.d/dhcpd 555 1004 100
+# CONF: /etc/rc.d/dhcrelay etc/rc.d/dhcrelay 555 1004 100

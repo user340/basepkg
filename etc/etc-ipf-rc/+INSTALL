@@ -1,0 +1,4 @@
+# CONF: /etc/rc.d/ipfilter etc/rc.d/ipfilter 555 1004 100
+# CONF: /etc/rc.d/ipfs etc/rc.d/ipfs 555 1004 100
+# CONF: /etc/rc.d/ipmon etc/rc.d/ipmon 555 1004 100
+# CONF: /etc/rc.d/ipnat etc/rc.d/ipnat 555 1004 100

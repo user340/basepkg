@@ -1,0 +1,2 @@
+# CONF: /etc/iscsi/auths etc/iscsi/auths 600 1004 100
+# CONF: /etc/iscsi/targets etc/iscsi/targets 444 1004 100

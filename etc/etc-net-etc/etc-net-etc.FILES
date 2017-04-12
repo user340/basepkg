@@ -1,0 +1,7 @@
+etc/hosts
+etc/netconfig
+etc/networks
+etc/nsswitch.conf
+etc/protocols
+etc/rpc
+etc/services

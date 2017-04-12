@@ -1,0 +1,5 @@
+@name man-adosfs-htmlman-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/share/man/html8/mount_ados.html

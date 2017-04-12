@@ -1,0 +1,14 @@
+@name base-ldap-bin-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+usr/bin/ldapadd
+usr/bin/ldapcompare
+usr/bin/ldapdelete
+usr/bin/ldapexop
+usr/bin/ldapmodify
+usr/bin/ldapmodrdn
+usr/bin/ldappasswd
+usr/bin/ldapsearch
+usr/bin/ldapurl
+usr/bin/ldapwhoami

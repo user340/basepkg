@@ -1,0 +1,12 @@
+comp-c-catman	
+comp-c-catman	
+comp-c-catman	
+comp-c-catman	
+comp-c-catman	
+comp-c-catman		c89, c99, cc, gcc - C compilers
+comp-c-catman		flex, lex - lexical analyzer generator
+comp-c-catman		lint - C program validator
+comp-c-catman		rpcgen - RPC stub generator
+comp-c-catman		yacc - parser generator
+comp-c-catman	This package includes formatted manual pages for compilers and tools for
+comp-c-catman	the C programming language:

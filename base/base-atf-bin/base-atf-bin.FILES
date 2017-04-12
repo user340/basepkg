@@ -1,0 +1,8 @@
+etc/atf
+usr/bin/atf-config
+usr/bin/atf-report
+usr/bin/atf-run
+usr/bin/atf-sh
+usr/bin/atf-version
+usr/libexec/atf-check
+usr/share/atf/atf-run.hooks

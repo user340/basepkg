@@ -1,0 +1,68 @@
+@name base-sys-root-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 01777 tmp
+@exec install -d -o root -g wheel -m 01777 var/shm
+@exec install -d -o root -g wheel -m 01777 var/tmp
+@exec install -d -o root -g wheel -m 0700 etc/cgd
+@exec install -d -o root -g wheel -m 0750 var/tpm
+@exec install -d -o root -g wheel -m 0755 altroot
+@exec install -d -o root -g wheel -m 0755 bin
+@exec install -d -o root -g wheel -m 0755 dev
+@exec install -d -o root -g wheel -m 0755 dev/altq
+@exec install -d -o root -g wheel -m 0755 dev/fd
+@exec install -d -o root -g wheel -m 0755 etc
+@exec install -d -o root -g wheel -m 0755 etc/defaults
+@exec install -d -o root -g wheel -m 0755 etc/mtree
+@exec install -d -o root -g wheel -m 0755 etc/pam.d
+@exec install -d -o root -g wheel -m 0755 etc/rc.conf.d
+@exec install -d -o root -g wheel -m 0755 etc/rc.d
+@exec install -d -o root -g wheel -m 0755 etc/skel
+@exec install -d -o root -g wheel -m 0755 etc/ssh
+@exec install -d -o root -g wheel -m 0755 lib
+@exec install -d -o root -g wheel -m 0755 lib/npf
+@exec install -d -o root -g wheel -m 0755 libdata
+@exec install -d -o root -g wheel -m 0755 libexec
+@exec install -d -o root -g wheel -m 0755 mnt
+@exec install -d -o root -g wheel -m 0755 rescue
+@exec install -d -o root -g wheel -m 0755 root
+@exec install -d -o root -g wheel -m 0755 sbin
+@exec install -d -o root -g wheel -m 0755 stand
+@exec install -d -o root -g wheel -m 0755 usr
+@exec install -d -o root -g wheel -m 0755 usr/share/lua
+@exec install -d -o root -g wheel -m 0755 usr/share/lua/5.3
+@exec install -d -o root -g wheel -m 0755 var
+@exec install -d -o root -g wheel -m 0755 var/account
+@exec install -d -o root -g wheel -m 0755 var/backups
+@exec install -d -o root -g wheel -m 0755 var/chroot
+@exec install -d -o root -g wheel -m 0755 var/chroot/ftp-proxy
+@exec install -d -o root -g wheel -m 0755 var/chroot/pflogd
+@exec install -d -o root -g wheel -m 0755 var/chroot/rtadvd
+@exec install -d -o root -g wheel -m 0755 var/chroot/rtadvd/etc
+@exec install -d -o root -g wheel -m 0755 var/chroot/rtadvd/var
+@exec install -d -o root -g wheel -m 0755 var/chroot/sshd
+@exec install -d -o root -g wheel -m 0755 var/chroot/tcpdump
+@exec install -d -o root -g wheel -m 0755 var/chroot/tftp-proxy
+@exec install -d -o root -g wheel -m 0755 var/db
+@exec install -d -o root -g wheel -m 0755 var/db/ns
+@exec install -d -o root -g wheel -m 0755 var/db/obsolete
+@exec install -d -o root -g wheel -m 0755 var/db/xdm
+@exec install -d -o root -g wheel -m 0755 var/db/xkb
+@exec install -d -o root -g wheel -m 0755 var/log
+@exec install -d -o root -g wheel -m 0755 var/run
+@exec install -d -o root -g wheel -m 0755 var/spool
+@exec install -d -o root -g wheel -m 0755 var/spool/lock
+@exec install -d -o root -g wheel -m 0770 var/crash
+@exec install -d -o root -g wheel -m 0775 var/chroot/rtadvd/var/run
+@exec install -d -o root -g wheel -m 0777 var/spool/sockets
+dev/log
+etc/mtree/set.base
+var/db/obsolete/base
+var/db/obsolete/comp
+var/db/obsolete/etc
+var/db/obsolete/games
+var/db/obsolete/man
+var/db/obsolete/misc
+var/db/obsolete/tests
+var/db/obsolete/text

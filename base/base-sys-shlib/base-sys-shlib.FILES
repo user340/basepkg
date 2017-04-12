@@ -1,0 +1,9 @@
+libexec/ld.elf_so-i386
+usr/lib/i386/libasan.so
+usr/lib/i386/libcrypto.so
+usr/lib/i386/libcrypto_rc5.so
+usr/lib/i386/libiscsi.so
+usr/lib/libx86_64.so
+usr/lib/libx86_64.so.0
+usr/lib/libx86_64.so.0.0
+usr/libexec/ld.elf_so-i386

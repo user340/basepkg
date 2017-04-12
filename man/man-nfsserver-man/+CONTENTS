@@ -1,0 +1,18 @@
+@name man-nfsserver-man-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-man-share>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/man/man5/exports.5
+usr/share/man/man8/lockd.8
+usr/share/man/man8/mountd.8
+usr/share/man/man8/nfsd.8
+usr/share/man/man8/pcnfsd.8
+usr/share/man/man8/rpc.lockd.8
+usr/share/man/man8/rpc.pcnfsd.8
+usr/share/man/man8/rpc.rquotad.8
+usr/share/man/man8/rpc.statd.8
+usr/share/man/man8/rquotad.8
+usr/share/man/man8/statd.8

@@ -1,0 +1,22 @@
+@name base-netutil-examples-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/ftpd
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/hostapd
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/ipf
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/npf
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/pf
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/racoon
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/racoon/roadwarrior
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/racoon/roadwarrior/client
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/racoon/roadwarrior/server
+@exec install -d -o root -g wheel -m 0755 usr/share/examples/wpa_supplicant
+usr/share/examples/npf/hashtablefile
+usr/share/examples/npf/host-npf.conf
+usr/share/examples/npf/l2tp_gw-npf.conf
+usr/share/examples/npf/soho_gw-npf.conf
+usr/share/examples/npf/treetablefile
+usr/share/examples/wpa_supplicant/wpa_supplicant.conf

@@ -1,0 +1,23 @@
+@name misc-psd-doc-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@pkgdep base-psd-share>=7.1
+@pkgdep base-sys-root>=7.1
+@pkgdep base-sys-share>=7.1
+@cwd /usr/pkg/basepkg/root
+usr/share/doc/psd/contents.ps.gz
+usr/share/doc/psd/contents.txt
+usr/share/doc/psd/title.ps.gz
+usr/share/doc/psd/title.txt
+usr/share/doc/reference/ref1/gprof/gprof.ps.gz
+usr/share/doc/reference/ref1/gprof/gprof.txt
+usr/share/doc/reference/ref1/make/make.ps.gz
+usr/share/doc/reference/ref1/make/make.txt
+usr/share/doc/reference/ref3/curses/curses.ps.gz
+usr/share/doc/reference/ref3/curses/curses.txt
+usr/share/doc/reference/ref3/sockets-advanced/sockets-advanced.ps.gz
+usr/share/doc/reference/ref3/sockets-advanced/sockets-advanced.txt
+usr/share/doc/reference/ref3/sockets/sockets.ps.gz
+usr/share/doc/reference/ref3/sockets/sockets.txt
+usr/share/doc/reference/ref3/sysman/sysman.ps.gz
+usr/share/doc/reference/ref3/sysman/sysman.txt

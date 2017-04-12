@@ -1,0 +1,3 @@
+etc/rc.d/ypbind
+etc/rc.d/yppasswdd
+etc/rc.d/ypserv

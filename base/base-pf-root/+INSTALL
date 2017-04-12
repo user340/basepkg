@@ -1,0 +1,3 @@
+# FILE: /sbin/pfctl sbin/pfctl 555 1004 100
+# FILE: /sbin/pflogd sbin/pflogd 555 1004 100
+# FILE: /sbin/pfs sbin/pfs 555 1004 100

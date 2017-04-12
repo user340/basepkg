@@ -1,0 +1,4 @@
+usr/libexec/rpc.rstatd
+usr/libexec/rpc.rusersd
+usr/libexec/rpc.rwalld
+usr/libexec/rpc.sprayd

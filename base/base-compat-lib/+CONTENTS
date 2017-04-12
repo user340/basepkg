@@ -1,0 +1,10 @@
+@name base-compat-lib-7.1
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
+@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
+@cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 0755 usr/lib/i386
+@exec install -d -o root -g wheel -m 0755 usr/lib/i386/i18n
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/lib/i386
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/lib/i386/npf
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/lib/i386
+@exec install -d -o root -g wheel -m 0755 usr/libdata/debug/usr/lib/i386/i18n

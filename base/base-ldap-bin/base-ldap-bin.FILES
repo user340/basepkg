@@ -1,0 +1,10 @@
+usr/bin/ldapadd
+usr/bin/ldapcompare
+usr/bin/ldapdelete
+usr/bin/ldapexop
+usr/bin/ldapmodify
+usr/bin/ldapmodrdn
+usr/bin/ldappasswd
+usr/bin/ldapsearch
+usr/bin/ldapurl
+usr/bin/ldapwhoami
