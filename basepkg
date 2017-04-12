@@ -27,50 +27,83 @@ pkgdb="/var/db/basepkg"
 touch_system="false"
 new_package="false"
 
+AWK="/usr/bin/awk"
+BASENAME="/usr/bin/basename"
+CAT="/bin/cat"
+CHGRP="/bin/chgrp"
+CHMOD="/bin/chmod"
+CHOWN="/sbin/chown"
+CUT="/usr/bin/cut"
+ECHO="/bin/echo"
+FILE="/usr/bin/file"
+GREP="/usr/bin/grep"
+LS="/bin/ls"
+MKDIR="/bin/mkdir"
+MKTEMP="/usr/bin/mktemp"
+MV="/bin/mv"
+RM="/bin/rm"
+RMDIR="/bin/rmdir"
+SED="/usr/bin/sed"
+SORT="/usr/bin/sort"
+STAT="/usr/bin/stat"
+TAR="/bin/tar"
+TEST="/bin/test"
+TR="/usr/bin/tr"
+UNIQ="/usr/bin/uniq"
+XARGS="/usr/bin/xargs"
+
+PKG_ADD="/usr/pkg/sbin/pkg_add"
+PKG_CREATE="/usr/pkg/sbin/pkg_create"
+PKG_DELETE="/usr/pkg/sbin/pkg_delete"
+
 # "extract" option use following function.
-extract_base_binaries() {
-	for i in `ls ${sets} | grep 'tgz$' | sed 's/\.tgz//g'`; do
+extract_base_binaries()
+{
+	for i in `${LS} ${sets} | ${GREP}} 'tgz$' | ${SED} 's/\.tgz//g'`; do
 		if [ ! -d ./work/${i} ]; then
-			mkdir -p ./work/${i}
+			${MKDIR} -p ./work/${i}
 		fi
-		tar zxvf ${sets}/${i}.tgz -C ./work/${i}
+		${TAR} zxvf ${sets}/${i}.tgz -C ./work/${i}
 	done
 }
 
 # "dir" option use following functions.
-split_category_from_lists() {
+split_category_from_lists()
+{
 	for i in ${category}; do
 		if [ ! -d ./${i} ]; then
-			mkdir ./${i}
+			${MKDIR} ./${i}
 		fi
 		if [ -f ./${i}/FILES ]; then
-			rm -f ./${i}/FILES
+			${RM} -f ./${i}/FILES
 		fi
-		for j in `ls ${lists}`; do
-			grep -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/mi | \
-			awk '$3 !~ /obsolete/ {print}' | \
-			sed -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
+		for j in `${LS} ${lists}`; do
+			${GREP} -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/mi | \
+			${AWK} '$3 !~ /obsolete/ {print}' | \
+			${SED} -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
 	
 			if [ -f ${lists}/${j}/md.${machine} ]; then
-				grep -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/md.${machine} | \
-				awk '$3 !~ /obsolete/ {print}' | \
-				sed -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
+				${GREP} -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/md.${machine} | \
+				${AWK} '$3 !~ /obsolete/ {print}' | \
+				${SED} -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
 			fi
 		done
 	done
 }
 
-make_directories_of_package() {
+make_directories_of_package()
+{
 	for i in ${category}; do
-		awk '{print $2}' ./${i}/FILES | sort | uniq | \
-		xargs -n 1 -I % mkdir ./${i}/%
+		${AWK} '{print $2}' ./${i}/FILES | ${SORT} | ${UNIQ} | \
+		${XARGS} -n 1 -I % ${MKDIR} ./${i}/%
 	done
 }
 
 # "list" option use following function.
-make_contents_list() {
+make_contents_list()
+{
 	for i in ${category}; do
-		awk ' 
+		${AWK} ' 
 		# $1 - file name
 		# $2 - package name
 		$2 ~ /\./ {
@@ -88,17 +121,18 @@ make_contents_list() {
 		}' ${i}/FILES > ./${i}/CATEGORIZED
 	done
 	for i in ${category}; do
-		for j in `ls ./${i} | grep '^[a-z]'`; do
-			grep "${j}" ./${i}/CATEGORIZED | tr ' ' '\n' | \
-			awk 'NR != 1{print $0}' | sort | \
-			grep -v -E "x${i}-[a-z]+-[a-z]+" > ./${i}/${j}/${j}.FILES
+		for j in `${LS} ./${i} | ${GREP} '^[a-z]'`; do
+			${GREP} "${j}" ./${i}/CATEGORIZED | ${TR} ' ' '\n' | \
+			${AWK} 'NR != 1{print $0}' | ${SORT} | \
+			${GREP} -v -E "x${i}-[a-z]+-[a-z]+" > ./${i}/${j}/${j}.FILES
 		done
 	done
 }
 
 # "pkg" option use following functions.
-make_BUILD_INFO(){
-	cat > ./$1/+BUILD_INFO << _BUILD_INFO_
+make_BUILD_INFO()
+{
+	${CAT} > ./$1/+BUILD_INFO << _BUILD_INFO_
 OPSYS=${opsys}
 OS_VERSION=${osversion}
 OBJECT_FMT=ELF
@@ -108,136 +142,141 @@ PKGTOOLS_VERSION=${pkgtoolversion}
 _BUILD_INFO_
 }
 
-culc_deps() {
-	grep -E "^$1" ${deps} > /dev/null 2>&1
+culc_deps()
+{
+	${GREP} -E "^$1" ${deps} > /dev/null 2>&1
 	if [ $? -eq 1 ]; then
-		echo "$1:Unknown package dependency." 1>&2
+		${ECHO} "$1:Unknown package dependency." 1>&2
 		return 1
 	fi
-	TMP=`mktemp -q`
+	TMP=`${MKTEMP} -q`
 	if [ $? -ne 0 ]; then
-		echo "$0: Can't create temp file, exiting..." 1>&2
+		${ECHO} "$0: Can't create temp file, exiting..." 1>&2
 		exit 1
 	fi
-	grep -E "^$1" ${deps} | cut -d ' ' -f 2 > ${TMP}
+	${GREP} -E "^$1" ${deps} | ${CUT} -d ' ' -f 2 > ${TMP}
 	# XXX: too many temp files in /tmp
-	cat ${TMP} | while read depend; do
+	${CAT} ${TMP} | while read depend; do
 		if [ ! "${depend}" ]; then
-			rm -f ${TMP}
+			${RM} -f ${TMP}
 			return 1
 		fi
-		echo "@pkgdep ${depend}>=${osrelease}" >> ${tmp_deps}
+		${ECHO} "@pkgdep ${depend}>=${osrelease}" >> ${tmp_deps}
 		if [ "${depend}" = "base-sys-root" ]; then
-			rm ${TMP}
+			${RM} ${TMP}
 			return 0
 		fi
 		culc_deps ${depend}
 	done
 }
 
-make_CONTENTS() {
-	TMPFILE=`mktemp -q`
+make_CONTENTS()
+{
+	TMPFILE=`${MKTEMP} -q`
 	if [ $? -ne 0 ]; then
-		echo "$0: Can't create temp file, exiting..."
+		${ECHO} "$0: Can't create temp file, exiting..."
 		exit 1
 	fi
-	setname=`echo $1 | cut -d '/' -f 1 | sed 's/\./-/g'`
-	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
-	echo "@name ${pkgname}-${osrelease}" > ./$1/+CONTENTS
-	echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
+	setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
+	pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+	${ECHO} "@name ${pkgname}-${osrelease}" > ./$1/+CONTENTS
+	${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
 	>> ./$1/+CONTENTS
-	echo "@comment Packaged using ${progname} ${rcsid}" >> ./$1/+CONTENTS
+	${ECHO} "@comment Packaged using ${progname} ${rcsid}" >> ./$1/+CONTENTS
 	if [ -f ${tmp_deps} ]; then
-		rm -f ${tmp_deps}
+		${RM} -f ${tmp_deps}
 	fi
 	culc_deps ${pkgname}
 	if [ -f ${tmp_deps} ]; then
-		sort ${tmp_deps} | uniq >> ./$1/+CONTENTS
+		${SORT} ${tmp_deps} | ${UNIQ} >> ./$1/+CONTENTS
 	fi
-	echo "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
-	cat ./$1/${pkgname}.FILES | while read i; do
-		filetype=`file ./work/$setname/${i} | cut -d ' ' -f 2`
+	${ECHO} "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
+	${CAT} ./$1/${pkgname}.FILES | while read i; do
 		if [ -d ./work/${setname}/${i} ]; then
-			filename=`echo ${i} | sed 's%\/%\\\/%g'`
-			awk '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ./work/${setname}/etc/mtree/set.${setname} | \
-			sed 's%^\.\/%%' | \
-			awk '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ${TMPFILE}
-		elif [ ${filetype} = cannot ]; then
+			filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
+			${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ./work/${setname}/etc/mtree/set.${setname} | \
+			${SED} 's%^\.\/%%' | \
+			${AWK} '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ${TMPFILE}
+		elif [ ! -f ./work/${setname}/${i} ]; then
 			continue
 		else
-			echo ${i} >> ${TMPFILE}
+			${ECHO} ${i} >> ${TMPFILE}
 		fi
 	done
-	sort ${TMPFILE} >> ./$1/+CONTENTS
-	rm -f ${TMPFILE}
+	${SORT} ${TMPFILE} >> ./$1/+CONTENTS
+	${RM} -f ${TMPFILE}
 }
 
-make_DESC_and_COMMENT() {
-	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
-	grep ${pkgname} ${descrs} | sed -e "s/${pkgname} //" > ./$1/+DESC
-	grep ${pkgname} ${comments} | sed -e "s/${pkgname} //" > ./$1/+COMMENT
+make_DESC_and_COMMENT()
+{
+	pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+	${GREP} ${pkgname} ${descrs} | ${SED} -e "s/${pkgname} //" > ./$1/+DESC
+	${GREP} ${pkgname} ${comments} | ${SED} -e "s/${pkgname} //" > ./$1/+COMMENT
 }
 
-make_INSTALL() {
-	setname=`echo $1 | cut -d '/' -f 1 | sed 's/\./-/g'`
-	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
+make_INSTALL()
+{
+	setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
+	pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
 	if [ -f ${setname}/${pkgname}/+INSTALL ]; then
-		mv ${setname}/${pkgname}/+INSTALL ${setname}/${pkgname}/+INSTALL.old
+		${MV} ${setname}/${pkgname}/+INSTALL ${setname}/${pkgname}/+INSTALL.old
 	fi
 	if [ -f ${setname}/${pkgname}/+CONTENTS ]; then
-		grep -v -e "^@" ${setname}/${pkgname}/+CONTENTS | while read file; do
-			if [ `echo ${file} | cut -d "/" -f 1` = "etc" ]; then
+		${GREP} -v -e "^@" ${setname}/${pkgname}/+CONTENTS | while read file; do
+			if [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "etc" ]; then
 				install_type="CONF"
-			elif [ `echo ${file} | cut -d "/" -f 1` = "boot.cfg" ]; then
+			elif [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "boot.cfg" ]; then
 				install_type="CONF"
 			else
 				install_type="FILE"
 			fi
 			if [ -f /${file} ]; then
-				mode_user_group=`stat -f '%p %u %g' work/${setname}/${file} | \
-				sed 's/^[0-9]\{3\}//'`
+				mode_user_group=`${STAT} -f '%p %u %g' work/${setname}/${file} | \
+				${SED} 's/^[0-9]\{3\}//'`
 			else
 				mode_user_group=""
 			fi
-			echo "# ${install_type}: /${file} ${file} ${mode_user_group}" \
+			${ECHO} "# ${install_type}: /${file} ${file} ${mode_user_group}" \
 			>> ${setname}/${pkgname}/+INSTALL
 		done
 		if [ -f ${setname}/${pkgname}/+INSTALL.old ]; then
-			rm -f ${setname}${pkgname}/+INSTALL.old
+			${RM} -f ${setname}${pkgname}/+INSTALL.old
 		fi
 	else
 		return 1
 	fi
 }
 
-do_pkg_create() {
-	setname=`echo $1 | cut -d '/' -f 1 | sed 's/\./-/g'`
-	pkgname=`echo $1 | cut -d '/' -f 2 | sed 's/\./-/g'`
+do_pkg_create()
+{
+	setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
+	pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
 	if [ -f $1/+INSTALL ]; then
 		install_script="-i $1/+INSTALL"
 	else
 		install_script=""
 	fi
-	pkg_create -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
+	${PKG_CREATE} -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
 	-d $1/+DESC -f $1/+CONTENTS ${install_script} \
 	-p ${PWD}/work/${setname} -K ${pkgdb} ${pkgname}
 	if [ $? != 0 ]; then
 		return $?
 	fi
 	if [ ! -d ${PACKAGES} ]; then
-	  mkdir ${PACKAGES}
+	  ${MKDIR} ${PACKAGES}
 	fi
 	if [ ! -d ${PACKAGES}/All ]; then
-	  mkdir -p ${PACKAGES}/All
+	  ${MKDIR} -p ${PACKAGES}/All
 	fi
-	mv ./${pkgname}.tgz \
+	${MV} ./${pkgname}.tgz \
 	${PACKAGES}/All/${pkgname}-${osrelease}.tgz
 }
 
-make_packages() {
+make_packages()
+{
 	for i in ${category}; do
-		for j in `ls ./${i} | grep -E '^[a-z]+'`; do
-			echo "Package ${i}/${j} Creating..."
+		for j in `${LS} ./${i} | ${GREP} -E '^[a-z]+'`; do
+			${ECHO} "Package ${i}/${j} Creating..."
 			if [ ${new_package} = "true" ]; then
 				make_BUILD_INFO ${i}/${j}
 				make_CONTENTS ${i}/${j}
@@ -250,15 +289,16 @@ make_packages() {
 }
 
 # "install" option use following functions.
-do_pkg_add() {
+do_pkg_add()
+{
 	if [ -d ${prefix}/${basedir} ]; then
-		mkdir -p ${prefix}/${basedir}
+		${MKDIR} -p ${prefix}/${basedir}
 	fi
-	pkg_add -K ${pkgdb} -p ${prefix}/${basedir} $@
+	${PKG_ADD} -K ${pkgdb} -p ${prefix}/${basedir} $@
 	if [ $touch_system = "true" ]; then
 		for i in $@; do
-			sed -n "/^\# CONF: /{s/^\# CONF: //;p;}" \
-			${pkgdb}/`basename ${i} | sed 's/\.tgz$//'`/+INSTALL | sort -u |
+			${SED} -n "/^\# CONF: /{s/^\# CONF: //;p;}" \
+			${pkgdb}/`${BASENAME} ${i} | ${SED} 's/\.tgz$//'`/+INSTALL | ${SORT} -u |
 			while read dst src mode user group; do
 				case ${dst} in
 					"") continue ;;
@@ -271,23 +311,23 @@ do_pkg_add() {
 				if [ -f ${src} -a ! -f ${dst} ]; then
 					case ${mode} in
 						"") ;;
-						*) chmod ${mode} ${src} ;;
+						*) ${CHMOD} ${mode} ${src} ;;
 					esac
 					case ${user} in
 						"") ;;
-						*) chown ${user} ${src} ;;
+						*) ${CHOWN} ${user} ${src} ;;
 					esac
 					case ${group} in
 						"") ;;
-						*) chgrp ${group} ${src} ;;
+						*) ${CHGRP} ${group} ${src} ;;
 					esac
 					mv ${src} ${dst}
 				elif [ -f ${src} -a -f ${dst} ]; then
-					echo "${dst} is already exist."
+					${ECHO} "${dst} is already exist. Ignore..."
 				fi
 			done
-			sed -n "/^\# FILE: /{s/^\# FILE: //;p;}" \
-			${pkgdb}/`basename ${i} | sed 's/\.tgz$//'`/+INSTALL | sort -u |
+			${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" \
+			${pkgdb}/`${BASENAME} ${i} | ${SED} 's/\.tgz$//'`/+INSTALL | ${SORT} -u |
 			while read dst src mode user group; do
 				case ${dst} in
 					"") continue ;;
@@ -300,17 +340,17 @@ do_pkg_add() {
 				if [ -f ${src} ]; then
 					case ${mode} in
 						"") ;;
-						*) chmod ${mode} ${src} ;;
+						*) ${CHMOD} ${mode} ${src} ;;
 					esac
 					case ${user} in
 						"") ;;
-						*) chown ${user} ${src} ;;
+						*) ${CHOWN} ${user} ${src} ;;
 					esac
 					case ${group} in
 						"") ;;
-						*) chgrp ${group} ${src} ;;
+						*) ${CHGRP} ${group} ${src} ;;
 					esac
-					mv ${src} ${dst}
+					${MV} ${src} ${dst}
 				fi
 			done
 		done
@@ -318,48 +358,52 @@ do_pkg_add() {
 }
 
 # "delete" option use following functions.
-do_pkg_delete() {
+do_pkg_delete()
+{
 	if [ $touch_system = "true" ]; then
 		real_prefix="/"
 	else
 		real_prefix="${prefix}/${basedir}"
 	fi
-	pkg_delete -K ${pkgdb} -p ${real_prefix} $@
+	${PKG_DELETE} -K ${pkgdb} -p ${real_prefix} $@
 }
 
 # "clean" option use following functions.
-clean_packages() {
+clean_packages()
+{
 	if [ ! -d ${PACKAGES}/All ]; then
 		continue
 	fi
-	ls ${PACKAGES}/${i} | grep -E 'tgz$' | \
-	xargs -I % rm -f ${PACKAGES}/All/%
-	rmdir ${PACKAGES}/All
+	ls ${PACKAGES}/${i} | ${GREP} -E 'tgz$' | \
+	${XARGS} -I % rm -f ${PACKAGES}/All/%
+	${RMDIR} ${PACKAGES}/All
 	if [ ! -d ${PACKAGES} ]; then
 		return 1
 	fi
-	rmdir ${PACKAGES}
+	${RMDIR} ${PACKAGES}
 }
 
-clean_categories() {
+clean_categories()
+{
 	for i in ${category}; do
-		test -f ./${i}/FILES && rm -f ./${i}/FILES
-		test -f ./${i}/CATEGORIZED && rm -f ./${i}/CATEGORIZED
+		${TEST} -f ./${i}/FILES && ${RM} -f ./${i}/FILES
+		${TEST} -f ./${i}/CATEGORIZED && ${RM} -f ./${i}/CATEGORIZED
 		for j in `ls ./${i}`; do
-			test -f ./${i}/${j}/+BUILD_INFO && rm -f ./${i}/${j}/+BUILD_INFO
-			test -f ./${i}/${j}/+COMMENT && rm -f ./${i}/${j}/+COMMENT
-			test -f ./${i}/${j}/+CONTENTS && rm -f ./${i}/${j}/+CONTENTS
-			test -f ./${i}/${j}/+DESC && rm -f ./${i}/${j}/+DESC
-			test -f ./${i}/${j}/${j}.FILES && rm -f ./${i}/${j}/${j}.FILES
-			rmdir ./${i}/${j}
+			${TEST} -f ./${i}/${j}/+BUILD_INFO && ${RM} -f ./${i}/${j}/+BUILD_INFO
+			${TEST} -f ./${i}/${j}/+COMMENT && ${RM} -f ./${i}/${j}/+COMMENT
+			${TEST} -f ./${i}/${j}/+CONTENTS && ${RM} -f ./${i}/${j}/+CONTENTS
+			${TEST} -f ./${i}/${j}/+DESC && ${RM} -f ./${i}/${j}/+DESC
+			${TEST} -f ./${i}/${j}/${j}.FILES && ${RM} -f ./${i}/${j}/${j}.FILES
+			${RMDIR} ./${i}/${j}
 		done
-		rmdir ./${i}
+		${RMDIR} ./${i}
 	done
 }
 
 # self-explanatorily :-)
-usage() {
-	cat <<_usage_
+usage()
+{
+	${CAT} <<_usage_
 
 Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                    [--pkg packages_dir] [--category category]
@@ -379,6 +423,7 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
     dir                 Create packages directory.
     list                Create packages list.
     cleandir            Remove all categorized directories.
+
  Options:
     --help              Show this message and exit.
     --sets              Set sets to extract tarballs.
@@ -410,7 +455,7 @@ do
 			usage ;;
 		'--sets')
 			if [ -z $2 ]; then
-				echo "What is $1 parameter?" 1>&2
+				${ECHO} "What is $1 parameter?" 1>&2
 				exit 1
 			fi
 			sets=$2
@@ -418,7 +463,7 @@ do
 			shift ;;
 		'--src')
 			if [ -z $2 ]; then
-				echo "What is $1 parameter?" 1>&2
+				${ECHO} "What is $1 parameter?" 1>&2
 				exit 1
 			fi
 			SRC=$2
@@ -426,7 +471,7 @@ do
 			shift ;;
 		'--pkg')
 			if [ -z $2 ]; then
-				echo "What is $1 parameter?" 1>&2
+				${ECHO} "What is $1 parameter?" 1>&2
 				exit 1
 			fi
 			PACKAGES=$2
@@ -434,7 +479,7 @@ do
 			shift ;;
 		'--category')
 			if [ -z $2 ]; then
-				echo "What is $1 parameter?" 1>&2
+				${ECHO} "What is $1 parameter?" 1>&2
 				exit 1
 			fi
 			category="$2"
@@ -442,7 +487,7 @@ do
 			shift ;;
 		'--prefix')
 			if [ -z $2 ]; then
-				echo "What is $1 parameter?" 1>&2
+				${ECHO} "What is $1 parameter?" 1>&2
 				exit 1
 			fi
 			prefix="$2"
@@ -456,7 +501,7 @@ do
 			shift ;;
 		'--database')
 			if [ -z $2 ]; then
-				echo "What is $1 parameter?" 1>&2
+				${ECHO} "What is $1 parameter?" 1>&2
 				exit 1
 			fi
 			pkgdb="$2"
