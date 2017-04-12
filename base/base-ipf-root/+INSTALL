@@ -1,2 +1,2 @@
-# FILE: /sbin/ipf sbin/ipf 00 1004 100
-# FILE: /usr/sbin/ippool usr/sbin/ippool 00 1004 100
+# FILE: /sbin/ipf sbin/ipf 555 1004 100
+# FILE: /usr/sbin/ippool usr/sbin/ippool 555 1004 100

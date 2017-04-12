@@ -1,7 +1,10 @@
 @name base-sys-root-7.1
-@comment Packaged at 2017-04-11 16:45 UTC by uki@
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
 @comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
 @cwd /usr/pkg/basepkg/root
+@exec install -d -o root -g wheel -m 01777 tmp
+@exec install -d -o root -g wheel -m 01777 var/shm
+@exec install -d -o root -g wheel -m 01777 var/tmp
 @exec install -d -o root -g wheel -m 0700 etc/cgd
 @exec install -d -o root -g wheel -m 0750 var/tpm
 @exec install -d -o root -g wheel -m 0755 altroot
@@ -55,7 +58,6 @@
 @exec install -d -o root -g wheel -m 0777 var/spool/sockets
 dev/log
 etc/mtree/set.base
-tmp
 var/db/obsolete/base
 var/db/obsolete/comp
 var/db/obsolete/etc
@@ -64,5 +66,3 @@ var/db/obsolete/man
 var/db/obsolete/misc
 var/db/obsolete/tests
 var/db/obsolete/text
-var/shm
-var/tmp

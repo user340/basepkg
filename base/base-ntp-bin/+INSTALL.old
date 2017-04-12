@@ -1,0 +1,8 @@
+# FILE: /usr/sbin/ntp-keygen usr/sbin/ntp-keygen 00 1004 100
+# FILE: /usr/sbin/ntpd usr/sbin/ntpd 00 1004 100
+# FILE: /usr/sbin/ntpdate usr/sbin/ntpdate 00 1004 100
+# FILE: /usr/sbin/ntpdc usr/sbin/ntpdc 00 1004 100
+# FILE: /usr/sbin/ntpq usr/sbin/ntpq 00 1004 100
+# FILE: /usr/sbin/ntptime usr/sbin/ntptime 00 1004 100
+# FILE: /usr/sbin/ntptrace usr/sbin/ntptrace 00 1004 100
+# FILE: /usr/sbin/sntp usr/sbin/sntp 00 1004 100

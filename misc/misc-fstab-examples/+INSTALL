@@ -1,0 +1,16 @@
+# FILE: /usr/share/examples/fstab/fstab.cdrom usr/share/examples/fstab/fstab.cdrom 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.nfs.1 usr/share/examples/fstab/fstab.nfs.1 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.nfs.2 usr/share/examples/fstab/fstab.nfs.2 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.nfs.3 usr/share/examples/fstab/fstab.nfs.3 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.pseudo usr/share/examples/fstab/fstab.pseudo 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.ra usr/share/examples/fstab/fstab.ra 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.ramdisk usr/share/examples/fstab/fstab.ramdisk 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.rd usr/share/examples/fstab/fstab.rd 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.sd0.1 usr/share/examples/fstab/fstab.sd0.1 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.sd0.2 usr/share/examples/fstab/fstab.sd0.2 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.sd0.amiga usr/share/examples/fstab/fstab.sd0.amiga 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.sd0.atari usr/share/examples/fstab/fstab.sd0.atari 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.wd0.1 usr/share/examples/fstab/fstab.wd0.1 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.wd0.2 usr/share/examples/fstab/fstab.wd0.2 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.wd0.3 usr/share/examples/fstab/fstab.wd0.3 444 1004 100
+# FILE: /usr/share/examples/fstab/fstab.wd0.cobalt usr/share/examples/fstab/fstab.wd0.cobalt 444 1004 100

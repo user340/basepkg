@@ -1,5 +1,5 @@
 @name base-locale-el-7.1
-@comment Packaged at 2017-04-11 16:45 UTC by uki@
+@comment Packaged at 2017-04-12 17:41 UTC by uki@
 @comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
 @pkgdep base-locale-share>=7.1
 @pkgdep base-sys-root>=7.1

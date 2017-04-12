@@ -1,4 +1,4 @@
-# FILE: /sbin/zfs sbin/zfs 00 1004 100
-# FILE: /sbin/zpool sbin/zpool 00 1004 100
-# FILE: /usr/bin/ztest usr/bin/ztest 00 1004 100
-# FILE: /usr/sbin/zdb usr/sbin/zdb 00 1004 100
+# FILE: /sbin/zfs sbin/zfs 555 1004 100
+# FILE: /sbin/zpool sbin/zpool 555 1004 100
+# FILE: /usr/bin/ztest usr/bin/ztest 555 1004 100
+# FILE: /usr/sbin/zdb usr/sbin/zdb 555 1004 100

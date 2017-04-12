@@ -1,0 +1,12 @@
+# FILE: /usr/bin/scp usr/bin/scp 00 1004 100
+# FILE: /usr/bin/sftp usr/bin/sftp 00 1004 100
+# FILE: /usr/bin/slogin usr/bin/slogin 00 1004 100
+# FILE: /usr/bin/ssh usr/bin/ssh 00 1004 100
+# FILE: /usr/bin/ssh-add usr/bin/ssh-add 00 1004 100
+# FILE: /usr/bin/ssh-agent usr/bin/ssh-agent 00 1004 100
+# FILE: /usr/bin/ssh-keygen usr/bin/ssh-keygen 00 1004 100
+# FILE: /usr/bin/ssh-keyscan usr/bin/ssh-keyscan 00 1004 100
+# FILE: /usr/libexec/sftp-server usr/libexec/sftp-server 00 1004 100
+# FILE: /usr/libexec/ssh-keysign usr/libexec/ssh-keysign 00 1004 100
+# FILE: /usr/libexec/ssh-pkcs11-helper usr/libexec/ssh-pkcs11-helper 00 1004 100
+# FILE: /usr/sbin/sshd usr/sbin/sshd 00 1004 100

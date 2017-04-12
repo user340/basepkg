@@ -1,0 +1,9 @@
+# FILE: /usr/share/examples/libsaslc/README usr/share/examples/libsaslc/README 444 1004 100
+# FILE: /usr/share/examples/libsaslc/mech/ANONYMOUS.conf usr/share/examples/libsaslc/mech/ANONYMOUS.conf 444 1004 100
+# FILE: /usr/share/examples/libsaslc/mech/CRAM-MD5.conf usr/share/examples/libsaslc/mech/CRAM-MD5.conf 444 1004 100
+# FILE: /usr/share/examples/libsaslc/mech/DIGEST-MD5.conf usr/share/examples/libsaslc/mech/DIGEST-MD5.conf 444 1004 100
+# FILE: /usr/share/examples/libsaslc/mech/EXTERNAL.conf usr/share/examples/libsaslc/mech/EXTERNAL.conf 444 1004 100
+# FILE: /usr/share/examples/libsaslc/mech/GSSAPI.conf usr/share/examples/libsaslc/mech/GSSAPI.conf 444 1004 100
+# FILE: /usr/share/examples/libsaslc/mech/LOGIN.conf usr/share/examples/libsaslc/mech/LOGIN.conf 444 1004 100
+# FILE: /usr/share/examples/libsaslc/mech/PLAIN.conf usr/share/examples/libsaslc/mech/PLAIN.conf 444 1004 100
+# FILE: /usr/share/examples/libsaslc/saslc.conf usr/share/examples/libsaslc/saslc.conf 444 1004 100

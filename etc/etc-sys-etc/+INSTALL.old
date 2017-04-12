@@ -1,4 +1,4 @@
-# FILE: /boot.cfg boot.cfg 644 1004 100
+# CONF: /boot.cfg boot.cfg 644 1004 100
 # FILE: /dev/MAKEDEV dev/MAKEDEV 555 1004 100
 # FILE: /dev/MAKEDEV.local dev/MAKEDEV.local 555 1004 100
 # CONF: /etc/bluetooth/btattach.conf etc/bluetooth/btattach.conf 444 1004 100

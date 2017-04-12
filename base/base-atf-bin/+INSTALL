@@ -1,7 +1,7 @@
-# FILE: /usr/bin/atf-config usr/bin/atf-config 00 1004 100
-# FILE: /usr/bin/atf-report usr/bin/atf-report 00 1004 100
-# FILE: /usr/bin/atf-run usr/bin/atf-run 00 1004 100
-# FILE: /usr/bin/atf-sh usr/bin/atf-sh 00 1004 100
-# FILE: /usr/bin/atf-version usr/bin/atf-version 00 1004 100
-# FILE: /usr/libexec/atf-check usr/libexec/atf-check 00 1004 100
-# FILE: /usr/share/atf/atf-run.hooks usr/share/atf/atf-run.hooks 00 1004 100
+# FILE: /usr/bin/atf-config usr/bin/atf-config 555 1004 100
+# FILE: /usr/bin/atf-report usr/bin/atf-report 555 1004 100
+# FILE: /usr/bin/atf-run usr/bin/atf-run 555 1004 100
+# FILE: /usr/bin/atf-sh usr/bin/atf-sh 555 1004 100
+# FILE: /usr/bin/atf-version usr/bin/atf-version 555 1004 100
+# FILE: /usr/libexec/atf-check usr/libexec/atf-check 555 1004 100
+# FILE: /usr/share/atf/atf-run.hooks usr/share/atf/atf-run.hooks 444 1004 100

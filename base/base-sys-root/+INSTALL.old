@@ -1,0 +1,13 @@
+# FILE: /dev/log dev/log 
+# CONF: /etc/mtree/set.base etc/mtree/set.base 00 1004 100
+# FILE: /tmp tmp 
+# FILE: /var/db/obsolete/base var/db/obsolete/base 00 1004 100
+# FILE: /var/db/obsolete/comp var/db/obsolete/comp 00 1004 100
+# FILE: /var/db/obsolete/etc var/db/obsolete/etc 00 1004 100
+# FILE: /var/db/obsolete/games var/db/obsolete/games 00 1004 100
+# FILE: /var/db/obsolete/man var/db/obsolete/man 00 1004 100
+# FILE: /var/db/obsolete/misc var/db/obsolete/misc 00 1004 100
+# FILE: /var/db/obsolete/tests var/db/obsolete/tests 00 1004 100
+# FILE: /var/db/obsolete/text var/db/obsolete/text 00 1004 100
+# FILE: /var/shm var/shm 
+# FILE: /var/tmp var/tmp 

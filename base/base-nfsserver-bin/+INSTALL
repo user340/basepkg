@@ -1,6 +1,6 @@
-# FILE: /usr/libexec/rpc.rquotad usr/libexec/rpc.rquotad 00 1004 100
-# FILE: /usr/sbin/mountd usr/sbin/mountd 00 1004 100
-# FILE: /usr/sbin/nfsd usr/sbin/nfsd 00 1004 100
-# FILE: /usr/sbin/rpc.lockd usr/sbin/rpc.lockd 00 1004 100
-# FILE: /usr/sbin/rpc.pcnfsd usr/sbin/rpc.pcnfsd 00 1004 100
-# FILE: /usr/sbin/rpc.statd usr/sbin/rpc.statd 00 1004 100
+# FILE: /usr/libexec/rpc.rquotad usr/libexec/rpc.rquotad 555 1004 100
+# FILE: /usr/sbin/mountd usr/sbin/mountd 555 1004 100
+# FILE: /usr/sbin/nfsd usr/sbin/nfsd 555 1004 100
+# FILE: /usr/sbin/rpc.lockd usr/sbin/rpc.lockd 555 1004 100
+# FILE: /usr/sbin/rpc.pcnfsd usr/sbin/rpc.pcnfsd 555 1004 100
+# FILE: /usr/sbin/rpc.statd usr/sbin/rpc.statd 555 1004 100

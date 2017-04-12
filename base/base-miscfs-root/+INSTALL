@@ -1,7 +1,7 @@
-# FILE: /sbin/mount_fdesc sbin/mount_fdesc 00 1004 100
-# FILE: /sbin/mount_null sbin/mount_null 00 1004 100
-# FILE: /sbin/mount_overlay sbin/mount_overlay 00 1004 100
-# FILE: /sbin/mount_ptyfs sbin/mount_ptyfs 00 1004 100
-# FILE: /sbin/mount_tmpfs sbin/mount_tmpfs 00 1004 100
-# FILE: /sbin/mount_umap sbin/mount_umap 00 1004 100
-# FILE: /sbin/mount_union sbin/mount_union 00 1004 100
+# FILE: /sbin/mount_fdesc sbin/mount_fdesc 555 1004 100
+# FILE: /sbin/mount_null sbin/mount_null 555 1004 100
+# FILE: /sbin/mount_overlay sbin/mount_overlay 555 1004 100
+# FILE: /sbin/mount_ptyfs sbin/mount_ptyfs 555 1004 100
+# FILE: /sbin/mount_tmpfs sbin/mount_tmpfs 555 1004 100
+# FILE: /sbin/mount_umap sbin/mount_umap 555 1004 100
+# FILE: /sbin/mount_union sbin/mount_union 555 1004 100
