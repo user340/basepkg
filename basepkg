@@ -26,6 +26,7 @@ basedir="basepkg/root"
 pkgdb="/var/db/basepkg"
 touch_system="false"
 new_package="false"
+force="false"
 
 AWK="/usr/bin/awk"
 BASENAME="/usr/bin/basename"
@@ -294,7 +295,13 @@ do_pkg_add()
 	if [ -d ${prefix}/${basedir} ]; then
 		${MKDIR} -p ${prefix}/${basedir}
 	fi
-	${PKG_ADD} -K ${pkgdb} -p ${prefix}/${basedir} $@
+	if [ ${force} = "true" ]; then
+		pkg_add_options="-f"
+	else
+		pkg_add_options=""
+	fi
+	pkg_add_options="-K ${pkgdb} -p ${prefix}/${basedir} ${pkg_add_options}"
+	${PKG_ADD} ${pkg_add_options} $@
 	if [ $touch_system = "true" ]; then
 		for i in $@; do
 			${SED} -n "/^\# CONF: /{s/^\# CONF: //;p;}" \
@@ -365,7 +372,13 @@ do_pkg_delete()
 	else
 		real_prefix="${prefix}/${basedir}"
 	fi
-	${PKG_DELETE} -K ${pkgdb} -p ${real_prefix} $@
+	if [ ${force} = "true" ]; then
+		pkg_delete_options="-f"
+	else
+		pkg_delete_options=""
+	fi
+	pkg_delete_options="-K ${pkgdb} -p ${real_prefix} ${pkg_delete_options}"
+	${PKG_DELETE} ${pkg_delete_options} $@
 }
 
 # "clean" option use following functions.
@@ -442,6 +455,7 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         [Default: "/var/db/basepkg"]
     --new               Set new_package to create 
                         file of package's information newly.
+    --force             Add "-f" option to pkg_add and pkg_delete command.
 
 _usage_
 	exit 1
@@ -506,6 +520,9 @@ do
 			fi
 			pkgdb="$2"
 			shift
+			shift ;;
+		'--force')
+			force="true"
 			shift ;;
 		'-'|'--')
 			shift
