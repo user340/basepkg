@@ -157,7 +157,7 @@ make_CONTENTS() {
 	echo "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
 	cat ./$1/${pkgname}.FILES | while read i; do
 		filetype=`file ./work/$setname/${i} | cut -d ' ' -f 2`
-		if [ ${filetype} = directory ]; then
+		if [ -d ./work/${setname}/${i} ]; then
 			filename=`echo ${i} | sed 's%\/%\\\/%g'`
 			awk '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ./work/${setname}/etc/mtree/set.${setname} | \
 			sed 's%^\.\/%%' | \
@@ -258,7 +258,7 @@ do_pkg_add() {
 	if [ $touch_system = "true" ]; then
 		for i in $@; do
 			sed -n "/^\# CONF: /{s/^\# CONF: //;p;}" \
-			{pkgdb}/`echo ${i} | sed 's/\.tgz$//'`/+INSTALL | sort -u |
+			${pkgdb}/`basename ${i} | sed 's/\.tgz$//'`/+INSTALL | sort -u |
 			while read dst src mode user group; do
 				case ${dst} in
 					"") continue ;;
@@ -395,7 +395,7 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         install to/delete from /.
     --database          Set pkgdb to package's database.
                         [Default: "/var/db/basepkg"]
-	--new               Set new_package to create 
+    --new               Set new_package to create 
                         file of package's information newly.
 
 _usage_
