@@ -2,34 +2,6 @@
 #
 # Please read README.md.
 
-SRC="/usr/src"
-PACKAGES="./packages"
-host="$(hostname)"
-machine="$(uname -m)"
-machine_arch="$(uname -p)"
-opsys="$(uname)"
-osversion="$(uname -r)"
-pkgtoolversion="$(pkg_add -V)"
-osrelease="$(sh ${SRC}/sys/conf/osrelease.sh)"
-rcsid='$NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $'
-utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
-user="${USER:-root}"
-sets="/usr/obj/releasedir/${machine}/binary/sets"
-database="${PWD}/database"
-lists="${database}/lists"
-comments="${database}/comments"
-descrs="${database}/descrs"
-deps="${database}/deps"
-tmp_deps="/tmp/culldeps"
-category="base comp etc games man misc text"
-progname=${0##*/}
-prefix="/usr/pkg"
-basedir="basepkg/root"
-pkgdb="/var/db/basepkg"
-touch_system="false"
-new_package="false"
-force="false"
-
 AWK="/usr/bin/awk"
 BASENAME="/usr/bin/basename"
 CAT="/bin/cat"
@@ -39,8 +11,11 @@ CHOWN="/sbin/chown"
 CUT="/usr/bin/cut"
 DATE="/bin/date"
 ECHO="/bin/echo"
+ENV="/usr/bin/env"
+EXPR="/bin/expr"
 FILE="/usr/bin/file"
 GREP="/usr/bin/grep"
+HOSTNAME="/bin/hostname"
 LS="/bin/ls"
 MKDIR="/bin/mkdir"
 MKTEMP="/usr/bin/mktemp"
@@ -48,17 +23,50 @@ MV="/bin/mv"
 RM="/bin/rm"
 RMDIR="/bin/rmdir"
 SED="/usr/bin/sed"
+SH="/bin/sh"
 SORT="/usr/bin/sort"
 STAT="/usr/bin/stat"
 TAR="/bin/tar"
 TEST="/bin/test"
 TR="/usr/bin/tr"
+UNAME="/usr/bin/uname"
 UNIQ="/usr/bin/uniq"
 XARGS="/usr/bin/xargs"
 
 PKG_ADD="/usr/pkg/sbin/pkg_add"
 PKG_CREATE="/usr/pkg/sbin/pkg_create"
 PKG_DELETE="/usr/pkg/sbin/pkg_delete"
+
+progname=${0##*/}
+host="$(${HOSTNAME})"
+machine="$(${UNAME} -m)"
+machine_arch="$(${UNAME} -p)"
+opsys="$(${UNAME})"
+osversion="$(${UNAME} -r)"
+pkgtoolversion="$(${PKG_ADD} -V)"
+osrelease="$(${SH} ${src}/sys/conf/osrelease.sh)"
+rcsid="$NetBSD: basepkg.sh,v 0.01 `${DATE} '+%Y/%m/%d %H:%M:%S'` uki Exp $"
+utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
+user="${USER:-root}"
+
+src="/usr/src"
+obj="${PWD}/destdir.${machine}"
+packages="./packages"
+sets="/usr/obj/releasedir/${machine}/binary/sets"
+database="${PWD}/database"
+lists="${database}/lists"
+comments="${database}/comments"
+descrs="${database}/descrs"
+deps="${database}/deps"
+tmp_deps="/tmp/culldeps"
+category="base comp etc games man misc text"
+prefix="/usr/pkg"
+basedir="basepkg/root"
+pkgdb="/var/db/basepkg"
+touch_system="false"
+new_package="false"
+force="false"
+
 
 err()
 {
@@ -69,10 +77,10 @@ err()
 extract_base_binaries()
 {
   for i in `${LS} ${sets} | ${GREP}} 'tgz$' | ${SED} 's/\.tgz//g'`; do
-    if [ ! -d ./work/${i} ]; then
-      ${MKDIR} -p ./work/${i}
+    if [ ! -d ${obj} ]; then
+      ${MKDIR} -p ${obj}
     fi
-    ${TAR} zxvf ${sets}/${i}.tgz -C ./work/${i}
+    ${TAR} zxvf ${sets}/${i}.tgz -C ${obj}
   done
 }
 
@@ -201,12 +209,12 @@ make_CONTENTS()
   fi
   ${ECHO} "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
   ${CAT} ./$1/${pkgname}.FILES | while read i; do
-    if [ -d ./work/${setname}/${i} ]; then
+    if [ -d ${obj}/${i} ]; then
       filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
-      ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ./work/${setname}/etc/mtree/set.${setname} | \
+      ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${obj}/etc/mtree/set.${setname} | \
       ${SED} 's%^\.\/%%' | \
       ${AWK} '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ${TMPFILE}
-    elif [ ! -f ./work/${setname}/${i} ]; then
+    elif [ ! -f ${obj}/${i} ]; then
       continue
     else
       ${ECHO} ${i} >> ${TMPFILE}
@@ -240,7 +248,7 @@ make_INSTALL()
         install_type="FILE"
       fi
       if [ -f /${file} ]; then
-        mode_user_group=`${STAT} -f '%p %u %g' work/${setname}/${file} | \
+        mode_user_group=`${STAT} -f '%p %u %g' ${obj}/${file} | \
         ${SED} 's/^[0-9]\{3\}//'`
       else
         mode_user_group=""
@@ -266,19 +274,18 @@ do_pkg_create()
     install_script=""
   fi
   ${PKG_CREATE} -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
-  -d $1/+DESC -f $1/+CONTENTS ${install_script} \
-  -p ${PWD}/work/${setname} -K ${pkgdb} ${pkgname}
+  -d $1/+DESC -f $1/+CONTENTS ${install_script} -p ${obj} -K ${pkgdb} ${pkgname}
   if [ $? != 0 ]; then
     return $?
   fi
-  if [ ! -d ${PACKAGES} ]; then
-    ${MKDIR} ${PACKAGES}
+  if [ ! -d ${packages} ]; then
+    ${MKDIR} ${packages}
   fi
-  if [ ! -d ${PACKAGES}/All ]; then
-    ${MKDIR} -p ${PACKAGES}/All
+  if [ ! -d ${packages}/All ]; then
+    ${MKDIR} -p ${packages}/All
   fi
   ${MV} ./${pkgname}.tgz \
-  ${PACKAGES}/All/${pkgname}-${osrelease}.tgz
+  ${packages}/All/${pkgname}-${osrelease}.tgz
 }
 
 make_packages()
@@ -392,16 +399,16 @@ do_pkg_delete()
 # "clean" option use following functions.
 clean_packages()
 {
-  if [ ! -d ${PACKAGES}/All ]; then
+  if [ ! -d ${packages}/All ]; then
     continue
   fi
-  ls ${PACKAGES}/${i} | ${GREP} -E 'tgz$' | \
-  ${XARGS} -I % rm -f ${PACKAGES}/All/%
-  ${RMDIR} ${PACKAGES}/All
-  if [ ! -d ${PACKAGES} ]; then
+  ls ${packages}/${i} | ${GREP} -E 'tgz$' | \
+  ${XARGS} -I % rm -f ${packages}/All/%
+  ${RMDIR} ${packages}/All
+  if [ ! -d ${packages} ]; then
     return 1
   fi
-  ${RMDIR} ${PACKAGES}
+  ${RMDIR} ${packages}
 }
 
 clean_categories()
@@ -449,8 +456,10 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
     --help              Show this message and exit.
     --sets              Set sets to extract tarballs.
                         [Default: /usr/obj/releasedir/${machine}/binary/sets]
-    --src               Set SRC to NetBSD source directory.
+    --src               Set src to NetBSD source directory.
                         [Default: /usr/src]
+    --obj               Set obj to NetBSD binaries.
+                        [Default: ${PWD}/destdir.${machine}]
     --pkg               Set packages root directory; sets a PACKAGES pattern.
                         [Default: ./packages]
     --category          Set category.
@@ -469,27 +478,33 @@ _usage_
   exit 1
 }
 
+get_optarg()
+{
+  ${EXPR} "x$1" : "x[^=]*=\\(.*\\)"
+}
+
 # parse long-options
-for OPT in $@
-do
-  case ${OPT} in
+while [ $# -gt 0 ]; do
+  case $1 in
     '-h'|'--help')
-      usage ;;
+      usage; exit ;;
+    '--sets=*')
+      sets=`get_optarg "$1"` ;;
     '--sets')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       sets=$2
-      shift
       shift ;;
+    '--src=*')
+      src=`get_optarg "$1"` ;;
     '--src')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
-      SRC=$2
-      shift
+      src=$2
       shift ;;
     '--pkg')
       if [ -z $2 ]; then
@@ -497,7 +512,6 @@ do
         exit 1
       fi
       PACKAGES=$2
-      shift
       shift ;;
     '--category')
       if [ -z $2 ]; then
@@ -505,7 +519,6 @@ do
         exit 1
       fi
       category="$2"
-      shift
       shift ;;
     '--prefix')
       if [ -z $2 ]; then
@@ -513,7 +526,6 @@ do
         exit 1
       fi
       prefix="$2"
-      shift
       shift ;;
     '--system')
       touch_system="true"
@@ -527,7 +539,6 @@ do
         exit 1
       fi
       pkgdb="$2"
-      shift
       shift ;;
     '--force')
       force="true"
