@@ -55,18 +55,18 @@ or
 ```# pkgin install pkg_install```
 
 ### 3. Extract NetBSD Binary Sets to Working Directory
-Extract binary sets to working directory using basepkg script.  
-```# cd /path/to/basepkg```  
-```# ./basepkg extract```
+Extract binary sets to working directory using basepkg.sh script.  
+```# cd /path/to/basepkg.sh```  
+```# ./basepkg.sh extract```
 
 ### 4. Make Packages
-Run basepkg script with __pkg__ option.  
-```# ./basepkg pkg```  
-Packages are created under the basepkg/packages directory.
+Run basepkg.sh script with __pkg__ option.  
+```# ./basepkg.sh pkg```  
+Packages are created under the basepkg.sh/packages directory.
 
 ### 5. How to Install Package?
-Rub basepkg script with __install__ option.  
-```# ./basepkg install packages/All/games-games-bin-7.1.tgz```  
-In default, packages are installed under the /usr/pkg/basepkg/root.  
+Rub basepkg.sh script with __install__ option.  
+```# ./basepkg.sh install packages/All/games-games-bin-7.1.tgz```  
+In default, packages are installed under the /usr/pkg/basepkg.sh/root.  
 If you want to install to the system, use __--system__ option.  
-```# ./basepkg --system install packages/All/games-games-bin-7.1.tgz```
+```# ./basepkg.sh --system install packages/All/games-games-bin-7.1.tgz```
