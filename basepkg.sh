@@ -2,6 +2,14 @@
 #
 # Please read README.md.
 
+PRINTF="/usr/bin/printf"
+
+set -u
+umask 0022
+IFS=$(${PRINTF} '\t\n_')
+IFS=${IFS%_}
+export IFS LC_ALL=C LANG=C
+
 AWK="/usr/bin/awk"
 BASENAME="/usr/bin/basename"
 CAT="/bin/cat"
@@ -44,13 +52,13 @@ machine_arch="$(${UNAME} -p)"
 opsys="$(${UNAME})"
 osversion="$(${UNAME} -r)"
 pkgtoolversion="$(${PKG_ADD} -V)"
-osrelease="$(${SH} ${src}/sys/conf/osrelease.sh)"
-rcsid="$NetBSD: basepkg.sh,v 0.01 `${DATE} '+%Y/%m/%d %H:%M:%S'` uki Exp $"
+rcsid="\$NetBSD: basepkg.sh,v 0.01 `${DATE} '+%Y/%m/%d %H:%M:%S'` uki Exp $"
 utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 
 src="/usr/src"
 obj="${PWD}/destdir.${machine}"
+osrelease="$(${SH} ${src}/sys/conf/osrelease.sh)"
 packages="./packages"
 sets="/usr/obj/releasedir/${machine}/binary/sets"
 database="${PWD}/database"
@@ -66,7 +74,6 @@ pkgdb="/var/db/basepkg"
 touch_system="false"
 new_package="false"
 force="false"
-
 
 err()
 {
@@ -180,7 +187,7 @@ culc_deps()
     fi
     ${ECHO} "@pkgdep ${depend}>=${osrelease}" >> ${tmp_deps}
     if [ "${depend}" = "base-sys-root" ]; then
-      ${RM} ${TMP}
+      ${RM} -f ${TMP}
       return 0
     fi
     culc_deps ${depend}
