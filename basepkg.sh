@@ -213,7 +213,11 @@ make_CONTENTS()
       filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
       ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${obj}/etc/mtree/set.${setname} | \
       ${SED} 's%^\.\/%%' | \
-      ${AWK} '{print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1}' >> ${TMPFILE}
+      ${AWK} '
+      {
+        print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
+      }
+      ' >> ${TMPFILE}
     elif [ ! -f ${obj}/${i} ]; then
       continue
     else
@@ -435,8 +439,8 @@ usage()
 
 Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                    [--pkg packages_dir] [--category category]
-           [--prefix prefix] [--database database_dir]
-           [--force] operation
+                   [--prefix prefix] [--database database_dir]
+                   [--force] operation
 
  Operation:
     extract             Extract base binary.
@@ -506,6 +510,8 @@ while [ $# -gt 0 ]; do
       fi
       src=$2
       shift ;;
+    '--pkg=*')
+      PACKAGES=`get_optarg "$1"` ;;
     '--pkg')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
@@ -513,6 +519,8 @@ while [ $# -gt 0 ]; do
       fi
       PACKAGES=$2
       shift ;;
+    '--category=*')
+      category=`get_optarg "$1"` ;;
     '--category')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
@@ -520,6 +528,8 @@ while [ $# -gt 0 ]; do
       fi
       category="$2"
       shift ;;
+    '--prefix=*')
+      prefix=`get_optarg "$1"` ;;
     '--prefix')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
@@ -533,6 +543,8 @@ while [ $# -gt 0 ]; do
     '--new')
       new_package="true"
       shift ;;
+    '--database=*')
+      pkgdb=`get_optarg "$1"` ;;
     '--database')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
