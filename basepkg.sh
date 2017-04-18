@@ -55,7 +55,8 @@ utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 
 src="/usr/src"
-obj="${PWD}/destdir.${machine}"
+obj="${PWD}"
+destdir="${obj}/destdir.${machine}"
 osrelease="$(${SH} ${src}/sys/conf/osrelease.sh)"
 packages="./packages"
 sets="/usr/obj/releasedir/${machine}/binary/sets"
@@ -82,10 +83,10 @@ err()
 extract_base_binaries()
 {
   for i in `${LS} ${sets} | ${GREP} 'tgz$' | ${SED} 's/\.tgz//g'`; do
-    if [ ! -d ${obj} ]; then
-      ${MKDIR} -p ${obj}
+    if [ ! -d ${destdir} ]; then
+      ${MKDIR} -p ${destdir}
     fi
-    ${TAR} zxvf ${sets}/${i}.tgz -C ${obj}
+    ${TAR} zxvf ${sets}/${i}.tgz -C ${destdir}
   done
 }
 
@@ -214,16 +215,16 @@ make_CONTENTS()
   fi
   ${ECHO} "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
   ${CAT} ./$1/${pkgname}.FILES | while read i; do
-    if [ -d ${obj}/${i} ]; then
+    if [ -d ${destdir}/${i} ]; then
       filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
-      ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${obj}/etc/mtree/set.${setname} | \
+      ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} | \
       ${SED} 's%^\.\/%%' | \
       ${AWK} '
       {
         print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
       }
       ' >> ${TMPFILE}
-    elif [ ! -f ${obj}/${i} ]; then
+    elif [ ! -f ${destdir}/${i} ]; then
       continue
     else
       ${ECHO} ${i} >> ${TMPFILE}
@@ -257,7 +258,7 @@ make_INSTALL()
         install_type="FILE"
       fi
       if [ -f /${file} ]; then
-        mode_user_group=`${STAT} -f '%p %u %g' ${obj}/${file} | \
+        mode_user_group=`${STAT} -f '%p %u %g' ${destdir}/${file} | \
         ${SED} 's/^[0-9]\{3\}//'`
       else
         mode_user_group=""
@@ -283,7 +284,7 @@ do_pkg_create()
     install_script=""
   fi
   ${PKG_CREATE} -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
-  -d $1/+DESC -f $1/+CONTENTS ${install_script} -p ${obj} -K ${pkgdb} ${pkgname}
+  -d $1/+DESC -f $1/+CONTENTS ${install_script} -p ${destdir} -K ${pkgdb} ${pkgname}
   if [ $? != 0 ]; then
     return $?
   fi
@@ -468,7 +469,7 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
     --src               Set src to NetBSD source directory.
                         [Default: /usr/src]
     --obj               Set obj to NetBSD binaries.
-                        [Default: ${PWD}/destdir.${machine}]
+                        [Default: ${PWD}]
     --pkg               Set packages root directory; sets a PACKAGES pattern.
                         [Default: ./packages]
     --category          Set category.
@@ -495,12 +496,12 @@ get_optarg()
 # parse long-options
 while [ $# -gt 0 ]; do
   case $1 in
-    '-h'|'--help')
+    -h|--help)
       usage; exit ;;
     --sets=*)
       sets=`get_optarg "$1"`
       shift ;;
-    '--sets')
+    --sets)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
@@ -511,7 +512,7 @@ while [ $# -gt 0 ]; do
     --src=*)
       src=`get_optarg "$1"`
       shift ;;
-    '--src')
+    --src)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
@@ -519,10 +520,21 @@ while [ $# -gt 0 ]; do
       src=$2
       shift
       shift ;;
+    --obj)
+      if [ -z $2 ]; then
+        err "What is $1 parameter?"
+        exit 1
+      fi
+      obj=$2
+      shift
+      shift ;;
+    --obj=*)
+      obj=`get_optarg "$1"`
+      shift ;;
     --pkg=*)
       PACKAGES=`get_optarg "$1"`
       shift ;;
-    '--pkg')
+    --pkg)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
@@ -533,7 +545,7 @@ while [ $# -gt 0 ]; do
     --category=*)
       category=`get_optarg "$1"`
       shift ;;
-    '--category')
+    --category)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
@@ -544,7 +556,7 @@ while [ $# -gt 0 ]; do
     --prefix=*)
       prefix=`get_optarg "$1"`
       shift ;;
-    '--prefix')
+    --prefix)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
@@ -552,16 +564,16 @@ while [ $# -gt 0 ]; do
       prefix="$2"
       shift
       shift ;;
-    '--system')
+    --system)
       touch_system="true"
       shift ;;
-    '--new')
+    --new)
       new_package="true"
       shift ;;
     --database=*)
       pkgdb=`get_optarg "$1"`
       shift ;;
-    '--database')
+    --database)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
@@ -569,10 +581,10 @@ while [ $# -gt 0 ]; do
       pkgdb="$2"
       shift
       shift ;;
-    '--force')
+    --force)
       force="true"
       shift ;;
-    '-'|'--')
+    -|--)
       shift
       break ;;
     *)
