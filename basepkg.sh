@@ -2,8 +2,6 @@
 #
 # Please read README.md.
 
-PRINTF="/usr/bin/printf"
-
 set -u
 umask 0022
 export LC_ALL=C LANG=C
