@@ -6,9 +6,7 @@ PRINTF="/usr/bin/printf"
 
 set -u
 umask 0022
-IFS=$(${PRINTF} '\t\n_')
-IFS=${IFS%_}
-export IFS LC_ALL=C LANG=C
+export LC_ALL=C LANG=C
 
 AWK="/usr/bin/awk"
 BASENAME="/usr/bin/basename"
@@ -83,7 +81,7 @@ err()
 # "extract" option use following function.
 extract_base_binaries()
 {
-  for i in `${LS} ${sets} | ${GREP}} 'tgz$' | ${SED} 's/\.tgz//g'`; do
+  for i in `${LS} ${sets} | ${GREP} 'tgz$' | ${SED} 's/\.tgz//g'`; do
     if [ ! -d ${obj} ]; then
       ${MKDIR} -p ${obj}
     fi
@@ -499,50 +497,60 @@ while [ $# -gt 0 ]; do
   case $1 in
     '-h'|'--help')
       usage; exit ;;
-    '--sets=*')
-      sets=`get_optarg "$1"` ;;
+    --sets=*)
+      sets=`get_optarg "$1"`
+      shift ;;
     '--sets')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       sets=$2
+      shift
       shift ;;
-    '--src=*')
-      src=`get_optarg "$1"` ;;
+    --src=*)
+      src=`get_optarg "$1"`
+      shift ;;
     '--src')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       src=$2
+      shift
       shift ;;
-    '--pkg=*')
-      PACKAGES=`get_optarg "$1"` ;;
+    --pkg=*)
+      PACKAGES=`get_optarg "$1"`
+      shift ;;
     '--pkg')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       PACKAGES=$2
+      shift
       shift ;;
-    '--category=*')
-      category=`get_optarg "$1"` ;;
+    --category=*)
+      category=`get_optarg "$1"`
+      shift ;;
     '--category')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       category="$2"
+      shift
       shift ;;
-    '--prefix=*')
-      prefix=`get_optarg "$1"` ;;
+    --prefix=*)
+      prefix=`get_optarg "$1"`
+      shift ;;
     '--prefix')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       prefix="$2"
+      shift
       shift ;;
     '--system')
       touch_system="true"
@@ -550,14 +558,16 @@ while [ $# -gt 0 ]; do
     '--new')
       new_package="true"
       shift ;;
-    '--database=*')
-      pkgdb=`get_optarg "$1"` ;;
+    --database=*)
+      pkgdb=`get_optarg "$1"`
+      shift ;;
     '--database')
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       pkgdb="$2"
+      shift
       shift ;;
     '--force')
       force="true"
@@ -569,6 +579,10 @@ while [ $# -gt 0 ]; do
       break ;;
   esac
 done
+
+if [ $# -eq 0 ]; then
+  usage
+fi
 
 # operation
 case $1 in
