@@ -410,7 +410,7 @@ clean_packages()
   if [ ! -d ${packages}/All ]; then
     continue
   fi
-  ls ${packages}/${i} | ${GREP} -E 'tgz$' | \
+  ls ${packages}/All | ${GREP} -E 'tgz$' | \
   ${XARGS} -I % rm -f ${packages}/All/%
   ${RMDIR} ${packages}/All
   if [ ! -d ${packages} ]; then
