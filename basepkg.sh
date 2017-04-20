@@ -524,10 +524,12 @@ while [ $# -gt 0 ]; do
         exit 1
       fi
       obj=$2
+      destdir="${obj}/destdir.${machine}"
       shift
       shift ;;
     --obj=*)
       obj=`get_optarg "$1"`
+      destdir="${obj}/destdir.${machine}"
       shift ;;
     --pkg=*)
       PACKAGES=`get_optarg "$1"`
