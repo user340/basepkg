@@ -55,7 +55,7 @@ user="${USER:-root}"
 src="/usr/src"
 obj="${PWD}"
 destdir="${obj}/destdir.${machine}"
-osrelease="$(${SH} ${src}/sys/conf/osrelease.sh)"
+param="usr/include/sys/param.h"
 packages="./packages"
 sets="/usr/obj/releasedir/${machine}/binary/sets"
 database="${PWD}/database"
@@ -75,6 +75,31 @@ force="false"
 err()
 {
   ${ECHO} "[$(${DATE} +'%Y-%m-%dT%H:%M:%S')] $@" >&2
+}
+
+osrelease() {
+  path=$0
+  exec < ${destdir}/${param}
+
+  while
+    read define ver_tag rel_num comment_start NetBSD rel_text rest; do
+      [ "${define}" = "#define" ] || continue;
+      [ "${ver_tag}" = "__NetBSD_Version__" ] || continue
+      break
+  done
+  rel_num=${rel_num%??}
+  rel_MMmm=${rel_num%????}
+  rel_MM=${rel_MMmm%??}
+  rel_mm=${rel_MMmm#${rel_MM}}
+  IFS=.
+  set -- - $rel_text
+  beta=${3#[0-9]}
+  beta=${beta#[0-9]}
+  shift 3
+  IFS=' '
+  set -- $rel_MM ${rel_mm#0}$beta $*
+  IFS=.
+  echo "$*"
 }
 
 # "extract" option use following function.
@@ -182,7 +207,7 @@ culc_deps()
       ${RM} -f ${TMP}
       return 1
     fi
-    ${ECHO} "@pkgdep ${depend}>=${osrelease}" >> ${tmp_deps}
+    ${ECHO} "@pkgdep ${depend}>=`osrelease`" >> ${tmp_deps}
     if [ "${depend}" = "base-sys-root" ]; then
       ${RM} -f ${TMP}
       return 0
@@ -200,7 +225,7 @@ make_CONTENTS()
   fi
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  ${ECHO} "@name ${pkgname}-${osrelease}" > ./$1/+CONTENTS
+  ${ECHO} "@name ${pkgname}-`osrelease`" > ./$1/+CONTENTS
   ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
   >> ./$1/+CONTENTS
   ${ECHO} "@comment Packaged using ${progname} ${rcsid}" >> ./$1/+CONTENTS
@@ -293,7 +318,7 @@ do_pkg_create()
     ${MKDIR} -p ${packages}/All
   fi
   ${MV} ./${pkgname}.tgz \
-  ${packages}/All/${pkgname}-${osrelease}.tgz
+  ${packages}/All/${pkgname}-`osrelease`.tgz
 }
 
 make_packages()
