@@ -58,11 +58,10 @@ destdir="${obj}/destdir.${machine}"
 param="usr/include/sys/param.h"
 packages="./packages"
 sets="/usr/obj/releasedir/${machine}/binary/sets"
-database="${PWD}/database"
-lists="${database}/lists"
-comments="${database}/comments"
-descrs="${database}/descrs"
-deps="${database}/deps"
+lists="distrib/sets/lists"
+comments="distrib/sets/comments"
+descrs="distrib/sets/descrs"
+deps="distrib/sets/deps"
 tmp_deps="/tmp/culldeps"
 category="base comp etc games man misc text"
 prefix="/usr/pkg"
@@ -123,13 +122,13 @@ split_category_from_lists()
     if [ -f ./${i}/FILES ]; then
       ${RM} -f ./${i}/FILES
     fi
-    for j in `${LS} ${lists}`; do
-      ${GREP} -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/mi | \
+    for j in `${LS} ${src}/${lists} | ${GREP} -v "^[A-Z]"`; do
+      ${GREP} -E "${i}-[a-z]+-[a-z]+" ${src}/${lists}/${j}/mi | \
       ${AWK} '$3 !~ /obsolete/ {print}' | \
       ${SED} -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
   
-      if [ -f ${lists}/${j}/md.${machine} ]; then
-        ${GREP} -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/md.${machine} | \
+      if [ -f ${src}/${lists}/${j}/md.${machine} ]; then
+        ${GREP} -E "${i}-[a-z]+-[a-z]+" ${src}/${lists}/${j}/md.${machine} | \
         ${AWK} '$3 !~ /obsolete/ {print}' | \
         ${SED} -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
       fi
@@ -183,14 +182,13 @@ OPSYS=${opsys}
 OS_VERSION=${osversion}
 OBJECT_FMT=ELF
 MACHINE_ARCH=${machine_arch}
-MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}
 PKGTOOLS_VERSION=${pkgtoolversion}
 _BUILD_INFO_
 }
 
 culc_deps()
 {
-  ${GREP} -E "^$1" ${deps} > /dev/null 2>&1
+  ${GREP} -E "^$1" ${src}/${deps} > /dev/null 2>&1
   if [ $? -eq 1 ]; then
     err "$1:Unknown package dependency."
     return 1
@@ -200,7 +198,7 @@ culc_deps()
     err "$0: Can't create temp file, exiting..."
     exit 1
   fi
-  ${GREP} -E "^$1" ${deps} | ${CUT} -d ' ' -f 2 > ${TMP}
+  ${GREP} -E "^$1" ${src}/${deps} | ${CUT} -d ' ' -f 2 > ${TMP}
   # XXX: too many temp files in /tmp
   ${CAT} ${TMP} | while read depend; do
     if [ ! "${depend}" ]; then
@@ -260,8 +258,8 @@ make_CONTENTS()
 make_DESC_and_COMMENT()
 {
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  ${GREP} ${pkgname} ${descrs} | ${SED} -e "s/${pkgname} //" > ./$1/+DESC
-  ${GREP} ${pkgname} ${comments} | ${SED} -e "s/${pkgname} //" > ./$1/+COMMENT
+  ${GREP} ${pkgname} ${src}/${descrs} | ${SED} -e "s/${pkgname} //" > ./$1/+DESC
+  ${GREP} ${pkgname} ${src}/${comments} | ${SED} -e "s/${pkgname} //" > ./$1/+COMMENT
 }
 
 make_INSTALL()
@@ -271,6 +269,7 @@ make_INSTALL()
   if [ -f ${setname}/${pkgname}/+INSTALL ]; then
     ${MV} ${setname}/${pkgname}/+INSTALL ${setname}/${pkgname}/+INSTALL.old
   fi
+  echo ":" > ${setname}/${pkgname}/+INSTALL
   if [ -f ${setname}/${pkgname}/+CONTENTS ]; then
     ${GREP} -v -e "^@" ${setname}/${pkgname}/+CONTENTS | while read file; do
       if [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "etc" ]; then
@@ -354,58 +353,58 @@ do_pkg_add()
     for i in $@; do
       ${SED} -n "/^\# CONF: /{s/^\# CONF: //;p;}" \
       ${pkgdb}/`${BASENAME} ${i} | ${SED} 's/\.tgz$//'`/+INSTALL | ${SORT} -u |
-      while read dst src mode user group; do
+      while read dst source mode user group; do
         case ${dst} in
           "") continue ;;
           [!/]*) dst="/${dst}" ;;
         esac
-        case ${src} in
+        case ${source} in
           "") continue ;;
-          [!/]*) src="${prefix}/${basedir}/${src}" ;;
+          [!/]*) source="${prefix}/${basedir}/${source}" ;;
         esac
-        if [ -f ${src} -a ! -f ${dst} ]; then
+        if [ -f ${source} -a ! -f ${dst} ]; then
           case ${mode} in
             "") ;;
-            *) ${CHMOD} ${mode} ${src} ;;
+            *) ${CHMOD} ${mode} ${source} ;;
           esac
           case ${user} in
             "") ;;
-            *) ${CHOWN} ${user} ${src} ;;
+            *) ${CHOWN} ${user} ${source} ;;
           esac
           case ${group} in
             "") ;;
-            *) ${CHGRP} ${group} ${src} ;;
+            *) ${CHGRP} ${group} ${source} ;;
           esac
-          mv ${src} ${dst}
-        elif [ -f ${src} -a -f ${dst} ]; then
+          mv ${source} ${dst}
+        elif [ -f ${source} -a -f ${dst} ]; then
           ${ECHO} "${dst} is already exist. Ignore..."
         fi
       done
       ${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" \
       ${pkgdb}/`${BASENAME} ${i} | ${SED} 's/\.tgz$//'`/+INSTALL | ${SORT} -u |
-      while read dst src mode user group; do
+      while read dst source mode user group; do
         case ${dst} in
           "") continue ;;
           [!/]*) dst="/${dst}" ;;
         esac
-        case ${src} in
+        case ${source} in
           "") continue ;;
-          [!/]*) src="${prefix}/${basedir}/${src}" ;;
+          [!/]*) source="${prefix}/${basedir}/${source}" ;;
         esac
-        if [ -f ${src} ]; then
+        if [ -f ${source} ]; then
           case ${mode} in
             "") ;;
-            *) ${CHMOD} ${mode} ${src} ;;
+            *) ${CHMOD} ${mode} ${source} ;;
           esac
           case ${user} in
             "") ;;
-            *) ${CHOWN} ${user} ${src} ;;
+            *) ${CHOWN} ${user} ${source} ;;
           esac
           case ${group} in
             "") ;;
-            *) ${CHGRP} ${group} ${src} ;;
+            *) ${CHGRP} ${group} ${source} ;;
           esac
-          ${MV} ${src} ${dst}
+          ${MV} ${source} ${dst}
         fi
       done
     done
@@ -468,7 +467,7 @@ usage()
 
 Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                    [--pkg packages_dir] [--category category]
-                   [--prefix prefix] [--database database_dir]
+                   [--prefix prefix] [--pkgdb database_dir]
                    [--force] operation
 
  Operation:
@@ -501,7 +500,7 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         [Default: "/usr/pkg"]
     --system            If install/delete operation with this option,
                         install to/delete from /.
-    --database          Set pkgdb to package's database.
+    --pkgdb             Set pkgdb to package's database.
                         [Default: "/var/db/basepkg"]
     --new               Set new_package to create 
                         file of package's information newly.
@@ -595,10 +594,10 @@ while [ $# -gt 0 ]; do
     --new)
       new_package="true"
       shift ;;
-    --database=*)
+    --pkgdb=*)
       pkgdb=`get_optarg "$1"`
       shift ;;
-    --database)
+    --pkgdb)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
