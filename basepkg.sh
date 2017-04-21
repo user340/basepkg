@@ -349,7 +349,7 @@ do_pkg_add()
     pkg_add_options=""
   fi
   pkg_add_options="-K ${pkgdb} -p ${prefix}/${basedir} ${pkg_add_options}"
-  ${PKG_ADD} ${pkg_add_options} $@
+  ${PKG_ADD} ${pkg_add_options} $@ || exit 1
   if [ $touch_system = "true" ]; then
     for i in $@; do
       ${SED} -n "/^\# CONF: /{s/^\# CONF: //;p;}" \
@@ -426,7 +426,7 @@ do_pkg_delete()
     pkg_delete_options=""
   fi
   pkg_delete_options="-K ${pkgdb} -p ${real_prefix} ${pkg_delete_options}"
-  ${PKG_DELETE} ${pkg_delete_options} $@
+  ${PKG_DELETE} ${pkg_delete_options} $@ || exit 1
 }
 
 # "clean" option use following functions.
