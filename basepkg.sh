@@ -270,7 +270,6 @@ make_INSTALL()
   if [ -f ${setname}/${pkgname}/+INSTALL ]; then
     ${MV} ${setname}/${pkgname}/+INSTALL ${setname}/${pkgname}/+INSTALL.old
   fi
-  echo ":" > ${setname}/${pkgname}/+INSTALL
   if [ -f ${setname}/${pkgname}/+CONTENTS ]; then
     ${GREP} -v -e "^@" ${setname}/${pkgname}/+CONTENTS | while read file; do
       if [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "etc" ]; then
