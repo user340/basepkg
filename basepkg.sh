@@ -70,6 +70,7 @@ pkgdb="/var/db/basepkg"
 touch_system="false"
 new_package="false"
 force="false"
+update="false"
 
 err()
 {
@@ -347,6 +348,9 @@ do_pkg_add()
   else
     pkg_add_options=""
   fi
+  if [ ${update} = "true" ]; then
+    pkg_add_options="-u ${pkg_add_options}"
+  fi
   pkg_add_options="-K ${pkgdb} -p ${prefix}/${basedir} ${pkg_add_options}"
   ${PKG_ADD} ${pkg_add_options} $@ || exit 1
   if [ $touch_system = "true" ]; then
@@ -468,7 +472,7 @@ usage()
 Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                    [--pkg packages_dir] [--category category]
                    [--prefix prefix] [--pkgdb database_dir]
-                   [--force] operation
+                   [--force] [--update] operation
 
  Operation:
     extract             Extract base binary.
@@ -505,6 +509,7 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
     --new               Set new_package to create 
                         file of package's information newly.
     --force             Add "-f" option to pkg_add and pkg_delete command.
+    --update            Add "-u" option to pkg_add and pkg_delete command.
 
 _usage_
   exit 1
@@ -607,6 +612,9 @@ while [ $# -gt 0 ]; do
       shift ;;
     --force)
       force="true"
+      shift ;;
+    --update)
+      update="true"
       shift ;;
     -|--)
       shift
