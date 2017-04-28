@@ -71,6 +71,7 @@ touch_system="false"
 new_package="false"
 force="false"
 update="false"
+replace="false"
 
 err()
 {
@@ -350,6 +351,9 @@ do_pkg_add()
   if [ ${update} = "true" ]; then
     pkg_add_options="-u ${pkg_add_options}"
   fi
+  if [ ${replace} = "true" ]; then
+    pkg_add_options="-U ${pkg_add_options}"
+  fi
   pkg_add_options="-K ${pkgdb} -p ${prefix}/${basedir} ${pkg_add_options}"
   ${PKG_ADD} ${pkg_add_options} $@ || exit 1
   if [ $touch_system = "true" ]; then
@@ -471,7 +475,7 @@ usage()
 Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                    [--pkg packages_dir] [--category category]
                    [--prefix prefix] [--pkgdb database_dir]
-                   [--force] [--update] operation
+                   [--force] [--update] [--replace] operation
 
  Operation:
     extract             Extract base binary.
@@ -509,6 +513,7 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         file of package's information newly.
     --force             Add "-f" option to pkg_add and pkg_delete command.
     --update            Add "-u" option to pkg_add and pkg_delete command.
+    --replace           Add "-U" option to pkg_add command.
 
 _usage_
   exit 1
@@ -525,26 +530,22 @@ while [ $# -gt 0 ]; do
     -h|--help)
       usage; exit ;;
     --sets=*)
-      sets=`get_optarg "$1"`
-      shift ;;
+      sets=`get_optarg "$1"` ;;
     --sets)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       sets=$2
-      shift
       shift ;;
     --src=*)
-      src=`get_optarg "$1"`
-      shift ;;
+      src=`get_optarg "$1"` ;;
     --src)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       src=$2
-      shift
       shift ;;
     --obj)
       if [ -z $2 ]; then
@@ -553,74 +554,62 @@ while [ $# -gt 0 ]; do
       fi
       obj=$2
       destdir="${obj}/destdir.${machine}"
-      shift
       shift ;;
     --obj=*)
       obj=`get_optarg "$1"`
-      destdir="${obj}/destdir.${machine}"
-      shift ;;
+      destdir="${obj}/destdir.${machine}" ;;
     --pkg=*)
-      PACKAGES=`get_optarg "$1"`
-      shift ;;
+      PACKAGES=`get_optarg "$1"` ;;
     --pkg)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       PACKAGES=$2
-      shift
       shift ;;
     --category=*)
-      category=`get_optarg "$1"`
-      shift ;;
+      category=`get_optarg "$1"` ;;
     --category)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       category="$2"
-      shift
       shift ;;
     --prefix=*)
-      prefix=`get_optarg "$1"`
-      shift ;;
+      prefix=`get_optarg "$1"` ;;
     --prefix)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       prefix="$2"
-      shift
       shift ;;
     --system)
-      touch_system="true"
-      shift ;;
+      touch_system="true" ;;
     --new)
-      new_package="true"
-      shift ;;
+      new_package="true" ;;
     --pkgdb=*)
-      pkgdb=`get_optarg "$1"`
-      shift ;;
+      pkgdb=`get_optarg "$1"` ;;
     --pkgdb)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       pkgdb="$2"
-      shift
       shift ;;
     --force)
-      force="true"
-      shift ;;
+      force="true" ;;
     --update)
-      update="true"
-      shift ;;
+      update="true" ;;
+    --replace)
+      replace="true" ;;
     -|--)
-      shift
       break ;;
     *)
       break ;;
   esac
+  shift
 done
 
 if [ $# -eq 0 ]; then
@@ -639,9 +628,11 @@ case $1 in
   pkg)     
     make_packages ;;
   install)
-    do_pkg_add $2 ;;
+    shift
+    do_pkg_add $@ ;;
   delete)
-    do_pkg_delete $2 ;;
+    shift
+    do_pkg_delete $@ ;;
   cleanpkg)
     clean_packages ;;
   cleandir)
