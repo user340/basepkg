@@ -2,8 +2,6 @@
 #
 # Please read README.md.
 
-PRINTF="/usr/bin/printf"
-
 set -u
 umask 0022
 export LC_ALL=C LANG=C
@@ -57,14 +55,13 @@ user="${USER:-root}"
 src="/usr/src"
 obj="${PWD}"
 destdir="${obj}/destdir.${machine}"
-osrelease="$(${SH} ${src}/sys/conf/osrelease.sh)"
+param="usr/include/sys/param.h"
 packages="./packages"
 sets="/usr/obj/releasedir/${machine}/binary/sets"
-database="${PWD}/database"
-lists="${database}/lists"
-comments="${database}/comments"
-descrs="${database}/descrs"
-deps="${database}/deps"
+lists="distrib/sets/lists"
+comments="distrib/sets/comments"
+descrs="distrib/sets/descrs"
+deps="distrib/sets/deps"
 tmp_deps="/tmp/culldeps"
 category="base comp etc games man misc text"
 prefix="/usr/pkg"
@@ -73,10 +70,37 @@ pkgdb="/var/db/basepkg"
 touch_system="false"
 new_package="false"
 force="false"
+update="false"
+replace="false"
 
 err()
 {
   ${ECHO} "[$(${DATE} +'%Y-%m-%dT%H:%M:%S')] $@" >&2
+}
+
+osrelease() {
+  path=$0
+  exec < ${destdir}/${param}
+
+  while
+    read define ver_tag rel_num comment_start NetBSD rel_text rest; do
+      [ "${define}" = "#define" ] || continue;
+      [ "${ver_tag}" = "__NetBSD_Version__" ] || continue
+      break
+  done
+  rel_num=${rel_num%??}
+  rel_MMmm=${rel_num%????}
+  rel_MM=${rel_MMmm%??}
+  rel_mm=${rel_MMmm#${rel_MM}}
+  IFS=.
+  set -- - $rel_text
+  beta=${3#[0-9]}
+  beta=${beta#[0-9]}
+  shift 3
+  IFS=' '
+  set -- $rel_MM ${rel_mm#0}$beta $*
+  IFS=.
+  echo "$*"
 }
 
 # "extract" option use following function.
@@ -100,13 +124,13 @@ split_category_from_lists()
     if [ -f ./${i}/FILES ]; then
       ${RM} -f ./${i}/FILES
     fi
-    for j in `${LS} ${lists}`; do
-      ${GREP} -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/mi | \
+    for j in `${LS} ${src}/${lists} | ${GREP} -v "^[A-Z]"`; do
+      ${GREP} -E "${i}-[a-z]+-[a-z]+" ${src}/${lists}/${j}/mi | \
       ${AWK} '$3 !~ /obsolete/ {print}' | \
       ${SED} -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
   
-      if [ -f ${lists}/${j}/md.${machine} ]; then
-        ${GREP} -E "${i}-[a-z]+-[a-z]+" ${lists}/${j}/md.${machine} | \
+      if [ -f ${src}/${lists}/${j}/md.${machine} ]; then
+        ${GREP} -E "${i}-[a-z]+-[a-z]+" ${src}/${lists}/${j}/md.${machine} | \
         ${AWK} '$3 !~ /obsolete/ {print}' | \
         ${SED} -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
       fi
@@ -160,14 +184,13 @@ OPSYS=${opsys}
 OS_VERSION=${osversion}
 OBJECT_FMT=ELF
 MACHINE_ARCH=${machine_arch}
-MACHINE_GNU_ARCH=${MACHINE_GNU_ARCH}
 PKGTOOLS_VERSION=${pkgtoolversion}
 _BUILD_INFO_
 }
 
 culc_deps()
 {
-  ${GREP} -E "^$1" ${deps} > /dev/null 2>&1
+  ${GREP} -E "^$1" ${src}/${deps} > /dev/null 2>&1
   if [ $? -eq 1 ]; then
     err "$1:Unknown package dependency."
     return 1
@@ -177,14 +200,14 @@ culc_deps()
     err "$0: Can't create temp file, exiting..."
     exit 1
   fi
-  ${GREP} -E "^$1" ${deps} | ${CUT} -d ' ' -f 2 > ${TMP}
+  ${GREP} -E "^$1" ${src}/${deps} | ${CUT} -d ' ' -f 2 > ${TMP}
   # XXX: too many temp files in /tmp
   ${CAT} ${TMP} | while read depend; do
     if [ ! "${depend}" ]; then
       ${RM} -f ${TMP}
       return 1
     fi
-    ${ECHO} "@pkgdep ${depend}>=${osrelease}" >> ${tmp_deps}
+    ${ECHO} "@pkgdep ${depend}>=`osrelease`" >> ${tmp_deps}
     if [ "${depend}" = "base-sys-root" ]; then
       ${RM} -f ${TMP}
       return 0
@@ -202,7 +225,7 @@ make_CONTENTS()
   fi
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  ${ECHO} "@name ${pkgname}-${osrelease}" > ./$1/+CONTENTS
+  ${ECHO} "@name ${pkgname}-`osrelease`" > ./$1/+CONTENTS
   ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
   >> ./$1/+CONTENTS
   ${ECHO} "@comment Packaged using ${progname} ${rcsid}" >> ./$1/+CONTENTS
@@ -237,8 +260,8 @@ make_CONTENTS()
 make_DESC_and_COMMENT()
 {
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  ${GREP} ${pkgname} ${descrs} | ${SED} -e "s/${pkgname} //" > ./$1/+DESC
-  ${GREP} ${pkgname} ${comments} | ${SED} -e "s/${pkgname} //" > ./$1/+COMMENT
+  ${GREP} ${pkgname} ${src}/${descrs} | ${SED} -e "s/${pkgname} //" > ./$1/+DESC
+  ${GREP} ${pkgname} ${src}/${comments} | ${SED} -e "s/${pkgname} //" > ./$1/+COMMENT
 }
 
 make_INSTALL()
@@ -295,7 +318,7 @@ do_pkg_create()
     ${MKDIR} -p ${packages}/All
   fi
   ${MV} ./${pkgname}.tgz \
-  ${packages}/All/${pkgname}-${osrelease}.tgz
+  ${packages}/All/${pkgname}-`osrelease`.tgz
 }
 
 make_packages()
@@ -325,64 +348,70 @@ do_pkg_add()
   else
     pkg_add_options=""
   fi
+  if [ ${update} = "true" ]; then
+    pkg_add_options="-u ${pkg_add_options}"
+  fi
+  if [ ${replace} = "true" ]; then
+    pkg_add_options="-U ${pkg_add_options}"
+  fi
   pkg_add_options="-K ${pkgdb} -p ${prefix}/${basedir} ${pkg_add_options}"
-  ${PKG_ADD} ${pkg_add_options} $@
+  ${PKG_ADD} ${pkg_add_options} $@ || exit 1
   if [ $touch_system = "true" ]; then
     for i in $@; do
       ${SED} -n "/^\# CONF: /{s/^\# CONF: //;p;}" \
       ${pkgdb}/`${BASENAME} ${i} | ${SED} 's/\.tgz$//'`/+INSTALL | ${SORT} -u |
-      while read dst src mode user group; do
+      while read dst source mode user group; do
         case ${dst} in
           "") continue ;;
           [!/]*) dst="/${dst}" ;;
         esac
-        case ${src} in
+        case ${source} in
           "") continue ;;
-          [!/]*) src="${prefix}/${basedir}/${src}" ;;
+          [!/]*) source="${prefix}/${basedir}/${source}" ;;
         esac
-        if [ -f ${src} -a ! -f ${dst} ]; then
+        if [ -f ${source} -a ! -f ${dst} ]; then
           case ${mode} in
             "") ;;
-            *) ${CHMOD} ${mode} ${src} ;;
+            *) ${CHMOD} ${mode} ${source} ;;
           esac
           case ${user} in
             "") ;;
-            *) ${CHOWN} ${user} ${src} ;;
+            *) ${CHOWN} ${user} ${source} ;;
           esac
           case ${group} in
             "") ;;
-            *) ${CHGRP} ${group} ${src} ;;
+            *) ${CHGRP} ${group} ${source} ;;
           esac
-          mv ${src} ${dst}
-        elif [ -f ${src} -a -f ${dst} ]; then
+          mv ${source} ${dst}
+        elif [ -f ${source} -a -f ${dst} ]; then
           ${ECHO} "${dst} is already exist. Ignore..."
         fi
       done
       ${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" \
       ${pkgdb}/`${BASENAME} ${i} | ${SED} 's/\.tgz$//'`/+INSTALL | ${SORT} -u |
-      while read dst src mode user group; do
+      while read dst source mode user group; do
         case ${dst} in
           "") continue ;;
           [!/]*) dst="/${dst}" ;;
         esac
-        case ${src} in
+        case ${source} in
           "") continue ;;
-          [!/]*) src="${prefix}/${basedir}/${src}" ;;
+          [!/]*) source="${prefix}/${basedir}/${source}" ;;
         esac
-        if [ -f ${src} ]; then
+        if [ -f ${source} ]; then
           case ${mode} in
             "") ;;
-            *) ${CHMOD} ${mode} ${src} ;;
+            *) ${CHMOD} ${mode} ${source} ;;
           esac
           case ${user} in
             "") ;;
-            *) ${CHOWN} ${user} ${src} ;;
+            *) ${CHOWN} ${user} ${source} ;;
           esac
           case ${group} in
             "") ;;
-            *) ${CHGRP} ${group} ${src} ;;
+            *) ${CHGRP} ${group} ${source} ;;
           esac
-          ${MV} ${src} ${dst}
+          ${MV} ${source} ${dst}
         fi
       done
     done
@@ -403,7 +432,7 @@ do_pkg_delete()
     pkg_delete_options=""
   fi
   pkg_delete_options="-K ${pkgdb} -p ${real_prefix} ${pkg_delete_options}"
-  ${PKG_DELETE} ${pkg_delete_options} $@
+  ${PKG_DELETE} ${pkg_delete_options} $@ || exit 1
 }
 
 # "clean" option use following functions.
@@ -412,7 +441,7 @@ clean_packages()
   if [ ! -d ${packages}/All ]; then
     continue
   fi
-  ls ${packages}/${i} | ${GREP} -E 'tgz$' | \
+  ls ${packages}/All | ${GREP} -E 'tgz$' | \
   ${XARGS} -I % rm -f ${packages}/All/%
   ${RMDIR} ${packages}/All
   if [ ! -d ${packages} ]; then
@@ -445,8 +474,8 @@ usage()
 
 Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                    [--pkg packages_dir] [--category category]
-                   [--prefix prefix] [--database database_dir]
-                   [--force] operation
+                   [--prefix prefix] [--pkgdb database_dir]
+                   [--force] [--update] [--replace] operation
 
  Operation:
     extract             Extract base binary.
@@ -478,11 +507,13 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         [Default: "/usr/pkg"]
     --system            If install/delete operation with this option,
                         install to/delete from /.
-    --database          Set pkgdb to package's database.
+    --pkgdb             Set pkgdb to package's database.
                         [Default: "/var/db/basepkg"]
     --new               Set new_package to create 
                         file of package's information newly.
     --force             Add "-f" option to pkg_add and pkg_delete command.
+    --update            Add "-u" option to pkg_add and pkg_delete command.
+    --replace           Add "-U" option to pkg_add command.
 
 _usage_
   exit 1
@@ -499,26 +530,22 @@ while [ $# -gt 0 ]; do
     -h|--help)
       usage; exit ;;
     --sets=*)
-      sets=`get_optarg "$1"`
-      shift ;;
+      sets=`get_optarg "$1"` ;;
     --sets)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       sets=$2
-      shift
       shift ;;
     --src=*)
-      src=`get_optarg "$1"`
-      shift ;;
+      src=`get_optarg "$1"` ;;
     --src)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       src=$2
-      shift
       shift ;;
     --obj)
       if [ -z $2 ]; then
@@ -526,70 +553,63 @@ while [ $# -gt 0 ]; do
         exit 1
       fi
       obj=$2
-      shift
+      destdir="${obj}/destdir.${machine}"
       shift ;;
     --obj=*)
       obj=`get_optarg "$1"`
-      shift ;;
+      destdir="${obj}/destdir.${machine}" ;;
     --pkg=*)
-      PACKAGES=`get_optarg "$1"`
-      shift ;;
+      PACKAGES=`get_optarg "$1"` ;;
     --pkg)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       PACKAGES=$2
-      shift
       shift ;;
     --category=*)
-      category=`get_optarg "$1"`
-      shift ;;
+      category=`get_optarg "$1"` ;;
     --category)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       category="$2"
-      shift
       shift ;;
     --prefix=*)
-      prefix=`get_optarg "$1"`
-      shift ;;
+      prefix=`get_optarg "$1"` ;;
     --prefix)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       prefix="$2"
-      shift
       shift ;;
     --system)
-      touch_system="true"
-      shift ;;
+      touch_system="true" ;;
     --new)
-      new_package="true"
-      shift ;;
-    --database=*)
-      pkgdb=`get_optarg "$1"`
-      shift ;;
-    --database)
+      new_package="true" ;;
+    --pkgdb=*)
+      pkgdb=`get_optarg "$1"` ;;
+    --pkgdb)
       if [ -z $2 ]; then
         err "What is $1 parameter?"
         exit 1
       fi
       pkgdb="$2"
-      shift
       shift ;;
     --force)
-      force="true"
-      shift ;;
+      force="true" ;;
+    --update)
+      update="true" ;;
+    --replace)
+      replace="true" ;;
     -|--)
-      shift
       break ;;
     *)
       break ;;
   esac
+  shift
 done
 
 if [ $# -eq 0 ]; then
@@ -608,9 +628,11 @@ case $1 in
   pkg)     
     make_packages ;;
   install)
-    do_pkg_add $2 ;;
+    shift
+    do_pkg_add $@ ;;
   delete)
-    do_pkg_delete $2 ;;
+    shift
+    do_pkg_delete $@ ;;
   cleanpkg)
     clean_packages ;;
   cleandir)

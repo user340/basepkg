@@ -1,2 +1,9 @@
-work/
 packages/
+destdir*/
+base/
+comp/
+etc/
+games/
+misc/
+man/
+text/
