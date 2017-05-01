@@ -365,20 +365,11 @@ make_packages()
 # "install" option use following functions.
 do_pkg_add()
 {
-  if [ -d ${prefix}/${basedir} ]; then
-    ${MKDIR} -p ${prefix}/${basedir}
-  fi
-  if [ ${force} = "true" ]; then
-    pkg_add_options="-f"
-  else
-    pkg_add_options=""
-  fi
-  if [ ${update} = "true" ]; then
-    pkg_add_options="-u ${pkg_add_options}"
-  fi
-  if [ ${replace} = "true" ]; then
-    pkg_add_options="-U ${pkg_add_options}"
-  fi
+  pkg_add_options=""
+  ${TEST} -d ${prefix}/${basedir} || ${MKDIR} -p ${prefix}/${basedir}
+  ${TEST} ${force} = "true" && pkg_add_options="-f"
+  ${TEST} ${update} = "true" && pkg_add_options="-u ${pkg_add_options}"
+  ${TEST} ${replace} = "true" && pkg_add_options="-U ${pkg_add_options}"
   pkg_add_options="-K ${pkgdb} -p ${prefix}/${basedir} ${pkg_add_options}"
   ${PKG_ADD} ${pkg_add_options} $@ || exit 1
   if [ $touch_system = "true" ]; then
@@ -463,15 +454,10 @@ do_pkg_delete()
 # "clean" option use following functions.
 clean_packages()
 {
-  if [ ! -d ${packages}/All ]; then
-    continue
-  fi
-  ls ${packages}/All | ${GREP} -E 'tgz$' | \
-  ${XARGS} -I % rm -f ${packages}/All/%
+  ${TEST} -d ${packages}/All || exit 1
+  ls ${packages}/All | ${GREP} -E 'tgz$' | ${XARGS} -I % rm -f ${packages}/All/%
   ${RMDIR} ${packages}/All
-  if [ ! -d ${packages} ]; then
-    return 1
-  fi
+  ${TEST} -d ${packages} || exit 1
   ${RMDIR} ${packages}
 }
 
@@ -557,26 +543,17 @@ while [ $# -gt 0 ]; do
     --sets=*)
       sets=`get_optarg "$1"` ;;
     --sets)
-      if [ -z $2 ]; then
-        err "What is $1 parameter?"
-        exit 1
-      fi
+      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       sets=$2
       shift ;;
     --src=*)
       src=`get_optarg "$1"` ;;
     --src)
-      if [ -z $2 ]; then
-        err "What is $1 parameter?"
-        exit 1
-      fi
+      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       src=$2
       shift ;;
     --obj)
-      if [ -z $2 ]; then
-        err "What is $1 parameter?"
-        exit 1
-      fi
+      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       obj=$2
       destdir="${obj}/destdir.${machine}"
       shift ;;
@@ -586,28 +563,19 @@ while [ $# -gt 0 ]; do
     --pkg=*)
       PACKAGES=`get_optarg "$1"` ;;
     --pkg)
-      if [ -z $2 ]; then
-        err "What is $1 parameter?"
-        exit 1
-      fi
+      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       PACKAGES=$2
       shift ;;
     --category=*)
       category=`get_optarg "$1"` ;;
     --category)
-      if [ -z $2 ]; then
-        err "What is $1 parameter?"
-        exit 1
-      fi
+      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       category="$2"
       shift ;;
     --prefix=*)
       prefix=`get_optarg "$1"` ;;
     --prefix)
-      if [ -z $2 ]; then
-        err "What is $1 parameter?"
-        exit 1
-      fi
+      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       prefix="$2"
       shift ;;
     --system)
@@ -618,10 +586,7 @@ while [ $# -gt 0 ]; do
     --pkgdb=*)
       pkgdb=`get_optarg "$1"` ;;
     --pkgdb)
-      if [ -z $2 ]; then
-        err "What is $1 parameter?"
-        exit 1
-      fi
+      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       pkgdb="$2"
       shift ;;
     --force)
@@ -638,9 +603,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-if [ $# -eq 0 ]; then
-  usage
-fi
+${TEST} $# -eq 0 && usage
 
 # operation
 case $1 in
