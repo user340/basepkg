@@ -1,5 +1,5 @@
 # License
-Copyright (c) 2016 Yuuki Enomoto  
+Copyright (c) 2016,2017 Yuuki Enomoto  
 All rights reserved.  
   
 Redistribution and use in source and binary forms, with or without  
@@ -23,17 +23,16 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
 # What is this
-NetBSD packaged base system 
-Testing on virtual machines or dedicated testing machines is strongly encouraged.
+Tool for NetBSD packaged base system.   
+
 ## How to use
+
 ### 1. Build NetBSD
-In this procedure, NetBSD source sets is in /usr/src, NetBSD build-tools is in /usr/tools,  
-NetBSD compiled objects is in /usr/obj .  
-And NetBSD Version is 7.1, machine is amd64, machine archtecture is x86\_64.  
+In this procedure, NetBSD source sets is in /usr/src, NetBSD build-tools is in /usr/tools, NetBSD compiled objects is in /usr/obj. And NetBSD Version is 7.1, machine is amd64, machine archtecture is x86\_64.  
   
 First, Download NetBSD Source Sets and Extract to /usr/src.  
 ```# cd /```  
-```# ftp ftp://ftp.netbsd.org/pub/NetBSD/NetBSD-7.0/source/```  
+```# ftp ftp://ftp.netbsd.org/pub/NetBSD/NetBSD-7.1/source/```  
 ```ftp> mget *.tgz```  
 ```ftp> bye```  
 ```# ls | grep 'tgz$' | xargs -n 1 tar zxf```  
@@ -41,7 +40,6 @@ First, Download NetBSD Source Sets and Extract to /usr/src.
 ```# mkdir /usr/obj /usr/tools ; cd /usr/src```  
 ```# ./build.sh -O ../obj -T ../tools tools```  
 ```# ./build.sh -O ../obj -T ../tools distribution```  
-```# ./build.sh -O ../obj -T ../tools sets```
 
 ### 2. Install pkgtools/pkg_install From pkgsrc or pkgin
 ```# cd /usr```  
@@ -54,19 +52,17 @@ or
 
 ```# pkgin install pkg_install```
 
-### 3. Extract NetBSD Binary Sets to Working Directory
-Extract binary sets to working directory using basepkg.sh script.  
-```# cd /path/to/basepkg.sh```  
-```# ./basepkg.sh extract```
-
-### 4. Make Packages
+### 3. Make Packages
 Run basepkg.sh script with __pkg__ option.  
-```# ./basepkg.sh pkg```  
-Packages are created under the basepkg.sh/packages directory.
+```# ./basepkg.sh --new --src=/usr/src --obj=/usr/obj pkg```  
+Packages are created under the packages/All directory.
 
-### 5. How to Install Package?
+### 4. How to Install Package?
 Rub basepkg.sh script with __install__ option.  
 ```# ./basepkg.sh install packages/All/games-games-bin-7.1.tgz```  
-In default, packages are installed under the /usr/pkg/basepkg.sh/root.  
-If you want to install to the system, use __--system__ option.  
+In default, packages are installed under the /usr/pkg/basepkg/root directory.  
+If you want to install to under the root, use __--system__ option.  
 ```# ./basepkg.sh --system install packages/All/games-games-bin-7.1.tgz```
+
+### 5. For More Detail
+```# ./basepkg.sh --help```

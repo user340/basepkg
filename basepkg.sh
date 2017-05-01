@@ -1,11 +1,34 @@
 #!/usr/bin/env sh
 #
-# Please read README.md.
+# Copyright (c) 2016,2017 Yuuki Enomoto  
+# All rights reserved.  
+#   
+# Redistribution and use in source and binary forms, with or without  
+# modification, are permitted provided that the following conditions are met:  
+#   
+# * Redistributions of source code must retain the above copyright notice, this  
+#   list of conditions and the following disclaimer.  
+#   
+# * Redistributions in binary form must reproduce the above copyright notice,  
+#   this list of conditions and the following disclaimer in the documentation  
+#   and/or other materials provided with the distribution.  
+#   
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"  
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE  
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL  
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER  
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,  
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
 
 set -u
 umask 0022
 export LC_ALL=C LANG=C
 
+# POSIX Utilities
 AWK="/usr/bin/awk"
 BASENAME="/usr/bin/basename"
 CAT="/bin/cat"
@@ -19,28 +42,30 @@ ENV="/usr/bin/env"
 EXPR="/bin/expr"
 FILE="/usr/bin/file"
 GREP="/usr/bin/grep"
-HOSTNAME="/bin/hostname"
 LS="/bin/ls"
 MKDIR="/bin/mkdir"
-MKTEMP="/usr/bin/mktemp"
 MV="/bin/mv"
 RM="/bin/rm"
 RMDIR="/bin/rmdir"
 SED="/usr/bin/sed"
 SH="/bin/sh"
 SORT="/usr/bin/sort"
-STAT="/usr/bin/stat"
-TAR="/bin/tar"
 TEST="/bin/test"
 TR="/usr/bin/tr"
 UNAME="/usr/bin/uname"
 UNIQ="/usr/bin/uniq"
 XARGS="/usr/bin/xargs"
 
+# Non POSIX Utilities
+HOSTNAME="/bin/hostname"
+MKTEMP="/usr/bin/mktemp"
+STAT="/usr/bin/stat"
+TAR="/bin/tar"
 PKG_ADD="/usr/pkg/sbin/pkg_add"
 PKG_CREATE="/usr/pkg/sbin/pkg_create"
 PKG_DELETE="/usr/pkg/sbin/pkg_delete"
 
+# Variables
 progname=${0##*/}
 host="$(${HOSTNAME})"
 machine="$(${UNAME} -m)"
@@ -66,7 +91,7 @@ tmp_deps="/tmp/culldeps"
 category="base comp etc games man misc text"
 prefix="/usr/pkg"
 basedir="basepkg/root"
-pkgdb="/var/db/basepkg"
+pkgdb="/usr/pkg/basepkg/root/var/db/basepkg"
 touch_system="false"
 new_package="false"
 force="false"
@@ -586,7 +611,8 @@ while [ $# -gt 0 ]; do
       prefix="$2"
       shift ;;
     --system)
-      touch_system="true" ;;
+      touch_system="true"
+      pkgdb="/var/db/basepkg" ;;
     --new)
       new_package="true" ;;
     --pkgdb=*)
