@@ -285,8 +285,10 @@ make_CONTENTS()
 make_DESC_and_COMMENT()
 {
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  ${GREP} ${pkgname} ${src}/${descrs} | ${SED} -e "s/${pkgname} //" > ./$1/+DESC
-  ${GREP} ${pkgname} ${src}/${comments} | ${SED} -e "s/${pkgname} //" > ./$1/+COMMENT
+  ${GREP} -e "^${pkgname}" ${src}/${descrs} | \
+    ${SED} -e "s/${pkgname}//" | ${TR} -d '\t' > ./$1/+DESC
+  ${GREP} -e "^${pkgname}" ${src}/${comments} | \
+    ${SED} -e "s/${pkgname}//" | ${TR} -d '\t' > ./$1/+COMMENT
 }
 
 make_INSTALL()
