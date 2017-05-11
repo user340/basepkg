@@ -1,3 +1,0 @@
-# CONF: /etc/rc.d/mountd etc/rc.d/mountd 555 1004 100
-# CONF: /etc/rc.d/nfsd etc/rc.d/nfsd 555 1004 100
-# CONF: /etc/rc.d/nfslocking etc/rc.d/nfslocking 555 1004 100

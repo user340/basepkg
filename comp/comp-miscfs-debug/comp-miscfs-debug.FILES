@@ -1,8 +1,0 @@
-usr/libdata/debug/sbin/mount_fdesc.debug
-usr/libdata/debug/sbin/mount_null.debug
-usr/libdata/debug/sbin/mount_overlay.debug
-usr/libdata/debug/sbin/mount_portal.debug
-usr/libdata/debug/sbin/mount_ptyfs.debug
-usr/libdata/debug/sbin/mount_tmpfs.debug
-usr/libdata/debug/sbin/mount_umap.debug
-usr/libdata/debug/sbin/mount_union.debug

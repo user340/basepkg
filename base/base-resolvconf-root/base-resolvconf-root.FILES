@@ -1,6 +1,0 @@
-libexec/resolvconf
-libexec/resolvconf/dnsmasq
-libexec/resolvconf/libc
-libexec/resolvconf/named
-libexec/resolvconf/unbound
-sbin/resolvconf

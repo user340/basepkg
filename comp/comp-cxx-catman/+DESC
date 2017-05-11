@@ -1,6 +1,0 @@
-comp-cxx-catman	
-comp-cxx-catman		c++, g++ - C++ compiler
-comp-cxx-catman		c++filt - tool for demangling C++ single function names
-comp-cxx-catman		flex++ - C++ lexical analyzser generator (a C++ version of flex)
-comp-cxx-catman	C++ programming language:
-comp-cxx-catman	This contains groff-formatted manual pages on compilers and tools for the

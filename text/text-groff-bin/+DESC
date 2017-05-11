@@ -1,8 +1,0 @@
-text-groff-bin	Groff (GNU Troff) is a document processor which reads plain text mixed
-text-groff-bin	with formatting commands and produces formatted output. Included in this
-text-groff-bin	release are implementations of troff, pic, eqn, tbl, refer, the -man
-text-groff-bin	macros and the -ms macros, and drivers for PostScript, TeX dvi format, HP
-text-groff-bin	LaserJet 4 printers, HTML format (still alpha), and typewriter-like
-text-groff-bin	devices. Also included is a modified version of the Berkeley -me macros,
-text-groff-bin	an enhanced version of the X11 xditview previewer, and an implementation
-text-groff-bin	of the -mm macros. 

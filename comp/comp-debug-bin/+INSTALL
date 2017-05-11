@@ -1,6 +1,0 @@
-# FILE: /usr/bin/addr2line usr/bin/addr2line 555 1004 100
-# FILE: /usr/bin/gcore usr/bin/gcore 555 1004 100
-# FILE: /usr/bin/gcov usr/bin/gcov 555 1004 100
-# FILE: /usr/bin/gdb usr/bin/gdb 555 1004 100
-# FILE: /usr/bin/gdbtui usr/bin/gdbtui 555 1004 100
-# FILE: /usr/bin/gprof usr/bin/gprof 555 1004 100

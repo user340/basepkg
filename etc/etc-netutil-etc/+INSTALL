@@ -1,4 +1,0 @@
-# CONF: /etc/ftpchroot etc/ftpchroot 644 1004 100
-# CONF: /etc/ftpusers etc/ftpusers 644 1004 100
-# CONF: /etc/hosts.equiv etc/hosts.equiv 600 1004 100
-# CONF: /etc/inetd.conf etc/inetd.conf 644 1004 100

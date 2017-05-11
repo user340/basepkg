@@ -1,5 +1,0 @@
-# CONF: /etc/rc.d/altqd etc/rc.d/altqd 555 1004 100
-# CONF: /etc/rc.d/ldpd etc/rc.d/ldpd 555 1004 100
-# CONF: /etc/rc.d/mrouted etc/rc.d/mrouted 555 1004 100
-# CONF: /etc/rc.d/route6d etc/rc.d/route6d 555 1004 100
-# CONF: /etc/rc.d/routed etc/rc.d/routed 555 1004 100

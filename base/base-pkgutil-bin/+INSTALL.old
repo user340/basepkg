@@ -1,8 +1,0 @@
-# FILE: /usr/sbin/audit-packages usr/sbin/audit-packages 00 1004 100
-# FILE: /usr/sbin/bpm usr/sbin/bpm 00 1004 100
-# FILE: /usr/sbin/download-vulnerability-list usr/sbin/download-vulnerability-list 00 1004 100
-# FILE: /usr/sbin/pkg_add usr/sbin/pkg_add 00 1004 100
-# FILE: /usr/sbin/pkg_admin usr/sbin/pkg_admin 00 1004 100
-# FILE: /usr/sbin/pkg_create usr/sbin/pkg_create 00 1004 100
-# FILE: /usr/sbin/pkg_delete usr/sbin/pkg_delete 00 1004 100
-# FILE: /usr/sbin/pkg_info usr/sbin/pkg_info 00 1004 100

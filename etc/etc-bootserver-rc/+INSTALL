@@ -1,6 +1,0 @@
-# CONF: /etc/rc.d/bootparams etc/rc.d/bootparams 555 1004 100
-# CONF: /etc/rc.d/isibootd etc/rc.d/isibootd 555 1004 100
-# CONF: /etc/rc.d/mopd etc/rc.d/mopd 555 1004 100
-# CONF: /etc/rc.d/ndbootd etc/rc.d/ndbootd 555 1004 100
-# CONF: /etc/rc.d/rarpd etc/rc.d/rarpd 555 1004 100
-# CONF: /etc/rc.d/rbootd etc/rc.d/rbootd 555 1004 100

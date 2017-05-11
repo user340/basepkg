@@ -1,7 +1,0 @@
-@name base-slip-root-7.1
-@comment Packaged at 2017-04-12 17:41 UTC by uki@
-@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
-@pkgdep base-sys-root>=7.1
-@cwd /usr/pkg/basepkg/root
-@exec install -d -o root -g wheel -m 0755 etc/sliphome
-sbin/slattach
