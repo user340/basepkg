@@ -1,8 +1,0 @@
-# FILE: /usr/sbin/altqd usr/sbin/altqd 555 1004 100
-# FILE: /usr/sbin/altqstat usr/sbin/altqstat 555 1004 100
-# FILE: /usr/sbin/faithd usr/sbin/faithd 555 1004 100
-# FILE: /usr/sbin/ldpd usr/sbin/ldpd 555 1004 100
-# FILE: /usr/sbin/mrinfo usr/sbin/mrinfo 555 1004 100
-# FILE: /usr/sbin/mrouted usr/sbin/mrouted 555 1004 100
-# FILE: /usr/sbin/route6d usr/sbin/route6d 555 1004 100
-# FILE: /usr/sbin/rtadvd usr/sbin/rtadvd 555 1004 100

@@ -1,4 +1,0 @@
-usr/bin/kdump
-usr/bin/ktrace
-usr/bin/ktruss
-usr/sbin/dtrace

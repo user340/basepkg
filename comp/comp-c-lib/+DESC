@@ -1,3 +1,0 @@
-comp-c-lib	This contains library archives to build statically linked versions of C
-comp-c-lib	libraries.
-comp-c-lib	programs and simbolic links for use in linking software against shared

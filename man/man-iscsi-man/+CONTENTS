@@ -1,9 +1,0 @@
-@name man-iscsi-man-7.1
-@comment Packaged at 2017-04-12 17:41 UTC by uki@
-@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
-@cwd /usr/pkg/basepkg/root
-usr/share/man/man5/targets.5
-usr/share/man/man8/iscsi-initiator.8
-usr/share/man/man8/iscsi-target.8
-usr/share/man/man8/iscsictl.8
-usr/share/man/man8/iscsid.8

@@ -1,4 +1,0 @@
-# CONF: /etc/moduli etc/moduli 444 1004 100
-# CONF: /etc/ssh/ssh_config etc/ssh/ssh_config 444 1004 100
-# CONF: /etc/ssh/ssh_known_hosts etc/ssh/ssh_known_hosts 444 1004 100
-# CONF: /etc/ssh/sshd_config etc/ssh/sshd_config 444 1004 100

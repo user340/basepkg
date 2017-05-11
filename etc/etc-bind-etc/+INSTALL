@@ -1,6 +1,0 @@
-# CONF: /etc/named.conf etc/named.conf 644 1004 100
-# CONF: /etc/namedb/127 etc/namedb/127 644 1004 100
-# CONF: /etc/namedb/bind.keys etc/namedb/bind.keys 644 1004 100
-# CONF: /etc/namedb/localhost etc/namedb/localhost 644 1004 100
-# CONF: /etc/namedb/loopback.v6 etc/namedb/loopback.v6 644 1004 100
-# CONF: /etc/namedb/root.cache etc/namedb/root.cache 644 1004 100

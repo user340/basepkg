@@ -1,7 +1,0 @@
-# FILE: /usr/bin/at usr/bin/at 555 1004 100
-# FILE: /usr/bin/atq usr/bin/atq 555 1004 100
-# FILE: /usr/bin/atrm usr/bin/atrm 555 1004 100
-# FILE: /usr/bin/batch usr/bin/batch 555 1004 100
-# FILE: /usr/bin/crontab usr/bin/crontab 555 1004 100
-# FILE: /usr/libexec/atrun usr/libexec/atrun 555 1004 100
-# FILE: /usr/sbin/cron usr/sbin/cron 555 1004 100

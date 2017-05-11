@@ -1,6 +1,0 @@
-comp-debug-sbin	This package contains kgmon, a kernel debugging utility. kgmon is a tool
-comp-debug-sbin	extracts profile data from the operating system and produces a gmon.out
-comp-debug-sbin	file suitable for later analysis by gprof(1).
-comp-debug-sbin	kgmon indicates the state of operating system profiling as running, off,
-comp-debug-sbin	or not configured. (see config(8)) If the -p flag is specified, kgmon
-comp-debug-sbin	used when profiling the operating system. When no arguments are supplied,

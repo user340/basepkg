@@ -1,3 +1,0 @@
-comp-objc-lib	Objective C programs and simbolic links for use in linking software
-comp-objc-lib	This contains library archives to build statically linked versions of
-comp-objc-lib	against shared Objective C libraries.

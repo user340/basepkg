@@ -1,6 +1,0 @@
-usr/libdata/debug/sbin/pfctl.debug
-usr/libdata/debug/sbin/pflogd.debug
-usr/libdata/debug/sbin/pfs.debug
-usr/libdata/debug/usr/libexec/tftp-proxy.debug
-usr/libdata/debug/usr/sbin/authpf.debug
-usr/libdata/debug/usr/sbin/ftp-proxy.debug

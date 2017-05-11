@@ -1,3 +1,0 @@
-comp-cxx-lib	This contains library archives to build statically linked versions of C++
-comp-cxx-lib	libraries.
-comp-cxx-lib	programs and simbolic links for use in linking software against shared

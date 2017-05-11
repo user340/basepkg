@@ -1,3 +1,0 @@
-comp-objc-bin	This contains the gcc backend for Objective C programming. With this
-comp-objc-bin	package installed, it is possible to compile Objective C programs with
-comp-objc-bin	the cc(1) or gcc(1) commands.

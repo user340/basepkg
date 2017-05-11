@@ -1,9 +1,0 @@
-usr/libdata/debug/usr/bin/ldapcompare.debug
-usr/libdata/debug/usr/bin/ldapdelete.debug
-usr/libdata/debug/usr/bin/ldapexop.debug
-usr/libdata/debug/usr/bin/ldapmodify.debug
-usr/libdata/debug/usr/bin/ldapmodrdn.debug
-usr/libdata/debug/usr/bin/ldappasswd.debug
-usr/libdata/debug/usr/bin/ldapsearch.debug
-usr/libdata/debug/usr/bin/ldapurl.debug
-usr/libdata/debug/usr/bin/ldapwhoami.debug

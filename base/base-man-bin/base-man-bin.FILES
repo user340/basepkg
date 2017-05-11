@@ -1,7 +1,0 @@
-usr/bin/apropos
-usr/bin/man
-usr/bin/mandoc
-usr/libexec/getNAME
-usr/libexec/makewhatis
-usr/sbin/catman
-usr/sbin/makemandb

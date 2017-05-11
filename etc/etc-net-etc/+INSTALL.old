@@ -1,7 +1,0 @@
-# CONF: /etc/hosts etc/hosts 644 1004 100
-# CONF: /etc/netconfig etc/netconfig 644 1004 100
-# CONF: /etc/networks etc/networks 644 1004 100
-# CONF: /etc/nsswitch.conf etc/nsswitch.conf 644 1004 100
-# CONF: /etc/protocols etc/protocols 644 1004 100
-# CONF: /etc/rpc etc/rpc 644 1004 100
-# CONF: /etc/services etc/services 644 1004 100

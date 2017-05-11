@@ -1,9 +1,0 @@
-@name man-dhclient-htmlman-7.1
-@comment Packaged at 2017-04-12 17:41 UTC by uki@
-@comment Packaged using basepkg $NetBSD: make_basepkg.sh,v 0.01 2016/10/19 15:36:22 uki Exp $
-@cwd /usr/pkg/basepkg/root
-usr/share/man/html5/dhclient.conf.html
-usr/share/man/html5/dhclient.leases.html
-usr/share/man/html5/dhcp-eval.html
-usr/share/man/html8/dhclient-script.html
-usr/share/man/html8/dhclient.html

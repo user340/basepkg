@@ -1,3 +1,0 @@
-comp-fortran-lib	FORTRAN programs and simbolic links for use in linking software against
-comp-fortran-lib	This contains library archives to build statically linked versions of
-comp-fortran-lib	shared libraries.
