@@ -6,8 +6,8 @@
 # Redistribution and use in source and binary forms, with or without  
 # modification, are permitted provided that the following conditions are met:  
 #   
-# * Redistributions of source code must retain the above copyright notice, this  
-#   list of conditions and the following disclaimer.  
+# * Redistributions of source code must retain the above copyright notice, 
+#   this list of conditions and the following disclaimer.  
 #   
 # * Redistributions in binary form must reproduce the above copyright notice,  
 #   this list of conditions and the following disclaimer in the documentation  
@@ -23,10 +23,6 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,  
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
-
-set -u
-umask 0022
-export LC_ALL=C LANG=C
 
 # POSIX Utilities
 AWK="/usr/bin/awk"
@@ -65,7 +61,7 @@ PKG_ADD="/usr/pkg/sbin/pkg_add"
 PKG_CREATE="/usr/pkg/sbin/pkg_create"
 PKG_DELETE="/usr/pkg/sbin/pkg_delete"
 
-# Variables
+# Immutable variables
 progname=${0##*/}
 host="$(${HOSTNAME})"
 machine="$(${UNAME} -m)"
@@ -76,27 +72,13 @@ pkgtoolversion="$(${PKG_ADD} -V)"
 rcsid="\$NetBSD: basepkg.sh,v 0.01 `${DATE} '+%Y/%m/%d %H:%M:%S'` uki Exp $"
 utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
-
-src="/usr/src"
-obj="${PWD}"
-destdir="${obj}/destdir.${machine}"
 param="usr/include/sys/param.h"
-packages="./packages"
-sets="/usr/obj/releasedir/${machine}/binary/sets"
 lists="distrib/sets/lists"
 comments="distrib/sets/comments"
 descrs="distrib/sets/descrs"
 deps="distrib/sets/deps"
 tmp_deps="/tmp/culldeps"
-category="base comp etc games man misc text"
-prefix="/usr/pkg"
 basedir="basepkg/root"
-pkgdb="/usr/pkg/basepkg/root/var/db/basepkg"
-touch_system="false"
-new_package="false"
-force="false"
-update="false"
-replace="false"
 
 err()
 {
@@ -557,16 +539,14 @@ while [ $# -gt 0 ]; do
     --obj)
       ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       obj=$2
-      destdir="${obj}/destdir.${machine}"
       shift ;;
     --obj=*)
-      obj=`get_optarg "$1"`
-      destdir="${obj}/destdir.${machine}" ;;
+      obj=`get_optarg "$1"` ;;
     --pkg=*)
-      PACKAGES=`get_optarg "$1"` ;;
+      packages=`get_optarg "$1"` ;;
     --pkg)
       ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
-      PACKAGES=$2
+      packages=$2
       shift ;;
     --category=*)
       category=`get_optarg "$1"` ;;
@@ -605,7 +585,27 @@ while [ $# -gt 0 ]; do
   shift
 done
 
+# Initialization
+set -u
+umask 0022
+export LC_ALL=C LANG=C
+
 ${TEST} $# -eq 0 && usage
+
+# Mutable variables
+src=${src:="/usr/src"}
+obj=${obj:="${PWD}"}
+destdir="${obj}/destdir.${machine}"
+packages=${packages:="./packages"}
+sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
+pkgdb=${pkgdb:="/usr/pkg/basepkg/root/var/db/basepkg"}
+category=${category:="base comp etc games man misc text"}
+prefix=${prefix:="/usr/pkg"}
+touch_system=${touch_system:="false"}
+new_package=${new_package:="false"}
+force=${force:="false"}
+update=${update:="false"}
+replace=${replace:="false"}
 
 # operation
 case $1 in
@@ -631,3 +631,5 @@ case $1 in
   *)
     usage ;;
 esac
+
+exit 0
