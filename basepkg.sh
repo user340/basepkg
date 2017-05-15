@@ -47,6 +47,7 @@ SED="/usr/bin/sed"
 SH="/bin/sh"
 SORT="/usr/bin/sort"
 TEST="/bin/test"
+TOUCH="/usr/bin/touch"
 TR="/usr/bin/tr"
 UNAME="/usr/bin/uname"
 UNIQ="/usr/bin/uniq"
@@ -332,12 +333,6 @@ make_packages()
 {
   i=""
   j=""
-  if [ ${new_package} = "true" ]; then
-    clean_categories
-    split_category_from_lists
-    make_directories_of_package
-    make_contents_list
-  fi
   for i in ${category}; do
     for j in `${LS} ./${i} | ${GREP} -E '^[a-z]+'`; do
       ${ECHO} "Package ${i}/${j} Creating..."
@@ -628,7 +623,18 @@ case $1 in
   list)
     make_contents_list ;;
   pkg)     
-    make_packages ;;
+    if [ ${new_package} = "true" ]; then
+      clean_categories
+      split_category_from_lists
+      make_directories_of_package
+      make_contents_list
+    elif [ ! -f ${packages}/.touched ]; then
+      split_category_from_lists
+      make_directories_of_package
+      make_contents_list
+    fi
+    make_packages
+    touch ${packages}/.touched ;;
   install)
     shift
     do_pkg_add $@ ;;
