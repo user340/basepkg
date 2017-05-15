@@ -189,6 +189,7 @@ make_contents_list()
       ${GREP} -v -E "x${i}-[a-z]+-[a-z]+" > ./${i}/${j}/${j}.FILES
     done
   done
+  ${TOUCH} ${PWD}/.touched
 }
 
 # "pkg" option use following functions.
@@ -451,17 +452,18 @@ clean_categories()
 {
   i=""
   j=""
+  ${TEST} -f ${PWD}/.touched && ${RM} -f ${PWD}/.touched
   for i in ${category}; do
-    ${TEST} -f ./${i}/FILES && ${RM} -f ./${i}/FILES
-    ${TEST} -f ./${i}/CATEGORIZED && ${RM} -f ./${i}/CATEGORIZED
-    for j in `ls ./${i}`; do
-      ${TEST} -f ./${i}/${j}/+BUILD_INFO && ${RM} -f ./${i}/${j}/+BUILD_INFO
-      ${TEST} -f ./${i}/${j}/+COMMENT && ${RM} -f ./${i}/${j}/+COMMENT
-      ${TEST} -f ./${i}/${j}/+CONTENTS && ${RM} -f ./${i}/${j}/+CONTENTS
-      ${TEST} -f ./${i}/${j}/+DESC && ${RM} -f ./${i}/${j}/+DESC
-      ${TEST} -f ./${i}/${j}/${j}.FILES && ${RM} -f ./${i}/${j}/${j}.FILES
-      ${TEST} -f ./${i}/${j}/+INSTALL && ${RM} -f ./${i}/${j}/+INSTALL
-      ${TEST} -f ./${i}/${j}/+INSTALL.old && ${RM} -f ./${i}/${j}/+INSTALL.old
+    ${TEST} -f ${PWD}/${i}/FILES && ${RM} -f ./${i}/FILES
+    ${TEST} -f ${PWD}/${i}/CATEGORIZED && ${RM} -f ./${i}/CATEGORIZED
+    for j in `ls ${PWD}/${i}`; do
+      ${TEST} -f ${PWD}/${i}/${j}/+BUILD_INFO && ${RM} -f ./${i}/${j}/+BUILD_INFO
+      ${TEST} -f ${PWD}/${i}/${j}/+COMMENT && ${RM} -f ./${i}/${j}/+COMMENT
+      ${TEST} -f ${PWD}/${i}/${j}/+CONTENTS && ${RM} -f ./${i}/${j}/+CONTENTS
+      ${TEST} -f ${PWD}/${i}/${j}/+DESC && ${RM} -f ./${i}/${j}/+DESC
+      ${TEST} -f ${PWD}/${i}/${j}/${j}.FILES && ${RM} -f ./${i}/${j}/${j}.FILES
+      ${TEST} -f ${PWD}/${i}/${j}/+INSTALL && ${RM} -f ./${i}/${j}/+INSTALL
+      ${TEST} -f ${PWD}/${i}/${j}/+INSTALL.old && ${RM} -f ./${i}/${j}/+INSTALL.old
       ${RMDIR} ./${i}/${j}
     done
     ${RMDIR} ./${i}
@@ -628,13 +630,12 @@ case $1 in
       split_category_from_lists
       make_directories_of_package
       make_contents_list
-    elif [ ! -f ${packages}/.touched ]; then
+    elif [ ! -f ${PWD}/.touched ]; then
       split_category_from_lists
       make_directories_of_package
       make_contents_list
     fi
-    make_packages
-    touch ${packages}/.touched ;;
+    make_packages ;;
   install)
     shift
     do_pkg_add $@ ;;
