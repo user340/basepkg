@@ -113,6 +113,7 @@ osrelease() {
 # "extract" option use following function.
 extract_base_binaries()
 {
+  i=""
   for i in `${LS} ${sets} | ${GREP} 'tgz$' | ${SED} 's/\.tgz//g'`; do
     if [ ! -d ${destdir} ]; then
       ${MKDIR} -p ${destdir}
@@ -124,6 +125,8 @@ extract_base_binaries()
 # "dir" option use following functions.
 split_category_from_lists()
 {
+  i=""
+  j=""
   for i in ${category}; do
     if [ ! -d ./${i} ]; then
       ${MKDIR} ./${i}
@@ -147,6 +150,7 @@ split_category_from_lists()
 
 make_directories_of_package()
 {
+  i=""
   for i in ${category}; do
     ${AWK} '{print $2}' ./${i}/FILES | ${SORT} | ${UNIQ} | \
     ${XARGS} -n 1 -I % ${MKDIR} ./${i}/%
@@ -156,6 +160,7 @@ make_directories_of_package()
 # "list" option use following function.
 make_contents_list()
 {
+  i=""
   for i in ${category}; do
     ${AWK} ' 
     # $1 - file name
@@ -174,6 +179,8 @@ make_contents_list()
         print pkg, lists[pkg]
     }' ${i}/FILES > ./${i}/CATEGORIZED
   done
+  i=""
+  j=""
   for i in ${category}; do
     for j in `${LS} ./${i} | ${GREP} '^[a-z]'`; do
       ${GREP} "${j}" ./${i}/CATEGORIZED | ${TR} ' ' '\n' | \
@@ -202,21 +209,12 @@ culc_deps()
     err "$1:Unknown package dependency."
     return 1
   fi
-  TMP=`${MKTEMP} -q`
-  if [ $? -ne 0 ]; then
-    err "$0: Can't create temp file, exiting..."
-    exit 1
-  fi
-  ${GREP} -E "^$1" ${src}/${deps} | ${CUT} -d ' ' -f 2 > ${TMP}
-  # XXX: too many temp files in /tmp
-  ${CAT} ${TMP} | while read depend; do
+  ${GREP} -E "^$1" ${src}/${deps} | ${CUT} -d ' ' -f 2 | while read depend; do
     if [ ! "${depend}" ]; then
-      ${RM} -f ${TMP}
       return 1
     fi
     ${ECHO} "@pkgdep ${depend}>=`osrelease`" >> ${tmp_deps}
     if [ "${depend}" = "base-sys-root" ]; then
-      ${RM} -f ${TMP}
       return 0
     fi
     culc_deps ${depend}
@@ -332,6 +330,14 @@ do_pkg_create()
 
 make_packages()
 {
+  i=""
+  j=""
+  if [ ${new_package} = "true" ]; then
+    clean_categories
+    split_category_from_lists
+    make_directories_of_package
+    make_contents_list
+  fi
   for i in ${category}; do
     for j in `${LS} ./${i} | ${GREP} -E '^[a-z]+'`; do
       ${ECHO} "Package ${i}/${j} Creating..."
@@ -357,6 +363,7 @@ do_pkg_add()
   pkg_add_options="-K ${pkgdb} -p ${prefix}/${basedir} ${pkg_add_options}"
   ${PKG_ADD} ${pkg_add_options} $@ || exit 1
   if [ $touch_system = "true" ]; then
+    i=""
     for i in $@; do
       ${SED} -n "/^\# CONF: /{s/^\# CONF: //;p;}" \
       ${pkgdb}/`${BASENAME} ${i} | ${SED} 's/\.tgz$//'`/+INSTALL | ${SORT} -u |
@@ -447,6 +454,8 @@ clean_packages()
 
 clean_categories()
 {
+  i=""
+  j=""
   for i in ${category}; do
     ${TEST} -f ./${i}/FILES && ${RM} -f ./${i}/FILES
     ${TEST} -f ./${i}/CATEGORIZED && ${RM} -f ./${i}/CATEGORIZED
@@ -456,6 +465,8 @@ clean_categories()
       ${TEST} -f ./${i}/${j}/+CONTENTS && ${RM} -f ./${i}/${j}/+CONTENTS
       ${TEST} -f ./${i}/${j}/+DESC && ${RM} -f ./${i}/${j}/+DESC
       ${TEST} -f ./${i}/${j}/${j}.FILES && ${RM} -f ./${i}/${j}/${j}.FILES
+      ${TEST} -f ./${i}/${j}/+INSTALL && ${RM} -f ./${i}/${j}/+INSTALL
+      ${TEST} -f ./${i}/${j}/+INSTALL.old && ${RM} -f ./${i}/${j}/+INSTALL.old
       ${RMDIR} ./${i}/${j}
     done
     ${RMDIR} ./${i}
