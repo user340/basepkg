@@ -31,12 +31,14 @@ CAT="/bin/cat"
 CHGRP="/bin/chgrp"
 CHMOD="/bin/chmod"
 CHOWN="/sbin/chown"
+CKSUM="/usr/bin/cksum" 
 CUT="/usr/bin/cut"
 DATE="/bin/date"
 ECHO="/bin/echo"
 ENV="/usr/bin/env"
 EXPR="/bin/expr"
 FILE="/usr/bin/file"
+FIND="/usr/bin/find"
 GREP="/usr/bin/grep"
 LS="/bin/ls"
 MKDIR="/bin/mkdir"
@@ -81,11 +83,31 @@ deps="distrib/sets/deps"
 tmp_deps="/tmp/culldeps"
 basedir="basepkg/root"
 
+#################################################
+# Output error message to STDERR
+# Globals:
+#   None
+# Arguments:
+#   Command name
+# Returns:
+#   None
+#################################################
 err()
 {
   ${ECHO} "[$(${DATE} +'%Y-%m-%dT%H:%M:%S')] $@" >&2
 }
 
+#################################################
+# Output version of NetBSD source set.
+# Globals:
+#   destdir
+#   param
+#   IFS
+# Arguments:
+#   None
+# Returns:
+#   None
+#################################################
 osrelease() {
   path=$0
   exec < ${destdir}/${param}
@@ -111,7 +133,20 @@ osrelease() {
   echo "$*"
 }
 
+#################################################
 # "extract" option use following function.
+#################################################
+
+#################################################
+# Extract NetBSD binaries to destdir.
+# Globals:
+#   destdir
+#   sets
+# Arguments:
+#   None
+# Returns:
+#   None
+#################################################
 extract_base_binaries()
 {
   i=""
@@ -123,7 +158,23 @@ extract_base_binaries()
   done
 }
 
+#################################################
 # "dir" option use following functions.
+#################################################
+
+#################################################
+# Make category directory and 
+# organized files named "FILES".
+# Globals:
+#   category
+#   lists
+#   machine
+#   src
+# Arguments:
+#   None
+# Returns:
+#   None
+#################################################
 split_category_from_lists()
 {
   i=""
@@ -149,6 +200,15 @@ split_category_from_lists()
   done
 }
 
+#################################################
+# Make directories referring to "FILES".
+# Globals:
+#   category
+# Arguments:
+#   None
+# Returns:
+#   None
+#################################################
 make_directories_of_package()
 {
   i=""
@@ -158,7 +218,20 @@ make_directories_of_package()
   done
 }
 
+#################################################
 # "list" option use following function.
+#################################################
+
+#################################################
+# List each package's contents 
+# and write into "category/package/package.FILE".
+# Globals:
+#   category
+# Arguments:
+#   None
+# Returns:
+#   None
+#################################################
 make_contents_list()
 {
   i=""
@@ -189,10 +262,24 @@ make_contents_list()
       ${GREP} -v -E "x${i}-[a-z]+-[a-z]+" > ./${i}/${j}/${j}.FILES
     done
   done
-  ${TOUCH} ${PWD}/.touched
 }
 
+#################################################
 # "pkg" option use following functions.
+#################################################
+
+#################################################
+# Make "+BUILD_INFO" file.
+# Globals:
+#   machine_arch
+#   pkgtoolversion
+#   opsys
+#   osversion
+# Arguments:
+#   Formatted package's name(category/package)
+# Returns:
+#   None
+#################################################
 make_BUILD_INFO()
 {
   ${CAT} > ./$1/+BUILD_INFO << _BUILD_INFO_
@@ -204,6 +291,18 @@ PKGTOOLS_VERSION=${pkgtoolversion}
 _BUILD_INFO_
 }
 
+#################################################
+# Calculate package's dependency.
+# Globals:
+#   depend
+#   deps
+#   src
+#   tmp_deps
+# Arguments:
+#   Package's name
+# Returns:
+#   1 or 0
+#################################################
 culc_deps()
 {
   ${GREP} -E "^$1" ${src}/${deps} > /dev/null 2>&1
@@ -223,6 +322,23 @@ culc_deps()
   done
 }
 
+#################################################
+# Make "+CONTENTS" file.
+# Globals:
+#   basedir
+#   destdir
+#   host
+#   prefix
+#   progname
+#   rcsid
+#   tmp_deps
+#   user
+#   utcdate
+# Arguments:
+#   Formatted package's name(category/package)
+# Returns:
+#   None
+#################################################
 make_CONTENTS()
 {
   TMPFILE=`${MKTEMP} -q`
@@ -264,6 +380,17 @@ make_CONTENTS()
   ${RM} -f ${TMPFILE}
 }
 
+#################################################
+# Make "+DESC" and "+COMMENT" file.
+# Globals:
+#   comments
+#   descrs
+#   src
+# Arguments:
+#   Formatted package's name(category/package)
+# Returns:
+#   None
+#################################################
 make_DESC_and_COMMENT()
 {
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
@@ -273,6 +400,15 @@ make_DESC_and_COMMENT()
     ${SED} -e "s/${pkgname}//" | ${TR} -d '\t' > ./$1/+COMMENT
 }
 
+#################################################
+# Make "+INSTALL" file.
+# Globals:
+#   destdir
+# Arguments:
+#   Formatted package's name(category/package)
+# Returns:
+#   0(success) or 1(failed)
+#################################################
 make_INSTALL()
 {
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
@@ -304,8 +440,20 @@ make_INSTALL()
   else
     return 1
   fi
+  return 0
 }
 
+#################################################
+# description of function
+# Globals:
+#   destdir
+#   packages
+#   pkgdb
+# Arguments:
+#   Formatted package's name(category/package)
+# Returns:
+#   If failed, return pkg_create's failed status.
+#################################################
 do_pkg_create()
 {
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
@@ -330,6 +478,15 @@ do_pkg_create()
   ${packages}/All/${pkgname}-`osrelease`.tgz
 }
 
+#################################################
+# Functions wrapper.
+# Globals:
+#   category
+# Arguments:
+#   None
+# Returns:
+#   None
+#################################################
 make_packages()
 {
   i=""
@@ -337,18 +494,42 @@ make_packages()
   for i in ${category}; do
     for j in `${LS} ./${i} | ${GREP} -E '^[a-z]+'`; do
       ${ECHO} "Package ${i}/${j} Creating..."
-      if [ ${new_package} = "true" ]; then
-        make_BUILD_INFO ${i}/${j}
-        make_CONTENTS ${i}/${j}
-        make_DESC_and_COMMENT ${i}/${j}
-        make_INSTALL ${i}/${j}
-      fi
+      make_BUILD_INFO ${i}/${j}
+      make_CONTENTS ${i}/${j}
+      make_DESC_and_COMMENT ${i}/${j}
+      make_INSTALL ${i}/${j}
       do_pkg_create ${i}/${j}
     done
   done
+  pkgs="$(${FIND} ${packages} -type f \
+    \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null)"
+  ${TEST} -f ${packages}/All/MD5 && ${RM} -f ${pacakges}/All/MD5
+  ${TEST} -f ${packages}/All/SHA512 && ${RM} -f ${pacakges}/All/SHA512
+  if [ -n "${pkgs}" ]; then
+    ${CKSUM} -a md5 ${pkgs} >> ${packages}/All/MD5
+    ${CKSUM} -a sha512 ${pkgs} >> ${packages}/All/SHA512
+  fi
 }
 
+#################################################
 # "install" option use following functions.
+#################################################
+
+#################################################
+# pkg_add wrapper.
+# Globals:
+#   basedir
+#   force
+#   pkgdb
+#   prefix
+#   replace
+#   touch_system
+#   update
+# Arguments:
+#   Package's name
+# Returns:
+#   None
+#################################################
 do_pkg_add()
 {
   pkg_add_options=""
@@ -421,7 +602,21 @@ do_pkg_add()
   fi
 }
 
+#################################################
 # "delete" option use following functions.
+#################################################
+
+#################################################
+# pkg_delete wrapper.
+# Globals:
+#   fource
+#   pkgdb
+#   touch_system
+# Arguments:
+#   arguments
+# Returns:
+#   None
+#################################################
 do_pkg_delete()
 {
   if [ $touch_system = "true" ]; then
@@ -438,39 +633,62 @@ do_pkg_delete()
   ${PKG_DELETE} ${pkg_delete_options} $@ || exit 1
 }
 
+#################################################
 # "clean" option use following functions.
+#################################################
+
+#################################################
+# Delete all packages.
+# Globals:
+#   packages
+# Arguments:
+#   None
+# Returns:
+#   None
+#################################################
 clean_packages()
 {
   ${TEST} -d ${packages}/All || exit 1
-  ls ${packages}/All | ${GREP} -E 'tgz$' | ${XARGS} -I % rm -f ${packages}/All/%
+  ${LS} ${packages}/All | ${GREP} -E 'tgz$' | \
+    ${XARGS} -I % rm -f ${packages}/All/%
+  ${RM} -f ${packages}/All/MD5
+  ${RM} -f ${packages}/All/SHA512
   ${RMDIR} ${packages}/All
   ${TEST} -d ${packages} || exit 1
   ${RMDIR} ${packages}
 }
 
+#################################################
+# Delete all "+" files and system files.
+# Globals:
+#   category
+# Arguments:
+#   None
+# Returns:
+#   None
+#################################################
 clean_categories()
 {
   i=""
   j=""
-  ${TEST} -f ${PWD}/.touched && ${RM} -f ${PWD}/.touched
   for i in ${category}; do
-    ${TEST} -f ${PWD}/${i}/FILES && ${RM} -f ./${i}/FILES
-    ${TEST} -f ${PWD}/${i}/CATEGORIZED && ${RM} -f ./${i}/CATEGORIZED
-    for j in `ls ${PWD}/${i}`; do
-      ${TEST} -f ${PWD}/${i}/${j}/+BUILD_INFO && ${RM} -f ./${i}/${j}/+BUILD_INFO
-      ${TEST} -f ${PWD}/${i}/${j}/+COMMENT && ${RM} -f ./${i}/${j}/+COMMENT
-      ${TEST} -f ${PWD}/${i}/${j}/+CONTENTS && ${RM} -f ./${i}/${j}/+CONTENTS
-      ${TEST} -f ${PWD}/${i}/${j}/+DESC && ${RM} -f ./${i}/${j}/+DESC
-      ${TEST} -f ${PWD}/${i}/${j}/${j}.FILES && ${RM} -f ./${i}/${j}/${j}.FILES
-      ${TEST} -f ${PWD}/${i}/${j}/+INSTALL && ${RM} -f ./${i}/${j}/+INSTALL
-      ${TEST} -f ${PWD}/${i}/${j}/+INSTALL.old && ${RM} -f ./${i}/${j}/+INSTALL.old
-      ${RMDIR} ./${i}/${j}
-    done
-    ${RMDIR} ./${i}
+    ${TEST} -f ${PWD}/${i}/FILES && ${RM} -f ${PWD}/${i}/FILES
+    ${TEST} -f ${PWD}/${i}/CATEGORIZED && ${RM} -f ${PWD}/${i}/CATEGORIZED
+    ${FIND} ${PWD}/${i} -type f | ${XARGS} ${RM} -f
+    ${FIND} ${PWD}/${i} -type d | ${XARGS} ${RMDIR}
+    ${RMDIR} ${PWD}/${i}
   done
 }
 
+#################################################
 # self-explanatorily :-)
+# Globals:
+#   progname
+# Arguments:
+#   None
+# Returns:
+#   None
+#################################################
 usage()
 {
   ${CAT} <<_usage_
@@ -512,8 +730,6 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         install to/delete from /.
     --pkgdb             Set pkgdb to package's database.
                         [Default: "/var/db/basepkg"]
-    --new               Set new_package to create 
-                        file of package's information newly.
     --force             Add "-f" option to pkg_add and pkg_delete command.
     --update            Add "-u" option to pkg_add and pkg_delete command.
     --replace           Add "-U" option to pkg_add command.
@@ -522,12 +738,23 @@ _usage_
   exit 1
 }
 
+#################################################
+# Taking a right member.
+# Globals:
+#   None
+# Arguments:
+#   Option's argument
+# Returns:
+#   Argument
+#################################################
 get_optarg()
 {
   ${EXPR} "x$1" : "x[^=]*=\\(.*\\)"
 }
 
+#################################################
 # parse long-options
+#################################################
 while [ $# -gt 0 ]; do
   case $1 in
     -h|--help)
@@ -571,8 +798,6 @@ while [ $# -gt 0 ]; do
     --system)
       touch_system="true"
       pkgdb="/var/db/basepkg" ;;
-    --new)
-      new_package="true" ;;
     --pkgdb=*)
       pkgdb=`get_optarg "$1"` ;;
     --pkgdb)
@@ -593,14 +818,18 @@ while [ $# -gt 0 ]; do
   shift
 done
 
+#################################################
 # Initialization
+#################################################
 set -u
 umask 0022
 export LC_ALL=C LANG=C
 
 ${TEST} $# -eq 0 && usage
 
+#################################################
 # Mutable variables
+#################################################
 src=${src:="/usr/src"}
 obj=${obj:="${PWD}"}
 destdir="${obj}/destdir.${machine}"
@@ -610,12 +839,13 @@ pkgdb=${pkgdb:="/usr/pkg/basepkg/root/var/db/basepkg"}
 category=${category:="base comp etc games man misc text"}
 prefix=${prefix:="/usr/pkg"}
 touch_system=${touch_system:="false"}
-new_package=${new_package:="false"}
 force=${force:="false"}
 update=${update:="false"}
 replace=${replace:="false"}
 
+#################################################
 # operation
+#################################################
 case $1 in
   extract)
     extract_base_binaries ;;
@@ -625,16 +855,9 @@ case $1 in
   list)
     make_contents_list ;;
   pkg)     
-    if [ ${new_package} = "true" ]; then
-      clean_categories
-      split_category_from_lists
-      make_directories_of_package
-      make_contents_list
-    elif [ ! -f ${PWD}/.touched ]; then
-      split_category_from_lists
-      make_directories_of_package
-      make_contents_list
-    fi
+    split_category_from_lists
+    make_directories_of_package
+    make_contents_list
     make_packages ;;
   install)
     shift
