@@ -261,7 +261,6 @@ make_contents_list()
       ${GREP} -v -E "x${i}-[a-z]+-[a-z]+" > ./${i}/${j}/${j}.FILES
     done
   done
-  ${TOUCH} ${PWD}/.touched
 }
 
 #################################################
@@ -482,7 +481,6 @@ do_pkg_create()
 # Functions wrapper.
 # Globals:
 #   category
-#   new_packages
 # Arguments:
 #   None
 # Returns:
@@ -495,12 +493,10 @@ make_packages()
   for i in ${category}; do
     for j in `${LS} ./${i} | ${GREP} -E '^[a-z]+'`; do
       ${ECHO} "Package ${i}/${j} Creating..."
-      if [ ${new_package} = "true" ]; then
-        make_BUILD_INFO ${i}/${j}
-        make_CONTENTS ${i}/${j}
-        make_DESC_and_COMMENT ${i}/${j}
-        make_INSTALL ${i}/${j}
-      fi
+      make_BUILD_INFO ${i}/${j}
+      make_CONTENTS ${i}/${j}
+      make_DESC_and_COMMENT ${i}/${j}
+      make_INSTALL ${i}/${j}
       do_pkg_create ${i}/${j}
     done
   done
@@ -663,7 +659,6 @@ clean_categories()
 {
   i=""
   j=""
-  ${TEST} -f ${PWD}/.touched && ${RM} -f ${PWD}/.touched
   for i in ${category}; do
     ${TEST} -f ${PWD}/${i}/FILES && ${RM} -f ${PWD}/${i}/FILES
     ${TEST} -f ${PWD}/${i}/CATEGORIZED && ${RM} -f ${PWD}/${i}/CATEGORIZED
@@ -723,8 +718,6 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         install to/delete from /.
     --pkgdb             Set pkgdb to package's database.
                         [Default: "/var/db/basepkg"]
-    --new               Set new_package to create 
-                        file of package's information newly.
     --force             Add "-f" option to pkg_add and pkg_delete command.
     --update            Add "-u" option to pkg_add and pkg_delete command.
     --replace           Add "-U" option to pkg_add command.
@@ -793,8 +786,6 @@ while [ $# -gt 0 ]; do
     --system)
       touch_system="true"
       pkgdb="/var/db/basepkg" ;;
-    --new)
-      new_package="true" ;;
     --pkgdb=*)
       pkgdb=`get_optarg "$1"` ;;
     --pkgdb)
@@ -836,7 +827,6 @@ pkgdb=${pkgdb:="/usr/pkg/basepkg/root/var/db/basepkg"}
 category=${category:="base comp etc games man misc text"}
 prefix=${prefix:="/usr/pkg"}
 touch_system=${touch_system:="false"}
-new_package=${new_package:="false"}
 force=${force:="false"}
 update=${update:="false"}
 replace=${replace:="false"}
@@ -853,16 +843,9 @@ case $1 in
   list)
     make_contents_list ;;
   pkg)     
-    if [ ${new_package} = "true" ]; then
-      clean_categories
-      split_category_from_lists
-      make_directories_of_package
-      make_contents_list
-    elif [ ! -f ${PWD}/.touched ]; then
-      split_category_from_lists
-      make_directories_of_package
-      make_contents_list
-    fi
+    split_category_from_lists
+    make_directories_of_package
+    make_contents_list
     make_packages ;;
   install)
     shift
