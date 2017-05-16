@@ -31,6 +31,7 @@ CAT="/bin/cat"
 CHGRP="/bin/chgrp"
 CHMOD="/bin/chmod"
 CHOWN="/sbin/chown"
+CKSUM="/usr/bin/cksum" 
 CUT="/usr/bin/cut"
 DATE="/bin/date"
 ECHO="/bin/echo"
@@ -500,6 +501,14 @@ make_packages()
       do_pkg_create ${i}/${j}
     done
   done
+  pkgs="$(${FIND} ${packages} -type f \
+    \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null)"
+  ${TEST} -f ${packages}/All/MD5 && ${RM} -f ${pacakges}/All/MD5
+  ${TEST} -f ${packages}/All/SHA512 && ${RM} -f ${pacakges}/All/SHA512
+  if [ -n "${pkgs}" ]; then
+    ${CKSUM} -a md5 ${pkgs} >> ${packages}/All/MD5
+    ${CKSUM} -a sha512 ${pkgs} >> ${packages}/All/SHA512
+  fi
 }
 
 #################################################
@@ -640,7 +649,10 @@ do_pkg_delete()
 clean_packages()
 {
   ${TEST} -d ${packages}/All || exit 1
-  ls ${packages}/All | ${GREP} -E 'tgz$' | ${XARGS} -I % rm -f ${packages}/All/%
+  ${LS} ${packages}/All | ${GREP} -E 'tgz$' | \
+    ${XARGS} -I % rm -f ${packages}/All/%
+  ${RM} -f ${packages}/All/MD5
+  ${RM} -f ${packages}/All/SHA512
   ${RMDIR} ${packages}/All
   ${TEST} -d ${packages} || exit 1
   ${RMDIR} ${packages}
