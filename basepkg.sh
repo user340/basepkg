@@ -81,7 +81,7 @@ comments="distrib/sets/comments"
 descrs="distrib/sets/descrs"
 deps="distrib/sets/deps"
 tmp_deps="/tmp/culldeps"
-basedir="basepkg/root"
+basedir="share/basepkg/root"
 
 #################################################
 # Output error message to STDERR
@@ -402,6 +402,8 @@ make_DESC_and_COMMENT()
 
 #################################################
 # Make "+INSTALL" file.
+# Role of "+INSTALL" is defining absolute path of
+# file, permission, owner and group.
 # Globals:
 #   destdir
 # Arguments:
@@ -444,7 +446,8 @@ make_INSTALL()
 }
 
 #################################################
-# description of function
+# "pkg_create" command wrapper.
+# Package moved to ${packages}/All directory.
 # Globals:
 #   destdir
 #   packages
@@ -479,7 +482,7 @@ do_pkg_create()
 }
 
 #################################################
-# Functions wrapper.
+# Functions wrapper and make MD5 and SHA512.
 # Globals:
 #   category
 # Arguments:
@@ -516,7 +519,7 @@ make_packages()
 #################################################
 
 #################################################
-# pkg_add wrapper.
+# "pkg_add" command wrapper.
 # Globals:
 #   basedir
 #   force
@@ -607,7 +610,7 @@ do_pkg_add()
 #################################################
 
 #################################################
-# pkg_delete wrapper.
+# "pkg_delete" command wrapper.
 # Globals:
 #   fource
 #   pkgdb
@@ -674,14 +677,14 @@ clean_categories()
   for i in ${category}; do
     ${TEST} -f ${PWD}/${i}/FILES && ${RM} -f ${PWD}/${i}/FILES
     ${TEST} -f ${PWD}/${i}/CATEGORIZED && ${RM} -f ${PWD}/${i}/CATEGORIZED
-    ${FIND} ${PWD}/${i} -type f | ${XARGS} ${RM} -f
-    ${FIND} ${PWD}/${i} -type d | ${XARGS} ${RMDIR}
-    ${RMDIR} ${PWD}/${i}
+    ${FIND} ${PWD}/${i} -type f | ${XARGS} ${RM} -f > /dev/null 2>&1
+    ${FIND} ${PWD}/${i} -type d | ${XARGS} ${RMDIR} > /dev/null 2>&1
+    ${RMDIR} ${PWD}/${i} > /dev/null 2>&1
   done
 }
 
 #################################################
-# self-explanatorily :-)
+# Show usage.
 # Globals:
 #   progname
 # Arguments:
@@ -739,7 +742,10 @@ _usage_
 }
 
 #################################################
-# Taking a right member.
+# In options, 
+#     --src=/usr/src
+#           ^^^^^^^^^
+#            take it
 # Globals:
 #   None
 # Arguments:
@@ -835,9 +841,9 @@ obj=${obj:="${PWD}"}
 destdir="${obj}/destdir.${machine}"
 packages=${packages:="./packages"}
 sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
-pkgdb=${pkgdb:="/usr/pkg/basepkg/root/var/db/basepkg"}
 category=${category:="base comp etc games man misc text"}
 prefix=${prefix:="/usr/pkg"}
+pkgdb=${pkgdb:="${prefix}/${basedir}/var/db/basepkg"}
 touch_system=${touch_system:="false"}
 force=${force:="false"}
 update=${update:="false"}
