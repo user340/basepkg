@@ -63,7 +63,6 @@ XARGS="/usr/bin/xargs"
 HOSTNAME="/bin/hostname"
 MKTEMP="/usr/bin/mktemp"
 STAT="/usr/bin/stat"
-TAR="/bin/tar"
 PKG_ADD="/usr/pkg/sbin/pkg_add"
 PKG_CREATE="/usr/pkg/sbin/pkg_create"
 PKG_DELETE="/usr/pkg/sbin/pkg_delete"
@@ -78,7 +77,6 @@ machine_arch="$(${UNAME} -p)"
 opsys="$(${UNAME})"
 osversion="$(${UNAME} -r)"
 pkgtoolversion="$(${PKG_ADD} -V)"
-rcsid="\$NetBSD: basepkg.sh,v 0.01 `${DATE} '+%Y/%m/%d %H:%M:%S'` uki Exp $"
 utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 param="usr/include/sys/param.h"
@@ -123,24 +121,6 @@ osrelease() {
   set -- $rel_MM ${rel_mm#0}$beta $*
   IFS=.
   echo "$*"
-}
-
-#
-# "extract" option use following function.
-#
-
-#
-# Extract NetBSD binaries to destdir.
-#
-extract_base_binaries()
-{
-  i=""
-  for i in `${LS} ${sets} | ${GREP} 'tgz$' | ${SED} 's/\.tgz//g'`; do
-    if [ ! -d ${destdir} ]; then
-      ${MKDIR} -p ${destdir}
-    fi
-    ${TAR} zxvf ${sets}/${i}.tgz -C ${destdir}
-  done
 }
 
 #
@@ -279,9 +259,7 @@ make_CONTENTS()
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
   ${ECHO} "@name ${pkgname}-`osrelease`" > ./$1/+CONTENTS
-  ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
-  >> ./$1/+CONTENTS
-  ${ECHO} "@comment Packaged using ${progname} ${rcsid}" >> ./$1/+CONTENTS
+  ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ./$1/+CONTENTS
   if [ -f ${tmp_deps} ]; then
     ${RM} -f ${tmp_deps}
   fi
@@ -566,18 +544,17 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                    [--force] [--update] [--replace] operation
 
  Operation:
-    extract             Extract base binary.
     pkg                 Create packages.
     install             Install packages to ${prefix}/${basedir}.
                         If --system option using, install package to /.
     delete              Uninstall packages at ${prefix}/${basedir}.
                         If --system option using, delete package from /.
     cleanpkg            Remove all packages.
+    cleandir            Remove all categorized directories.
 
- Operation for Developer:
+ Operation for Debug:
     dir                 Create packages directory.
     list                Create packages list.
-    cleandir            Remove all categorized directories.
 
  Options:
     --help              Show this message and exit.
@@ -711,14 +688,15 @@ replace=${replace:="false"}
 # operation
 #
 case $1 in
-  extract)
-    extract_base_binaries ;;
   dir) 
     split_category_from_lists
     make_directories_of_package ;;
   list)
     make_contents_list ;;
-  pkg)     
+  #
+  # Mainly, use "pkg" option.
+  #
+  pkg)
     split_category_from_lists
     make_directories_of_package
     make_contents_list
