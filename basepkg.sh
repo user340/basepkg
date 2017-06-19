@@ -545,6 +545,7 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         If --system option using, install package to /.
     delete              Uninstall packages at ${prefix}/${basedir}.
                         If --system option using, delete package from /.
+    clean               Remove all packages and categorized directories.
     cleanpkg            Remove all packages.
     cleandir            Remove all categorized directories.
 
@@ -706,6 +707,9 @@ case $1 in
   cleanpkg)
     clean_packages ;;
   cleandir)
+    clean_categories ;;
+  clean)
+    clean_packages
     clean_categories ;;
   *)
     usage ;;
