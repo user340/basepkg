@@ -159,7 +159,7 @@ make_directories_of_package()
   i=""
   for i in ${category}; do
     ${AWK} '{print $2}' ./${i}/FILES | ${SORT} | ${UNIQ} | \
-    ${XARGS} -n 1 -I % ${SH} "${TEST} -d % || ${MKDIR} ./${i}/%"
+    ${XARGS} -n 1 -I % ${SH} -c "${TEST} -d ${PWD}/${i}/% || ${MKDIR} ${PWD}/${i}/%"
   done
 }
 
