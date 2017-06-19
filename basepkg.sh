@@ -135,12 +135,8 @@ split_category_from_lists()
   i=""
   j=""
   for i in ${category}; do
-    if [ ! -d ./${i} ]; then
-      ${MKDIR} ./${i}
-    fi
-    if [ -f ./${i}/FILES ]; then
-      ${RM} -f ./${i}/FILES
-    fi
+    ${TEST} -d ${PWD}/${i} || ${MKDIR} ${PWD}/${i}
+    ${TEST} -f ${PWD}/${i}/FILES && ${RM} -f ${PWD}/${i}/FILES
     for j in `${LS} ${src}/${lists} | ${GREP} -v "^[A-Z]"`; do
       ${GREP} -E "${i}-[a-z]+-[a-z]+" ${src}/${lists}/${j}/mi | \
       ${AWK} '$3 !~ /obsolete/ {print}' | \
@@ -163,7 +159,7 @@ make_directories_of_package()
   i=""
   for i in ${category}; do
     ${AWK} '{print $2}' ./${i}/FILES | ${SORT} | ${UNIQ} | \
-    ${XARGS} -n 1 -I % ${MKDIR} ./${i}/%
+    ${XARGS} -n 1 -I % ${SH} "${TEST} -d % || ${MKDIR} ./${i}/%"
   done
 }
 
@@ -674,7 +670,7 @@ ${TEST} $# -eq 0 && usage
 src=${src:="/usr/src"}
 obj=${obj:="${PWD}"}
 destdir="${obj}/destdir.${machine}"
-packages=${packages:="./packages"}
+packages=${packages:="${PWD}/packages"}
 sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
 category=${category:="base comp etc games man misc text"}
 prefix=${prefix:="/usr/pkg"}
