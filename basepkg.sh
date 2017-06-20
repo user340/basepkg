@@ -195,7 +195,7 @@ make_contents_list()
   j=""
   for i in ${category}; do
     for j in `${LS} ./${i} | ${GREP} '^[a-z]'`; do
-      ${GREP} "${j}" ./${i}/CATEGORIZED | ${TR} ' ' '\n' | \
+      ${GREP} "^${j}" ./${i}/CATEGORIZED | ${TR} ' ' '\n' | \
       ${AWK} 'NR != 1{print $0}' | ${SORT} | \
       ${GREP} -v -E "x${i}-[a-z]+-[a-z]+" > ./${i}/${j}/${j}.FILES
     done
@@ -230,7 +230,7 @@ culc_deps()
     err "$1:Unknown package dependency."
     return 1
   fi
-  ${GREP} -E "^$1" ${src}/${deps} | ${CUT} -d ' ' -f 2 | while read depend; do
+  ${AWK} '/^'"$1"'/{print $2}' | while read depend; do
     if [ ! "${depend}" ]; then
       return 1
     fi
@@ -290,10 +290,26 @@ make_CONTENTS()
 make_DESC_and_COMMENT()
 {
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  ${GREP} -e "^${pkgname}" ${src}/${descrs} | \
-    ${SED} -e "s/${pkgname}//" | ${TR} -d '\t' > ./$1/+DESC
-  ${GREP} -e "^${pkgname}" ${src}/${comments} | \
-    ${SED} -e "s/${pkgname}//" | ${TR} -d '\t' > ./$1/+COMMENT
+  ${AWK} '
+  /^'"${pkgname}"'/ {
+    for (i = 2; i <= NF; i++) {
+      if (i == NF)
+        printf $i"\n"
+      else
+        printf $i" "
+    }
+  }
+  ' ${src}/${descrs} > ${PWD}/$1/+DESC
+  ${AWK} '
+  /^'"${pkgname}"'/ {
+    for (i = 2; i <= NF; i++) {
+      if (i == NF)
+        printf $i"\n"
+      else
+        printf $i" "
+    }
+  }
+  ' ${src}/${descrs} > ${PWD}/$1/+COMMENT
 }
 
 #
