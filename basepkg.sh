@@ -197,7 +197,7 @@ make_contents_list()
     for j in `${LS} ./${i} | ${GREP} '^[a-z]'`; do
       ${AWK} '
       /^'"$j"'/ {
-        for (i = 2; i < NF; i++) {
+        for (i = 2; i <= NF; i++) {
           print $i
         }
       }' ${PWD}/${i}/CATEGORIZED > ${PWD}/${i}/${j}/${j}.FILES
