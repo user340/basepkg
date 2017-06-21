@@ -189,15 +189,18 @@ make_contents_list()
     END {
       for(pkg in lists)
         print pkg, lists[pkg]
-    }' ${i}/FILES > ./${i}/CATEGORIZED
+    }' ${i}/FILES > ${PWD}/${i}/CATEGORIZED
   done
   i=""
   j=""
   for i in ${category}; do
     for j in `${LS} ./${i} | ${GREP} '^[a-z]'`; do
-      ${GREP} "^${j}" ./${i}/CATEGORIZED | ${TR} ' ' '\n' | \
-      ${AWK} 'NR != 1{print $0}' | ${SORT} | \
-      ${GREP} -v -E "x${i}-[a-z]+-[a-z]+" > ./${i}/${j}/${j}.FILES
+      ${AWK} '
+      /^'"$j"'/ {
+        for (i = 2; i < NF; i++) {
+          print $i
+        }
+      }' ${PWD}/${i}/CATEGORIZED > ${PWD}/${i}/${j}/${j}.FILES
     done
   done
 }
@@ -230,7 +233,7 @@ culc_deps()
     err "$1:Unknown package dependency."
     return 1
   fi
-  ${AWK} '/^'"$1"'/{print $2}' | while read depend; do
+  ${AWK} '/^'"$1"'/{print $2}' ${src}/${deps} | while read depend; do
     if [ ! "${depend}" ]; then
       return 1
     fi
@@ -264,7 +267,7 @@ make_CONTENTS()
     ${SORT} ${tmp_deps} | ${UNIQ} >> ./$1/+CONTENTS
   fi
   ${ECHO} "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
-  ${CAT} ./$1/${pkgname}.FILES | while read i; do
+  ${CAT} ${PWD}/$1/${pkgname}.FILES | while read i; do
     if [ -d ${destdir}/${i} ]; then
       filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
       ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} | \
@@ -290,6 +293,7 @@ make_CONTENTS()
 make_DESC_and_COMMENT()
 {
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+
   ${AWK} '
   /^'"${pkgname}"'/ {
     for (i = 2; i <= NF; i++) {
@@ -298,8 +302,8 @@ make_DESC_and_COMMENT()
       else
         printf $i" "
     }
-  }
-  ' ${src}/${descrs} > ${PWD}/$1/+DESC
+  }' ${src}/${descrs} > ${PWD}/$1/+DESC
+
   ${AWK} '
   /^'"${pkgname}"'/ {
     for (i = 2; i <= NF; i++) {
@@ -308,8 +312,7 @@ make_DESC_and_COMMENT()
       else
         printf $i" "
     }
-  }
-  ' ${src}/${descrs} > ${PWD}/$1/+COMMENT
+  }' ${src}/${descrs} > ${PWD}/$1/+COMMENT
 }
 
 #
