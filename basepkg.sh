@@ -165,30 +165,30 @@ split_category_from_lists()
       }' ${src}/${lists}/${j}/mi >> ${i}/FILES
   
       if [ -f ${src}/${lists}/${j}/md.${machine} ]; then
-      ${AWK} '
-      ! /^\#/ {
-          #
-          # Ignore obsolete packages.
-          #
-          if ($2 == "'"${i}-obsolete"'")
-              next
-          #
-          # Ignore pacakge with obsolete tags.
-          #
-          if ($3 ~ "obsolete")
-              next
-          if ($2 ~ "^'"${i}"'") {
-              #
-              # Remove "./" characters.
-              #
-              $1 = substr($1, 3);
-              if ($1 != "") {
-                  gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"`osrelease`"'/modules");
-                  gsub(/@MACHINE@/, "'"${machine}"'");
-                  gsub(/@OSRELEASE@/, "'"`osrelease`"'");
-                  print
-              }
-          }
+        ${AWK} '
+        ! /^\#/ {
+            #
+            # Ignore obsolete packages.
+            #
+            if ($2 == "'"${i}-obsolete"'")
+                next
+            #
+            # Ignore pacakge with obsolete tags.
+            #
+            if ($3 ~ "obsolete")
+                next
+            if ($2 ~ "^'"${i}"'") {
+                #
+                # Remove "./" characters.
+                #
+                $1 = substr($1, 3);
+                if ($1 != "") {
+                    gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"`osrelease`"'/modules");
+                    gsub(/@MACHINE@/, "'"${machine}"'");
+                    gsub(/@OSRELEASE@/, "'"`osrelease`"'");
+                    print
+                }
+            }
         }' ${src}/${lists}/${j}/md.${machine} >> ${i}/FILES
       fi
     done
@@ -222,17 +222,17 @@ make_contents_list()
     # $1 - file name
     # $2 - package name
     $2 ~ /\./ {
-      gsub(/\./, "-", $2)
+        gsub(/\./, "-", $2)
     }
     {
-      if($2 in lists)
-        lists[$2] = $1 " " lists[$2]
-      else
-        lists[$2] = $1
+        if ($2 in lists)
+            lists[$2] = $1 " " lists[$2]
+        else
+            lists[$2] = $1
     }
     END {
-      for(pkg in lists)
-        print pkg, lists[pkg]
+        for (pkg in lists)
+            print pkg, lists[pkg]
     }' ${i}/FILES > ${PWD}/${i}/CATEGORIZED
   done
   i=""
@@ -241,9 +241,9 @@ make_contents_list()
     for j in `${LS} ./${i} | ${GREP} '^[a-z]'`; do
       ${AWK} '
       /^'"$j"'/ {
-        for (i = 2; i <= NF; i++) {
-          print $i
-        }
+          for (i = 2; i <= NF; i++) {
+              print $i
+          }
       }' ${PWD}/${i}/CATEGORIZED > ${PWD}/${i}/${j}/${j}.FILES
     done
   done
@@ -318,7 +318,7 @@ make_CONTENTS()
       ${SED} 's%^\.\/%%' | \
       ${AWK} '
       {
-        print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
+          print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
       }
       ' >> ${TMPFILE}
     elif [ ! -f ${destdir}/${i} ]; then
@@ -340,22 +340,22 @@ make_DESC_and_COMMENT()
 
   ${AWK} '
   /^'"${pkgname}"'/ {
-    for (i = 2; i <= NF; i++) {
-      if (i == NF)
-        printf $i"\n"
-      else
-        printf $i" "
-    }
+      for (i = 2; i <= NF; i++) {
+          if (i == NF)
+              printf $i"\n"
+          else
+              printf $i" "
+      }
   }' ${src}/${descrs} > ${PWD}/$1/+DESC
 
   ${AWK} '
   /^'"${pkgname}"'/ {
-    for (i = 2; i <= NF; i++) {
-      if (i == NF)
-        printf $i"\n"
-      else
-        printf $i" "
-    }
+      for (i = 2; i <= NF; i++) {
+          if (i == NF)
+              printf $i"\n"
+          else
+              printf $i" "
+      }
   }' ${src}/${descrs} > ${PWD}/$1/+COMMENT
 }
 
