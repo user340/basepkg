@@ -66,6 +66,7 @@ STAT="/usr/bin/stat"
 PKG_ADD="/usr/pkg/sbin/pkg_add"
 PKG_CREATE="/usr/pkg/sbin/pkg_create"
 PKG_DELETE="/usr/pkg/sbin/pkg_delete"
+PKG_INFO="/usr/pkg/sbin/pkg_info"
 
 #
 # Immutable variables
@@ -557,6 +558,19 @@ do_pkg_delete()
 }
 
 #
+# "info" option use following functions.
+#
+
+#
+# "pkg_info" command wrapper
+#
+do_pkg_info()
+{
+  pkg_info_options="-K ${pkgdb}"
+  ${PKG_INFO} ${pkg_info_options} $@ || exit 1
+}
+
+#
 # "clean" option use following functions.
 #
 
@@ -776,6 +790,9 @@ case $1 in
   delete)
     shift
     do_pkg_delete $@ ;;
+  info)
+    shift
+    do_pkg_info $@ ;;
   cleanpkg)
     clean_packages ;;
   cleandir)
