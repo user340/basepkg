@@ -135,8 +135,8 @@ split_category_from_lists()
   i=""
   j=""
   for i in ${category}; do
-    ${TEST} -d ${PWD}/${i} || ${MKDIR} ${PWD}/${i}
-    ${TEST} -f ${PWD}/${i}/FILES && ${RM} -f ${PWD}/${i}/FILES
+    ${TEST} -d ${workdir}/${i} || ${MKDIR} -p ${workdir}/${i}
+    ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
     for j in `${LS} ${src}/${lists} | ${GREP} -v "^[A-Z]"`; do
       ${AWK} '
       ! /^\#/ {
@@ -156,13 +156,13 @@ split_category_from_lists()
               #
               $1 = substr($1, 3);
               if ($1 != "") {
-                  gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"`osrelease`"'/modules");
+                  gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release}"'/modules");
                   gsub(/@MACHINE@/, "'"${machine}"'");
-                  gsub(/@OSRELEASE@/, "'"`osrelease`"'");
+                  gsub(/@OSRELEASE@/, "'"${release}"'");
                   print
               }
           }
-      }' ${src}/${lists}/${j}/mi >> ${i}/FILES
+      }' ${src}/${lists}/${j}/mi >> ${workdir}/${i}/FILES
   
       if [ -f ${src}/${lists}/${j}/md.${machine} ]; then
         ${AWK} '
@@ -183,13 +183,13 @@ split_category_from_lists()
                 #
                 $1 = substr($1, 3);
                 if ($1 != "") {
-                    gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"`osrelease`"'/modules");
+                    gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release}"'/modules");
                     gsub(/@MACHINE@/, "'"${machine}"'");
-                    gsub(/@OSRELEASE@/, "'"`osrelease`"'");
+                    gsub(/@OSRELEASE@/, "'"${release}"'");
                     print
                 }
             }
-        }' ${src}/${lists}/${j}/md.${machine} >> ${i}/FILES
+        }' ${src}/${lists}/${j}/md.${machine} >> ${workdir}/${i}/FILES
       fi
     done
   done
@@ -202,8 +202,8 @@ make_directories_of_package()
 {
   i=""
   for i in ${category}; do
-    ${AWK} '{print $2}' ./${i}/FILES | ${SORT} | ${UNIQ} | \
-    ${XARGS} -n 1 -I % ${SH} -c "${TEST} -d ${PWD}/${i}/% || ${MKDIR} ${PWD}/${i}/%"
+    ${AWK} '{print $2}' ${workdir}/${i}/FILES | ${SORT} | ${UNIQ} | \
+    ${XARGS} -n 1 -I % ${SH} -c "${TEST} -d ${workdir}/${i}/% || ${MKDIR} ${workdir}/${i}/%"
   done
 }
 
@@ -233,18 +233,18 @@ make_contents_list()
     END {
         for (pkg in lists)
             print pkg, lists[pkg]
-    }' ${i}/FILES > ${PWD}/${i}/CATEGORIZED
+    }' ${workdir}/${i}/FILES > ${workdir}/${i}/CATEGORIZED
   done
   i=""
   j=""
   for i in ${category}; do
-    for j in `${LS} ./${i} | ${GREP} '^[a-z]'`; do
+    for j in `${LS} ${workdir}/${i} | ${GREP} '^[a-z]'`; do
       ${AWK} '
       /^'"$j"'/ {
           for (i = 2; i <= NF; i++) {
               print $i
           }
-      }' ${PWD}/${i}/CATEGORIZED > ${PWD}/${i}/${j}/${j}.FILES
+      }' ${workdir}/${i}/CATEGORIZED > ${workdir}/${i}/${j}/${j}.FILES
     done
   done
 }
@@ -258,7 +258,7 @@ make_contents_list()
 #
 make_BUILD_INFO()
 {
-  ${CAT} > ./$1/+BUILD_INFO << _BUILD_INFO_
+  ${CAT} > ${workdir}/$1/+BUILD_INFO << _BUILD_INFO_
 OPSYS=${opsys}
 OS_VERSION=${osversion}
 OBJECT_FMT=ELF
@@ -281,7 +281,7 @@ culc_deps()
     if [ ! "${depend}" ]; then
       return 1
     fi
-    ${ECHO} "@pkgdep ${depend}>=`osrelease`" >> ${tmp_deps}
+    ${ECHO} "@pkgdep ${depend}>=${release}" >> ${tmp_deps}
     if [ "${depend}" = "base-sys-root" ]; then
       return 0
     fi
@@ -301,17 +301,17 @@ make_CONTENTS()
   fi
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  ${ECHO} "@name ${pkgname}-`osrelease`" > ./$1/+CONTENTS
-  ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ./$1/+CONTENTS
+  ${ECHO} "@name ${pkgname}-${release}" > ${workdir}/$1/+CONTENTS
+  ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ${workdir}/$1/+CONTENTS
   if [ -f ${tmp_deps} ]; then
     ${RM} -f ${tmp_deps}
   fi
   culc_deps ${pkgname}
   if [ -f ${tmp_deps} ]; then
-    ${SORT} ${tmp_deps} | ${UNIQ} >> ./$1/+CONTENTS
+    ${SORT} ${tmp_deps} | ${UNIQ} >> ${workdir}/$1/+CONTENTS
   fi
-  ${ECHO} "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
-  ${CAT} ${PWD}/$1/${pkgname}.FILES | while read i; do
+  ${ECHO} "@cwd ${prefix}/${basedir}" >> ${workdir}/$1/+CONTENTS
+  ${CAT} ${workdir}/$1/${pkgname}.FILES | while read i; do
     if [ -d ${destdir}/${i} ]; then
       filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
       ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} | \
@@ -327,7 +327,7 @@ make_CONTENTS()
       ${ECHO} ${i} >> ${TMPFILE}
     fi
   done
-  ${SORT} ${TMPFILE} >> ./$1/+CONTENTS
+  ${SORT} ${TMPFILE} >> ${workdir}/$1/+CONTENTS
   ${RM} -f ${TMPFILE}
 }
 
@@ -346,7 +346,7 @@ make_DESC_and_COMMENT()
           else
               printf $i" "
       }
-  }' ${src}/${descrs} > ${PWD}/$1/+DESC
+  }' ${src}/${descrs} > ${workdir}/$1/+DESC
 
   ${AWK} '
   /^'"${pkgname}"'/ {
@@ -356,7 +356,7 @@ make_DESC_and_COMMENT()
           else
               printf $i" "
       }
-  }' ${src}/${descrs} > ${PWD}/$1/+COMMENT
+  }' ${src}/${descrs} > ${workdir}/$1/+COMMENT
 }
 
 #
@@ -369,10 +369,10 @@ make_INSTALL()
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
   if [ -f ${setname}/${pkgname}/+INSTALL ]; then
-    ${MV} ${setname}/${pkgname}/+INSTALL ${setname}/${pkgname}/+INSTALL.old
+    ${MV} ${workdir}/$1/+INSTALL ${workdir}/$1/+INSTALL.old
   fi
-  if [ -f ${setname}/${pkgname}/+CONTENTS ]; then
-    ${GREP} -v -e "^@" ${setname}/${pkgname}/+CONTENTS | while read file; do
+  if [ -f ${workdir}/$1/+CONTENTS ]; then
+    ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
       if [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "etc" ]; then
         install_type="CONF"
       elif [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "boot.cfg" ]; then
@@ -387,10 +387,10 @@ make_INSTALL()
         mode_user_group=""
       fi
       ${ECHO} "# ${install_type}: /${file} ${file} ${mode_user_group}" \
-      >> ${setname}/${pkgname}/+INSTALL
+      >> ${workdir}/$1/+INSTALL
     done
-    if [ -f ${setname}/${pkgname}/+INSTALL.old ]; then
-      ${RM} -f ${setname}${pkgname}/+INSTALL.old
+    if [ -f ${workdir}/$1/+INSTALL.old ]; then
+      ${RM} -f ${workdir}/$1/+INSTALL.old
     fi
   else
     return 1
@@ -406,24 +406,25 @@ do_pkg_create()
 {
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  if [ -f $1/+INSTALL ]; then
-    install_script="-i $1/+INSTALL"
+  if [ -f ${workdir}/$1/+INSTALL ]; then
+    install_script="-i ${workdir}/$1/+INSTALL"
   else
     install_script=""
   fi
-  ${PKG_CREATE} -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
-  -d $1/+DESC -f $1/+CONTENTS ${install_script} -p ${destdir} -K ${pkgdb} ${pkgname}
+  ${PKG_CREATE} -v -l -U -B ${workdir}/$1/+BUILD_INFO -c ${workdir}/$1/+COMMENT \
+  -d ${workdir}/$1/+DESC -f ${workdir}/$1/+CONTENTS ${install_script} \
+  -p ${destdir} -K ${pkgdb} ${pkgname}
   if [ $? != 0 ]; then
     return $?
   fi
   if [ ! -d ${packages} ]; then
     ${MKDIR} ${packages}
   fi
-  if [ ! -d ${packages}/All ]; then
-    ${MKDIR} -p ${packages}/All
+  if [ ! -d ${packages}/${release} ]; then
+    ${MKDIR} -p ${packages}/${release}
   fi
   ${MV} ./${pkgname}.tgz \
-  ${packages}/All/${pkgname}-`osrelease`.tgz
+  ${packages}/${release}/${pkgname}-${release}.tgz
 }
 
 #
@@ -434,7 +435,7 @@ make_packages()
   i=""
   j=""
   for i in ${category}; do
-    for j in `${LS} ./${i} | ${GREP} -E '^[a-z]+'`; do
+    for j in `${LS} ${workdir}/${i} | ${GREP} -E '^[a-z]+'`; do
       ${ECHO} "Package ${i}/${j} Creating..."
       make_BUILD_INFO ${i}/${j}
       make_CONTENTS ${i}/${j}
@@ -445,11 +446,11 @@ make_packages()
   done
   pkgs="$(${FIND} ${packages} -type f \
     \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null)"
-  ${TEST} -f ${packages}/All/MD5 && ${RM} -f ${pacakges}/All/MD5
-  ${TEST} -f ${packages}/All/SHA512 && ${RM} -f ${pacakges}/All/SHA512
+  ${TEST} -f ${packages}/${release}/MD5 && ${RM} -f ${pacakges}/${release}/MD5
+  ${TEST} -f ${packages}/${release}/SHA512 && ${RM} -f ${pacakges}/${release}/SHA512
   if [ -n "${pkgs}" ]; then
-    ${CKSUM} -a md5 ${pkgs} >> ${packages}/All/MD5
-    ${CKSUM} -a sha512 ${pkgs} >> ${packages}/All/SHA512
+    ${CKSUM} -a md5 ${pkgs} >> ${packages}/${release}/MD5
+    ${CKSUM} -a sha512 ${pkgs} >> ${packages}/${release}/SHA512
   fi
 }
 
@@ -564,12 +565,12 @@ do_pkg_delete()
 #
 clean_packages()
 {
-  ${TEST} -d ${packages}/All || exit 1
-  ${LS} ${packages}/All | ${GREP} -E 'tgz$' | \
-    ${XARGS} -I % rm -f ${packages}/All/%
-  ${RM} -f ${packages}/All/MD5
-  ${RM} -f ${packages}/All/SHA512
-  ${RMDIR} ${packages}/All
+  ${TEST} -d ${packages}/${release} || exit 1
+  ${LS} ${packages}/${release} | ${GREP} -E 'tgz$' | \
+    ${XARGS} -I % rm -f ${packages}/${release}/%
+  ${RM} -f ${packages}/${release}/MD5
+  ${RM} -f ${packages}/${release}/SHA512
+  ${RMDIR} ${packages}/${release}
   ${TEST} -d ${packages} || exit 1
   ${RMDIR} ${packages}
 }
@@ -582,11 +583,12 @@ clean_categories()
   i=""
   j=""
   for i in ${category}; do
-    ${TEST} -f ${PWD}/${i}/FILES && ${RM} -f ${PWD}/${i}/FILES
-    ${TEST} -f ${PWD}/${i}/CATEGORIZED && ${RM} -f ${PWD}/${i}/CATEGORIZED
-    ${FIND} ${PWD}/${i} -type f | ${XARGS} ${RM} -f > /dev/null 2>&1
-    ${FIND} ${PWD}/${i} -type d | ${XARGS} ${RMDIR} > /dev/null 2>&1
-    ${RMDIR} ${PWD}/${i} > /dev/null 2>&1
+    ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
+    ${TEST} -f ${workdir}/${i}/CATEGORIZED && ${RM} -f ${workdir}/${i}/CATEGORIZED
+    ${FIND} ${workdir}/${i} -type f | ${XARGS} ${RM} -f > /dev/null 2>&1
+    ${FIND} ${workdir}/${i} -type d | ${XARGS} ${RMDIR} > /dev/null 2>&1
+    ${RMDIR} ${workdir}/${i} > /dev/null 2>&1
+    ${RMDIR} ${workdir} > /dev/null 2>&1
   done
 }
 
@@ -732,7 +734,7 @@ ${TEST} $# -eq 0 && usage
 # Mutable variables
 #
 src=${src:="/usr/src"}
-obj=${obj:="${PWD}"}
+obj=${obj:="/usr/obj"}
 destdir="${obj}/destdir.${machine}"
 packages=${packages:="${PWD}/packages"}
 sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
@@ -743,7 +745,9 @@ touch_system=${touch_system:="false"}
 force=${force:="false"}
 update=${update:="false"}
 replace=${replace:="false"}
-moduledir="stand/${machine}/`osrelease`/modules"
+release="`osrelease`"
+moduledir="stand/${machine}/${release}/modules"
+workdir="${PWD}/work/${release}"
 
 #
 # operation
