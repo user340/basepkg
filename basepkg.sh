@@ -34,6 +34,7 @@ CHGRP="/bin/chgrp"
 CHMOD="/bin/chmod"
 CHOWN="/sbin/chown"
 CKSUM="/usr/bin/cksum" 
+CP="/bin/cp"
 CUT="/usr/bin/cut"
 DATE="/bin/date"
 ECHO="/bin/echo"
@@ -60,7 +61,10 @@ XARGS="/usr/bin/xargs"
 #
 # Non POSIX Utilities
 #
+DISKLABEL="/sbin/disklabel"
 HOSTNAME="/bin/hostname"
+INSTALLBOOT="/usr/sbin/installboot"
+MAKEFS="/usr/sbin/makefs"
 MKTEMP="/usr/bin/mktemp"
 STAT="/usr/bin/stat"
 PKG_ADD="/usr/pkg/sbin/pkg_add"
@@ -125,7 +129,7 @@ osrelease() {
 }
 
 #
-# "dir" option use following functions.
+# "dir" option use the following functions.
 #
 
 #
@@ -209,7 +213,7 @@ make_directories_of_package()
 }
 
 #
-# "list" option use following function.
+# "list" option use the following function.
 #
 
 #
@@ -251,7 +255,7 @@ make_contents_list()
 }
 
 #
-# "pkg" option use following functions.
+# "pkg" option use the following functions.
 #
 
 #
@@ -456,7 +460,7 @@ make_packages()
 }
 
 #
-# "install" option use following functions.
+# "install" option use the following functions.
 #
 
 #
@@ -535,7 +539,7 @@ do_pkg_add()
 }
 
 #
-# "delete" option use following functions.
+# "delete" option use the following functions.
 #
 
 #
@@ -558,7 +562,7 @@ do_pkg_delete()
 }
 
 #
-# "info" option use following functions.
+# "info" option use the following functions.
 #
 
 #
@@ -571,7 +575,83 @@ do_pkg_info()
 }
 
 #
-# "clean" option use following functions.
+# "image" option use the following functions.
+#
+
+#
+# Making bootable base system packaged image named "pkg.img".
+#
+do_make_bootable_image()
+{
+  #
+  # File name and path.
+  #
+  image_name="boot_basepkg.img"
+  fstab="distrib/common/bootimage/fstab.in"
+  bootxx="usr/mdec/bootxx_ffsv1"
+  diskproto="distrib/common/bootimage/diskproto.mbr.in"
+
+  #
+  # For /usr/sbin/disklabel command variables.
+  #
+
+  bootdisk="sd0"
+
+  #
+  # size parameters for image.
+  #
+  imageMB=2048
+  swapMB=128
+
+  # XXX: swapMB could be zero and expr(1) returns exit status 1 in that case.
+  imagesectors=`${EXPR} ${imageMB} \* 1024 \* 1024 / 512`
+  swapsectors=`${EXPR} ${swapMB} \* 1024 \* 1024 / 512 || true`
+
+  # Not use MBR.
+  labelsectors=0
+
+  fssectors=`${EXPR} ${imagesectors} - ${swapsectors} - ${labelsectors}`
+  fssize=`${EXPR} ${fssectors} \* 512`
+
+  heads=64
+  sectors=32
+  tmpmm=`${EXPR} ${heads} \* ${sectors}`
+  cylinders=`${EXPR} ${imagesectors} / ${tmpmm}`
+  secpercylinders=`${EXPR} ${heads} \* ${sectors}`
+  bsdpartsectors=`${EXPR} ${imagesectors} - ${labelsectors}`
+  fsoffset=${labelsectors}
+  swapoffset=`${EXPR} ${labelsectors} + ${fssectors}`
+
+  fssize=`${EXPR} ${fssectors} \* 512`
+
+  ${CP} ${kerneldir}/${kernel}/netbsd ${prefix}/${basedir}/netbsd || exit 1
+  ${CP} ${prefix}/${basedir}/usr/mdec/boot ${prefix}/${basedir}/boot || exit 1
+  (cd ${prefix}/${basedir}/dev ; sh MAKEDEV all) || exit 1
+
+  ${SED} 's/@@BOOTDISK@@/'"${bootdisk}"'/' < ${src}/${fstab} > ${prefix}/${basedir}/etc/fstab
+
+  ${MAKEFS} -M ${fssize} -m ${fssize} -B 1234 -t ffs -N ${prefix}/${basedir}/etc \
+    -o bsize=16384,fsize=2048,density=8192 ${image_name} ${prefix}/${basedir}
+
+  ${INSTALLBOOT} -v -m ${machine} ${image_name} ${prefix}/${basedir}/${bootxx}
+
+  ${SED} \
+    -e "s/@@SECTORS@@/${sectors}/" \
+    -e "s/@@HEADS@@/${heads}/" \
+	  -e "s/@@SECPERCYLINDERS@@/${secpercylinders}/" \
+	  -e "s/@@CYLINDERS@@/${cylinders}/" \
+	  -e "s/@@IMAGESECTORS@@/${imagesectors}/" \
+	  -e "s/@@FSSECTORS@@/${fssectors}/" \
+	  -e "s/@@FSOFFSET@@/${fsoffset}/" \
+	  -e "s/@@SWAPSECTORS@@/${swapsectors}/" \
+	  -e "s/@@SWAPOFFSET@@/${swapoffset}/" \
+	  -e "s/@@BSDPARTSECTORS@@/${bsdpartsectors}/" < ${src}/${diskproto} > .diskproto
+
+	${DISKLABEL} -R -F -M ${machine} -B le ${image_name} .diskproto
+}
+
+#
+# "clean" option use the following functions.
 #
 
 #
@@ -766,6 +846,8 @@ replace=${replace:="false"}
 release="`osrelease`"
 moduledir="stand/${machine}/${release}/modules"
 workdir="${PWD}/work/${release}"
+kerneldir="${obj}/sys/arch/${machine}/compile"
+kernel="GENERIC"
 
 #
 # operation
@@ -793,6 +875,8 @@ case $1 in
   info)
     shift
     do_pkg_info $@ ;;
+  image)
+    do_make_bootable_image ;;
   cleanpkg)
     clean_packages ;;
   cleandir)
