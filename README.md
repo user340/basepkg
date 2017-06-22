@@ -77,13 +77,13 @@ The following packages unable to install to the system.
 - not exist base-libsaslc-examples package, unable to resolution package's dependency.
 	- misc-libsaslc-examples
 - Conflicting pacakge's contents.
-	- base-atf-bin (base-kyua-bin)
+	- base-atf-bin and base-kyua-bin
 		- usr/bin/atf-report
-	- comp-c-debug (comp-c-lib)
+	- comp-c-debug and comp-c-lib
 		- usr/lib/libproc_p.a
-	- comp-c-htmlman (comp-isns-htmlman)
+	- comp-c-htmlman and comp-isns-htmlman
 		- usr/share/man/html3/isns.html
-	- man-atf-htmlman (man-kyua-htmlman)
+	- man-atf-htmlman and man-kyua-htmlman
 		- usr/share/man/html1/atf-report.html
-	- man-atf-man (man-kyua-man)
+	- man-atf-man and man-kyua-man
 		- usr/share/man/man1/atf-report.1
