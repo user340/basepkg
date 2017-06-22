@@ -64,9 +64,9 @@ In default, packages are installed under the /usr/pkg/basepkg/root directory.
 If you want to install to under the root, use __--system__ option.  
 ```# ./basepkg.sh --system install packages/7.1/games-games-bin-7.1.tgz```
 
-### 6. Cannot Install Packages.
-The following packages cannot install to system.
-- not exist base-termcap-share package, cannot resolution package's dependency.
+### 6. Unable to Install Packages.
+The following packages unable to install to the system.
+- not exist base-termcap-share package, unable to resolution package's dependency.
 	- base-groff-share
 	- base-magic-share
 	- base-reference-share
@@ -74,7 +74,7 @@ The following packages cannot install to system.
 	- comp-c-share
 	- comp-util-share
 	- text-texinfo-share
-- not exist base-libsaslc-examples package, cannot resolution package's dependency.
+- not exist base-libsaslc-examples package, unable to resolution package's dependency.
 	- misc-libsaslc-examples
 - Conflicting pacakge's contents.
 	- base-atf-bin (base-kyua-bin)
