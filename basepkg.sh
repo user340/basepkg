@@ -656,6 +656,10 @@ get_optarg()
 }
 
 #
+# Main
+#
+
+#
 # parse long-options
 #
 while [ $# -gt 0 ]; do
