@@ -138,14 +138,58 @@ split_category_from_lists()
     ${TEST} -d ${PWD}/${i} || ${MKDIR} ${PWD}/${i}
     ${TEST} -f ${PWD}/${i}/FILES && ${RM} -f ${PWD}/${i}/FILES
     for j in `${LS} ${src}/${lists} | ${GREP} -v "^[A-Z]"`; do
-      ${GREP} -E "${i}-[a-z]+-[a-z]+" ${src}/${lists}/${j}/mi | \
-      ${AWK} '$3 !~ /obsolete/ {print}' | \
-      ${SED} -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
+      ${AWK} '
+      ! /^\#/ {
+          #
+          # Ignore obsolete packages.
+          #
+          if ($2 == "'"${i}-obsolete"'")
+              next
+          #
+          # Ignore pacakge with obsolete tags.
+          #
+          if ($3 ~ "obsolete")
+              next
+          if ($2 ~ "^'"${i}"'") {
+              #
+              # Remove "./" characters.
+              #
+              $1 = substr($1, 3);
+              if ($1 != "") {
+                  gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"`osrelease`"'/modules");
+                  gsub(/@MACHINE@/, "'"${machine}"'");
+                  gsub(/@OSRELEASE@/, "'"`osrelease`"'");
+                  print
+              }
+          }
+      }' ${src}/${lists}/${j}/mi >> ${i}/FILES
   
       if [ -f ${src}/${lists}/${j}/md.${machine} ]; then
-        ${GREP} -E "${i}-[a-z]+-[a-z]+" ${src}/${lists}/${j}/md.${machine} | \
-        ${AWK} '$3 !~ /obsolete/ {print}' | \
-        ${SED} -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
+      ${AWK} '
+      ! /^\#/ {
+          #
+          # Ignore obsolete packages.
+          #
+          if ($2 == "'"${i}-obsolete"'")
+              next
+          #
+          # Ignore pacakge with obsolete tags.
+          #
+          if ($3 ~ "obsolete")
+              next
+          if ($2 ~ "^'"${i}"'") {
+              #
+              # Remove "./" characters.
+              #
+              $1 = substr($1, 3);
+              if ($1 != "") {
+                  gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"`osrelease`"'/modules");
+                  gsub(/@MACHINE@/, "'"${machine}"'");
+                  gsub(/@OSRELEASE@/, "'"`osrelease`"'");
+                  print
+              }
+          }
+        }' ${src}/${lists}/${j}/md.${machine} >> ${i}/FILES
       fi
     done
   done
@@ -699,6 +743,7 @@ touch_system=${touch_system:="false"}
 force=${force:="false"}
 update=${update:="false"}
 replace=${replace:="false"}
+moduledir="stand/${machine}/`osrelease`/modules"
 
 #
 # operation
