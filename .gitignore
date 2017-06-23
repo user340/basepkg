@@ -1,3 +1,5 @@
 packages/*
 work/*
 tags
+boot_basepkg.img
+.diskproto
