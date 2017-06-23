@@ -77,7 +77,6 @@ PKG_INFO="/usr/pkg/sbin/pkg_info"
 #
 progname=${0##*/}
 host="$(${HOSTNAME})"
-machine="$(${UNAME} -m)"
 machine_arch="$(${UNAME} -p)"
 opsys="$(${UNAME})"
 osversion="$(${UNAME} -r)"
@@ -422,14 +421,11 @@ do_pkg_create()
   if [ $? != 0 ]; then
     return $?
   fi
-  if [ ! -d ${packages} ]; then
-    ${MKDIR} ${packages}
-  fi
-  if [ ! -d ${packages}/${release} ]; then
-    ${MKDIR} -p ${packages}/${release}
+  if [ ! -d ${packages}/${release}/${machine} ]; then
+    ${MKDIR} ${packages}/${release}/${machine}
   fi
   ${MV} ./${pkgname}.tgz \
-  ${packages}/${release}/${pkgname}-${release}.tgz
+    ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
 }
 
 #
@@ -451,11 +447,13 @@ make_packages()
   done
   pkgs="$(${FIND} ${packages} -type f \
     \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null)"
-  ${TEST} -f ${packages}/${release}/MD5 && ${RM} -f ${pacakges}/${release}/MD5
-  ${TEST} -f ${packages}/${release}/SHA512 && ${RM} -f ${pacakges}/${release}/SHA512
+  ${TEST} -f ${packages}/${release}/${machine}/MD5 && \
+    ${RM} -f ${pacakges}/${release}/${machine}/MD5
+  ${TEST} -f ${packages}/${release}/${machine}/SHA512 && \
+    ${RM} -f ${pacakges}/${release}/${machine}/SHA512
   if [ -n "${pkgs}" ]; then
-    ${CKSUM} -a md5 ${pkgs} >> ${packages}/${release}/MD5
-    ${CKSUM} -a sha512 ${pkgs} >> ${packages}/${release}/SHA512
+    ${CKSUM} -a md5 ${pkgs} >> ${packages}/${release}/${machine}/MD5
+    ${CKSUM} -a sha512 ${pkgs} >> ${packages}/${release}/${machine}/SHA512
   fi
 }
 
@@ -805,6 +803,12 @@ while [ $# -gt 0 ]; do
       ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       pkgdb="$2"
       shift ;;
+    --machine=*)
+      machine=`get_optarg "$1"` ;;
+    --machine)
+      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
+      machine="$2"
+      shift ;;
     --force)
       force="true" ;;
     --update)
@@ -833,6 +837,7 @@ ${TEST} $# -eq 0 && usage
 #
 src=${src:="/usr/src"}
 obj=${obj:="/usr/obj"}
+machine="$(${UNAME} -m)"
 destdir="${obj}/destdir.${machine}"
 packages=${packages:="${PWD}/packages"}
 sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
@@ -845,7 +850,7 @@ update=${update:="false"}
 replace=${replace:="false"}
 release="`osrelease`"
 moduledir="stand/${machine}/${release}/modules"
-workdir="${PWD}/work/${release}"
+workdir="${PWD}/work/${release}/${machine}"
 kerneldir="${obj}/sys/arch/${machine}/compile"
 kernel="GENERIC"
 
