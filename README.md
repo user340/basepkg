@@ -23,7 +23,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
 # What is this
-Tool for NetBSD packaged base system.   
+Make NetBSD's base system packages.
 
 ## How to use
 
@@ -55,14 +55,35 @@ or
 ### 3. Make Packages
 Run basepkg.sh script with __pkg__ option.  
 ```# ./basepkg.sh --new --src=/usr/src --obj=/usr/obj pkg```  
-Packages are created under the packages/All directory.
+Packages are created under the packages/<release-version> directory.
 
 ### 4. How to Install Package?
 Rub basepkg.sh script with __install__ option.  
-```# ./basepkg.sh install packages/All/games-games-bin-7.1.tgz```  
+```# ./basepkg.sh install packages/7.1/games-games-bin-7.1.tgz```  
 In default, packages are installed under the /usr/pkg/basepkg/root directory.  
 If you want to install to under the root, use __--system__ option.  
-```# ./basepkg.sh --system install packages/All/games-games-bin-7.1.tgz```
+```# ./basepkg.sh --system install packages/7.1/games-games-bin-7.1.tgz```
 
-### 5. For More Detail
-```# ./basepkg.sh --help```
+### 6. Unable to Install Packages.
+The following packages unable to install to the system.
+- not exist base-termcap-share package, unable to resolution package's dependency.
+	- base-groff-share
+	- base-magic-share
+	- base-reference-share
+	- base-termcap-share
+	- comp-c-share
+	- comp-util-share
+	- text-texinfo-share
+- not exist base-libsaslc-examples package, unable to resolution package's dependency.
+	- misc-libsaslc-examples
+- Conflicting pacakge's contents.
+	- base-atf-bin and base-kyua-bin
+		- usr/bin/atf-report
+	- comp-c-debug and comp-c-lib
+		- usr/lib/libproc_p.a
+	- comp-c-htmlman and comp-isns-htmlman
+		- usr/share/man/html3/isns.html
+	- man-atf-htmlman and man-kyua-htmlman
+		- usr/share/man/html1/atf-report.html
+	- man-atf-man and man-kyua-man
+		- usr/share/man/man1/atf-report.1

@@ -1,10 +1,6 @@
-packages/
-destdir*/
-base/
-comp/
-etc/
-games/
-misc/
-man/
-text/
-.touched
+packages/*
+work/*
+tags
+boot_basepkg.img
+boot_basepkg.qcow2
+.diskproto

@@ -24,7 +24,9 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
 
+#
 # POSIX Utilities
+#
 AWK="/usr/bin/awk"
 BASENAME="/usr/bin/basename"
 CAT="/bin/cat"
@@ -32,6 +34,7 @@ CHGRP="/bin/chgrp"
 CHMOD="/bin/chmod"
 CHOWN="/sbin/chown"
 CKSUM="/usr/bin/cksum" 
+CP="/bin/cp"
 CUT="/usr/bin/cut"
 DATE="/bin/date"
 ECHO="/bin/echo"
@@ -55,24 +58,29 @@ UNAME="/usr/bin/uname"
 UNIQ="/usr/bin/uniq"
 XARGS="/usr/bin/xargs"
 
+#
 # Non POSIX Utilities
+#
+DISKLABEL="/sbin/disklabel"
 HOSTNAME="/bin/hostname"
+INSTALLBOOT="/usr/sbin/installboot"
+MAKEFS="/usr/sbin/makefs"
 MKTEMP="/usr/bin/mktemp"
 STAT="/usr/bin/stat"
-TAR="/bin/tar"
 PKG_ADD="/usr/pkg/sbin/pkg_add"
 PKG_CREATE="/usr/pkg/sbin/pkg_create"
 PKG_DELETE="/usr/pkg/sbin/pkg_delete"
+PKG_INFO="/usr/pkg/sbin/pkg_info"
 
+#
 # Immutable variables
+#
 progname=${0##*/}
 host="$(${HOSTNAME})"
-machine="$(${UNAME} -m)"
 machine_arch="$(${UNAME} -p)"
 opsys="$(${UNAME})"
 osversion="$(${UNAME} -r)"
 pkgtoolversion="$(${PKG_ADD} -V)"
-rcsid="\$NetBSD: basepkg.sh,v 0.01 `${DATE} '+%Y/%m/%d %H:%M:%S'` uki Exp $"
 utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 param="usr/include/sys/param.h"
@@ -81,33 +89,19 @@ comments="distrib/sets/comments"
 descrs="distrib/sets/descrs"
 deps="distrib/sets/deps"
 tmp_deps="/tmp/culldeps"
-basedir="basepkg/root"
+basedir="share/basepkg/root"
 
-#################################################
+#
 # Output error message to STDERR
-# Globals:
-#   None
-# Arguments:
-#   Command name
-# Returns:
-#   None
-#################################################
+#
 err()
 {
   ${ECHO} "[$(${DATE} +'%Y-%m-%dT%H:%M:%S')] $@" >&2
 }
 
-#################################################
+#
 # Output version of NetBSD source set.
-# Globals:
-#   destdir
-#   param
-#   IFS
-# Arguments:
-#   None
-# Returns:
-#   None
-#################################################
+#
 osrelease() {
   path=$0
   exec < ${destdir}/${param}
@@ -133,105 +127,97 @@ osrelease() {
   echo "$*"
 }
 
-#################################################
-# "extract" option use following function.
-#################################################
+#
+# "dir" option use the following functions.
+#
 
-#################################################
-# Extract NetBSD binaries to destdir.
-# Globals:
-#   destdir
-#   sets
-# Arguments:
-#   None
-# Returns:
-#   None
-#################################################
-extract_base_binaries()
-{
-  i=""
-  for i in `${LS} ${sets} | ${GREP} 'tgz$' | ${SED} 's/\.tgz//g'`; do
-    if [ ! -d ${destdir} ]; then
-      ${MKDIR} -p ${destdir}
-    fi
-    ${TAR} zxvf ${sets}/${i}.tgz -C ${destdir}
-  done
-}
-
-#################################################
-# "dir" option use following functions.
-#################################################
-
-#################################################
-# Make category directory and 
-# organized files named "FILES".
-# Globals:
-#   category
-#   lists
-#   machine
-#   src
-# Arguments:
-#   None
-# Returns:
-#   None
-#################################################
+#
+# Make category directory and organized files named "FILES".
+#
 split_category_from_lists()
 {
   i=""
   j=""
   for i in ${category}; do
-    if [ ! -d ./${i} ]; then
-      ${MKDIR} ./${i}
-    fi
-    if [ -f ./${i}/FILES ]; then
-      ${RM} -f ./${i}/FILES
-    fi
+    ${TEST} -d ${workdir}/${i} || ${MKDIR} -p ${workdir}/${i}
+    ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
     for j in `${LS} ${src}/${lists} | ${GREP} -v "^[A-Z]"`; do
-      ${GREP} -E "${i}-[a-z]+-[a-z]+" ${src}/${lists}/${j}/mi | \
-      ${AWK} '$3 !~ /obsolete/ {print}' | \
-      ${SED} -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
+      ${AWK} '
+      ! /^\#/ {
+          #
+          # Ignore obsolete packages.
+          #
+          if ($2 == "'"${i}-obsolete"'")
+              next
+          #
+          # Ignore pacakge with obsolete tags.
+          #
+          if ($3 ~ "obsolete")
+              next
+          if ($2 ~ "^'"${i}"'") {
+              #
+              # Remove "./" characters.
+              #
+              $1 = substr($1, 3);
+              if ($1 != "") {
+                  gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release}"'/modules");
+                  gsub(/@MACHINE@/, "'"${machine}"'");
+                  gsub(/@OSRELEASE@/, "'"${release}"'");
+                  print
+              }
+          }
+      }' ${src}/${lists}/${j}/mi >> ${workdir}/${i}/FILES
   
       if [ -f ${src}/${lists}/${j}/md.${machine} ]; then
-        ${GREP} -E "${i}-[a-z]+-[a-z]+" ${src}/${lists}/${j}/md.${machine} | \
-        ${AWK} '$3 !~ /obsolete/ {print}' | \
-        ${SED} -e 's/^\.\///' -e '/^#/d' >> ./${i}/FILES
+        ${AWK} '
+        ! /^\#/ {
+            #
+            # Ignore obsolete packages.
+            #
+            if ($2 == "'"${i}-obsolete"'")
+                next
+            #
+            # Ignore pacakge with obsolete tags.
+            #
+            if ($3 ~ "obsolete")
+                next
+            if ($2 ~ "^'"${i}"'") {
+                #
+                # Remove "./" characters.
+                #
+                $1 = substr($1, 3);
+                if ($1 != "") {
+                    gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release}"'/modules");
+                    gsub(/@MACHINE@/, "'"${machine}"'");
+                    gsub(/@OSRELEASE@/, "'"${release}"'");
+                    print
+                }
+            }
+        }' ${src}/${lists}/${j}/md.${machine} >> ${workdir}/${i}/FILES
       fi
     done
   done
 }
 
-#################################################
+#
 # Make directories referring to "FILES".
-# Globals:
-#   category
-# Arguments:
-#   None
-# Returns:
-#   None
-#################################################
+#
 make_directories_of_package()
 {
   i=""
   for i in ${category}; do
-    ${AWK} '{print $2}' ./${i}/FILES | ${SORT} | ${UNIQ} | \
-    ${XARGS} -n 1 -I % ${MKDIR} ./${i}/%
+    ${AWK} '{print $2}' ${workdir}/${i}/FILES | ${SORT} | ${UNIQ} | \
+    ${XARGS} -n 1 -I % ${SH} -c "${TEST} -d ${workdir}/${i}/% || ${MKDIR} ${workdir}/${i}/%"
   done
 }
 
-#################################################
-# "list" option use following function.
-#################################################
+#
+# "list" option use the following function.
+#
 
-#################################################
-# List each package's contents 
-# and write into "category/package/package.FILE".
-# Globals:
-#   category
-# Arguments:
-#   None
-# Returns:
-#   None
-#################################################
+#
+# List each package's contents and write into "category/package/package.FILE".
+#
 make_contents_list()
 {
   i=""
@@ -240,49 +226,43 @@ make_contents_list()
     # $1 - file name
     # $2 - package name
     $2 ~ /\./ {
-      gsub(/\./, "-", $2)
+        gsub(/\./, "-", $2)
     }
     {
-      if($2 in lists)
-        lists[$2] = $1 " " lists[$2]
-      else
-        lists[$2] = $1
+        if ($2 in lists)
+            lists[$2] = $1 " " lists[$2]
+        else
+            lists[$2] = $1
     }
     END {
-      for(pkg in lists)
-        print pkg, lists[pkg]
-    }' ${i}/FILES > ./${i}/CATEGORIZED
+        for (pkg in lists)
+            print pkg, lists[pkg]
+    }' ${workdir}/${i}/FILES > ${workdir}/${i}/CATEGORIZED
   done
   i=""
   j=""
   for i in ${category}; do
-    for j in `${LS} ./${i} | ${GREP} '^[a-z]'`; do
-      ${GREP} "${j}" ./${i}/CATEGORIZED | ${TR} ' ' '\n' | \
-      ${AWK} 'NR != 1{print $0}' | ${SORT} | \
-      ${GREP} -v -E "x${i}-[a-z]+-[a-z]+" > ./${i}/${j}/${j}.FILES
+    for j in `${LS} ${workdir}/${i} | ${GREP} '^[a-z]'`; do
+      ${AWK} '
+      /^'"$j"'/ {
+          for (i = 2; i <= NF; i++) {
+              print $i
+          }
+      }' ${workdir}/${i}/CATEGORIZED > ${workdir}/${i}/${j}/${j}.FILES
     done
   done
 }
 
-#################################################
-# "pkg" option use following functions.
-#################################################
+#
+# "pkg" option use the following functions.
+#
 
-#################################################
+#
 # Make "+BUILD_INFO" file.
-# Globals:
-#   machine_arch
-#   pkgtoolversion
-#   opsys
-#   osversion
-# Arguments:
-#   Formatted package's name(category/package)
-# Returns:
-#   None
-#################################################
+#
 make_BUILD_INFO()
 {
-  ${CAT} > ./$1/+BUILD_INFO << _BUILD_INFO_
+  ${CAT} > ${workdir}/$1/+BUILD_INFO << _BUILD_INFO_
 OPSYS=${opsys}
 OS_VERSION=${osversion}
 OBJECT_FMT=ELF
@@ -291,18 +271,9 @@ PKGTOOLS_VERSION=${pkgtoolversion}
 _BUILD_INFO_
 }
 
-#################################################
+#
 # Calculate package's dependency.
-# Globals:
-#   depend
-#   deps
-#   src
-#   tmp_deps
-# Arguments:
-#   Package's name
-# Returns:
-#   1 or 0
-#################################################
+#
 culc_deps()
 {
   ${GREP} -E "^$1" ${src}/${deps} > /dev/null 2>&1
@@ -310,11 +281,11 @@ culc_deps()
     err "$1:Unknown package dependency."
     return 1
   fi
-  ${GREP} -E "^$1" ${src}/${deps} | ${CUT} -d ' ' -f 2 | while read depend; do
+  ${AWK} '/^'"$1"'/{print $2}' ${src}/${deps} | while read depend; do
     if [ ! "${depend}" ]; then
       return 1
     fi
-    ${ECHO} "@pkgdep ${depend}>=`osrelease`" >> ${tmp_deps}
+    ${ECHO} "@pkgdep ${depend}>=${release}" >> ${tmp_deps}
     if [ "${depend}" = "base-sys-root" ]; then
       return 0
     fi
@@ -322,23 +293,9 @@ culc_deps()
   done
 }
 
-#################################################
+#
 # Make "+CONTENTS" file.
-# Globals:
-#   basedir
-#   destdir
-#   host
-#   prefix
-#   progname
-#   rcsid
-#   tmp_deps
-#   user
-#   utcdate
-# Arguments:
-#   Formatted package's name(category/package)
-# Returns:
-#   None
-#################################################
+#
 make_CONTENTS()
 {
   TMPFILE=`${MKTEMP} -q`
@@ -348,26 +305,24 @@ make_CONTENTS()
   fi
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  ${ECHO} "@name ${pkgname}-`osrelease`" > ./$1/+CONTENTS
-  ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" \
-  >> ./$1/+CONTENTS
-  ${ECHO} "@comment Packaged using ${progname} ${rcsid}" >> ./$1/+CONTENTS
+  ${ECHO} "@name ${pkgname}-${release}" > ${workdir}/$1/+CONTENTS
+  ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ${workdir}/$1/+CONTENTS
   if [ -f ${tmp_deps} ]; then
     ${RM} -f ${tmp_deps}
   fi
   culc_deps ${pkgname}
   if [ -f ${tmp_deps} ]; then
-    ${SORT} ${tmp_deps} | ${UNIQ} >> ./$1/+CONTENTS
+    ${SORT} ${tmp_deps} | ${UNIQ} >> ${workdir}/$1/+CONTENTS
   fi
-  ${ECHO} "@cwd ${prefix}/${basedir}" >> ./$1/+CONTENTS
-  ${CAT} ./$1/${pkgname}.FILES | while read i; do
+  ${ECHO} "@cwd ${prefix}/${basedir}" >> ${workdir}/$1/+CONTENTS
+  ${CAT} ${workdir}/$1/${pkgname}.FILES | while read i; do
     if [ -d ${destdir}/${i} ]; then
       filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
       ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} | \
       ${SED} 's%^\.\/%%' | \
       ${AWK} '
       {
-        print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
+          print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
       }
       ' >> ${TMPFILE}
     elif [ ! -f ${destdir}/${i} ]; then
@@ -376,48 +331,52 @@ make_CONTENTS()
       ${ECHO} ${i} >> ${TMPFILE}
     fi
   done
-  ${SORT} ${TMPFILE} >> ./$1/+CONTENTS
+  ${SORT} ${TMPFILE} >> ${workdir}/$1/+CONTENTS
   ${RM} -f ${TMPFILE}
 }
 
-#################################################
+#
 # Make "+DESC" and "+COMMENT" file.
-# Globals:
-#   comments
-#   descrs
-#   src
-# Arguments:
-#   Formatted package's name(category/package)
-# Returns:
-#   None
-#################################################
+#
 make_DESC_and_COMMENT()
 {
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  ${GREP} -e "^${pkgname}" ${src}/${descrs} | \
-    ${SED} -e "s/${pkgname}//" | ${TR} -d '\t' > ./$1/+DESC
-  ${GREP} -e "^${pkgname}" ${src}/${comments} | \
-    ${SED} -e "s/${pkgname}//" | ${TR} -d '\t' > ./$1/+COMMENT
+
+  ${AWK} '
+  /^'"${pkgname}"'/ {
+      for (i = 2; i <= NF; i++) {
+          if (i == NF)
+              printf $i"\n"
+          else
+              printf $i" "
+      }
+  }' ${src}/${descrs} > ${workdir}/$1/+DESC
+
+  ${AWK} '
+  /^'"${pkgname}"'/ {
+      for (i = 2; i <= NF; i++) {
+          if (i == NF)
+              printf $i"\n"
+          else
+              printf $i" "
+      }
+  }' ${src}/${descrs} > ${workdir}/$1/+COMMENT
 }
 
-#################################################
+#
 # Make "+INSTALL" file.
-# Globals:
-#   destdir
-# Arguments:
-#   Formatted package's name(category/package)
-# Returns:
-#   0(success) or 1(failed)
-#################################################
+# Role of "+INSTALL" is defining absolute path of file, 
+# permission, owner and group.
+#
 make_INSTALL()
 {
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
   if [ -f ${setname}/${pkgname}/+INSTALL ]; then
-    ${MV} ${setname}/${pkgname}/+INSTALL ${setname}/${pkgname}/+INSTALL.old
+    ${MV} ${workdir}/$1/+INSTALL ${workdir}/$1/+INSTALL.old
   fi
-  if [ -f ${setname}/${pkgname}/+CONTENTS ]; then
-    ${GREP} -v -e "^@" ${setname}/${pkgname}/+CONTENTS | while read file; do
+  if [ -f ${workdir}/$1/+CONTENTS ]; then
+    ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
       if [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "etc" ]; then
         install_type="CONF"
       elif [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "boot.cfg" ]; then
@@ -432,10 +391,10 @@ make_INSTALL()
         mode_user_group=""
       fi
       ${ECHO} "# ${install_type}: /${file} ${file} ${mode_user_group}" \
-      >> ${setname}/${pkgname}/+INSTALL
+      >> ${workdir}/$1/+INSTALL
     done
-    if [ -f ${setname}/${pkgname}/+INSTALL.old ]; then
-      ${RM} -f ${setname}${pkgname}/+INSTALL.old
+    if [ -f ${workdir}/$1/+INSTALL.old ]; then
+      ${RM} -f ${workdir}/$1/+INSTALL.old
     fi
   else
     return 1
@@ -443,56 +402,41 @@ make_INSTALL()
   return 0
 }
 
-#################################################
-# description of function
-# Globals:
-#   destdir
-#   packages
-#   pkgdb
-# Arguments:
-#   Formatted package's name(category/package)
-# Returns:
-#   If failed, return pkg_create's failed status.
-#################################################
+#
+# "pkg_create" command wrapper.
+# Package moved to ${packages}/All directory.
+#
 do_pkg_create()
 {
   setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-  if [ -f $1/+INSTALL ]; then
-    install_script="-i $1/+INSTALL"
+  if [ -f ${workdir}/$1/+INSTALL ]; then
+    install_script="-i ${workdir}/$1/+INSTALL"
   else
     install_script=""
   fi
-  ${PKG_CREATE} -v -l -U -B $1/+BUILD_INFO -c $1/+COMMENT \
-  -d $1/+DESC -f $1/+CONTENTS ${install_script} -p ${destdir} -K ${pkgdb} ${pkgname}
+  ${PKG_CREATE} -v -l -U -B ${workdir}/$1/+BUILD_INFO -c ${workdir}/$1/+COMMENT \
+  -d ${workdir}/$1/+DESC -f ${workdir}/$1/+CONTENTS ${install_script} \
+  -p ${destdir} -K ${pkgdb} ${pkgname}
   if [ $? != 0 ]; then
     return $?
   fi
-  if [ ! -d ${packages} ]; then
-    ${MKDIR} ${packages}
-  fi
-  if [ ! -d ${packages}/All ]; then
-    ${MKDIR} -p ${packages}/All
+  if [ ! -d ${packages}/${release}/${machine} ]; then
+    ${MKDIR} -p ${packages}/${release}/${machine}
   fi
   ${MV} ./${pkgname}.tgz \
-  ${packages}/All/${pkgname}-`osrelease`.tgz
+    ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
 }
 
-#################################################
-# Functions wrapper.
-# Globals:
-#   category
-# Arguments:
-#   None
-# Returns:
-#   None
-#################################################
+#
+# Execute any functions and make MD5 and SHA512.
+#
 make_packages()
 {
   i=""
   j=""
   for i in ${category}; do
-    for j in `${LS} ./${i} | ${GREP} -E '^[a-z]+'`; do
+    for j in `${LS} ${workdir}/${i} | ${GREP} -E '^[a-z]+'`; do
       ${ECHO} "Package ${i}/${j} Creating..."
       make_BUILD_INFO ${i}/${j}
       make_CONTENTS ${i}/${j}
@@ -503,33 +447,23 @@ make_packages()
   done
   pkgs="$(${FIND} ${packages} -type f \
     \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null)"
-  ${TEST} -f ${packages}/All/MD5 && ${RM} -f ${pacakges}/All/MD5
-  ${TEST} -f ${packages}/All/SHA512 && ${RM} -f ${pacakges}/All/SHA512
+  ${TEST} -f ${packages}/${release}/${machine}/MD5 && \
+    ${RM} -f ${pacakges}/${release}/${machine}/MD5
+  ${TEST} -f ${packages}/${release}/${machine}/SHA512 && \
+    ${RM} -f ${pacakges}/${release}/${machine}/SHA512
   if [ -n "${pkgs}" ]; then
-    ${CKSUM} -a md5 ${pkgs} >> ${packages}/All/MD5
-    ${CKSUM} -a sha512 ${pkgs} >> ${packages}/All/SHA512
+    ${CKSUM} -a md5 ${pkgs} >> ${packages}/${release}/${machine}/MD5
+    ${CKSUM} -a sha512 ${pkgs} >> ${packages}/${release}/${machine}/SHA512
   fi
 }
 
-#################################################
-# "install" option use following functions.
-#################################################
+#
+# "install" option use the following functions.
+#
 
-#################################################
-# pkg_add wrapper.
-# Globals:
-#   basedir
-#   force
-#   pkgdb
-#   prefix
-#   replace
-#   touch_system
-#   update
-# Arguments:
-#   Package's name
-# Returns:
-#   None
-#################################################
+#
+# "pkg_add" command wrapper.
+#
 do_pkg_add()
 {
   pkg_add_options=""
@@ -602,21 +536,13 @@ do_pkg_add()
   fi
 }
 
-#################################################
-# "delete" option use following functions.
-#################################################
+#
+# "delete" option use the following functions.
+#
 
-#################################################
-# pkg_delete wrapper.
-# Globals:
-#   fource
-#   pkgdb
-#   touch_system
-# Arguments:
-#   arguments
-# Returns:
-#   None
-#################################################
+#
+# "pkg_delete" command wrapper.
+#
 do_pkg_delete()
 {
   if [ $touch_system = "true" ]; then
@@ -633,62 +559,136 @@ do_pkg_delete()
   ${PKG_DELETE} ${pkg_delete_options} $@ || exit 1
 }
 
-#################################################
-# "clean" option use following functions.
-#################################################
+#
+# "info" option use the following functions.
+#
 
-#################################################
+#
+# "pkg_info" command wrapper
+#
+do_pkg_info()
+{
+  pkg_info_options="-K ${pkgdb}"
+  ${PKG_INFO} ${pkg_info_options} $@ || exit 1
+}
+
+#
+# "image" option use the following functions.
+#
+
+#
+# Making bootable base system packaged image named "pkg.img".
+#
+do_make_bootable_image()
+{
+  #
+  # File name and path.
+  #
+  image_name="boot_basepkg.img"
+  fstab="distrib/common/bootimage/fstab.in"
+  bootxx="usr/mdec/bootxx_ffsv1"
+  diskproto="distrib/common/bootimage/diskproto.mbr.in"
+
+  #
+  # For /usr/sbin/disklabel command variables.
+  #
+  bootdisk="sd0"
+
+  #
+  # Size parameters for image.
+  #
+  imageMB=2048 # 2048MB
+  swapMB=128   # 128MB
+
+  # XXX: swapMB could be zero and expr(1) returns exit status 1 in that case.
+  imagesectors=`${EXPR} ${imageMB} \* 1024 \* 1024 / 512`
+  swapsectors=`${EXPR} ${swapMB} \* 1024 \* 1024 / 512 || true`
+
+  # Not use MBR.
+  labelsectors=0
+
+  #
+  # Calculating disk information for disklabel.
+  #
+  fssectors=`${EXPR} ${imagesectors} - ${swapsectors} - ${labelsectors}`
+  fssize=`${EXPR} ${fssectors} \* 512`
+  heads=64
+  sectors=32
+  secpercylinders=`${EXPR} ${heads} \* ${sectors}`
+  cylinders=`${EXPR} ${imagesectors} / ${secpercylinders}`
+  bsdpartsectors=`${EXPR} ${imagesectors} - ${labelsectors}`
+  fsoffset=${labelsectors}
+  swapoffset=`${EXPR} ${labelsectors} + ${fssectors}`
+  fssize=`${EXPR} ${fssectors} \* 512`
+
+  ${CP} ${kerneldir}/${kernel}/netbsd ${prefix}/${basedir}/netbsd || err "copy kernel"
+  ${CP} ${prefix}/${basedir}/usr/mdec/boot ${prefix}/${basedir}/boot || err "copy boot"
+  ${CHMOD} 0644 ${prefix}/${basedir}/boot
+  (cd ${prefix}/${basedir}/dev ; sh MAKEDEV all) || err "sh MAKEDEV all"
+
+  ${SED} 's/@@BOOTDISK@@/'"${bootdisk}"'/' < ${src}/${fstab} > ${prefix}/${basedir}/etc/fstab
+  ${CHMOD} 0644 ${prefix}/${basedir}/etc/fstab
+  ${SED} -i 's/rc_configured=NO/rc_configured=YES/' ${prefix}/${basedir}/etc/rc.conf
+
+  ${MAKEFS} -M ${fssize} -m ${fssize} -B 1234 -t ffs -N ${prefix}/${basedir}/etc \
+    -o bsize=16384,fsize=2048,density=8192 ${image_name} ${prefix}/${basedir}
+
+  ${INSTALLBOOT} -v -m ${machine} ${image_name} ${prefix}/${basedir}/${bootxx}
+
+  ${SED} \
+    -e "s/@@SECTORS@@/${sectors}/" \
+    -e "s/@@HEADS@@/${heads}/" \
+	  -e "s/@@SECPERCYLINDERS@@/${secpercylinders}/" \
+	  -e "s/@@CYLINDERS@@/${cylinders}/" \
+	  -e "s/@@IMAGESECTORS@@/${imagesectors}/" \
+	  -e "s/@@FSSECTORS@@/${fssectors}/" \
+	  -e "s/@@FSOFFSET@@/${fsoffset}/" \
+	  -e "s/@@SWAPSECTORS@@/${swapsectors}/" \
+	  -e "s/@@SWAPOFFSET@@/${swapoffset}/" \
+	  -e "s/@@BSDPARTSECTORS@@/${bsdpartsectors}/" < ${src}/${diskproto} > .diskproto
+
+	${DISKLABEL} -R -F -M ${machine} -B le ${image_name} .diskproto
+}
+
+#
+# "clean" option use the following functions.
+#
+
+#
 # Delete all packages.
-# Globals:
-#   packages
-# Arguments:
-#   None
-# Returns:
-#   None
-#################################################
+#
 clean_packages()
 {
-  ${TEST} -d ${packages}/All || exit 1
-  ${LS} ${packages}/All | ${GREP} -E 'tgz$' | \
-    ${XARGS} -I % rm -f ${packages}/All/%
-  ${RM} -f ${packages}/All/MD5
-  ${RM} -f ${packages}/All/SHA512
-  ${RMDIR} ${packages}/All
+  ${TEST} -d ${packages}/${release} || exit 1
+  ${LS} ${packages}/${release} | ${GREP} -E 'tgz$' | \
+    ${XARGS} -I % rm -f ${packages}/${release}/%
+  ${RM} -f ${packages}/${release}/MD5
+  ${RM} -f ${packages}/${release}/SHA512
+  ${RMDIR} ${packages}/${release}
   ${TEST} -d ${packages} || exit 1
   ${RMDIR} ${packages}
 }
 
-#################################################
+#
 # Delete all "+" files and system files.
-# Globals:
-#   category
-# Arguments:
-#   None
-# Returns:
-#   None
-#################################################
+#
 clean_categories()
 {
   i=""
   j=""
   for i in ${category}; do
-    ${TEST} -f ${PWD}/${i}/FILES && ${RM} -f ${PWD}/${i}/FILES
-    ${TEST} -f ${PWD}/${i}/CATEGORIZED && ${RM} -f ${PWD}/${i}/CATEGORIZED
-    ${FIND} ${PWD}/${i} -type f | ${XARGS} ${RM} -f
-    ${FIND} ${PWD}/${i} -type d | ${XARGS} ${RMDIR}
-    ${RMDIR} ${PWD}/${i}
+    ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
+    ${TEST} -f ${workdir}/${i}/CATEGORIZED && ${RM} -f ${workdir}/${i}/CATEGORIZED
+    ${FIND} ${workdir}/${i} -type f | ${XARGS} ${RM} -f > /dev/null 2>&1
+    ${FIND} ${workdir}/${i} -type d | ${XARGS} ${RMDIR} > /dev/null 2>&1
+    ${RMDIR} ${workdir}/${i} > /dev/null 2>&1
+    ${RMDIR} ${workdir} > /dev/null 2>&1
   done
 }
 
-#################################################
-# self-explanatorily :-)
-# Globals:
-#   progname
-# Arguments:
-#   None
-# Returns:
-#   None
-#################################################
+#
+# Show usage.
+#
 usage()
 {
   ${CAT} <<_usage_
@@ -699,18 +699,18 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                    [--force] [--update] [--replace] operation
 
  Operation:
-    extract             Extract base binary.
     pkg                 Create packages.
     install             Install packages to ${prefix}/${basedir}.
                         If --system option using, install package to /.
     delete              Uninstall packages at ${prefix}/${basedir}.
                         If --system option using, delete package from /.
+    clean               Remove all packages and categorized directories.
     cleanpkg            Remove all packages.
+    cleandir            Remove all categorized directories.
 
- Operation for Developer:
+ Operation for Debug:
     dir                 Create packages directory.
     list                Create packages list.
-    cleandir            Remove all categorized directories.
 
  Options:
     --help              Show this message and exit.
@@ -738,23 +738,24 @@ _usage_
   exit 1
 }
 
-#################################################
-# Taking a right member.
-# Globals:
-#   None
-# Arguments:
-#   Option's argument
-# Returns:
-#   Argument
-#################################################
+#
+# In options, 
+#     --src=/usr/src
+#           ^^^^^^^^^
+#            take it
+#
 get_optarg()
 {
   ${EXPR} "x$1" : "x[^=]*=\\(.*\\)"
 }
 
-#################################################
+#
+# Main
+#
+
+#
 # parse long-options
-#################################################
+#
 while [ $# -gt 0 ]; do
   case $1 in
     -h|--help)
@@ -804,6 +805,12 @@ while [ $# -gt 0 ]; do
       ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       pkgdb="$2"
       shift ;;
+    --machine=*)
+      machine=`get_optarg "$1"` ;;
+    --machine)
+      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
+      machine="$2"
+      shift ;;
     --force)
       force="true" ;;
     --update)
@@ -818,43 +825,50 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-#################################################
+#
 # Initialization
-#################################################
+#
 set -u
 umask 0022
 export LC_ALL=C LANG=C
 
 ${TEST} $# -eq 0 && usage
 
-#################################################
+#
 # Mutable variables
-#################################################
+#
 src=${src:="/usr/src"}
-obj=${obj:="${PWD}"}
+obj=${obj:="/usr/obj"}
+machine="$(${UNAME} -m)"
 destdir="${obj}/destdir.${machine}"
-packages=${packages:="./packages"}
+packages=${packages:="${PWD}/packages"}
 sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
-pkgdb=${pkgdb:="/usr/pkg/basepkg/root/var/db/basepkg"}
 category=${category:="base comp etc games man misc text"}
 prefix=${prefix:="/usr/pkg"}
+pkgdb=${pkgdb:="${prefix}/${basedir}/var/db/basepkg"}
 touch_system=${touch_system:="false"}
 force=${force:="false"}
 update=${update:="false"}
 replace=${replace:="false"}
+release="`osrelease`"
+moduledir="stand/${machine}/${release}/modules"
+workdir="${PWD}/work/${release}/${machine}"
+kerneldir="${obj}/sys/arch/${machine}/compile"
+kernel="GENERIC"
 
-#################################################
+#
 # operation
-#################################################
+#
 case $1 in
-  extract)
-    extract_base_binaries ;;
   dir) 
     split_category_from_lists
     make_directories_of_package ;;
   list)
     make_contents_list ;;
-  pkg)     
+  #
+  # Mainly, use "pkg" option.
+  #
+  pkg)
     split_category_from_lists
     make_directories_of_package
     make_contents_list
@@ -865,9 +879,17 @@ case $1 in
   delete)
     shift
     do_pkg_delete $@ ;;
+  info)
+    shift
+    do_pkg_info $@ ;;
+  image)
+    do_make_bootable_image ;;
   cleanpkg)
     clean_packages ;;
   cleandir)
+    clean_categories ;;
+  clean)
+    clean_packages
     clean_categories ;;
   *)
     usage ;;
