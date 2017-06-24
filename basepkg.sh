@@ -422,7 +422,7 @@ do_pkg_create()
     return $?
   fi
   if [ ! -d ${packages}/${release}/${machine} ]; then
-    ${MKDIR} ${packages}/${release}/${machine}
+    ${MKDIR} -p ${packages}/${release}/${machine}
   fi
   ${MV} ./${pkgname}.tgz \
     ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
@@ -592,14 +592,13 @@ do_make_bootable_image()
   #
   # For /usr/sbin/disklabel command variables.
   #
-
   bootdisk="sd0"
 
   #
-  # size parameters for image.
+  # Size parameters for image.
   #
-  imageMB=2048
-  swapMB=128
+  imageMB=2048 # 2048MB
+  swapMB=128   # 128MB
 
   # XXX: swapMB could be zero and expr(1) returns exit status 1 in that case.
   imagesectors=`${EXPR} ${imageMB} \* 1024 \* 1024 / 512`
@@ -608,25 +607,28 @@ do_make_bootable_image()
   # Not use MBR.
   labelsectors=0
 
+  #
+  # Calculating disk information for disklabel.
+  #
   fssectors=`${EXPR} ${imagesectors} - ${swapsectors} - ${labelsectors}`
   fssize=`${EXPR} ${fssectors} \* 512`
-
   heads=64
   sectors=32
-  tmpmm=`${EXPR} ${heads} \* ${sectors}`
-  cylinders=`${EXPR} ${imagesectors} / ${tmpmm}`
   secpercylinders=`${EXPR} ${heads} \* ${sectors}`
+  cylinders=`${EXPR} ${imagesectors} / ${secpercylinders}`
   bsdpartsectors=`${EXPR} ${imagesectors} - ${labelsectors}`
   fsoffset=${labelsectors}
   swapoffset=`${EXPR} ${labelsectors} + ${fssectors}`
-
   fssize=`${EXPR} ${fssectors} \* 512`
 
-  ${CP} ${kerneldir}/${kernel}/netbsd ${prefix}/${basedir}/netbsd || exit 1
-  ${CP} ${prefix}/${basedir}/usr/mdec/boot ${prefix}/${basedir}/boot || exit 1
-  (cd ${prefix}/${basedir}/dev ; sh MAKEDEV all) || exit 1
+  ${CP} ${kerneldir}/${kernel}/netbsd ${prefix}/${basedir}/netbsd || err "copy kernel"
+  ${CP} ${prefix}/${basedir}/usr/mdec/boot ${prefix}/${basedir}/boot || err "copy boot"
+  ${CHMOD} 0644 ${prefix}/${basedir}/boot
+  (cd ${prefix}/${basedir}/dev ; sh MAKEDEV all) || err "sh MAKEDEV all"
 
   ${SED} 's/@@BOOTDISK@@/'"${bootdisk}"'/' < ${src}/${fstab} > ${prefix}/${basedir}/etc/fstab
+  ${CHMOD} 0644 ${prefix}/${basedir}/etc/fstab
+  ${SED} -i 's/rc_configured=NO/rc_configured=YES/' ${prefix}/${basedir}/etc/rc.conf
 
   ${MAKEFS} -M ${fssize} -m ${fssize} -B 1234 -t ffs -N ${prefix}/${basedir}/etc \
     -o bsize=16384,fsize=2048,density=8192 ${image_name} ${prefix}/${basedir}
