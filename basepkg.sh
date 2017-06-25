@@ -378,6 +378,9 @@ make_INSTALL()
   fi
   if [ -f ${workdir}/$1/+CONTENTS ]; then
     ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
+      if [ `${FILE} ${file} | ${CUT} -d " " -f 2` = "symbolic" ]; then
+        continue
+      fi
       if [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "etc" ]; then
         install_type="CONF"
       elif [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "boot.cfg" ]; then
@@ -579,6 +582,7 @@ do_pkg_info()
 
 #
 # Making bootable base system packaged image named "pkg.img".
+# Thank you for src/distrib/common/bootimage/Makefile.bootimage by Izumi Tsutsui.
 #
 do_make_bootable_image()
 {
@@ -592,6 +596,9 @@ do_make_bootable_image()
   workspec="instfs.spec"
   primary_boot="usr/mdec/bootxx_ffsv1"
   secondary_boot="usr/mdec/boot"
+  imgdir="${PWD}/images/${release}/${machine}"
+
+  ${TEST} -d ${imgdir} || ${MKDIR} -p ${imgdir}
 
   #
   # Command options.
@@ -637,14 +644,12 @@ do_make_bootable_image()
   ${INSTALL} -c -m 0644 ${targetdir}/${secondary_boot} ${targetdir} \
     || (err "copy secondary boot failed"; exit 1)
 
-  # (cd ${targetdir}/dev ; sh MAKEDEV all) || err "sh MAKEDEV all"
-
   #
   # Preparing /etc/fstab
   #
-  ${SED} 's/@@BOOTDISK@@/'"${bootdisk}"'/' < ${src}/${fstab} > ${PWD}/fstab \
+  ${SED} 's/@@BOOTDISK@@/'"${bootdisk}"'/' < ${src}/${fstab} > ${imgdir}/fstab \
     || (err "edit ${src}/${fstab} failed"; exit 1)
-  ${INSTALL} -c -m 0644 ${PWD}/fstab ${targetdir}/etc \
+  ${INSTALL} -c -m 0644 ${imgdir}/fstab ${targetdir}/etc \
     || (err "install fstab failed"; exit 1)
 
   #
@@ -656,14 +661,14 @@ do_make_bootable_image()
   #
   # Preparing spec files for makefs
   #
-  test -f ${workspec} && ${RM} -f ${workspec}
-  ${CAT} ${targetdir}/etc/mtree/* | ${SED} -e 's/size=[0-9]*//' > ${workspec}
+  test -f ${imgdir}/${workspec} && ${RM} -f ${imgdir}/${workspec}
+  ${CAT} ${targetdir}/etc/mtree/* | ${SED} -e 's/size=[0-9]*//' > ${imgdir}/${workspec}
   ${SH} ${targetdir}/dev/MAKEDEV -s all ipty | \
-    ${SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${workspec} \
+    ${SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${imgdir}/${workspec} \
     || (err "MAKEDEV failed"; exit 1)
-  ${CAT} ${src}/${specin} >> ${workspec}
+  ${CAT} ${src}/${specin} >> ${imgdir}/${workspec}
   ${ECHO} "./${secondary_boot} type=file uname=root gname=wheel mode=0444" \
-    >> ${workspec}
+    >> ${imgdir}/${workspec}
 
   #
   # Creating rootfs
@@ -674,12 +679,12 @@ do_make_bootable_image()
   ${MAKEFS} -M ${fssize} -m ${fssize} \
     -B ${target_endianness} \
     -t ${fstype} \
-    -F ${workspec} \
+    -F ${imgdir}/${workspec} \
     -N ${targetdir}/etc \
     ${imgmakefsoptions} \
-    ${image_name} ${targetdir} \
+    ${imgdir}/${image_name} ${targetdir} \
     || (err "makefs failed"; exit 1)
-  ${INSTALLBOOT} -v -m ${machine} ${image_name} ${targetdir}/${primary_boot} \
+  ${INSTALLBOOT} -v -m ${machine} ${imgdir}/${image_name} ${targetdir}/${primary_boot} \
     || (err "installboot failed"; exit 1)
 
   ${SED} \
@@ -692,9 +697,9 @@ do_make_bootable_image()
 	  -e "s/@@FSOFFSET@@/${fsoffset}/" \
 	  -e "s/@@SWAPSECTORS@@/${swapsectors}/" \
 	  -e "s/@@SWAPOFFSET@@/${swapoffset}/" \
-	  -e "s/@@BSDPARTSECTORS@@/${bsdpartsectors}/" < ${src}/${diskproto} > .diskproto
+	  -e "s/@@BSDPARTSECTORS@@/${bsdpartsectors}/" < ${src}/${diskproto} > ${imgdir}/diskproto
 
-	${DISKLABEL} -R -F -M ${machine} -B le ${image_name} .diskproto \
+	${DISKLABEL} -R -F -M ${machine} -B le ${imgdir}/${image_name} ${imgdir}/diskproto \
     || (err "disklabel failed"; exit 1)
 }
 
@@ -732,6 +737,14 @@ clean_categories()
     ${RMDIR} ${workdir}/${i} > /dev/null 2>&1
     ${RMDIR} ${workdir} > /dev/null 2>&1
   done
+}
+
+#
+# Delete all files used by "image" option.
+#
+clean_image()
+{
+  ${TEST} -d ${PWD}/images && ${RM} -fr ${PWD}/images
 }
 
 #
@@ -937,6 +950,8 @@ case $1 in
     clean_packages ;;
   cleandir)
     clean_categories ;;
+  cleanimg)
+    clean_image ;;
   clean)
     clean_packages
     clean_categories ;;
