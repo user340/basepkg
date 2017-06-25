@@ -704,50 +704,6 @@ do_make_bootable_image()
 }
 
 #
-# "clean" option use the following functions.
-#
-
-#
-# Delete all packages.
-#
-clean_packages()
-{
-  ${TEST} -d ${packages}/${release} || exit 1
-  ${LS} ${packages}/${release} | ${GREP} -E 'tgz$' | \
-    ${XARGS} -I % rm -f ${packages}/${release}/%
-  ${RM} -f ${packages}/${release}/MD5
-  ${RM} -f ${packages}/${release}/SHA512
-  ${RMDIR} ${packages}/${release}
-  ${TEST} -d ${packages} || exit 1
-  ${RMDIR} ${packages}
-}
-
-#
-# Delete all "+" files and system files.
-#
-clean_categories()
-{
-  i=""
-  j=""
-  for i in ${category}; do
-    ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
-    ${TEST} -f ${workdir}/${i}/CATEGORIZED && ${RM} -f ${workdir}/${i}/CATEGORIZED
-    ${FIND} ${workdir}/${i} -type f | ${XARGS} ${RM} -f > /dev/null 2>&1
-    ${FIND} ${workdir}/${i} -type d | ${XARGS} ${RMDIR} > /dev/null 2>&1
-    ${RMDIR} ${workdir}/${i} > /dev/null 2>&1
-    ${RMDIR} ${workdir} > /dev/null 2>&1
-  done
-}
-
-#
-# Delete all files used by "image" option.
-#
-clean_image()
-{
-  ${TEST} -d ${PWD}/images && ${RM} -fr ${PWD}/images
-}
-
-#
 # Show usage.
 #
 usage()
@@ -765,9 +721,6 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         If --system option using, install package to /.
     delete              Uninstall packages at ${targetdir}.
                         If --system option using, delete package from /.
-    clean               Remove all packages and categorized directories.
-    cleanpkg            Remove all packages.
-    cleandir            Remove all categorized directories.
 
  Operation for Debug:
     dir                 Create packages directory.
@@ -946,15 +899,6 @@ case $1 in
     do_pkg_info $@ ;;
   image)
     do_make_bootable_image ;;
-  cleanpkg)
-    clean_packages ;;
-  cleandir)
-    clean_categories ;;
-  cleanimg)
-    clean_image ;;
-  clean)
-    clean_packages
-    clean_categories ;;
   *)
     usage ;;
 esac
