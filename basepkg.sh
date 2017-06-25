@@ -317,6 +317,9 @@ make_CONTENTS()
   fi
   ${ECHO} "@cwd ${targetdir}" >> ${workdir}/$1/+CONTENTS
   ${CAT} ${workdir}/$1/${pkgname}.FILES | while read i; do
+    if [ `${FILE} ${destdir}/${i} | ${CUT} -d " " -f 2` = "symbolic" ]; then
+      continue
+    fi
     if [ -d ${destdir}/${i} ]; then
       filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
       ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} | \
