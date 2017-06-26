@@ -587,6 +587,9 @@ do_pkg_info()
 # Making bootable base system packaged image named "pkg.img".
 # Thank you for src/distrib/common/bootimage/Makefile.bootimage by Izumi Tsutsui.
 #
+# XXX: Bootable image which created by this function is not work.
+#      Output "exec /sbin/init: error 2" message when booting.
+#
 do_make_bootable_image()
 {
   #
@@ -617,11 +620,15 @@ do_make_bootable_image()
   imageMB=2048 # 2048MB
   swapMB=128   # 128MB
 
+  #
   # XXX: swapMB could be zero and expr(1) returns exit status 1 in that case.
+  #
   imagesectors=`${EXPR} ${imageMB} \* 1024 \* 1024 / 512`
   swapsectors=`${EXPR} ${swapMB} \* 1024 \* 1024 / 512 || true`
 
+  #
   # Not use MBR.
+  #
   labelsectors=0
 
   #
@@ -856,7 +863,7 @@ ${TEST} $# -eq 0 && usage
 #
 src=${src:="/usr/src"}
 obj=${obj:="/usr/obj"}
-machine="$(${UNAME} -m)"
+machine=${machine:="$(${UNAME} -m)"}
 destdir="${obj}/destdir.${machine}"
 packages=${packages:="${PWD}/packages"}
 sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
@@ -878,6 +885,9 @@ kernel="GENERIC"
 # operation
 #
 case $1 in
+  #
+  # For Debug
+  #
   dir) 
     split_category_from_lists
     make_directories_of_package ;;
