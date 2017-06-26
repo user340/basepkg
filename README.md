@@ -55,14 +55,14 @@ or
 ### 3. Make Packages
 Run basepkg.sh script with __pkg__ option.  
 ```# ./basepkg.sh --new --src=/usr/src --obj=/usr/obj pkg```  
-Packages are created under the packages/<release-version> directory.
+Packages are created under the packages/<release-version>/<machine> directory.
 
 ### 4. How to Install Package?
 Rub basepkg.sh script with __install__ option.  
-```# ./basepkg.sh install packages/7.1/games-games-bin-7.1.tgz```  
-In default, packages are installed under the /usr/pkg/basepkg/root directory.  
+```# ./basepkg.sh install packages/7.1/amd64/games-games-bin-7.1.tgz```  
+In default, packages are installed under the /usr/pkg/share/basepkg/root directory.  
 If you want to install to under the root, use __--system__ option.  
-```# ./basepkg.sh --system install packages/7.1/games-games-bin-7.1.tgz```
+```# ./basepkg.sh --system install packages/7.1/amd64/games-games-bin-7.1.tgz```
 
 ### 6. Unable to Install Packages.
 The following packages unable to install to the system.
@@ -87,3 +87,6 @@ The following packages unable to install to the system.
 		- usr/share/man/html1/atf-report.html
 	- man-atf-man and man-kyua-man
 		- usr/share/man/man1/atf-report.1
+
+### 7. pkgsrc-wip
+Basepkg imported to pkgsrc-wip. You can install basepkg to your system through pkgsrc-wip.

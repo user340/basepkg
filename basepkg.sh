@@ -63,6 +63,7 @@ XARGS="/usr/bin/xargs"
 #
 DISKLABEL="/sbin/disklabel"
 HOSTNAME="/bin/hostname"
+INSTALL="/usr/bin/install"
 INSTALLBOOT="/usr/sbin/installboot"
 MAKEFS="/usr/sbin/makefs"
 MKTEMP="/usr/bin/mktemp"
@@ -314,8 +315,11 @@ make_CONTENTS()
   if [ -f ${tmp_deps} ]; then
     ${SORT} ${tmp_deps} | ${UNIQ} >> ${workdir}/$1/+CONTENTS
   fi
-  ${ECHO} "@cwd ${prefix}/${basedir}" >> ${workdir}/$1/+CONTENTS
+  ${ECHO} "@cwd ${targetdir}" >> ${workdir}/$1/+CONTENTS
   ${CAT} ${workdir}/$1/${pkgname}.FILES | while read i; do
+    if [ `${FILE} ${destdir}/${i} | ${CUT} -d " " -f 2` = "symbolic" ]; then
+      continue
+    fi
     if [ -d ${destdir}/${i} ]; then
       filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
       ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} | \
@@ -377,6 +381,9 @@ make_INSTALL()
   fi
   if [ -f ${workdir}/$1/+CONTENTS ]; then
     ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
+      if [ `${FILE} ${file} | ${CUT} -d " " -f 2` = "symbolic" ]; then
+        continue
+      fi
       if [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "etc" ]; then
         install_type="CONF"
       elif [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "boot.cfg" ]; then
@@ -467,11 +474,11 @@ make_packages()
 do_pkg_add()
 {
   pkg_add_options=""
-  ${TEST} -d ${prefix}/${basedir} || ${MKDIR} -p ${prefix}/${basedir}
+  ${TEST} -d ${targetdir} || ${MKDIR} -p ${targetdir}
   ${TEST} ${force} = "true" && pkg_add_options="-f"
   ${TEST} ${update} = "true" && pkg_add_options="-u ${pkg_add_options}"
   ${TEST} ${replace} = "true" && pkg_add_options="-U ${pkg_add_options}"
-  pkg_add_options="-K ${pkgdb} -p ${prefix}/${basedir} ${pkg_add_options}"
+  pkg_add_options="-K ${pkgdb} -p ${targetdir} ${pkg_add_options}"
   ${PKG_ADD} ${pkg_add_options} $@ || exit 1
   if [ $touch_system = "true" ]; then
     i=""
@@ -485,7 +492,7 @@ do_pkg_add()
         esac
         case ${source} in
           "") continue ;;
-          [!/]*) source="${prefix}/${basedir}/${source}" ;;
+          [!/]*) source="${targetdir}/${source}" ;;
         esac
         if [ -f ${source} -a ! -f ${dst} ]; then
           case ${mode} in
@@ -514,7 +521,7 @@ do_pkg_add()
         esac
         case ${source} in
           "") continue ;;
-          [!/]*) source="${prefix}/${basedir}/${source}" ;;
+          [!/]*) source="${targetdir}/${source}" ;;
         esac
         if [ -f ${source} ]; then
           case ${mode} in
@@ -548,7 +555,7 @@ do_pkg_delete()
   if [ $touch_system = "true" ]; then
     real_prefix="/"
   else
-    real_prefix="${prefix}/${basedir}"
+    real_prefix="${targetdir}"
   fi
   if [ ${force} = "true" ]; then
     pkg_delete_options="-f"
@@ -578,6 +585,10 @@ do_pkg_info()
 
 #
 # Making bootable base system packaged image named "pkg.img".
+# Thank you for src/distrib/common/bootimage/Makefile.bootimage by Izumi Tsutsui.
+#
+# XXX: Bootable image which created by this function is not work.
+#      Output "exec /sbin/init: error 2" message when booting.
 #
 do_make_bootable_image()
 {
@@ -586,25 +597,38 @@ do_make_bootable_image()
   #
   image_name="boot_basepkg.img"
   fstab="distrib/common/bootimage/fstab.in"
-  bootxx="usr/mdec/bootxx_ffsv1"
   diskproto="distrib/common/bootimage/diskproto.mbr.in"
+  specin="distrib/common/bootimage/spec.in"
+  workspec="instfs.spec"
+  primary_boot="usr/mdec/bootxx_ffsv1"
+  secondary_boot="usr/mdec/boot"
+  imgdir="${PWD}/images/${release}/${machine}"
+
+  ${TEST} -d ${imgdir} || ${MKDIR} -p ${imgdir}
 
   #
-  # For /usr/sbin/disklabel command variables.
+  # Command options.
   #
-  bootdisk="sd0"
+  imgmakefsoptions="-o bsize=16384,fsize=2048,density=8192"
+  target_endianness="1234"
+  fstype="ffs"
 
   #
   # Size parameters for image.
   #
+  bootdisk="sd0"
   imageMB=2048 # 2048MB
   swapMB=128   # 128MB
 
+  #
   # XXX: swapMB could be zero and expr(1) returns exit status 1 in that case.
+  #
   imagesectors=`${EXPR} ${imageMB} \* 1024 \* 1024 / 512`
   swapsectors=`${EXPR} ${swapMB} \* 1024 \* 1024 / 512 || true`
 
+  #
   # Not use MBR.
+  #
   labelsectors=0
 
   #
@@ -621,19 +645,57 @@ do_make_bootable_image()
   swapoffset=`${EXPR} ${labelsectors} + ${fssectors}`
   fssize=`${EXPR} ${fssectors} \* 512`
 
-  ${CP} ${kerneldir}/${kernel}/netbsd ${prefix}/${basedir}/netbsd || err "copy kernel"
-  ${CP} ${prefix}/${basedir}/usr/mdec/boot ${prefix}/${basedir}/boot || err "copy boot"
-  ${CHMOD} 0644 ${prefix}/${basedir}/boot
-  (cd ${prefix}/${basedir}/dev ; sh MAKEDEV all) || err "sh MAKEDEV all"
+  ${CP} ${kerneldir}/${kernel}/netbsd ${targetdir} \
+    || (err "copy kernel failed"; exit 1)
 
-  ${SED} 's/@@BOOTDISK@@/'"${bootdisk}"'/' < ${src}/${fstab} > ${prefix}/${basedir}/etc/fstab
-  ${CHMOD} 0644 ${prefix}/${basedir}/etc/fstab
-  ${SED} -i 's/rc_configured=NO/rc_configured=YES/' ${prefix}/${basedir}/etc/rc.conf
+  #
+  # Copying secondary boot
+  #
+  ${INSTALL} -c -m 0644 ${targetdir}/${secondary_boot} ${targetdir} \
+    || (err "copy secondary boot failed"; exit 1)
 
-  ${MAKEFS} -M ${fssize} -m ${fssize} -B 1234 -t ffs -N ${prefix}/${basedir}/etc \
-    -o bsize=16384,fsize=2048,density=8192 ${image_name} ${prefix}/${basedir}
+  #
+  # Preparing /etc/fstab
+  #
+  ${SED} 's/@@BOOTDISK@@/'"${bootdisk}"'/' < ${src}/${fstab} > ${imgdir}/fstab \
+    || (err "edit ${src}/${fstab} failed"; exit 1)
+  ${INSTALL} -c -m 0644 ${imgdir}/fstab ${targetdir}/etc \
+    || (err "install fstab failed"; exit 1)
 
-  ${INSTALLBOOT} -v -m ${machine} ${image_name} ${prefix}/${basedir}/${bootxx}
+  #
+  # Setting rc_configure=YES in /etc/rc.conf
+  #
+  ${SED} -i 's/rc_configured=NO/rc_configured=YES/' ${targetdir}/etc/rc.conf \
+    || (err "edit ${targetdir}/etc/rc.conf failed"; exit 1)
+
+  #
+  # Preparing spec files for makefs
+  #
+  test -f ${imgdir}/${workspec} && ${RM} -f ${imgdir}/${workspec}
+  ${CAT} ${targetdir}/etc/mtree/* | ${SED} -e 's/size=[0-9]*//' > ${imgdir}/${workspec}
+  ${SH} ${targetdir}/dev/MAKEDEV -s all ipty | \
+    ${SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${imgdir}/${workspec} \
+    || (err "MAKEDEV failed"; exit 1)
+  ${CAT} ${src}/${specin} >> ${imgdir}/${workspec}
+  ${ECHO} "./${secondary_boot} type=file uname=root gname=wheel mode=0444" \
+    >> ${imgdir}/${workspec}
+
+  #
+  # Creating rootfs
+  #
+
+  # XXX /var/spool/ftp/hidden is unreadable.
+  ${CHMOD} +r ${targetdir}/var/spool/ftp/hidden
+  ${MAKEFS} -M ${fssize} -m ${fssize} \
+    -B ${target_endianness} \
+    -t ${fstype} \
+    -F ${imgdir}/${workspec} \
+    -N ${targetdir}/etc \
+    ${imgmakefsoptions} \
+    ${imgdir}/${image_name} ${targetdir} \
+    || (err "makefs failed"; exit 1)
+  ${INSTALLBOOT} -v -m ${machine} ${imgdir}/${image_name} ${targetdir}/${primary_boot} \
+    || (err "installboot failed"; exit 1)
 
   ${SED} \
     -e "s/@@SECTORS@@/${sectors}/" \
@@ -645,45 +707,10 @@ do_make_bootable_image()
 	  -e "s/@@FSOFFSET@@/${fsoffset}/" \
 	  -e "s/@@SWAPSECTORS@@/${swapsectors}/" \
 	  -e "s/@@SWAPOFFSET@@/${swapoffset}/" \
-	  -e "s/@@BSDPARTSECTORS@@/${bsdpartsectors}/" < ${src}/${diskproto} > .diskproto
+	  -e "s/@@BSDPARTSECTORS@@/${bsdpartsectors}/" < ${src}/${diskproto} > ${imgdir}/diskproto
 
-	${DISKLABEL} -R -F -M ${machine} -B le ${image_name} .diskproto
-}
-
-#
-# "clean" option use the following functions.
-#
-
-#
-# Delete all packages.
-#
-clean_packages()
-{
-  ${TEST} -d ${packages}/${release} || exit 1
-  ${LS} ${packages}/${release} | ${GREP} -E 'tgz$' | \
-    ${XARGS} -I % rm -f ${packages}/${release}/%
-  ${RM} -f ${packages}/${release}/MD5
-  ${RM} -f ${packages}/${release}/SHA512
-  ${RMDIR} ${packages}/${release}
-  ${TEST} -d ${packages} || exit 1
-  ${RMDIR} ${packages}
-}
-
-#
-# Delete all "+" files and system files.
-#
-clean_categories()
-{
-  i=""
-  j=""
-  for i in ${category}; do
-    ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
-    ${TEST} -f ${workdir}/${i}/CATEGORIZED && ${RM} -f ${workdir}/${i}/CATEGORIZED
-    ${FIND} ${workdir}/${i} -type f | ${XARGS} ${RM} -f > /dev/null 2>&1
-    ${FIND} ${workdir}/${i} -type d | ${XARGS} ${RMDIR} > /dev/null 2>&1
-    ${RMDIR} ${workdir}/${i} > /dev/null 2>&1
-    ${RMDIR} ${workdir} > /dev/null 2>&1
-  done
+	${DISKLABEL} -R -F -M ${machine} -B le ${imgdir}/${image_name} ${imgdir}/diskproto \
+    || (err "disklabel failed"; exit 1)
 }
 
 #
@@ -700,13 +727,10 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
 
  Operation:
     pkg                 Create packages.
-    install             Install packages to ${prefix}/${basedir}.
+    install             Install packages to ${targetdir}.
                         If --system option using, install package to /.
-    delete              Uninstall packages at ${prefix}/${basedir}.
+    delete              Uninstall packages at ${targetdir}.
                         If --system option using, delete package from /.
-    clean               Remove all packages and categorized directories.
-    cleanpkg            Remove all packages.
-    cleandir            Remove all categorized directories.
 
  Operation for Debug:
     dir                 Create packages directory.
@@ -839,13 +863,14 @@ ${TEST} $# -eq 0 && usage
 #
 src=${src:="/usr/src"}
 obj=${obj:="/usr/obj"}
-machine="$(${UNAME} -m)"
+machine=${machine:="$(${UNAME} -m)"}
 destdir="${obj}/destdir.${machine}"
 packages=${packages:="${PWD}/packages"}
 sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
 category=${category:="base comp etc games man misc text"}
 prefix=${prefix:="/usr/pkg"}
-pkgdb=${pkgdb:="${prefix}/${basedir}/var/db/basepkg"}
+targetdir="${prefix}/${basedir}"
+pkgdb=${pkgdb:="${targetdir}/var/db/basepkg"}
 touch_system=${touch_system:="false"}
 force=${force:="false"}
 update=${update:="false"}
@@ -860,6 +885,9 @@ kernel="GENERIC"
 # operation
 #
 case $1 in
+  #
+  # For Debug
+  #
   dir) 
     split_category_from_lists
     make_directories_of_package ;;
@@ -884,13 +912,6 @@ case $1 in
     do_pkg_info $@ ;;
   image)
     do_make_bootable_image ;;
-  cleanpkg)
-    clean_packages ;;
-  cleandir)
-    clean_categories ;;
-  clean)
-    clean_packages
-    clean_categories ;;
   *)
     usage ;;
 esac
