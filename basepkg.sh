@@ -684,7 +684,9 @@ do_make_bootable_image()
   # Creating rootfs
   #
 
+  #
   # XXX /var/spool/ftp/hidden is unreadable.
+  #
   ${CHMOD} +r ${targetdir}/var/spool/ftp/hidden
   ${MAKEFS} -M ${fssize} -m ${fssize} \
     -B ${target_endianness} \
@@ -694,8 +696,6 @@ do_make_bootable_image()
     ${imgmakefsoptions} \
     ${imgdir}/${image_name} ${targetdir} \
     || (err "makefs failed"; exit 1)
-  ${INSTALLBOOT} -v -m ${machine} ${imgdir}/${image_name} ${targetdir}/${primary_boot} \
-    || (err "installboot failed"; exit 1)
 
   ${SED} \
     -e "s/@@SECTORS@@/${sectors}/" \
@@ -711,6 +711,9 @@ do_make_bootable_image()
 
 	${DISKLABEL} -R -F -M ${machine} -B le ${imgdir}/${image_name} ${imgdir}/diskproto \
     || (err "disklabel failed"; exit 1)
+
+  ${INSTALLBOOT} -v -m ${machine} ${imgdir}/${image_name} ${targetdir}/${primary_boot} \
+    || (err "installboot failed"; exit 1)
 }
 
 #
