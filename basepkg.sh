@@ -85,10 +85,10 @@ pkgtoolversion="$(${PKG_ADD} -V)"
 utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 param="usr/include/sys/param.h"
-lists="distrib/sets/lists"
-comments="distrib/sets/comments"
-descrs="distrib/sets/descrs"
-deps="distrib/sets/deps"
+lists="${PWD}/sets/lists"
+comments="${PWD}/sets/comments"
+descrs="${PWD}/sets/descrs"
+deps="${PWD}/sets/deps"
 tmp_deps="/tmp/culldeps"
 basedir="share/basepkg/root"
 
@@ -142,7 +142,7 @@ split_category_from_lists()
   for i in ${category}; do
     ${TEST} -d ${workdir}/${i} || ${MKDIR} -p ${workdir}/${i}
     ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
-    for j in `${LS} ${src}/${lists} | ${GREP} -v "^[A-Z]"`; do
+    for j in `${LS} ${lists} | ${GREP} -v "^[A-Z]"`; do
       ${AWK} '
       ! /^\#/ {
           #
@@ -167,9 +167,9 @@ split_category_from_lists()
                   print
               }
           }
-      }' ${src}/${lists}/${j}/mi >> ${workdir}/${i}/FILES
+      }' ${lists}/${j}/mi >> ${workdir}/${i}/FILES
   
-      if [ -f ${src}/${lists}/${j}/md.${machine} ]; then
+      if [ -f ${lists}/${j}/md.${machine} ]; then
         ${AWK} '
         ! /^\#/ {
             #
@@ -194,7 +194,7 @@ split_category_from_lists()
                     print
                 }
             }
-        }' ${src}/${lists}/${j}/md.${machine} >> ${workdir}/${i}/FILES
+        }' ${lists}/${j}/md.${machine} >> ${workdir}/${i}/FILES
       fi
     done
   done
@@ -277,12 +277,12 @@ _BUILD_INFO_
 #
 culc_deps()
 {
-  ${GREP} -E "^$1" ${src}/${deps} > /dev/null 2>&1
+  ${GREP} -E "^$1" ${deps} > /dev/null 2>&1
   if [ $? -eq 1 ]; then
     err "$1:Unknown package dependency."
     return 1
   fi
-  ${AWK} '/^'"$1"'/{print $2}' ${src}/${deps} | while read depend; do
+  ${AWK} '/^'"$1"'/{print $2}' ${deps} | while read depend; do
     if [ ! "${depend}" ]; then
       return 1
     fi
@@ -354,7 +354,7 @@ make_DESC_and_COMMENT()
           else
               printf $i" "
       }
-  }' ${src}/${descrs} > ${workdir}/$1/+DESC
+  }' ${descrs} > ${workdir}/$1/+DESC
 
   ${AWK} '
   /^'"${pkgname}"'/ {
@@ -364,7 +364,7 @@ make_DESC_and_COMMENT()
           else
               printf $i" "
       }
-  }' ${src}/${descrs} > ${workdir}/$1/+COMMENT
+  }' ${comments} > ${workdir}/$1/+COMMENT
 }
 
 #
@@ -462,6 +462,57 @@ make_packages()
     ${CKSUM} -a md5 ${pkgs} >> ${packages}/${release}/${machine}/MD5
     ${CKSUM} -a sha512 ${pkgs} >> ${packages}/${release}/${machine}/SHA512
   fi
+}
+
+#
+# Make kernel package.
+#
+make_kernel_package()
+{
+  category="base"
+  pkgname="base-netbsd-kernel"
+
+  ${ECHO} "Package ${pkgname} Creating..."
+  if [ ! -d ${workdir}/${category}/.${pkgname} ]; then
+    ${MKDIR} -p ${workdir}/${category}/.${pkgname}
+  fi
+  ${CAT} > ${workdir}/${category}/.${pkgname}/+BUILD_INFO << _BUILD_INFO_
+OPSYS=${opsys}
+OS_VERSION=${osversion}
+OBJECT_FMT=ELF
+MACHINE_ARCH=${machine_arch}
+PKGTOOLS_VERSION=${pkgtoolversion}
+_BUILD_INFO_
+
+  ${CAT} > ${workdir}/${category}/.${pkgname}/+COMMENT << _COMMENT_
+NetBSD Kernel
+_COMMENT_
+
+  ${CAT} > ${workdir}/${category}/.${pkgname}/+DESC << _DESC_
+NetBSD Kernel
+_DESC_
+
+  ${CAT} > ${workdir}/${category}/.${pkgname}/+CONTENTS << _CONTENTS_
+@name ${pkgname}-${release}
+@comment Packaged at ${utcdate} UTC by ${user}@${host}
+@cwd ${targetdir}
+netbsd
+_CONTENTS_
+
+  ${PKG_CREATE} -v -l -U \
+  -B ${workdir}/${category}/.${pkgname}/+BUILD_INFO \
+  -c ${workdir}/${category}/.${pkgname}/+COMMENT \
+  -d ${workdir}/${category}/.${pkgname}/+DESC \
+  -f ${workdir}/${category}/.${pkgname}/+CONTENTS \
+  -p ${obj}/sys/arch/${machine}/compile/${kernel} -K ${pkgdb} ${pkgname}
+  if [ $? != 0 ]; then
+    return $?
+  fi
+  if [ ! -d ${packages}/${release}/${machine} ]; then
+    ${MKDIR} -p ${packages}/${release}/${machine}
+  fi
+  ${MV} ./${pkgname}.tgz \
+    ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
 }
 
 #
@@ -838,6 +889,12 @@ while [ $# -gt 0 ]; do
       ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
       machine="$2"
       shift ;;
+    --kernel=*)
+      kernel=`get_optarg "$1"` ;;
+    --kernel)
+      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
+      kernel="$2"
+      shift ;;
     --force)
       force="true" ;;
     --update)
@@ -882,7 +939,7 @@ release="`osrelease`"
 moduledir="stand/${machine}/${release}/modules"
 workdir="${PWD}/work/${release}/${machine}"
 kerneldir="${obj}/sys/arch/${machine}/compile"
-kernel="GENERIC"
+kernel=${kernel:="GENERIC"}
 
 #
 # operation
@@ -904,6 +961,8 @@ case $1 in
     make_directories_of_package
     make_contents_list
     make_packages ;;
+  kern-pkg)
+    make_kernel_package ;;
   install)
     shift
     do_pkg_add $@ ;;
