@@ -93,6 +93,69 @@ tmp_deps="/tmp/culldeps"
 basedir="share/basepkg/root"
 
 #
+# Listing all valid MACHINE/MACHINE_ARCH pairs.
+#
+valid_MACHINE_ARCH='
+MACHINE=acorn26		MACHINE_ARCH=arm
+MACHINE=acorn32		MACHINE_ARCH=arm
+MACHINE=algor		MACHINE_ARCH=mips64el	ALIAS=algor64
+MACHINE=algor		MACHINE_ARCH=mipsel	DEFAULT
+MACHINE=alpha		MACHINE_ARCH=alpha
+MACHINE=amd64		MACHINE_ARCH=x86_64
+MACHINE=amiga		MACHINE_ARCH=m68k
+MACHINE=amigappc	MACHINE_ARCH=powerpc
+MACHINE=arc		MACHINE_ARCH=mips64el	ALIAS=arc64
+MACHINE=arc		MACHINE_ARCH=mipsel	DEFAULT
+MACHINE=atari		MACHINE_ARCH=m68k
+MACHINE=bebox		MACHINE_ARCH=powerpc
+MACHINE=cats		MACHINE_ARCH=arm	ALIAS=ocats
+MACHINE=cats		MACHINE_ARCH=earmv4	ALIAS=ecats DEFAULT
+MACHINE=cesfic		MACHINE_ARCH=m68k
+MACHINE=cobalt		MACHINE_ARCH=mips64el	ALIAS=cobalt64
+MACHINE=cobalt		MACHINE_ARCH=mipsel	DEFAULT
+MACHINE=dreamcast	MACHINE_ARCH=sh3el
+MACHINE=emips		MACHINE_ARCH=mipseb
+MACHINE=epoc32		MACHINE_ARCH=arm
+MACHINE=evbarm		MACHINE_ARCH=arm	ALIAS=evboarm-el
+MACHINE=evbarm		MACHINE_ARCH=armeb	ALIAS=evboarm-eb
+MACHINE=evbarm		MACHINE_ARCH=earm	ALIAS=evbearm-el DEFAULT
+MACHINE=evbarm		MACHINE_ARCH=earmeb	ALIAS=evbearm-eb
+MACHINE=evbarm		MACHINE_ARCH=earmhf	ALIAS=evbearmhf-el
+MACHINE=evbarm		MACHINE_ARCH=earmhfeb	ALIAS=evbearmhf-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv4	ALIAS=evbearmv4-el
+MACHINE=evbarm		MACHINE_ARCH=earmv4eb	ALIAS=evbearmv4-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv5	ALIAS=evbearmv5-el
+MACHINE=evbarm		MACHINE_ARCH=earmv5eb	ALIAS=evbearmv5-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv6	ALIAS=evbearmv6-el
+MACHINE=evbarm		MACHINE_ARCH=earmv6hf	ALIAS=evbearmv6hf-el
+MACHINE=evbarm		MACHINE_ARCH=earmv6eb	ALIAS=evbearmv6-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv6hfeb	ALIAS=evbearmv6hf-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv7	ALIAS=evbearmv7-el
+MACHINE=evbarm		MACHINE_ARCH=earmv7eb	ALIAS=evbearmv7-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv7hf	ALIAS=evbearmv7hf-el
+MACHINE=evbarm		MACHINE_ARCH=earmv7hfeb	ALIAS=evbearmv7hf-eb
+MACHINE=evbarm64	MACHINE_ARCH=aarch64	ALIAS=evbarm64-el
+MACHINE=evbarm64	MACHINE_ARCH=aarch64eb	ALIAS=evbarm64-eb
+MACHINE=evbcf		MACHINE_ARCH=coldfire
+MACHINE=evbmips		MACHINE_ARCH=		NO_DEFAULT
+MACHINE=evbmips		MACHINE_ARCH=mips64eb	ALIAS=evbmips64-eb
+MACHINE=evbmips		MACHINE_ARCH=mips64el	ALIAS=evbmips64-el
+MACHINE=evbmips		MACHINE_ARCH=mipseb	ALIAS=evbmips-eb
+MACHINE=evbmips		MACHINE_ARCH=mipsel	ALIAS=evbmips-el
+MACHINE=evbppc		MACHINE_ARCH=powerpc	DEFAULT
+MACHINE=evbppc		MACHINE_ARCH=powerpc64	ALIAS=evbppc64
+MACHINE=evbsh3		MACHINE_ARCH=		NO_DEFAULT
+'
+
+#
+# Set MACHINE_ARCH variable by MACHINE value.
+# Work in progress.
+#
+set_MACHINE_ARCH()
+{
+}
+
+#
 # Output error message to STDERR
 #
 err()
@@ -104,7 +167,8 @@ err()
 # Output version of NetBSD source set.
 #
 osrelease() {
-  path=$0
+  local path=$0
+  local define ver_tag rel_num comment_start NetBSD rel_text rest IFS beta
   exec < ${destdir}/${param}
 
   while
@@ -137,8 +201,7 @@ osrelease() {
 #
 split_category_from_lists()
 {
-  i=""
-  j=""
+  local i j
   for i in ${category}; do
     ${TEST} -d ${workdir}/${i} || ${MKDIR} -p ${workdir}/${i}
     ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
@@ -205,7 +268,7 @@ split_category_from_lists()
 #
 make_directories_of_package()
 {
-  i=""
+  local i
   for i in ${category}; do
     ${AWK} '{print $2}' ${workdir}/${i}/FILES | ${SORT} | ${UNIQ} | \
     ${XARGS} -n 1 -I % ${SH} -c "${TEST} -d ${workdir}/${i}/% || ${MKDIR} ${workdir}/${i}/%"
@@ -221,7 +284,7 @@ make_directories_of_package()
 #
 make_contents_list()
 {
-  i=""
+  local i j
   for i in ${category}; do
     ${AWK} ' 
     # $1 - file name
@@ -241,7 +304,6 @@ make_contents_list()
     }' ${workdir}/${i}/FILES > ${workdir}/${i}/CATEGORIZED
   done
   i=""
-  j=""
   for i in ${category}; do
     for j in `${LS} ${workdir}/${i} | ${GREP} '^[a-z]'`; do
       ${AWK} '
@@ -299,13 +361,14 @@ culc_deps()
 #
 make_CONTENTS()
 {
-  TMPFILE=`${MKTEMP} -q`
+  local TMPFILE=`${MKTEMP} -q`
   if [ $? -ne 0 ]; then
     err "$0: Can't create temp file, exiting..."
     exit 1
   fi
-  setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
-  pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+  local filename
+  local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
+  local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
   ${ECHO} "@name ${pkgname}-${release}" > ${workdir}/$1/+CONTENTS
   ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ${workdir}/$1/+CONTENTS
   if [ -f ${tmp_deps} ]; then
@@ -344,7 +407,7 @@ make_CONTENTS()
 #
 make_DESC_and_COMMENT()
 {
-  pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+  local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
 
   ${AWK} '
   /^'"${pkgname}"'/ {
@@ -374,8 +437,10 @@ make_DESC_and_COMMENT()
 #
 make_INSTALL()
 {
-  setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
-  pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+  local install_type mode_user_group
+  local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
+  local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+
   if [ -f ${setname}/${pkgname}/+INSTALL ]; then
     ${MV} ${workdir}/$1/+INSTALL ${workdir}/$1/+INSTALL.old
   fi
@@ -415,8 +480,10 @@ make_INSTALL()
 #
 do_pkg_create()
 {
-  setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
-  pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+  local install_script
+  local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
+  local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+
   if [ -f ${workdir}/$1/+INSTALL ]; then
     install_script="-i ${workdir}/$1/+INSTALL"
   else
@@ -440,8 +507,9 @@ do_pkg_create()
 #
 make_packages()
 {
-  i=""
-  j=""
+  local i j
+  local pkgs
+
   for i in ${category}; do
     for j in `${LS} ${workdir}/${i} | ${GREP} -E '^[a-z]+'`; do
       ${ECHO} "Package ${i}/${j} Creating..."
@@ -469,13 +537,16 @@ make_packages()
 #
 make_kernel_package()
 {
-  category="base"
-  pkgname="base-netbsd-kernel"
+  local category="base"
+  local pkgname="base-netbsd-kernel"
 
   ${ECHO} "Package ${pkgname} Creating..."
-  if [ ! -d ${workdir}/${category}/.${pkgname} ]; then
+  ${TEST} -d ${workdir}/${category}/.${pkgname} || \
     ${MKDIR} -p ${workdir}/${category}/.${pkgname}
-  fi
+
+  #
+  # Information of build environment.
+  #
   ${CAT} > ${workdir}/${category}/.${pkgname}/+BUILD_INFO << _BUILD_INFO_
 OPSYS=${opsys}
 OS_VERSION=${osversion}
@@ -484,14 +555,23 @@ MACHINE_ARCH=${machine_arch}
 PKGTOOLS_VERSION=${pkgtoolversion}
 _BUILD_INFO_
 
+  #
+  # Short description of package.
+  #
   ${CAT} > ${workdir}/${category}/.${pkgname}/+COMMENT << _COMMENT_
 NetBSD Kernel
 _COMMENT_
 
+  #
+  # Description of package.
+  #
   ${CAT} > ${workdir}/${category}/.${pkgname}/+DESC << _DESC_
 NetBSD Kernel
 _DESC_
 
+  #
+  # Package contents.
+  #
   ${CAT} > ${workdir}/${category}/.${pkgname}/+CONTENTS << _CONTENTS_
 @name ${pkgname}-${release}
 @comment Packaged at ${utcdate} UTC by ${user}@${host}
@@ -504,13 +584,12 @@ _CONTENTS_
   -c ${workdir}/${category}/.${pkgname}/+COMMENT \
   -d ${workdir}/${category}/.${pkgname}/+DESC \
   -f ${workdir}/${category}/.${pkgname}/+CONTENTS \
-  -p ${obj}/sys/arch/${machine}/compile/${kernel} -K ${pkgdb} ${pkgname}
-  if [ $? != 0 ]; then
-    return $?
-  fi
-  if [ ! -d ${packages}/${release}/${machine} ]; then
+  -p ${obj}/sys/arch/${machine}/compile/${kernel} -K ${pkgdb} ${pkgname} || \
+    (err "${PKG_CREATE}"; exit 1)
+
+  ${TEST} -d ${packages}/${release}/${machine} || \
     ${MKDIR} -p ${packages}/${release}/${machine}
-  fi
+
   ${MV} ./${pkgname}.tgz \
     ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
 }
@@ -524,7 +603,10 @@ _CONTENTS_
 #
 do_pkg_add()
 {
-  pkg_add_options=""
+  local pkg_add_options=""
+  local i
+  local dst source mode user group
+
   ${TEST} -d ${targetdir} || ${MKDIR} -p ${targetdir}
   ${TEST} ${force} = "true" && pkg_add_options="-f"
   ${TEST} ${update} = "true" && pkg_add_options="-u ${pkg_add_options}"
@@ -532,7 +614,6 @@ do_pkg_add()
   pkg_add_options="-K ${pkgdb} -p ${targetdir} ${pkg_add_options}"
   ${PKG_ADD} ${pkg_add_options} $@ || exit 1
   if [ $touch_system = "true" ]; then
-    i=""
     for i in $@; do
       ${SED} -n "/^\# CONF: /{s/^\# CONF: //;p;}" \
       ${pkgdb}/`${BASENAME} ${i} | ${SED} 's/\.tgz$//'`/+INSTALL | ${SORT} -u |
@@ -603,6 +684,8 @@ do_pkg_add()
 #
 do_pkg_delete()
 {
+  local real_prefix pkg_delete_options
+
   if [ $touch_system = "true" ]; then
     real_prefix="/"
   else
@@ -626,6 +709,8 @@ do_pkg_delete()
 #
 do_pkg_info()
 {
+  local pkg_info_options
+
   pkg_info_options="-K ${pkgdb}"
   ${PKG_INFO} ${pkg_info_options} $@ || exit 1
 }
@@ -646,55 +731,55 @@ do_make_bootable_image()
   #
   # File name and path.
   #
-  image_name="boot_basepkg.img"
-  fstab="distrib/common/bootimage/fstab.in"
-  diskproto="distrib/common/bootimage/diskproto.mbr.in"
-  specin="distrib/common/bootimage/spec.in"
-  workspec="instfs.spec"
-  primary_boot="usr/mdec/bootxx_ffsv1"
-  secondary_boot="usr/mdec/boot"
-  imgdir="${PWD}/images/${release}/${machine}"
+  local image_name="boot_basepkg.img"
+  local fstab="distrib/common/bootimage/fstab.in"
+  local diskproto="distrib/common/bootimage/diskproto.mbr.in"
+  local specin="distrib/common/bootimage/spec.in"
+  local workspec="instfs.spec"
+  local primary_boot="usr/mdec/bootxx_ffsv1"
+  local secondary_boot="usr/mdec/boot"
+  local imgdir="${PWD}/images/${release}/${machine}"
 
   ${TEST} -d ${imgdir} || ${MKDIR} -p ${imgdir}
 
   #
   # Command options.
   #
-  imgmakefsoptions="-o bsize=16384,fsize=2048,density=8192"
-  target_endianness="1234"
-  fstype="ffs"
+  local imgmakefsoptions="-o bsize=16384,fsize=2048,density=8192"
+  local target_endianness="1234"
+  local fstype="ffs"
 
   #
   # Size parameters for image.
   #
-  bootdisk="sd0"
-  imageMB=2048 # 2048MB
-  swapMB=128   # 128MB
+  local bootdisk="sd0"
+  local imageMB=2048 # 2048MB
+  local swapMB=128   # 128MB
 
   #
   # XXX: swapMB could be zero and expr(1) returns exit status 1 in that case.
   #
-  imagesectors=`${EXPR} ${imageMB} \* 1024 \* 1024 / 512`
-  swapsectors=`${EXPR} ${swapMB} \* 1024 \* 1024 / 512 || true`
+  local imagesectors=`${EXPR} ${imageMB} \* 1024 \* 1024 / 512`
+  local swapsectors=`${EXPR} ${swapMB} \* 1024 \* 1024 / 512 || true`
 
   #
   # Not use MBR.
   #
-  labelsectors=0
+  local labelsectors=0
 
   #
   # Calculating disk information for disklabel.
   #
-  fssectors=`${EXPR} ${imagesectors} - ${swapsectors} - ${labelsectors}`
-  fssize=`${EXPR} ${fssectors} \* 512`
-  heads=64
-  sectors=32
-  secpercylinders=`${EXPR} ${heads} \* ${sectors}`
-  cylinders=`${EXPR} ${imagesectors} / ${secpercylinders}`
-  bsdpartsectors=`${EXPR} ${imagesectors} - ${labelsectors}`
-  fsoffset=${labelsectors}
-  swapoffset=`${EXPR} ${labelsectors} + ${fssectors}`
-  fssize=`${EXPR} ${fssectors} \* 512`
+  local fssectors=`${EXPR} ${imagesectors} - ${swapsectors} - ${labelsectors}`
+  local fssize=`${EXPR} ${fssectors} \* 512`
+  local heads=64
+  local sectors=32
+  local secpercylinders=`${EXPR} ${heads} \* ${sectors}`
+  local cylinders=`${EXPR} ${imagesectors} / ${secpercylinders}`
+  local bsdpartsectors=`${EXPR} ${imagesectors} - ${labelsectors}`
+  local fsoffset=${labelsectors}
+  local swapoffset=`${EXPR} ${labelsectors} + ${fssectors}`
+  local fssize=`${EXPR} ${fssectors} \* 512`
 
   ${CP} ${kerneldir}/${kernel}/netbsd ${targetdir} \
     || (err "copy kernel failed"; exit 1)
@@ -722,7 +807,7 @@ do_make_bootable_image()
   #
   # Preparing spec files for makefs
   #
-  test -f ${imgdir}/${workspec} && ${RM} -f ${imgdir}/${workspec}
+  ${TEST} -f ${imgdir}/${workspec} && ${RM} -f ${imgdir}/${workspec}
   ${CAT} ${targetdir}/etc/mtree/* | ${SED} -e 's/size=[0-9]*//' > ${imgdir}/${workspec}
   ${SH} ${targetdir}/dev/MAKEDEV -s all ipty | \
     ${SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${imgdir}/${workspec} \
