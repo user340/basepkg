@@ -767,14 +767,21 @@ _DESC_
 @cwd ${targetdir}
 netbsd
 _CONTENTS_
+  
+  #
+  # Install script.
+  #
+  ${CAT} > ${workdir}/${category}/.${pkgname}/+INSTALL << _INSTALL_
+# FILE: /netbsd netbsd 755 0 0
+_INSTALL_
 
   ${PKG_CREATE} -v -l -U \
   -B ${workdir}/${category}/.${pkgname}/+BUILD_INFO \
   -c ${workdir}/${category}/.${pkgname}/+COMMENT \
   -d ${workdir}/${category}/.${pkgname}/+DESC \
   -f ${workdir}/${category}/.${pkgname}/+CONTENTS \
-  -p ${obj}/sys/arch/${machine}/compile/${kernel} -K ${pkgdb} ${pkgname} || \
-    bomb "${PKG_CREATE}"
+  -i ${workdir}/${category}/.${pkgname}/+INSTALL \
+  -p ${obj}/sys/arch/${machine}/compile/${kernel} -K ${pkgdb} ${pkgname} || bomb "${PKG_CREATE}"
 
   ${TEST} -d ${packages}/${release}/${machine} || \
     ${MKDIR} -p ${packages}/${release}/${machine}
