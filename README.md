@@ -55,6 +55,7 @@ or
 ### 3. Make Packages
 Run basepkg.sh script with __pkg__ option.  
 ```# ./basepkg.sh --new --src=/usr/src --obj=/usr/obj pkg```  
+```# ./basepkg.sh --new --src=/usr/src --obj=/usr/obj kern-pkg```  
 Packages are created under the packages/<release-version>/<machine> directory.
 
 ### 4. How to Install Package?
@@ -66,16 +67,6 @@ If you want to install to under the root, use __--system__ option.
 
 ### 6. Unable to Install Packages.
 The following packages unable to install to the system.
-- not exist base-termcap-share package, unable to resolution package's dependency.
-	- base-groff-share
-	- base-magic-share
-	- base-reference-share
-	- base-termcap-share
-	- comp-c-share
-	- comp-util-share
-	- text-texinfo-share
-- not exist base-libsaslc-examples package, unable to resolution package's dependency.
-	- misc-libsaslc-examples
 - Conflicting pacakge's contents.
 	- base-atf-bin and base-kyua-bin
 		- usr/bin/atf-report
@@ -89,4 +80,6 @@ The following packages unable to install to the system.
 		- usr/share/man/man1/atf-report.1
 
 ### 7. pkgsrc-wip
-Basepkg imported to pkgsrc-wip. You can install basepkg to your system through pkgsrc-wip.
+Basepkg imported to pkgsrc-wip. You can install basepkg to your system through pkgsrc-wip.  
+```# cd /usr/pkgsrc/wip/basepkg```  
+```# make install```
