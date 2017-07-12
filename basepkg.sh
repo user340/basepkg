@@ -74,11 +74,17 @@ PKG_DELETE="/usr/pkg/sbin/pkg_delete"
 PKG_INFO="/usr/pkg/sbin/pkg_info"
 
 #
+# Character
+#
+nl='
+'
+tab='		'
+
+#
 # Immutable variables
 #
 progname=${0##*/}
 host="$(${HOSTNAME})"
-machine_arch="$(${UNAME} -p)"
 opsys="$(${UNAME})"
 osversion="$(${UNAME} -r)"
 pkgtoolversion="$(${PKG_ADD} -V)"
@@ -91,6 +97,9 @@ descrs="${PWD}/sets/descrs"
 deps="${PWD}/sets/deps"
 tmp_deps="/tmp/culldeps"
 basedir="share/basepkg/root"
+homepage="https://github.com/user340/basepkg"
+mail_address="mail@e-yuuki.org"
+toppid=$$
 
 #
 # Listing all valid MACHINE/MACHINE_ARCH pairs.
@@ -145,14 +154,181 @@ MACHINE=evbmips		MACHINE_ARCH=mipsel	ALIAS=evbmips-el
 MACHINE=evbppc		MACHINE_ARCH=powerpc	DEFAULT
 MACHINE=evbppc		MACHINE_ARCH=powerpc64	ALIAS=evbppc64
 MACHINE=evbsh3		MACHINE_ARCH=		NO_DEFAULT
+MACHINE=evbsh3		MACHINE_ARCH=sh3eb	ALIAS=evbsh3-eb
+MACHINE=evbsh3		MACHINE_ARCH=sh3el	ALIAS=evbsh3-el
+MACHINE=ews4800mips	MACHINE_ARCH=mipseb
+MACHINE=hp300		MACHINE_ARCH=m68k
+MACHINE=hppa		MACHINE_ARCH=hppa
+MACHINE=hpcarm		MACHINE_ARCH=arm	ALIAS=hpcoarm
+MACHINE=hpcarm		MACHINE_ARCH=earmv4	ALIAS=hpcearm DEFAULT
+MACHINE=hpcmips		MACHINE_ARCH=mipsel
+MACHINE=hpcsh		MACHINE_ARCH=sh3el
+MACHINE=i386		MACHINE_ARCH=i386
+MACHINE=ia64		MACHINE_ARCH=ia64
+MACHINE=ibmnws		MACHINE_ARCH=powerpc
+MACHINE=iyonix		MACHINE_ARCH=arm	ALIAS=oiyonix
+MACHINE=iyonix		MACHINE_ARCH=earm	ALIAS=eiyonix DEFAULT
+MACHINE=landisk		MACHINE_ARCH=sh3el
+MACHINE=luna68k		MACHINE_ARCH=m68k
+MACHINE=mac68k		MACHINE_ARCH=m68k
+MACHINE=macppc		MACHINE_ARCH=powerpc	DEFAULT
+MACHINE=macppc		MACHINE_ARCH=powerpc64	ALIAS=macppc64
+MACHINE=mipsco		MACHINE_ARCH=mipseb
+MACHINE=mmeye		MACHINE_ARCH=sh3eb
+MACHINE=mvme68k		MACHINE_ARCH=m68k
+MACHINE=mvmeppc		MACHINE_ARCH=powerpc
+MACHINE=netwinder	MACHINE_ARCH=arm	ALIAS=onetwinder
+MACHINE=netwinder	MACHINE_ARCH=earmv4	ALIAS=enetwinder DEFAULT
+MACHINE=news68k		MACHINE_ARCH=m68k
+MACHINE=newsmips	MACHINE_ARCH=mipseb
+MACHINE=next68k		MACHINE_ARCH=m68k
+MACHINE=ofppc		MACHINE_ARCH=powerpc	DEFAULT
+MACHINE=ofppc		MACHINE_ARCH=powerpc64	ALIAS=ofppc64
+MACHINE=playstation2	MACHINE_ARCH=mipsel
+MACHINE=pmax		MACHINE_ARCH=mips64el	ALIAS=pmax64
+MACHINE=pmax		MACHINE_ARCH=mipsel	DEFAULT
+MACHINE=prep		MACHINE_ARCH=powerpc
+MACHINE=rs6000		MACHINE_ARCH=powerpc
+MACHINE=sandpoint	MACHINE_ARCH=powerpc
+MACHINE=sbmips		MACHINE_ARCH=		NO_DEFAULT
+MACHINE=sbmips		MACHINE_ARCH=mips64eb	ALIAS=sbmips64-eb
+MACHINE=sbmips		MACHINE_ARCH=mips64el	ALIAS=sbmips64-el
+MACHINE=sbmips		MACHINE_ARCH=mipseb	ALIAS=sbmips-eb
+MACHINE=sbmips		MACHINE_ARCH=mipsel	ALIAS=sbmips-el
+MACHINE=sgimips		MACHINE_ARCH=mips64eb	ALIAS=sgimips64
+MACHINE=sgimips		MACHINE_ARCH=mipseb	DEFAULT
+MACHINE=shark		MACHINE_ARCH=arm	ALIAS=oshark
+MACHINE=shark		MACHINE_ARCH=earmv4	ALIAS=eshark DEFAULT
+MACHINE=sparc		MACHINE_ARCH=sparc
+MACHINE=sparc64		MACHINE_ARCH=sparc64
+MACHINE=sun2		MACHINE_ARCH=m68000
+MACHINE=sun3		MACHINE_ARCH=m68k
+MACHINE=vax		MACHINE_ARCH=vax
+MACHINE=x68k		MACHINE_ARCH=m68k
+MACHINE=zaurus		MACHINE_ARCH=arm	ALIAS=ozaurus
+MACHINE=zaurus		MACHINE_ARCH=earm	ALIAS=ezaurus DEFAULT
 '
 
 #
 # Set MACHINE_ARCH variable by MACHINE value.
-# Work in progress.
+# Copy from src/build.sh.
 #
-set_MACHINE_ARCH()
+getarch()
 {
+  local IFS
+  local found=""
+  local line
+  
+  IFS="${nl}"
+  makewrappermachine="${machine}"
+  for line in ${valid_MACHINE_ARCH}; do
+    line="${line%%#*}"
+		line="$( IFS=" ${tab}" ; ${ECHO} $line )" # normalise white space
+		case "${line} " in
+		" ")
+			# skip blank lines or comment lines
+			continue
+			;;
+		*" ALIAS=${machine} "*)
+			# Found a line with a matching ALIAS=<alias>.
+			found="$line"
+			break
+			;;
+		"MACHINE=${machine} "*" NO_DEFAULT"*)
+			# Found an explicit "NO_DEFAULT" for this MACHINE.
+			found="$line"
+			break
+			;;
+		"MACHINE=${machine} "*" DEFAULT"*)
+			# Found an explicit "DEFAULT" for this MACHINE.
+			found="$line"
+			break
+			;;
+		"MACHINE=${machine} "*)
+			# Found a line for this MACHINE.  If it's the
+			# first such line, then tentatively accept it.
+			# If it's not the first matching line, then
+			# remember that there was more than one match.
+			case "$found" in
+			'')	found="$line" ;;
+			*)	found="MULTIPLE_MATCHES" ;;
+			esac
+			;;
+		esac
+	done
+
+	case "$found" in
+	*NO_DEFAULT*|*MULTIPLE_MATCHES*)
+		# MACHINE is OK, but MACHINE_ARCH is still unknown
+		return
+		;;
+	"MACHINE="*" MACHINE_ARCH="*)
+		# Obey the MACHINE= and MACHINE_ARCH= parts of the line.
+		IFS=" "
+		for frag in ${found}; do
+			case "$frag" in
+			MACHINE=*|MACHINE_ARCH=*)
+				eval "$frag"
+				;;
+			esac
+		done
+		;;
+	*)
+		bomb "Unknown target MACHINE: ${machine}"
+		;;
+	esac
+}
+
+#
+# Exit if the pair is not supported.
+#
+validatearch()
+{
+	local IFS
+	local line
+	local foundpair=false foundmachine=false foundarch=false
+
+	case "${MACHINE_ARCH}" in
+	"")
+		bomb "No MACHINE_ARCH provided"
+		;;
+	esac
+
+	IFS="${nl}"
+	for line in ${valid_MACHINE_ARCH}; do
+		line="${line%%#*}" # ignore comments
+		line="$( IFS=" ${tab}" ; echo $line )" # normalise white space
+		case "${line} " in
+		" ")
+			# skip blank lines or comment lines
+			continue
+			;;
+		"MACHINE=${MACHINE} MACHINE_ARCH=${MACHINE_ARCH} "*)
+			foundpair=true
+			;;
+		"MACHINE=${MACHINE} "*)
+			foundmachine=true
+			;;
+		*"MACHINE_ARCH=${MACHINE_ARCH} "*)
+			foundarch=true
+			;;
+		esac
+	done
+
+	case "${foundpair}:${foundmachine}:${foundarch}" in
+	true:*)
+		: OK
+		;;
+	*:false:*)
+		bomb "Unknown target MACHINE: ${MACHINE}"
+		;;
+	*:*:false)
+		bomb "Unknown target MACHINE_ARCH: ${MACHINE_ARCH}"
+		;;
+	*)
+		bomb "MACHINE_ARCH '${MACHINE_ARCH}' does not support MACHINE '${MACHINE}'"
+		;;
+	esac
 }
 
 #
@@ -161,6 +337,20 @@ set_MACHINE_ARCH()
 err()
 {
   ${ECHO} "[$(${DATE} +'%Y-%m-%dT%H:%M:%S')] $@" >&2
+}
+
+#
+# Output abbort message. Kill and exit.
+#
+bomb()
+{
+  ${CAT} >&2 <<MESSAGE
+
+ERROR: $@
+*** PACKAGING ABORTED ***
+MESSAGE
+  kill ${toppid}
+  exit 1
 }
 
 #
@@ -331,6 +521,8 @@ OS_VERSION=${osversion}
 OBJECT_FMT=ELF
 MACHINE_ARCH=${machine_arch}
 PKGTOOLS_VERSION=${pkgtoolversion}
+HOMEPAGE=${homepage}
+MAINTAINER=${mail_address}
 _BUILD_INFO_
 }
 
@@ -341,7 +533,7 @@ culc_deps()
 {
   ${GREP} -E "^$1" ${deps} > /dev/null 2>&1
   if [ $? -eq 1 ]; then
-    err "$1:Unknown package dependency."
+    err "$1: Unknown package dependency."
     return 1
   fi
   ${AWK} '/^'"$1"'/{print $2}' ${deps} | while read depend; do
@@ -362,10 +554,7 @@ culc_deps()
 make_CONTENTS()
 {
   local TMPFILE=`${MKTEMP} -q`
-  if [ $? -ne 0 ]; then
-    err "$0: Can't create temp file, exiting..."
-    exit 1
-  fi
+  ${TEST} $? -ne 0 && bomb "${MKTEMP}"
   local filename
   local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
@@ -585,7 +774,7 @@ _CONTENTS_
   -d ${workdir}/${category}/.${pkgname}/+DESC \
   -f ${workdir}/${category}/.${pkgname}/+CONTENTS \
   -p ${obj}/sys/arch/${machine}/compile/${kernel} -K ${pkgdb} ${pkgname} || \
-    (err "${PKG_CREATE}"; exit 1)
+    bomb "${PKG_CREATE}"
 
   ${TEST} -d ${packages}/${release}/${machine} || \
     ${MKDIR} -p ${packages}/${release}/${machine}
@@ -781,28 +970,26 @@ do_make_bootable_image()
   local swapoffset=`${EXPR} ${labelsectors} + ${fssectors}`
   local fssize=`${EXPR} ${fssectors} \* 512`
 
-  ${CP} ${kerneldir}/${kernel}/netbsd ${targetdir} \
-    || (err "copy kernel failed"; exit 1)
+  ${CP} ${kerneldir}/${kernel}/netbsd ${targetdir} || bomb "${CP}"
 
   #
   # Copying secondary boot
   #
-  ${INSTALL} -c -m 0644 ${targetdir}/${secondary_boot} ${targetdir} \
-    || (err "copy secondary boot failed"; exit 1)
+  ${INSTALL} -c -m 0644 ${targetdir}/${secondary_boot} ${targetdir} || bomb "${INSTALL}"
 
   #
   # Preparing /etc/fstab
   #
   ${SED} 's/@@BOOTDISK@@/'"${bootdisk}"'/' < ${src}/${fstab} > ${imgdir}/fstab \
-    || (err "edit ${src}/${fstab} failed"; exit 1)
+    || bomb "Edit ${src}/${fstab}"
   ${INSTALL} -c -m 0644 ${imgdir}/fstab ${targetdir}/etc \
-    || (err "install fstab failed"; exit 1)
+    || bomb "${INSTALL}"
 
   #
   # Setting rc_configure=YES in /etc/rc.conf
   #
   ${SED} -i 's/rc_configured=NO/rc_configured=YES/' ${targetdir}/etc/rc.conf \
-    || (err "edit ${targetdir}/etc/rc.conf failed"; exit 1)
+    || bomb "edit ${targetdir}/etc/rc.conf failed"
 
   #
   # Preparing spec files for makefs
@@ -810,8 +997,7 @@ do_make_bootable_image()
   ${TEST} -f ${imgdir}/${workspec} && ${RM} -f ${imgdir}/${workspec}
   ${CAT} ${targetdir}/etc/mtree/* | ${SED} -e 's/size=[0-9]*//' > ${imgdir}/${workspec}
   ${SH} ${targetdir}/dev/MAKEDEV -s all ipty | \
-    ${SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${imgdir}/${workspec} \
-    || (err "MAKEDEV failed"; exit 1)
+    ${SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${imgdir}/${workspec} || bomb "MAKEDEV"
   ${CAT} ${src}/${specin} >> ${imgdir}/${workspec}
   ${ECHO} "./${secondary_boot} type=file uname=root gname=wheel mode=0444" \
     >> ${imgdir}/${workspec}
@@ -830,8 +1016,7 @@ do_make_bootable_image()
     -F ${imgdir}/${workspec} \
     -N ${targetdir}/etc \
     ${imgmakefsoptions} \
-    ${imgdir}/${image_name} ${targetdir} \
-    || (err "makefs failed"; exit 1)
+    ${imgdir}/${image_name} ${targetdir} || bomb "${MAKEFS}"
 
   ${SED} \
     -e "s/@@SECTORS@@/${sectors}/" \
@@ -846,10 +1031,10 @@ do_make_bootable_image()
 	  -e "s/@@BSDPARTSECTORS@@/${bsdpartsectors}/" < ${src}/${diskproto} > ${imgdir}/diskproto
 
 	${DISKLABEL} -R -F -M ${machine} -B le ${imgdir}/${image_name} ${imgdir}/diskproto \
-    || (err "disklabel failed"; exit 1)
+    || bomb "${DISKLABEL}"
 
   ${INSTALLBOOT} -v -m ${machine} ${imgdir}/${image_name} ${targetdir}/${primary_boot} \
-    || (err "installboot failed"; exit 1)
+    || bomb "${INSTALLBOOT}"
 }
 
 #
@@ -1009,6 +1194,9 @@ ${TEST} $# -eq 0 && usage
 src=${src:="/usr/src"}
 obj=${obj:="/usr/obj"}
 machine=${machine:="$(${UNAME} -m)"}
+getarch
+validatearch
+machine_arch=${MACHINE_ARCH}
 destdir="${obj}/destdir.${machine}"
 packages=${packages:="${PWD}/packages"}
 sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
