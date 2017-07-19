@@ -1051,26 +1051,21 @@ usage()
 {
   ${CAT} <<_usage_
 
-Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
-                   [--pkg packages_dir] [--category category]
-                   [--prefix prefix] [--pkgdb database_dir]
+Usage: ${progname} [--src src_dir] [--pkg packages_dir] [--category category]
+                   [--prefix prefix] [--pkgdb database_dir] [--system]
                    [--force] [--update] [--replace] operation
 
  Operation:
     pkg                 Create packages.
+    kern-pkg            Create kernel package.
     install             Install packages to ${targetdir}.
                         If --system option using, install package to /.
-    delete              Uninstall packages at ${targetdir}.
+    uninstall           Uninstall packages at ${targetdir}.
                         If --system option using, delete package from /.
-
- Operation for Debug:
-    dir                 Create packages directory.
-    list                Create packages list.
+    info                Show information of package.
 
  Options:
     --help              Show this message and exit.
-    --sets              Set sets to extract tarballs.
-                        [Default: /usr/obj/releasedir/${machine}/binary/sets]
     --src               Set src to NetBSD source directory.
                         [Default: /usr/src]
     --obj               Set obj to NetBSD binaries.
@@ -1085,6 +1080,10 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         install to/delete from /.
     --pkgdb             Set pkgdb to package's database.
                         [Default: "/var/db/basepkg"]
+    --machine           Set machine type for MACHINE_ARCH.
+                        [Default: ${machine}]
+    --kernel            Set kernel type.
+                        [Default: GENERIC]
     --force             Add "-f" option to pkg_add and pkg_delete command.
     --update            Add "-u" option to pkg_add and pkg_delete command.
     --replace           Add "-U" option to pkg_add command.
@@ -1114,13 +1113,7 @@ get_optarg()
 while [ $# -gt 0 ]; do
   case $1 in
     -h|--help)
-      usage; exit ;;
-    --sets=*)
-      sets=`get_optarg "$1"` ;;
-    --sets)
-      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
-      sets=$2
-      shift ;;
+      usage; exit 0 ;;
     --src=*)
       src=`get_optarg "$1"` ;;
     --src)
@@ -1206,7 +1199,6 @@ validatearch
 machine_arch=${MACHINE_ARCH}
 destdir="${obj}/destdir.${machine}"
 packages=${packages:="${PWD}/packages"}
-sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
 category=${category:="base comp etc games man misc text"}
 prefix=${prefix:="/usr/pkg"}
 targetdir="${prefix}/${basedir}"
@@ -1246,7 +1238,7 @@ case $1 in
   install)
     shift
     do_pkg_add $@ ;;
-  delete)
+  uninstall)
     shift
     do_pkg_delete $@ ;;
   info)
