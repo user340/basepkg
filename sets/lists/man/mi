@@ -58,8 +58,7 @@
 ./usr/share/man/cat1/atf-exec.0			man-obsolete		obsolete
 ./usr/share/man/cat1/atf-format.0		man-obsolete		obsolete
 ./usr/share/man/cat1/atf-killpg.0		man-obsolete		obsolete
-./usr/share/man/cat1/atf-report.0		man-atf-catman		.cat,atf
-./usr/share/man/cat1/atf-report.0		man-kyua-catman		.cat,kyua
+./usr/share/man/cat1/atf-report.0		man-atf-catman		.cat,atf,kyua
 ./usr/share/man/cat1/atf-run.0			man-atf-catman		.cat,atf
 ./usr/share/man/cat1/atf-run.0			man-kyua-catman		.cat,kyua
 ./usr/share/man/cat1/atf-sh.0			man-atf-catman		.cat,atf
@@ -3256,10 +3255,8 @@
 ./usr/share/man/html1/atf-exec.html		man-obsolete		obsolete
 ./usr/share/man/html1/atf-format.html		man-obsolete		obsolete
 ./usr/share/man/html1/atf-killpg.html		man-obsolete		obsolete
-./usr/share/man/html1/atf-report.html		man-atf-htmlman		html,atf
-./usr/share/man/html1/atf-report.html		man-kyua-htmlman	html,kyua
-./usr/share/man/html1/atf-run.html		man-atf-htmlman		html,atf
-./usr/share/man/html1/atf-run.html		man-kyua-htmlman	html,kyua
+./usr/share/man/html1/atf-report.html		man-atf-htmlman		html,atf,kyua
+./usr/share/man/html1/atf-run.html		man-atf-htmlman		html,atf,kyua
 ./usr/share/man/html1/atf-sh.html		man-atf-htmlman		html,atf
 ./usr/share/man/html1/atf-test-program.html	man-atf-htmlman		html,atf
 ./usr/share/man/html1/atf-version.html		man-atf-htmlman		html,atf,!kyua
@@ -6064,10 +6061,8 @@
 ./usr/share/man/man1/atf-exec.1			man-obsolete		obsolete
 ./usr/share/man/man1/atf-format.1		man-obsolete		obsolete
 ./usr/share/man/man1/atf-killpg.1		man-obsolete		obsolete
-./usr/share/man/man1/atf-report.1		man-atf-man		.man,atf
-./usr/share/man/man1/atf-report.1		man-kyua-man		.man,kyua
-./usr/share/man/man1/atf-run.1			man-atf-man		.man,atf
-./usr/share/man/man1/atf-run.1			man-kyua-man		.man,kyua
+./usr/share/man/man1/atf-report.1		man-atf-man		.man,atf,kyua
+./usr/share/man/man1/atf-run.1			man-atf-man		.man,atf,kyua
 ./usr/share/man/man1/atf-sh.1			man-atf-man		.man,atf
 ./usr/share/man/man1/atf-test-program.1		man-atf-man		.man,atf
 ./usr/share/man/man1/atf-version.1		man-atf-man		.man,atf,!kyua

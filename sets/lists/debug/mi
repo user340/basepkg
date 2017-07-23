@@ -123,7 +123,6 @@
 ./usr/lib/libposix_g.a				comp-c-debuglib		debuglib,compatfile
 ./usr/lib/libppath_g.a				comp-c-debuglib		debuglib,compatfile
 ./usr/lib/libproc_g.a				comp-c-libdebug		debuglib,compatfile,dtrace
-./usr/lib/libproc_p.a				comp-c-debuglib		debuglib,compatfile,dtrace
 ./usr/lib/libprop_g.a				comp-c-debuglib		debuglib,compatfile
 ./usr/lib/libpthread_dbg_g.a			comp-obsolete		obsolete
 ./usr/lib/libpthread_g.a			comp-c-debuglib		debuglib,compatfile

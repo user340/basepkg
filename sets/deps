@@ -2,6 +2,10 @@ base-adosfs-root base-sys-root
 base-amd-bin base-sys-usr
 base-amd-examples base-sys-share
 base-amd-shlib base-sys-usr
+base-atf-bin base-atf-report
+base-atf-bin base-atf-run
+base-atf-report base-sys-usr
+base-atf-run base-sys-usr
 base-audio-bin base-sys-usr
 base-bind-bin base-sys-usr
 base-bind-root base-sys-root
@@ -43,6 +47,8 @@ base-krb5-bin base-sys-usr
 base-krb5-examples base-sys-share
 base-krb5-root base-sys-root
 base-krb5-shlib base-sys-usr
+base-kyua-bin base-atf-report
+base-kyua-bin base-atf-run
 base-locale-Pig base-locale-share
 base-locale-bg base-locale-share
 base-locale-bin base-sys-usr
