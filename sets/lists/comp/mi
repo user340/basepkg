@@ -14638,7 +14638,6 @@
 ./usr/share/man/html3/isnan.html		comp-c-htmlman		html
 ./usr/share/man/html3/isnanf.html		comp-c-htmlman		html
 ./usr/share/man/html3/isnormal.html		comp-c-htmlman		html
-./usr/share/man/html3/isns.html			comp-c-htmlman		html
 ./usr/share/man/html3/isns.html		comp-isns-htmlman		.html
 ./usr/share/man/html3/iso646.html		comp-c-htmlman		html
 ./usr/share/man/html3/iso_addr.html		comp-obsolete		obsolete

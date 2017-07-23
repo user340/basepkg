@@ -59,7 +59,7 @@ UNIQ="/usr/bin/uniq"
 XARGS="/usr/bin/xargs"
 
 #
-# Non POSIX Utilities
+# Non-POSIX Utilities
 #
 DISKLABEL="/sbin/disklabel"
 HOSTNAME="/bin/hostname"
@@ -211,7 +211,6 @@ MACHINE=zaurus		MACHINE_ARCH=earm	ALIAS=ezaurus DEFAULT
 
 #
 # Set MACHINE_ARCH variable by MACHINE value.
-# Copy from src/build.sh.
 #
 getarch()
 {
@@ -544,7 +543,7 @@ culc_deps()
     if [ "${depend}" = "base-sys-root" ]; then
       return 0
     fi
-    culc_deps ${depend}
+    culc_deps ${depend} # Recursion.
   done
 }
 
@@ -560,13 +559,9 @@ make_CONTENTS()
   local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
   ${ECHO} "@name ${pkgname}-${release}" > ${workdir}/$1/+CONTENTS
   ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ${workdir}/$1/+CONTENTS
-  if [ -f ${tmp_deps} ]; then
-    ${RM} -f ${tmp_deps}
-  fi
+  ${TEST} -f ${tmp_deps} && ${RM} -f ${tmp_deps}
   culc_deps ${pkgname}
-  if [ -f ${tmp_deps} ]; then
-    ${SORT} ${tmp_deps} | ${UNIQ} >> ${workdir}/$1/+CONTENTS
-  fi
+  ${TEST} -f ${tmp_deps} && ${SORT} ${tmp_deps} | ${UNIQ} >> ${workdir}/$1/+CONTENTS
   ${ECHO} "@cwd ${targetdir}" >> ${workdir}/$1/+CONTENTS
   ${CAT} ${workdir}/$1/${pkgname}.FILES | while read i; do
     if [ `${FILE} ${destdir}/${i} | ${CUT} -d " " -f 2` = "symbolic" ]; then
@@ -630,9 +625,7 @@ make_INSTALL()
   local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
 
-  if [ -f ${setname}/${pkgname}/+INSTALL ]; then
-    ${MV} ${workdir}/$1/+INSTALL ${workdir}/$1/+INSTALL.old
-  fi
+  ${TEST} -f ${workdir}/$1/+INSTALL && ${RM} -f ${workdir}/$1/+INSTALL
   if [ -f ${workdir}/$1/+CONTENTS ]; then
     ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
       if [ `${FILE} ${file} | ${CUT} -d " " -f 2` = "symbolic" ]; then
@@ -654,9 +647,6 @@ make_INSTALL()
       ${ECHO} "# ${install_type}: /${file} ${file} ${mode_user_group}" \
       >> ${workdir}/$1/+INSTALL
     done
-    if [ -f ${workdir}/$1/+INSTALL.old ]; then
-      ${RM} -f ${workdir}/$1/+INSTALL.old
-    fi
   else
     return 1
   fi
@@ -1051,26 +1041,21 @@ usage()
 {
   ${CAT} <<_usage_
 
-Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
-                   [--pkg packages_dir] [--category category]
-                   [--prefix prefix] [--pkgdb database_dir]
+Usage: ${progname} [--src src_dir] [--pkg packages_dir] [--category category]
+                   [--prefix prefix] [--pkgdb database_dir] [--system]
                    [--force] [--update] [--replace] operation
 
  Operation:
     pkg                 Create packages.
+    kern-pkg            Create kernel package.
     install             Install packages to ${targetdir}.
                         If --system option using, install package to /.
-    delete              Uninstall packages at ${targetdir}.
+    uninstall           Uninstall packages at ${targetdir}.
                         If --system option using, delete package from /.
-
- Operation for Debug:
-    dir                 Create packages directory.
-    list                Create packages list.
+    info                Show information of package.
 
  Options:
     --help              Show this message and exit.
-    --sets              Set sets to extract tarballs.
-                        [Default: /usr/obj/releasedir/${machine}/binary/sets]
     --src               Set src to NetBSD source directory.
                         [Default: /usr/src]
     --obj               Set obj to NetBSD binaries.
@@ -1085,6 +1070,10 @@ Usage: ${progname} [--sets sets_dir] [--src src_dir] [--system]
                         install to/delete from /.
     --pkgdb             Set pkgdb to package's database.
                         [Default: "/var/db/basepkg"]
+    --machine           Set machine type for MACHINE_ARCH.
+                        [Default: ${machine}]
+    --kernel            Set kernel type.
+                        [Default: GENERIC]
     --force             Add "-f" option to pkg_add and pkg_delete command.
     --update            Add "-u" option to pkg_add and pkg_delete command.
     --replace           Add "-U" option to pkg_add command.
@@ -1114,13 +1103,7 @@ get_optarg()
 while [ $# -gt 0 ]; do
   case $1 in
     -h|--help)
-      usage; exit ;;
-    --sets=*)
-      sets=`get_optarg "$1"` ;;
-    --sets)
-      ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
-      sets=$2
-      shift ;;
+      usage; exit 0 ;;
     --src=*)
       src=`get_optarg "$1"` ;;
     --src)
@@ -1206,7 +1189,6 @@ validatearch
 machine_arch=${MACHINE_ARCH}
 destdir="${obj}/destdir.${machine}"
 packages=${packages:="${PWD}/packages"}
-sets=${sets:="/usr/obj/releasedir/${machine}/binary/sets"}
 category=${category:="base comp etc games man misc text"}
 prefix=${prefix:="/usr/pkg"}
 targetdir="${prefix}/${basedir}"
@@ -1246,7 +1228,7 @@ case $1 in
   install)
     shift
     do_pkg_add $@ ;;
-  delete)
+  uninstall)
     shift
     do_pkg_delete $@ ;;
   info)
