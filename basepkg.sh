@@ -43,9 +43,11 @@ EXPR="/bin/expr"
 FILE="/usr/bin/file"
 FIND="/usr/bin/find"
 GREP="/usr/bin/grep"
+KILL="/bin/kill"
 LS="/bin/ls"
 MKDIR="/bin/mkdir"
 MV="/bin/mv"
+PRINTF="/usr/bin/printf"
 RM="/bin/rm"
 RMDIR="/bin/rmdir"
 SED="/usr/bin/sed"
@@ -95,6 +97,8 @@ lists="${PWD}/sets/lists"
 comments="${PWD}/sets/comments"
 descrs="${PWD}/sets/descrs"
 deps="${PWD}/sets/deps"
+install_script="${PWD}/sets/install"
+deinstall_script="${PWD}/sets/deinstall"
 tmp_deps="/tmp/culldeps"
 basedir="share/basepkg/root"
 homepage="https://github.com/user340/basepkg"
@@ -348,7 +352,7 @@ bomb()
 ERROR: $@
 *** PACKAGING ABORTED ***
 MESSAGE
-  kill ${toppid}
+  ${KILL} ${toppid}
   exit 1
 }
 
@@ -614,6 +618,78 @@ make_DESC_and_COMMENT()
   }' ${comments} > ${workdir}/$1/+COMMENT
 }
 
+_which()
+{
+  ans=$(type "$1" 2>/dev/null) || exit $?
+  case "$1" in
+    */*) ${PRINTF} '%s\n' $1 ; exit ;;
+  esac
+  case "$ans" in
+    */*) ${PRINTF} '%s\n' "/${ans#*/}"; exit ;;
+  esac
+  ${PRINTF} '%s\n' $1
+}
+
+replace_cmdstr()
+{
+  ${SED} -e "s%@GROUPADD@%`_which groupadd`%g" \
+         -e "s%@USERADD@%`_which useradd`%" \
+         -e "s%@SH@%`_which sh`%" \
+         -e "s%@PREFIX@%/%" \
+         -e "s%@AWK@%`_which awk`%" \
+         -e "s%@BASENAME@%`_which basename`%" \
+         -e "s%@CAT@%`_which cat`%" \
+         -e "s%@CHGRP@%`_which chgrp`%" \
+         -e "s%@CHMOD@%`_which chmod`%" \
+         -e "s%@CHOWN@%`_which chown`%" \
+         -e "s%@CMP@%`_which cmp`%" \
+         -e "s%@CP@%`_which cp`%" \
+         -e "s%@DIRNAME@%`_which dirname`%" \
+         -e "s%@ECHO@%echo%" \
+         -e "s%@EGREP@%`_which egrep`%" \
+         -e "s%@EXPR@%`_which expr`%" \
+         -e "s%@FALSE@%`_which false`%" \
+         -e "s%@FIND@%`_which find`%" \
+         -e "s%@GREP@%`_which grep`%" \
+         -e "s%@GTAR@%`_which gtar`%" \
+         -e "s%@HEAD@%`_which head`%" \
+         -e "s%@ID@%`_which id`%" \
+         -e "s%@LINKFARM@%`_which linkfarm`%" \
+         -e "s%@LN@%`_which ln`%" \
+         -e "s%@LOCALBASE@%`_which localbase`%" \
+         -e "s%@LS@%`_which ls`%" \
+         -e "s%@MKDIR@%`_which mkdir` -p%" \
+         -e "s%@MV@%`_which mv`%" \
+         -e "s%@PKGBASE@%/%" \
+         -e "s%@RM@%`_which  rm`%" \
+         -e "s%@RMDIR@%`_which rmdir`%" \
+         -e "s%@SED@%`_which sed`%" \
+         -e "s%@SETENV@%`_which setenv`%" \
+         -e "s%@ECHO_N@%echo -n%" \
+         -e "s%@PKG_ADMIN@%`_which pkg_admin`%" \
+         -e "s%@PKG_INFO@%`_which pkg_info`%" \
+         -e "s%@PWD_CMD@%pwd%" \
+         -e "s%@SORT@%`_which sort`%" \
+         -e "s%@SU@%`_which su`%" \
+         -e "s%@TEST@%test%" \
+         -e "s%@TOUCH@%`_which touch`%" \
+         -e "s%@TR@%`_which tr`%" \
+         -e "s%@TRUE@%`_which true`%" \
+         -e "s%@XARGS@%`_which xargs`%" \
+         -e "s%@X11BASE@%/usr/X11R7%" \
+         -e "s%@PKG_SYSCONFBASE@%/etc%" \
+         -e "s%@PKG_SYSCONFBASEDIR@%/etc%" \
+         -e "s%@PKG_SYSCONFDIR@%/etc%" \
+         -e "s%@CONF_DEPENDS@%%" \
+         -e "s%@PKG_CREATE_USERGROUP@%NO%" \
+         -e "s%@PKG_CONFIG@%YES%" \
+         -e "s%@PKG_CONFIG_PERMS@%YES%" \
+         -e "s%@PKG_RCD_SCRIPTS@%NO%" \
+         -e "s%@PKG_USER_HOME@%%" \
+         -e "s%@PKG_USER_SHELL@%%" \
+         -e "s%@PERL5@%`_which perl`%" $1 || bomb "failed sed"
+}
+
 #
 # Make "+INSTALL" file.
 # Role of "+INSTALL" is defining absolute path of file, 
@@ -626,25 +702,20 @@ make_INSTALL()
   local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
 
   ${TEST} -f ${workdir}/$1/+INSTALL && ${RM} -f ${workdir}/$1/+INSTALL
+  replace_cmdstr ${install_script} > ${workdir}/$1/+INSTALL
+
   if [ -f ${workdir}/$1/+CONTENTS ]; then
     ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
       if [ `${FILE} ${file} | ${CUT} -d " " -f 2` = "symbolic" ]; then
         continue
       fi
-      if [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "etc" ]; then
-        install_type="CONF"
-      elif [ `${ECHO} ${file} | ${CUT} -d "/" -f 1` = "boot.cfg" ]; then
-        install_type="CONF"
-      else
-        install_type="FILE"
-      fi
-      if [ -f /${file} ]; then
+      if [ -f ${destdir}/${file} ]; then
         mode_user_group=`${STAT} -f '%p %u %g' ${destdir}/${file} | \
         ${SED} 's/^[0-9]\{3\}//'`
       else
         mode_user_group=""
       fi
-      ${ECHO} "# ${install_type}: /${file} ${file} ${mode_user_group}" \
+      ${ECHO} "# FILE: /${file} ${file} ${mode_user_group}" \
       >> ${workdir}/$1/+INSTALL
     done
   else
@@ -653,24 +724,30 @@ make_INSTALL()
   return 0
 }
 
+make_DEINSTALL()
+{
+  ${TEST} -f ${workdir}/$1/+DEINSTALL && ${RM} -f ${workdir}/$1/+DEINTALL
+  replace_cmdstr ${deinstall_script} > ${workdir}/$1/+DEINTALL
+}
+
 #
 # "pkg_create" command wrapper.
 # Package moved to ${packages}/All directory.
 #
 do_pkg_create()
 {
-  local install_script
+  local install_script=""
+  local deinstall_script=""
   local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
   local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
 
-  if [ -f ${workdir}/$1/+INSTALL ]; then
-    install_script="-i ${workdir}/$1/+INSTALL"
-  else
-    install_script=""
-  fi
+  ${TEST} -f ${workdir}/$1/+INSTALL && install_script="-i ${workdir}/$1/+INSTALL"
+  ${TEST} -f ${workdir}/$1/+DEINSTALL && deinstall_script="-k ${workdir}/$1/+DEINSTALL"
+
   ${PKG_CREATE} -v -l -U -B ${workdir}/$1/+BUILD_INFO -c ${workdir}/$1/+COMMENT \
   -d ${workdir}/$1/+DESC -f ${workdir}/$1/+CONTENTS ${install_script} \
-  -p ${destdir} -K ${pkgdb} ${pkgname}
+  ${deinstall_script} -p ${destdir} -K ${pkgdb} ${pkgname}
+
   if [ $? != 0 ]; then
     return $?
   fi
