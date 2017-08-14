@@ -24,9 +24,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
 
-#
 # POSIX Utilities
-#
 AWK="/usr/bin/awk"
 BASENAME="/usr/bin/basename"
 CAT="/bin/cat"
@@ -48,6 +46,7 @@ LS="/bin/ls"
 MKDIR="/bin/mkdir"
 MV="/bin/mv"
 PRINTF="/usr/bin/printf"
+PWD_CMD="/bin/pwd"
 RM="/bin/rm"
 RMDIR="/bin/rmdir"
 SED="/usr/bin/sed"
@@ -60,9 +59,7 @@ UNAME="/usr/bin/uname"
 UNIQ="/usr/bin/uniq"
 XARGS="/usr/bin/xargs"
 
-#
 # Non-POSIX Utilities
-#
 DISKLABEL="/sbin/disklabel"
 HOSTNAME="/bin/hostname"
 INSTALL="/usr/bin/install"
@@ -75,39 +72,10 @@ PKG_CREATE="/usr/pkg/sbin/pkg_create"
 PKG_DELETE="/usr/pkg/sbin/pkg_delete"
 PKG_INFO="/usr/pkg/sbin/pkg_info"
 
-#
-# Character
-#
 nl='
 '
 tab='		'
 
-#
-# Immutable variables
-#
-progname=${0##*/}
-host="$(${HOSTNAME})"
-opsys="$(${UNAME})"
-osversion="$(${UNAME} -r)"
-pkgtoolversion="$(${PKG_ADD} -V)"
-utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
-user="${USER:-root}"
-param="usr/include/sys/param.h"
-lists="${PWD}/sets/lists"
-comments="${PWD}/sets/comments"
-descrs="${PWD}/sets/descrs"
-deps="${PWD}/sets/deps"
-install_script="${PWD}/sets/install"
-deinstall_script="${PWD}/sets/deinstall"
-tmp_deps="/tmp/culldeps"
-basedir="share/basepkg/root"
-homepage="https://github.com/user340/basepkg"
-mail_address="mail@e-yuuki.org"
-toppid=$$
-
-#
-# Listing all valid MACHINE/MACHINE_ARCH pairs.
-#
 valid_MACHINE_ARCH='
 MACHINE=acorn26		MACHINE_ARCH=arm
 MACHINE=acorn32		MACHINE_ARCH=arm
@@ -212,6 +180,40 @@ MACHINE=x68k		MACHINE_ARCH=m68k
 MACHINE=zaurus		MACHINE_ARCH=arm	ALIAS=ozaurus
 MACHINE=zaurus		MACHINE_ARCH=earm	ALIAS=ezaurus DEFAULT
 '
+
+PWD="$(${PWD_CMD})"
+progname=${0##*/}
+host="$(${HOSTNAME})"
+opsys="$(${UNAME})"
+osversion="$(${UNAME} -r)"
+pkgtoolversion="$(${PKG_ADD} -V)"
+utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
+user="${USER:-root}"
+param="usr/include/sys/param.h"
+lists="${PWD}/sets/lists"
+comments="${PWD}/sets/comments"
+descrs="${PWD}/sets/descrs"
+deps="${PWD}/sets/deps"
+install_script="${PWD}/sets/install"
+deinstall_script="${PWD}/sets/deinstall"
+tmp_deps="/tmp/culldeps"
+basedir="share/basepkg/root"
+homepage="https://github.com/user340/basepkg"
+mail_address="mail@e-yuuki.org"
+toppid=$$
+
+src="/usr/src"
+obj="/usr/obj"
+packages="${PWD}/packages"
+category="base comp etc games man misc text"
+prefix="/usr/pkg"
+targetdir="${prefix}/${basedir}"
+pkgdb="${targetdir}/var/db/basepkg"
+touch_system="false"
+force="false"
+update="false"
+replace="false"
+kernel="GENERIC"
 
 #
 # Set MACHINE_ARCH variable by MACHINE value.
@@ -773,15 +775,16 @@ make_packages()
       make_CONTENTS ${i}/${j}
       make_DESC_and_COMMENT ${i}/${j}
       make_INSTALL ${i}/${j}
+      make_DEINSTALL ${i}/${j}
       do_pkg_create ${i}/${j}
     done
   done
   pkgs="$(${FIND} ${packages} -type f \
     \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null)"
   ${TEST} -f ${packages}/${release}/${machine}/MD5 && \
-    ${RM} -f ${pacakges}/${release}/${machine}/MD5
+    ${RM} -f ${packages}/${release}/${machine}/MD5
   ${TEST} -f ${packages}/${release}/${machine}/SHA512 && \
-    ${RM} -f ${pacakges}/${release}/${machine}/SHA512
+    ${RM} -f ${packages}/${release}/${machine}/SHA512
   if [ -n "${pkgs}" ]; then
     ${CKSUM} -a md5 ${pkgs} >> ${packages}/${release}/${machine}/MD5
     ${CKSUM} -a sha512 ${pkgs} >> ${packages}/${release}/${machine}/SHA512
@@ -1170,13 +1173,11 @@ get_optarg()
   ${EXPR} "x$1" : "x[^=]*=\\(.*\\)"
 }
 
-#
-# Main
-#
+# *** Main ***
 
-#
+machine="$(${UNAME} -m)"
+
 # parse long-options
-#
 while [ $# -gt 0 ]; do
   case $1 in
     -h|--help)
@@ -1253,32 +1254,16 @@ set -u
 umask 0022
 export LC_ALL=C LANG=C
 
-${TEST} $# -eq 0 && usage
-
-#
-# Mutable variables
-#
-src=${src:="/usr/src"}
-obj=${obj:="/usr/obj"}
-machine=${machine:="$(${UNAME} -m)"}
 getarch
 validatearch
-machine_arch=${MACHINE_ARCH}
 destdir="${obj}/destdir.${machine}"
-packages=${packages:="${PWD}/packages"}
-category=${category:="base comp etc games man misc text"}
-prefix=${prefix:="/usr/pkg"}
-targetdir="${prefix}/${basedir}"
-pkgdb=${pkgdb:="${targetdir}/var/db/basepkg"}
-touch_system=${touch_system:="false"}
-force=${force:="false"}
-update=${update:="false"}
-replace=${replace:="false"}
 release="`osrelease`"
+machine_arch=${MACHINE_ARCH}
 moduledir="stand/${machine}/${release}/modules"
 workdir="${PWD}/work/${release}/${machine}"
 kerneldir="${obj}/sys/arch/${machine}/compile"
-kernel=${kernel:="GENERIC"}
+
+${TEST} $# -eq 0 && usage
 
 #
 # operation
