@@ -278,26 +278,26 @@ getarch()
         esac
       done
 
-        case "$found" in
-        *NO_DEFAULT*|*MULTIPLE_MATCHES*)
-                # MACHINE is OK, but MACHINE_ARCH is still unknown
-                return
-                ;;
-        "MACHINE="*" MACHINE_ARCH="*)
-                # Obey the MACHINE= and MACHINE_ARCH= parts of the line.
-                IFS=" "
-                for frag in ${found}; do
-                        case "$frag" in
-                        MACHINE=*|MACHINE_ARCH=*)
-                                eval "$frag"
-                                ;;
-                        esac
-                done
-                ;;
-        *)
-                bomb "Unknown target MACHINE: ${machine}"
-                ;;
-        esac
+      case "$found" in
+      *NO_DEFAULT*|*MULTIPLE_MATCHES*)
+          # MACHINE is OK, but MACHINE_ARCH is still unknown
+          return
+          ;;
+      "MACHINE="*" MACHINE_ARCH="*)
+          # Obey the MACHINE= and MACHINE_ARCH= parts of the line.
+          IFS=" "
+          for frag in ${found}; do
+              case "$frag" in
+              MACHINE=*|MACHINE_ARCH=*)
+                  eval "$frag"
+                  ;;
+              esac
+          done
+          ;;
+      *)
+          bomb "Unknown target MACHINE: ${machine}"
+          ;;
+      esac
 }
 
 #
@@ -497,7 +497,7 @@ make_contents_list()
     for i in ${category}; do
         for j in `${LS} ${workdir}/${i} | ${GREP} '^[a-z]'`; do
           ${AWK} '
-          /^'"$j"'/ {
+          /^'"${j}"'/ {
               for (i = 2; i <= NF; i++) {
                   print $i
               }
@@ -568,7 +568,6 @@ make_CONTENTS()
             continue
         fi
         if [ -d ${destdir}/${i} ]; then
-            echo "${destdir}/${i}: dir exist"
             filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
             ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} | \
             ${SED} 's%^\.\/%%' | \
@@ -578,7 +577,6 @@ make_CONTENTS()
             } ' >> ${TMPFILE}
         fi
         if [ -f ${destdir}/${i} ]; then
-            echo "${destdir}/${i}: file exist"
             echo ${i} >> ${TMPFILE}
         fi
     done
@@ -740,9 +738,17 @@ do_pkg_create()
     ${TEST} -f ${workdir}/$1/+INSTALL && install_script="-i ${workdir}/$1/+INSTALL"
     ${TEST} -f ${workdir}/$1/+DEINSTALL && deinstall_script="-k ${workdir}/$1/+DEINSTALL"
 
-    ${PKG_CREATE} -v -l -U -B ${workdir}/$1/+BUILD_INFO -c ${workdir}/$1/+COMMENT \
-    -d ${workdir}/$1/+DESC -f ${workdir}/$1/+CONTENTS ${install_script} \
-    ${deinstall_script} -p ${destdir} -I / -K ${pkgdb} ${pkgname} || bomb "$1: ${PKG_CREATE}"
+    ${PKG_CREATE} -v -l -U \
+        -B ${workdir}/$1/+BUILD_INFO \
+        -I "/" \
+        ${install_script} \
+        -K ${pkgdb} \
+        ${deinstall_script} \
+        -p ${destdir} \
+        -c ${workdir}/$1/+COMMENT \
+        -d ${workdir}/$1/+DESC \
+        -f ${workdir}/$1/+CONTENTS \
+        ${pkgname} || bomb "$1: ${PKG_CREATE}"
 
     ${TEST} ! -d ${packages}/${release}/${machine} && \
         ${MKDIR} -p ${packages}/${release}/${machine}
@@ -762,12 +768,12 @@ make_packages()
     for i in ${category}; do
         for j in `${LS} ${workdir}/${i} | ${GREP} -E '^[a-z]+'`; do
             ${ECHO} "Package ${i}/${j} Creating..."
-            make_BUILD_INFO ${i}/${j}
-            make_CONTENTS ${i}/${j}
-            make_DESC_and_COMMENT ${i}/${j}
-            make_INSTALL ${i}/${j}
-            make_DEINSTALL ${i}/${j}
-            do_pkg_create ${i}/${j}
+            make_BUILD_INFO "${i}/${j}"
+            make_CONTENTS "${i}/${j}"
+            make_DESC_and_COMMENT "${i}/${j}"
+            make_INSTALL "${i}/${j}"
+            make_DEINSTALL "${i}/${j}"
+            do_pkg_create "${i}/${j}"
         done
     done
     pkgs="$(${FIND} ${packages} -type f \
@@ -896,41 +902,54 @@ machine="$(${UNAME} -m)"
 while [ $# -gt 0 ]; do
     case $1 in
     -h|--help)
-        usage; exit 0 ;;
+        usage
+        ;;
     --src=*)
-        src=`get_optarg "$1"` ;;
+        src=`get_optarg "$1"`
+        ;;
     --src)
-        ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
+        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
         src=$2
-        shift ;;
+        shift
+        ;;
     --obj)
-        ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
+        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
         obj=$2
-        shift ;;
+        shift
+        ;;
     --obj=*)
-        obj=`get_optarg "$1"` ;;
+        obj=`get_optarg "$1"`
+        ;;
     --category=*)
-        category=`get_optarg "$1"` ;;
+        category=`get_optarg "$1"`
+        ;;
     --category)
-        ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
+        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
         category="$2"
-        shift ;;
+        shift
+        ;;
     --machine=*)
-        machine=`get_optarg "$1"` ;;
+        machine=`get_optarg "$1"`
+        ;;
     --machine)
-        ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
+        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
         machine="$2"
-        shift ;;
+        shift
+        ;;
     --kernel=*)
-        kernel=`get_optarg "$1"` ;;
+        kernel=`get_optarg "$1"`
+        ;;
     --kernel)
-        ${TEST} -z $2 && err "What is $1 parameter?" ; exit 1
+        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
         kernel="$2"
-        shift ;;
+        shift
+        ;;
     -|--)
-        break ;;
+        break
+        ;;
     *)
-        break ;;
+        break
+        ;;
     esac
     shift
 done
@@ -957,11 +976,14 @@ pkg)
     split_category_from_lists
     make_directories_of_package
     make_contents_list
-    make_packages ;;
+    make_packages
+    ;;
 kern)
-    make_kernel_package ;;
+    make_kernel_package
+    ;;
 *)
-    usage ;;
+    usage
+    ;;
 esac
 
 exit 0
