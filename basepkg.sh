@@ -838,6 +838,7 @@ _INSTALL_
 
     ${PKG_CREATE} -v -l -U \
     -B ${workdir}/${category}/.${pkgname}/+BUILD_INFO \
+    -I "/" \
     -c ${workdir}/${category}/.${pkgname}/+COMMENT \
     -d ${workdir}/${category}/.${pkgname}/+DESC \
     -f ${workdir}/${category}/.${pkgname}/+CONTENTS \
