@@ -190,12 +190,12 @@ pkgtoolversion="$(${PKG_ADD} -V)"
 utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 param="usr/include/sys/param.h"
-lists="${PWD}/sets/lists"
-comments="${PWD}/sets/comments"
-descrs="${PWD}/sets/descrs"
-deps="${PWD}/sets/deps"
-install_script="${PWD}/sets/install"
-deinstall_script="${PWD}/sets/deinstall"
+lists="${PWD_CMD}/sets/lists"
+comments="${PWD_CMD}/sets/comments"
+descrs="${PWD_CMD}/sets/descrs"
+deps="${PWD_CMD}/sets/deps"
+install_script="${PWD_CMD}/sets/install"
+deinstall_script="${PWD_CMD}/sets/deinstall"
 tmp_deps="/tmp/culldeps"
 basedir="share/basepkg/root"
 homepage="https://github.com/user340/basepkg"
@@ -204,7 +204,7 @@ toppid=$$
 
 src="/usr/src"
 obj="/usr/obj"
-packages="${PWD}/packages"
+packages="${PWD_CMD}/packages"
 category="base comp etc games man misc text"
 kernel="GENERIC"
 pkgdb="/var/db/basepkg"
@@ -372,12 +372,12 @@ osrelease() {
     rel_MM=${rel_MMmm%??}
     rel_mm=${rel_MMmm#${rel_MM}}
     IFS=.
-    set -- - $rel_text
+    set -- - ${rel_text}
     beta=${3#[0-9]}
     beta=${beta#[0-9]}
     shift 3
     IFS=' '
-    set -- $rel_MM ${rel_mm#0}$beta $*
+    set -- ${rel_MM} ${rel_mm#0}${beta} $*
     IFS=.
     echo "$*"
 }
@@ -691,37 +691,28 @@ replace_cmdstr()
 #
 make_INSTALL()
 {
-    local install_type mode_user_group
+    local mode_user_group=""
     local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
     local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
 
     ${TEST} -f ${workdir}/$1/+INSTALL && ${RM} -f ${workdir}/$1/+INSTALL
-    replace_cmdstr ${install_script} > ${workdir}/$1/+INSTALL || bomb "$1: replace_cmdstr"
+    replace_cmdstr ${install_script} > ${workdir}/$1/+INSTALL
 
-    if [ -f ${workdir}/$1/+CONTENTS ]; then
-        ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
-            if [ `${FILE} ${file} | ${CUT} -d " " -f 2` = "symbolic" ]; then
-                continue
-            fi
-            if [ -f ${destdir}/${file} ]; then
-                mode_user_group=`${STAT} -f '%p %u %g' ${destdir}/${file} | \
-                    ${SED} 's/^[0-9]\{3\}//'`
-            else
-                mode_user_group=""
-            fi
-            ${ECHO} "# FILE: /${file} c ${file} ${mode_user_group}" \
-                >> ${workdir}/$1/+INSTALL || bomb "$1: write to ${workdir}/$1/+INSTALL"
-        done
-    else
-      bomb "$1: make_INSTALL"
-    fi
+    ${TEST} ! -f ${workdir}/$1/+CONTENTS && bomb "$1: make_INSTALL"
+    ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
+        ${TEST} `${FILE} ${file} | ${CUT} -d " " -f 2` = "symbolic" && continue
+        ${TEST} -f ${destdir}/${file} && \
+            mode_user_group=$(
+                ${STAT} -f '%p %u %g' ${destdir}/${file} | ${SED} 's/^[0-9]\{3\}//'
+            )
+        ${ECHO} "# FILE: /${file} c ${file} ${mode_user_group}" >> ${workdir}/$1/+INSTALL
+    done
 }
 
 make_DEINSTALL()
 {
     ${TEST} -f ${workdir}/$1/+DEINSTALL && ${RM} -f ${workdir}/$1/+DEINTALL
-    replace_cmdstr ${deinstall_script} > ${workdir}/$1/+DEINTALL || \
-        bomb "$1: replace_cmdstr"
+    replace_cmdstr ${deinstall_script} > ${workdir}/$1/+DEINTALL
 }
 
 #
@@ -776,8 +767,10 @@ make_packages()
             do_pkg_create "${i}/${j}"
         done
     done
-    pkgs="$(${FIND} ${packages} -type f \
-        \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null)"
+    pkgs="$(
+        ${FIND} ${packages} -type f \
+        \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null
+    )"
     ${TEST} -f ${packages}/${release}/${machine}/MD5 && \
         ${RM} -f ${packages}/${release}/${machine}/MD5
     ${TEST} -f ${packages}/${release}/${machine}/SHA512 && \
@@ -844,8 +837,8 @@ _INSTALL_
     -f ${workdir}/${category}/.${pkgname}/+CONTENTS \
     -i ${workdir}/${category}/.${pkgname}/+INSTALL \
     -k ${workdir}/${category}/.${pkgname}/+DEINSTALL \
-    -p ${obj}/sys/arch/${machine}/compile/${kernel} -K ${pkgdb} ${pkgname} || \
-        bomb "kernel: ${PKG_CREATE}"
+    -p ${obj}/sys/arch/${machine}/compile/${kernel} \
+    -K ${pkgdb} ${pkgname} || bomb "kernel: ${PKG_CREATE}"
 
     ${TEST} -d ${packages}/${release}/${machine} || \
         ${MKDIR} -p ${packages}/${release}/${machine}
@@ -906,7 +899,7 @@ while [ $# -gt 0 ]; do
         usage
         ;;
     --src=*)
-        src=`get_optarg "$1"`
+        src=$(get_optarg "$1")
         ;;
     --src)
         ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
@@ -919,10 +912,10 @@ while [ $# -gt 0 ]; do
         shift
         ;;
     --obj=*)
-        obj=`get_optarg "$1"`
+        obj=$(get_optarg "$1")
         ;;
     --category=*)
-        category=`get_optarg "$1"`
+        category=$(get_optarg "$1")
         ;;
     --category)
         ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
@@ -930,7 +923,7 @@ while [ $# -gt 0 ]; do
         shift
         ;;
     --machine=*)
-        machine=`get_optarg "$1"`
+        machine=$(get_optarg "$1")
         ;;
     --machine)
         ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
@@ -938,7 +931,7 @@ while [ $# -gt 0 ]; do
         shift
         ;;
     --kernel=*)
-        kernel=`get_optarg "$1"`
+        kernel=$(get_optarg "$1")
         ;;
     --kernel)
         ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
@@ -963,10 +956,10 @@ export LC_ALL=C LANG=C
 getarch
 validatearch
 destdir="${obj}/destdir.${machine}"
-release="`osrelease`"
+release="$(osrelease)"
 machine_arch=${MACHINE_ARCH}
 moduledir="stand/${machine}/${release}/modules"
-workdir="${PWD}/work/${release}/${machine}"
+workdir="${PWD_CMD}/work/${release}/${machine}"
 kerneldir="${obj}/sys/arch/${machine}/compile"
 
 ${TEST} $# -eq 0 && usage
