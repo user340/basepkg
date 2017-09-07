@@ -190,12 +190,12 @@ pkgtoolversion="$(${PKG_ADD} -V)"
 utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 param="usr/include/sys/param.h"
-lists="${PWD_CMD}/sets/lists"
-comments="${PWD_CMD}/sets/comments"
-descrs="${PWD_CMD}/sets/descrs"
-deps="${PWD_CMD}/sets/deps"
-install_script="${PWD_CMD}/sets/install"
-deinstall_script="${PWD_CMD}/sets/deinstall"
+lists="${PWD}/sets/lists"
+comments="${PWD}/sets/comments"
+descrs="${PWD}/sets/descrs"
+deps="${PWD}/sets/deps"
+install_script="${PWD}/sets/install"
+deinstall_script="${PWD}/sets/deinstall"
 tmp_deps="/tmp/culldeps"
 basedir="share/basepkg/root"
 homepage="https://github.com/user340/basepkg"
@@ -204,7 +204,7 @@ toppid=$$
 
 src="/usr/src"
 obj="/usr/obj"
-packages="${PWD_CMD}/packages"
+packages="${PWD}/packages"
 category="base comp etc games man misc text"
 kernel="GENERIC"
 pkgdb="/var/db/basepkg"
@@ -557,18 +557,19 @@ make_CONTENTS()
     local filename
     local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
     local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+
     ${ECHO} "@name ${pkgname}-${release}" > ${workdir}/$1/+CONTENTS
     ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ${workdir}/$1/+CONTENTS
+
     ${TEST} -f ${tmp_deps} && ${RM} -f ${tmp_deps}
     culc_deps ${pkgname}
     ${TEST} -f ${tmp_deps} && ${SORT} ${tmp_deps} | ${UNIQ} >> ${workdir}/$1/+CONTENTS
+
     ${ECHO} "@cwd /" >> ${workdir}/$1/+CONTENTS
     ${CAT} ${workdir}/$1/${pkgname}.FILES | while read i; do
-        if [ `${FILE} ${destdir}/${i} | ${CUT} -d " " -f 2` = "symbolic" ]; then
-            continue
-        fi
+        ${TEST} $(${FILE} ${destdir}/${i} | ${CUT} -d " " -f 2) = "symbolic" && continue
         if [ -d ${destdir}/${i} ]; then
-            filename=`${ECHO} ${i} | ${SED} 's%\/%\\\/%g'`
+            filename=$(${ECHO} ${i} | ${SED} 's%\/%\\\/%g')
             ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} | \
             ${SED} 's%^\.\/%%' | \
             ${AWK} '
@@ -576,11 +577,10 @@ make_CONTENTS()
                 print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
             } ' >> ${TMPFILE}
         fi
-        if [ -f ${destdir}/${i} ]; then
-            echo ${i} >> ${TMPFILE}
-        fi
+        ${TEST} -f ${destdir}/${i} && ${ECHO} ${i} >> ${TMPFILE}
     done
-    ${SORT} ${TMPFILE} >> ${workdir}/$1/+CONTENTS || bomb "${SORT} ${TMPFILE}"
+
+    ${SORT} ${TMPFILE} >> ${workdir}/$1/+CONTENTS
     ${RM} -f ${TMPFILE}
 }
 
@@ -696,21 +696,23 @@ make_INSTALL()
     ${TEST} -f ${workdir}/$1/+INSTALL && ${RM} -f ${workdir}/$1/+INSTALL
     replace_cmdstr ${install_script} > ${workdir}/$1/+INSTALL
 
-    ${TEST} -f ${workdir}/$1/+CONTENTS || bomb "$1: make_INSTALL"
+    ${TEST} -f ${workdir}/$1/+CONTENTS || bomb "+CONTENTS not found."
     ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
-        ${TEST} `${FILE} ${file} | ${CUT} -d " " -f 2` = "symbolic" && continue
-        ${TEST} -f ${destdir}/${file} && \
-            mode_user_group=$(
-                ${STAT} -f '%p %u %g' ${destdir}/${file} | ${SED} 's/^[0-9]\{3\}//'
-            )
-        ${ECHO} "# FILE: /${file} c ${file} ${mode_user_group}" >> ${workdir}/$1/+INSTALL
+        ${TEST} $(${FILE} ${file} | ${CUT} -d " " -f 2) = "symbolic" && continue
+        if [ $(${ECHO} ${file} | ${CUT} -d "/" -f 1) = "etc" ]; then
+            ${TEST} -f ${destdir}/${file} && \
+                mode_user_group=$(
+                    ${STAT} -f '%p %u %g' ${destdir}/${file} | ${SED} 's/^[0-9]\{3\}//'
+                )
+            ${ECHO} "# FILE: /${file} c ${file} ${mode_user_group}" >> ${workdir}/$1/+INSTALL
+        fi
     done
 }
 
 make_DEINSTALL()
 {
-    ${TEST} -f ${workdir}/$1/+DEINSTALL && ${RM} -f ${workdir}/$1/+DEINTALL
-    replace_cmdstr ${deinstall_script} > ${workdir}/$1/+DEINTALL
+    ${TEST} -f ${workdir}/$1/+DEINSTALL && ${RM} -f ${workdir}/$1/+DEINSTALL
+    replace_cmdstr ${deinstall_script} > ${workdir}/$1/+DEINSTALL
 }
 
 #
@@ -719,19 +721,14 @@ make_DEINSTALL()
 #
 do_pkg_create()
 {
-    local install_script=""
-    local deinstall_script=""
     local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
-
-    ${TEST} -f ${workdir}/$1/+INSTALL && install_script="-i ${workdir}/$1/+INSTALL"
-    ${TEST} -f ${workdir}/$1/+DEINSTALL && deinstall_script="-k ${workdir}/$1/+DEINSTALL"
 
     ${PKG_CREATE} -v -l -U \
         -B ${workdir}/$1/+BUILD_INFO \
         -I "/" \
-        ${install_script} \
+        -i ${workdir}/$1/+INSTALL \
         -K ${pkgdb} \
-        ${deinstall_script} \
+        -k ${workdir}/$1/+DEINSTALL \
         -p ${destdir} \
         -c ${workdir}/$1/+COMMENT \
         -d ${workdir}/$1/+DESC \
@@ -816,15 +813,6 @@ _DESC_
 @cwd / 
 netbsd
 _CONTENTS_
-    
-    # Install script.
-    replace_cmdstr ${install_script} > ${workdir}/${category}/.${pkgname}/+INSTALL
-    ${CAT} >> ${workdir}/${category}/.${pkgname}/+INSTALL << _INSTALL_
-# FILE: /netbsd c netbsd 755 0 0
-_INSTALL_
-
-    # Deinstall script.
-    replace_cmdstr ${deinstall_script} > ${workdir}/${category}/.${pkgname}/+DEINSTALL
 
     ${PKG_CREATE} -v -l -U \
     -B ${workdir}/${category}/.${pkgname}/+BUILD_INFO \
@@ -832,8 +820,6 @@ _INSTALL_
     -c ${workdir}/${category}/.${pkgname}/+COMMENT \
     -d ${workdir}/${category}/.${pkgname}/+DESC \
     -f ${workdir}/${category}/.${pkgname}/+CONTENTS \
-    -i ${workdir}/${category}/.${pkgname}/+INSTALL \
-    -k ${workdir}/${category}/.${pkgname}/+DEINSTALL \
     -p ${obj}/sys/arch/${machine}/compile/${kernel} \
     -K ${pkgdb} ${pkgname} || bomb "kernel: ${PKG_CREATE}"
 
@@ -956,7 +942,7 @@ destdir="${obj}/destdir.${machine}"
 release="$(osrelease)"
 machine_arch=${MACHINE_ARCH}
 moduledir="stand/${machine}/${release}/modules"
-workdir="${PWD_CMD}/work/${release}/${machine}"
+workdir="${PWD}/work/${release}/${machine}"
 kerneldir="${obj}/sys/arch/${machine}/compile"
 
 ${TEST} $# -eq 0 && usage
