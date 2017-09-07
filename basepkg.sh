@@ -692,13 +692,11 @@ replace_cmdstr()
 make_INSTALL()
 {
     local mode_user_group=""
-    local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
-    local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
 
     ${TEST} -f ${workdir}/$1/+INSTALL && ${RM} -f ${workdir}/$1/+INSTALL
     replace_cmdstr ${install_script} > ${workdir}/$1/+INSTALL
 
-    ${TEST} ! -f ${workdir}/$1/+CONTENTS && bomb "$1: make_INSTALL"
+    ${TEST} -f ${workdir}/$1/+CONTENTS || bomb "$1: make_INSTALL"
     ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
         ${TEST} `${FILE} ${file} | ${CUT} -d " " -f 2` = "symbolic" && continue
         ${TEST} -f ${destdir}/${file} && \
@@ -723,7 +721,6 @@ do_pkg_create()
 {
     local install_script=""
     local deinstall_script=""
-    local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
     local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
 
     ${TEST} -f ${workdir}/$1/+INSTALL && install_script="-i ${workdir}/$1/+INSTALL"
@@ -741,7 +738,7 @@ do_pkg_create()
         -f ${workdir}/$1/+CONTENTS \
         ${pkgname} || bomb "$1: ${PKG_CREATE}"
 
-    ${TEST} ! -d ${packages}/${release}/${machine} && \
+    ${TEST} -d ${packages}/${release}/${machine} || \
         ${MKDIR} -p ${packages}/${release}/${machine}
 
     ${MV} ./${pkgname}.tgz \
