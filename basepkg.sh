@@ -202,7 +202,6 @@ homepage="https://github.com/user340/basepkg"
 mail_address="mail@e-yuuki.org"
 toppid=$$
 
-src="/usr/src"
 obj="/usr/obj"
 packages="${PWD}/packages"
 category="base comp etc games man misc text"
@@ -817,7 +816,7 @@ usage()
 {
     ${CAT} <<_usage_
 
-Usage: ${progname} [--src src_dir] [--obj obj_dir] [--category category] operation
+Usage: ${progname} [--obj obj_dir] [--category category] operation
 
  Operation:
     pkg                 Create packages.
@@ -825,8 +824,6 @@ Usage: ${progname} [--src src_dir] [--obj obj_dir] [--category category] operati
 
  Options:
     --help              Show this message and exit.
-    --src               Set src to NetBSD source directory.
-                        [Default: ${src}]
     --obj               Set obj to NetBSD binaries.
                         [Default: ${obj}]
     --category          Set category.
@@ -841,7 +838,7 @@ _usage_
 
 #
 # In options, 
-#     --src=/usr/src
+#     --obj=/usr/obj
 #           ^^^^^^^^^
 #            take it
 #
@@ -859,14 +856,6 @@ while [ $# -gt 0 ]; do
     case $1 in
     -h|--help)
         usage
-        ;;
-    --src=*)
-        src=$(get_optarg "$1")
-        ;;
-    --src)
-        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
-        src=$2
-        shift
         ;;
     --obj)
         ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
