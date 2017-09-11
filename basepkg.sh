@@ -383,10 +383,6 @@ osrelease() {
 }
 
 #
-# "dir" option use the following functions.
-#
-
-#
 # Make category directory and organized files named "FILES".
 #
 split_category_from_lists()
@@ -466,10 +462,6 @@ make_directories_of_package()
 }
 
 #
-# "list" option use the following function.
-#
-
-#
 # List each package's contents and write into "category/package/package.FILE".
 #
 make_contents_list()
@@ -501,14 +493,10 @@ make_contents_list()
               for (i = 2; i <= NF; i++) {
                   print $i
               }
-          }' ${workdir}/${i}/CATEGORIZED > ${workdir}/${i}/${j}/${j}.FILES
+          }' ${workdir}/${i}/CATEGORIZED > ${workdir}/${i}/${j}/PLIST
         done
     done
 }
-
-#
-# "pkg" option use the following functions.
-#
 
 #
 # Make "+BUILD_INFO" file.
@@ -537,13 +525,9 @@ culc_deps()
         return 1
     fi
     ${AWK} '/^'"$1"'/{print $2}' ${deps} | while read depend; do
-        if [ ! "${depend}" ]; then
-            return 1
-        fi
+        ${TEST} ! "${depend}" && return 1
         ${ECHO} "@pkgdep ${depend}>=${release}" >> ${tmp_deps}
-        if [ "${depend}" = "base-sys-root" ]; then
-            return 0
-        fi
+        ${TEST} "${depend}" = "base-sys-root" && return 0
         culc_deps ${depend} # Recursion.
     done
 }
@@ -566,7 +550,7 @@ make_CONTENTS()
     ${TEST} -f ${tmp_deps} && ${SORT} ${tmp_deps} | ${UNIQ} >> ${workdir}/$1/+CONTENTS
 
     ${ECHO} "@cwd /" >> ${workdir}/$1/+CONTENTS
-    ${CAT} ${workdir}/$1/${pkgname}.FILES | while read i; do
+    ${CAT} ${workdir}/$1/PLIST | while read i; do
         ${TEST} $(${FILE} ${destdir}/${i} | ${CUT} -d " " -f 2) = "symbolic" && continue
         if [ -d ${destdir}/${i} ]; then
             filename=$(${ECHO} ${i} | ${SED} 's%\/%\\\/%g')
@@ -765,13 +749,9 @@ make_packages()
         ${FIND} ${packages} -type f \
         \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null
     )"
-    ${TEST} -f ${packages}/${release}/${machine}/MD5 && \
-        ${RM} -f ${packages}/${release}/${machine}/MD5
-    ${TEST} -f ${packages}/${release}/${machine}/SHA512 && \
-        ${RM} -f ${packages}/${release}/${machine}/SHA512
     if [ -n "${pkgs}" ]; then
-        ${CKSUM} -a md5 ${pkgs} >> ${packages}/${release}/${machine}/MD5
-        ${CKSUM} -a sha512 ${pkgs} >> ${packages}/${release}/${machine}/SHA512
+        ${CKSUM} -a md5 ${pkgs} > ${packages}/${release}/${machine}/MD5
+        ${CKSUM} -a sha512 ${pkgs} > ${packages}/${release}/${machine}/SHA512
     fi
 }
 
@@ -781,14 +761,14 @@ make_packages()
 make_kernel_package()
 {
     local category="base"
-    local pkgname="base-netbsd-kernel"
+    local pkgname="base-kernel-${kernel}"
 
     ${ECHO} "Package ${pkgname} Creating..."
     ${TEST} -d ${workdir}/${category}/.${pkgname} || \
-        ${MKDIR} -p ${workdir}/${category}/.${pkgname}
+        ${MKDIR} -p ${workdir}/${category}/${pkgname}
 
     # Information of build environment.
-    ${CAT} > ${workdir}/${category}/.${pkgname}/+BUILD_INFO << _BUILD_INFO_
+    ${CAT} > ${workdir}/${category}/${pkgname}/+BUILD_INFO << _BUILD_INFO_
 OPSYS=${opsys}
 OS_VERSION=${osversion}
 OBJECT_FMT=ELF
@@ -797,17 +777,17 @@ PKGTOOLS_VERSION=${pkgtoolversion}
 _BUILD_INFO_
 
     # Short description of package.
-    ${CAT} > ${workdir}/${category}/.${pkgname}/+COMMENT << _COMMENT_
+    ${CAT} > ${workdir}/${category}/${pkgname}/+COMMENT << _COMMENT_
 NetBSD Kernel
 _COMMENT_
 
     # Description of package.
-    ${CAT} > ${workdir}/${category}/.${pkgname}/+DESC << _DESC_
+    ${CAT} > ${workdir}/${category}/${pkgname}/+DESC << _DESC_
 NetBSD Kernel
 _DESC_
 
     # Package contents.
-    ${CAT} > ${workdir}/${category}/.${pkgname}/+CONTENTS << _CONTENTS_
+    ${CAT} > ${workdir}/${category}/${pkgname}/+CONTENTS << _CONTENTS_
 @name ${pkgname}-${release}
 @comment Packaged at ${utcdate} UTC by ${user}@${host}
 @cwd / 
@@ -815,11 +795,11 @@ netbsd
 _CONTENTS_
 
     ${PKG_CREATE} -v -l -U \
-    -B ${workdir}/${category}/.${pkgname}/+BUILD_INFO \
+    -B ${workdir}/${category}/${pkgname}/+BUILD_INFO \
     -I "/" \
-    -c ${workdir}/${category}/.${pkgname}/+COMMENT \
-    -d ${workdir}/${category}/.${pkgname}/+DESC \
-    -f ${workdir}/${category}/.${pkgname}/+CONTENTS \
+    -c ${workdir}/${category}/${pkgname}/+COMMENT \
+    -d ${workdir}/${category}/${pkgname}/+DESC \
+    -f ${workdir}/${category}/${pkgname}/+CONTENTS \
     -p ${obj}/sys/arch/${machine}/compile/${kernel} \
     -K ${pkgdb} ${pkgname} || bomb "kernel: ${PKG_CREATE}"
 
@@ -855,7 +835,6 @@ Usage: ${progname} [--src src_dir] [--obj obj_dir] [--category category] operati
                         [Default: ${machine}]
     --kernel            Set kernel type.
                         [Default: GENERIC]
-
 _usage_
     exit 1
 }
