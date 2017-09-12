@@ -1,0 +1,148 @@
+#!@SH@
+#
+# $NetBSD: header,v 1.3 2014/12/30 15:13:20 wiz Exp $
+
+SELF="$0"
+PKGNAME="$1"
+STAGE="$2"
+shift 2
+
+AWK="@AWK@"
+BASENAME="@BASENAME@"
+CAT="@CAT@"
+CHGRP="@CHGRP@"
+CHMOD="@CHMOD@"
+CHOWN="@CHOWN@"
+CMP="@CMP@"
+CP="@CP@"
+DIRNAME="@DIRNAME@"
+ECHO="@ECHO@"
+ECHO_N="@ECHO_N@"
+EGREP="@EGREP@"
+EXPR="@EXPR@"
+FALSE="@FALSE@"
+FIND="@FIND@"
+GREP="@GREP@"
+GTAR="@GTAR@"
+HEAD="@HEAD@"
+ID="@ID@"
+LINKFARM="@LINKFARM@"
+LN="@LN@"
+LS="@LS@"
+MKDIR="@MKDIR@"
+MV="@MV@"
+PERL5="@PERL5@"
+PKG_ADMIN="@PKG_ADMIN@"
+PKG_INFO="@PKG_INFO@"
+PWD_CMD="@PWD_CMD@"
+RM="@RM@"
+RMDIR="@RMDIR@"
+SED="@SED@"
+SETENV="@SETENV@"
+SH="@SH@"
+SORT="@SORT@"
+SU="@SU@"
+TEST="@TEST@"
+TOUCH="@TOUCH@"
+TR="@TR@"
+TRUE="@TRUE@"
+XARGS="@XARGS@"
+
+CURDIR=`${PWD_CMD}`
+: ${PKG_METADATA_DIR=${CURDIR}}
+PKGBASE="@PKGBASE@"
+
+LOCALBASE="@LOCALBASE@"
+X11BASE="@X11BASE@"
+PREFIX="@PREFIX@"
+
+PKG_SYSCONFBASE="@PKG_SYSCONFBASE@"
+PKG_SYSCONFBASEDIR="@PKG_SYSCONFBASEDIR@"
+PKG_SYSCONFDIR="@PKG_SYSCONFDIR@"
+CONF_DEPENDS="@CONF_DEPENDS@"
+
+CONF_IGNORE_FILES="*[~#] *.OLD *.orig *,v .pkgsrc */.pkgsrc"
+
+case "${PKG_CONFIG:-@PKG_CONFIG@}" in
+[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
+	_PKG_CONFIG=yes
+	;;
+[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
+	_PKG_CONFIG=yes
+	;;
+esac
+
+# $NetBSD: deinstall,v 1.5 2017/06/14 16:23:09 prlw1 Exp $
+
+case ${STAGE} in
+DEINSTALL)
+  #
+  # Unregister package from ocaml-findlib.
+  #
+  ${TEST} ! -x ./+OCAML_FINDLIB_REGISTER ||
+    ./+OCAML_FINDLIB_REGISTER REMOVE ${OCAML_FINDLIB_DIR}
+
+	#
+	# Unregister info files.
+	#
+	${TEST} ! -x ./+INFO_FILES ||
+		./+INFO_FILES REMOVE ${PKG_METADATA_DIR}
+	#
+	# Remove any icon theme caches.
+	#
+	${TEST} ! -x ./+ICON_THEMES ||
+		./+ICON_THEMES REMOVE ${PKG_METADATA_DIR}
+	#
+	# Remove shells from /etc/shells.
+	#
+	${TEST} ! -x ./+SHELL ||
+		./+SHELL REMOVE ${PKG_METADATA_DIR}
+	${TEST} ! -x ./+SHELL ||
+		./+SHELL CHECK-REMOVE ${PKG_METADATA_DIR}
+
+	# Remove configuration files if they don't differ from the default
+	# config file.
+	#
+	${TEST} ! -x ./+FILES ||
+		./+FILES REMOVE ${PKG_METADATA_DIR}
+	;;
+
+POST-DEINSTALL)
+	#
+	# Update any fonts databases.
+	#
+	${TEST} ! -x ./+FONTS ||
+		./+FONTS ${PKG_METADATA_DIR}
+	#
+	# Update any icon theme caches.
+	#
+	${TEST} ! -x ./+ICON_THEMES ||
+		./+ICON_THEMES UPDATE ${PKG_METADATA_DIR}
+	#
+	# Rebuild the system run-time library search path database.
+	#
+	${TEST} ! -x ./+SHLIBS ||
+		./+SHLIBS REMOVE ${PKG_METADATA_DIR}
+	#
+	# Remove empty directories and unused users/groups.
+	#
+	${TEST} ! -x ./+DIRS ||
+		./+DIRS REMOVE ${PKG_METADATA_DIR}
+	${TEST} ! -x ./+USERGROUP ||
+		./+USERGROUP REMOVE ${PKG_METADATA_DIR}
+	#
+	# Check for any existing bits after we're finished de-installing.
+	#
+	${TEST} ! -x ./+USERGROUP ||
+		./+USERGROUP CHECK-REMOVE ${PKG_METADATA_DIR}
+	${TEST} ! -x ./+FILES ||
+		./+FILES CHECK-REMOVE ${PKG_METADATA_DIR}
+	${TEST} ! -x ./+DIRS ||
+		./+DIRS CHECK-REMOVE ${PKG_METADATA_DIR}
+	;;
+esac
+
+# $NetBSD: footer,v 1.1 2006/05/21 23:50:15 jlam Exp $
+
+exit 0
+

@@ -1,7 +1,0 @@
-packages/*
-work/*
-images/*
-tags
-boot_basepkg.img
-boot_basepkg.qcow2
-.diskproto
