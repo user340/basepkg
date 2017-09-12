@@ -717,7 +717,7 @@ ADD)
 	while read file f_flags f_eg f_mode f_user f_group; do
 		case $file in
 		"")	continue ;;
-		[!/]*)	file="${PKG_PREFIX}/$file" ;;
+		[!/]*)	file="$file" ;;
 		esac
 		case $f_flags in
 		*c*)	;;
@@ -782,7 +782,7 @@ REMOVE)
 	while read file f_flags f_eg f_mode f_user f_group; do
 		case $file in
 		"")	continue ;;
-		[!/]*)	file="${PKG_PREFIX}/$file" ;;
+		[!/]*)	file="$file" ;;
 		esac
 		case $f_flags in
 		*c*)	;;
@@ -833,7 +833,7 @@ PERMS)
 		esac
 		case $file in
 		"")	continue ;;
-		[!/]*)	file="${PKG_PREFIX}/$file" ;;
+		[!/]*)	file="$file" ;;
 		esac
 		case $f_user in
 		"")	;;
@@ -855,7 +855,7 @@ CHECK-ADD)
 	{ while read file f_flags f_eg f_mode f_user f_group; do
 		case $file in
 		"")	continue ;;
-		[!/]*)	file="${PKG_PREFIX}/$file" ;;
+		[!/]*)	file="$file" ;;
 		esac
 		${TEST} ! -f "$file" || continue
 		case $f_flags in
@@ -905,7 +905,7 @@ CHECK-REMOVE)
 	{ while read file f_flags f_eg f_mode f_user f_group; do
 		case $file in
 		"")	continue ;;
-		[!/]*)	file="${PKG_PREFIX}/$file" ;;
+		[!/]*)	file="$file" ;;
 		esac
 		${TEST} -f "$file" || continue
 		shadow_dir="${PKG_REFCOUNT_FILES_DBDIR}$file"
@@ -938,7 +938,7 @@ CHECK-PERMS)
 	{ while read file f_flags f_eg f_mode f_user f_group; do
 		case $file in
 		"")	continue ;;
-		[!/]*)	file="${PKG_PREFIX}/$file" ;;
+		[!/]*)	file="$file" ;;
 		esac
 		${TEST} -f "$file" || continue
 		case $f_mode:$f_user:$f_group in

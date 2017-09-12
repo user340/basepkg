@@ -390,7 +390,7 @@ split_category_from_lists()
     for i in ${category}; do
         ${TEST} -d ${workdir}/${i} || ${MKDIR} -p ${workdir}/${i}
         ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
-        for j in `${LS} ${lists} | ${GREP} -v "^[A-Z]"`; do
+        for j in $(${LS} ${lists}); do
             ${AWK} '
             ! /^\#/ {
                 #
