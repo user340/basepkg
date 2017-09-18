@@ -1,4 +1,9 @@
-base-kernel-
+base-kernel-GENERIC
+base-kernel-GENERIC_USERMODE
+base-kernel-INSTALL
+base-kernel-INSTALL_XEN3_DOMU
+base-kernel-XEN3_DOM0
+base-kernel-XEN3_DOMU
 base-pkgutil-bin
 base-sys-examples
 base-sys-root
