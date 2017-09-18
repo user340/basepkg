@@ -75,15 +75,6 @@ esac
 # $NetBSD: deinstall,v 1.5 2017/06/14 16:23:09 prlw1 Exp $
 #
 case ${STAGE} in
-VIEW-DEINSTALL)
-  case `${GREP} -e '^# ESSENTIAL' ${SELF}` in
-    "")
-	    ;;
-	*)
-	    ${ECHO} "${PKGNAME}: This package is ESSENTIAL."
-        exit 0
-        ;;
-  esac
 DEINSTALL)
   #
   # Unregister package from ocaml-findlib.

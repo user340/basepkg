@@ -735,7 +735,6 @@ make_packages()
 
     for i in ${category}; do
         for j in `${LS} ${workdir}/${i} | ${GREP} -E '^[a-z]+'`; do
-            ${ECHO} "Package ${i}/${j} Creating..."
             make_BUILD_INFO "${i}/${j}"
             make_CONTENTS "${i}/${j}"
             make_DESC_and_COMMENT "${i}/${j}"
@@ -762,7 +761,6 @@ make_kernel_package()
     local category="base"
     local pkgname="base-kernel-${kernel}"
 
-    ${ECHO} "Package ${pkgname} Creating..."
     ${TEST} -d ${workdir}/${category}/.${pkgname} || \
         ${MKDIR} -p ${workdir}/${category}/${pkgname}
 
