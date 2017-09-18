@@ -685,7 +685,10 @@ make_INSTALL()
         if [ $(${ECHO} ${file} | ${CUT} -d "/" -f 1) = "etc" ]; then
             ${TEST} -f ${destdir}/${file} && \
                 mode_user_group=$(
-                    ${STAT} -f '%p %u %g' ${destdir}/${file} | ${SED} 's/^[0-9]\{3\}//'
+                    ${GREP} -e "^\./${file} " ${destdir}/etc/mtree/set.etc | \
+                    ${CUT} -d " " -f 3 -f 4 -f 5 | \
+                    ${XARGS} -n 1 -I % ${EXPR} x% : "x[^=]*=\\(.*\\)" | \
+                    ${TR} '\n' ' '
                 )
             ${ECHO} "# FILE: /${file} c ${file} ${mode_user_group}" >> ${workdir}/$1/+INSTALL
         fi
@@ -835,10 +838,10 @@ _usage_
 }
 
 #
-# In options, 
-#     --obj=/usr/obj
-#           ^^^^^^^^^
-#            take it
+# --obj=/usr/obj
+#       ^^^^^^^^^
+#        take it
+# return -> /usr/obj
 #
 get_optarg()
 {
