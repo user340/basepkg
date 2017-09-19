@@ -685,12 +685,23 @@ make_INSTALL()
         if [ $(${ECHO} ${file} | ${CUT} -d "/" -f 1) = "etc" ]; then
             ${TEST} -f ${destdir}/${file} && \
                 mode_user_group=$(
-                    ${GREP} -e "^\./${file} " ${destdir}/etc/mtree/set.etc | \
-                    ${CUT} -d " " -f 3 -f 4 -f 5 | \
-                    ${XARGS} -n 1 -I % ${EXPR} x% : "x[^=]*=\\(.*\\)" | \
-                    ${TR} '\n' ' '
+                    ${GREP} -e "^\./${file} " ${destdir}/etc/mtree/set.etc \
+                    | ${CUT} -d " " -f 3 -f 4 -f 5 \
+                    | ${XARGS} -n 1 -I % ${EXPR} x% : "x[^=]*=\\(.*\\)" \
+                    | ${TR} '\n' ' '
                 )
-            ${ECHO} "# FILE: /${file} c ${file} ${mode_user_group}" >> ${workdir}/$1/+INSTALL
+            ${ECHO} "# FILE: /${file} c ${file} ${mode_user_group}" \
+                >> ${workdir}/$1/+INSTALL
+        else
+            ${TEST} -f ${destdir}/${file} && \
+                mode_user_group=$(
+                    ${GREP} -e "^\./${file} " ${destdir}/etc/mtree/set.* \
+                    | ${CUT} -d " " -f 3 -f 4 -f 5 \
+                    | ${XARGS} -n 1 -I % ${EXPR} x% : "x[^=]*=\\(.*\\)" \
+                    | ${TR} '\n' ' '
+                )
+            ${ECHO} "# FILE: ${file} c ${file} ${mode_user_group}" \
+                >> ${workdir}/$1/+INSTALL
         fi
     done
 }
