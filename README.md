@@ -72,7 +72,7 @@ Basepkg imported to pkgsrc-wip. You can install basepkg to your system through p
 
 "basepkg.sh" and README are installed to /usr/pkg/share/basepkg.
 
-### 6. Goals and additional unresolved issues
+### 6. Unresolved issues
 
 - Construct the NetBSD base system package delivery network.
 - Write the document on each package such as Debian.

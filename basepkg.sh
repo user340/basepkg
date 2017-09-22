@@ -44,6 +44,7 @@ GREP="/usr/bin/grep"
 KILL="/bin/kill"
 LS="/bin/ls"
 MKDIR="/bin/mkdir"
+MOUNT="/sbin/mount"
 MV="/bin/mv"
 PRINTF="/usr/bin/printf"
 PWD_CMD="/bin/pwd"
@@ -55,6 +56,7 @@ SORT="/usr/bin/sort"
 TEST="/bin/test"
 TOUCH="/usr/bin/touch"
 TR="/usr/bin/tr"
+UMOUNT="/sbin/umount"
 UNAME="/usr/bin/uname"
 UNIQ="/usr/bin/uniq"
 XARGS="/usr/bin/xargs"
@@ -197,7 +199,6 @@ deps="${PWD}/sets/deps"
 install_script="${PWD}/sets/install"
 deinstall_script="${PWD}/sets/deinstall"
 tmp_deps="/tmp/culldeps"
-basedir="share/basepkg/root"
 homepage="https://github.com/user340/basepkg"
 mail_address="mail@e-yuuki.org"
 toppid=$$
@@ -207,6 +208,7 @@ packages="${PWD}/packages"
 category="base comp etc games man misc text"
 kernel="GENERIC"
 pkgdb="/var/db/basepkg"
+tmpdir="${PWD}/tmp"
 
 #
 # Output error message to STDERR
@@ -455,8 +457,9 @@ make_directories_of_package()
 {
     local i
     for i in ${category}; do
-        ${AWK} '{print $2}' ${workdir}/${i}/FILES | ${SORT} | ${UNIQ} | \
-        ${XARGS} -n 1 -I % ${SH} -c "${TEST} -d ${workdir}/${i}/% || ${MKDIR} ${workdir}/${i}/%"
+        ${AWK} '{print $2}' ${workdir}/${i}/FILES | ${SORT} | ${UNIQ} \
+        | ${XARGS} -n 1 -I % ${SH} -c \
+            "${TEST} -d ${workdir}/${i}/% || ${MKDIR} ${workdir}/${i}/%"
     done
 }
 
@@ -553,9 +556,9 @@ make_CONTENTS()
         ${TEST} $(${FILE} ${destdir}/${i} | ${CUT} -d " " -f 2) = "symbolic" && continue
         if [ -d ${destdir}/${i} ]; then
             filename=$(${ECHO} ${i} | ${SED} 's%\/%\\\/%g')
-            ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} | \
-            ${SED} 's%^\.\/%%' | \
-            ${AWK} '
+            ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} \
+            | ${SED} 's%^\.\/%%' \
+            | ${AWK} '
             {
                 print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
             } ' >> ${TMPFILE}
@@ -703,6 +706,33 @@ make_DEINSTALL()
 }
 
 #
+# Mount tmpfs.
+#
+mount_tmpfs()
+{
+    ${TEST} -d ${tmpdir} && bomb "Please remove ${tmpdir}"
+    ${MKDIR} ${tmpdir}
+    ${MOUNT} -t tmpfs -o -s128M tmpfs ${tmpdir}
+}
+
+#
+# Unmount tmpfs.
+#
+umount_tmpfs()
+{
+    ${TEST} -d ${tmpdir} || bomb "${tmpdir}: No such file or directory."
+    ${UMOUNT} ${tmpdir}
+}
+
+#
+# File in PLIST move to tmpfs 
+#
+move_to_tmpfs()
+{
+
+}
+
+#
 # "pkg_create" command wrapper.
 # Package moved to ${packages}/All directory.
 #
@@ -722,8 +752,8 @@ do_pkg_create()
         -f ${workdir}/$1/+CONTENTS \
         ${pkgname} || bomb "$1: ${PKG_CREATE}"
 
-    ${TEST} -d ${packages}/${release}/${machine} || \
-        ${MKDIR} -p ${packages}/${release}/${machine}
+    ${TEST} -d ${packages}/${release}/${machine} \
+        || ${MKDIR} -p ${packages}/${release}/${machine}
 
     ${MV} ./${pkgname}.tgz \
         ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
@@ -765,8 +795,8 @@ make_kernel_package()
     local category="base"
     local pkgname="base-kernel-${kernel}"
 
-    ${TEST} -d ${workdir}/${category}/.${pkgname} || \
-        ${MKDIR} -p ${workdir}/${category}/${pkgname}
+    ${TEST} -d ${workdir}/${category}/.${pkgname} \
+        || ${MKDIR} -p ${workdir}/${category}/${pkgname}
 
     # Information of build environment.
     ${CAT} > ${workdir}/${category}/${pkgname}/+BUILD_INFO << _BUILD_INFO_
@@ -804,8 +834,8 @@ _CONTENTS_
     -p ${obj}/sys/arch/${machine}/compile/${kernel} \
     -K ${pkgdb} ${pkgname} || bomb "kernel: ${PKG_CREATE}"
 
-    ${TEST} -d ${packages}/${release}/${machine} || \
-        ${MKDIR} -p ${packages}/${release}/${machine}
+    ${TEST} -d ${packages}/${release}/${machine} \
+        || ${MKDIR} -p ${packages}/${release}/${machine}
 
     ${MV} ./${pkgname}.tgz \
         ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
