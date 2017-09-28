@@ -706,33 +706,6 @@ make_DEINSTALL()
 }
 
 #
-# Mount tmpfs.
-#
-mount_tmpfs()
-{
-    ${TEST} -d ${tmpdir} && bomb "Please remove ${tmpdir}"
-    ${MKDIR} ${tmpdir}
-    ${MOUNT} -t tmpfs -o -s128M tmpfs ${tmpdir}
-}
-
-#
-# Unmount tmpfs.
-#
-umount_tmpfs()
-{
-    ${TEST} -d ${tmpdir} || bomb "${tmpdir}: No such file or directory."
-    ${UMOUNT} ${tmpdir}
-}
-
-#
-# File in PLIST move to tmpfs 
-#
-move_to_tmpfs()
-{
-
-}
-
-#
 # "pkg_create" command wrapper.
 # Package moved to ${packages}/All directory.
 #
