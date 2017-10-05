@@ -1,8 +1,8 @@
-# $NetBSD: mi,v 1.27 2016/12/15 12:56:52 kre Exp $
+# $NetBSD: mi,v 1.23.4.1 2015/01/05 21:23:52 martin Exp $
 #
 # Note: don't delete entries from here - mark them as "obsolete" instead.
 #
-./etc/X11/ctwm/system.ctwmrc				-unknown-	xorg
+./etc/drirc						-unknown-	xorg
 ./etc/X11/fs/config					-unknown-	x11
 ./etc/X11/fs/config					-unknown-	xorg
 ./etc/X11/lbxproxy/AtomControl				-obsolete-	obsolete,xorg
@@ -56,7 +56,6 @@
 ./etc/X11/xserver/SecurityPolicy			-unknown-	x11
 ./etc/X11/xsm/system.xsm				-unknown-	x11
 ./etc/X11/xsm/system.xsm				-unknown-	xorg
-./etc/drirc						-unknown-	xorg
 ./etc/fonts/conf.avail/10-autohint.conf			-unknown-	xorg
 ./etc/fonts/conf.avail/10-no-sub-pixel.conf		-unknown-	xorg
 ./etc/fonts/conf.avail/10-scale-bitmap-fonts.conf	-unknown-	xorg
@@ -115,4 +114,3 @@
 ./etc/rc.d/xdm						etc-x11-rc	xorg
 ./etc/rc.d/xfs						etc-x11-rc	x11
 ./etc/rc.d/xfs						etc-x11-rc	xorg
-./var/db/obsolete/xetc					xbase-sys-root	xorg
