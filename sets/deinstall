@@ -73,7 +73,7 @@ case "${PKG_CONFIG:-@PKG_CONFIG@}" in
 esac
 
 # $NetBSD: deinstall,v 1.5 2017/06/14 16:23:09 prlw1 Exp $
-
+#
 case ${STAGE} in
 DEINSTALL)
   #
