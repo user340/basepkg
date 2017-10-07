@@ -389,63 +389,60 @@ osrelease() {
 split_category_from_lists()
 {
     local i j
+    local ad mi md shl module rescue rescue_ad rescue_machine stl
     for i in ${category}; do
         ${TEST} -d ${workdir}/${i} || ${MKDIR} -p ${workdir}/${i}
         ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
         for j in $(${LS} ${lists}); do
-            ${AWK} '
-            ! /^\#/ {
-                #
-                # Ignore obsolete packages.
-                #
-                if ($2 == "'"${i}-obsolete"'")
-                    next
-                #
-                # Ignore pacakge with obsolete tags.
-                #
-                if ($3 ~ "obsolete")
-                    next
-                if ($2 ~ "^'"${i}"'") {
-                    #
-                    # Remove "./" characters.
-                    #
-                    $1 = substr($1, 3);
-                    if ($1 != "") {
-                        gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release}"'/modules");
-                        gsub(/@MACHINE@/, "'"${machine}"'");
-                        gsub(/@OSRELEASE@/, "'"${release}"'");
-                        print
-                    }
-                }
-            }' ${lists}/${j}/mi >> ${workdir}/${i}/FILES
-  
-        if [ -f ${lists}/${j}/md.${machine} ]; then
-            ${AWK} '
-            ! /^\#/ {
-                #
-                # Ignore obsolete packages.
-                #
-                if ($2 == "'"${i}-obsolete"'")
-                    next
-                #
-                # Ignore pacakge with obsolete tags.
-                #
-                if ($3 ~ "obsolete")
-                    next
-                if ($2 ~ "^'"${i}"'") {
-                    #
-                    # Remove "./" characters.
-                    #
-                    $1 = substr($1, 3);
-                    if ($1 != "") {
-                        gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release}"'/modules");
-                        gsub(/@MACHINE@/, "'"${machine}"'");
-                        gsub(/@OSRELEASE@/, "'"${release}"'");
-                        print
-                    }
-                }
-            }' ${lists}/${j}/md.${machine} >> ${workdir}/${i}/FILES
-        fi
+            ad=""
+            mi=""
+            md=""
+            module=""
+            rescue=""
+            rescue_ad=""
+            rescue_machine=""
+            shl=""
+            stl=""
+            ${TEST} -f ${lists}/${j}/ad.${machine} && ad="${lists}/${j}/ad.${machine}"
+            ${TEST} -f ${lists}/${j}/mi && mi="${lists}/${j}/mi"
+            ${TEST} -f ${lists}/${j}/md.${machine} && md="${lists}/${j}/md.${machine}"
+            ${TEST} -f ${lists}/${j}/module.mi && module="${lists}/${j}/module.mi"
+            ${TEST} -f ${lists}/${j}/rescue.mi && rescue="${lists}/${j}/rescue.mi"
+            ${TEST} -f ${lists}/${j}/rescue.ad.${machine} \
+                && rescue_ad="${lists}/${j}/rescue.ad.${machine}"
+            ${TEST} -f ${lists}/${j}/rescue.${machine} \
+                && rescue_machine="${lists}/${j}/rescue.${machine}"
+            ${TEST} -f ${lists}/${j}/shl.mi && shl="${lists}/${j}/shl.mi"
+            ${TEST} -f ${lists}/${j}/stl.mi && stl="${lists}/${j}/stl.mi"
+            ${CAT} \
+                ${ad} ${mi} ${md} ${module} ${rescue} ${rescue_ad} \
+                ${rescue_machine} ${shl} ${stl} \
+            | ${AWK} '
+             ! /^\#/ {
+                 #
+                 # Ignore obsolete packages.
+                 #
+                 if ($2 == "'"${i}-obsolete"'")
+                     next
+                 #
+                 # Ignore pacakge with obsolete tags.
+                 #
+                 if ($3 ~ "obsolete")
+                     next
+                 if ($2 ~ "^'"${i}"'") {
+                     #
+                     # Remove "./" characters.
+                     #
+                     $1 = substr($1, 3);
+                     if ($1 != "") {
+                         gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release}"'/modules");
+                         gsub(/@MACHINE@/, "'"${machine}"'");
+                         gsub(/@OSRELEASE@/, "'"${release}"'");
+                         print
+                     }
+                 }
+             }' \
+            >> ${workdir}/${i}/FILES
       done
     done
 }
