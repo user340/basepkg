@@ -319,7 +319,7 @@ validatearch()
     IFS="${nl}"
     for line in ${valid_MACHINE_ARCH}; do
         line="${line%%#*}" # ignore comments
-        line="$( IFS=" ${tab}" ; echo $line )" # normalise white space
+        line="$( IFS=" ${tab}" ; ${ECHO} $line )" # normalise white space
         case "${line} " in
         " ")
             # skip blank lines or comment lines
@@ -358,15 +358,15 @@ validatearch()
 # Output version of NetBSD source set.
 #
 osrelease() {
-    local path=$0
-    local define ver_tag rel_num comment_start NetBSD rel_text rest IFS beta
+    local option; option="$1"
+    local define ver_tag rel_num comment_start NetBSD rel_text rest beta
     exec < ${destdir}/${param}
 
     while
         read define ver_tag rel_num comment_start NetBSD rel_text rest; do
-            [ "${define}" = "#define" ] || continue;
-            [ "${ver_tag}" = "__NetBSD_Version__" ] || continue
-            break
+        [ "${define}" = "#define" ] || continue;
+        [ "${ver_tag}" = "__NetBSD_Version__" ] || continue
+        break
     done
     rel_num=${rel_num%??}
     rel_MMmm=${rel_num%????}
@@ -379,8 +379,20 @@ osrelease() {
     shift 3
     IFS=' '
     set -- ${rel_MM} ${rel_mm#0}${beta} $*
-    IFS=.
-    echo "$*"
+    case "${option}" in
+    -k)
+        if [ ${rel_mm#0} = 99 ]; then
+            IFS=.
+            ${ECHO} "$*"
+        else
+            ${ECHO} "${rel_MM}.${rel_mm#0}"
+        fi
+        ;;
+    *)
+        IFS=.
+        ${ECHO} "$*"
+        ;;
+    esac
 }
 
 #
@@ -435,9 +447,9 @@ split_category_from_lists()
                      #
                      $1 = substr($1, 3);
                      if ($1 != "") {
-                         gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release}"'/modules");
+                         gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release_k}"'/modules");
                          gsub(/@MACHINE@/, "'"${machine}"'");
-                         gsub(/@OSRELEASE@/, "'"${release}"'");
+                         gsub(/@OSRELEASE@/, "'"${release_k}"'");
                          print
                      }
                  }
@@ -909,7 +921,8 @@ export LC_ALL=C LANG=C
 getarch
 validatearch
 destdir="${obj}/destdir.${machine}"
-release="$(osrelease)"
+release="$(osrelease -a)"
+release_k="$(osrelease -k)"
 machine_arch=${MACHINE_ARCH}
 moduledir="stand/${machine}/${release}/modules"
 workdir="${PWD}/work/${release}/${machine}"
