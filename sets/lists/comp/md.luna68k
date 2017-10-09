@@ -1,4 +1,4 @@
-# $NetBSD: md.luna68k,v 1.22 2017/03/09 14:05:58 tsutsui Exp $
+# $NetBSD: md.luna68k,v 1.19.22.1 2016/12/06 06:50:23 snj Exp $
 ./usr/include/ieeefp.h				comp-c-include
 ./usr/include/luna68k				comp-c-include
 ./usr/include/luna68k/_G_config.h		comp-obsolete		obsolete
@@ -15,7 +15,6 @@
 ./usr/include/luna68k/elf_machdep.h		comp-c-include
 ./usr/include/luna68k/endian.h			comp-c-include
 ./usr/include/luna68k/endian_machdep.h		comp-c-include
-./usr/include/luna68k/fenv.h			comp-c-include
 ./usr/include/luna68k/float.h			comp-c-include
 ./usr/include/luna68k/frame.h			comp-c-include
 ./usr/include/luna68k/ieee.h			comp-c-include
@@ -27,7 +26,6 @@
 ./usr/include/luna68k/int_types.h		comp-c-include
 ./usr/include/luna68k/intr.h			comp-c-include
 ./usr/include/luna68k/kcore.h			comp-c-include
-./usr/include/luna68k/lcd.h			comp-c-include
 ./usr/include/luna68k/limits.h			comp-c-include
 ./usr/include/luna68k/lock.h			comp-c-include
 ./usr/include/luna68k/math.h			comp-c-include

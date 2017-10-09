@@ -44,6 +44,7 @@ GREP="/usr/bin/grep"
 KILL="/bin/kill"
 LS="/bin/ls"
 MKDIR="/bin/mkdir"
+MOUNT="/sbin/mount"
 MV="/bin/mv"
 PRINTF="/usr/bin/printf"
 PWD_CMD="/bin/pwd"
@@ -55,6 +56,7 @@ SORT="/usr/bin/sort"
 TEST="/bin/test"
 TOUCH="/usr/bin/touch"
 TR="/usr/bin/tr"
+UMOUNT="/sbin/umount"
 UNAME="/usr/bin/uname"
 UNIQ="/usr/bin/uniq"
 XARGS="/usr/bin/xargs"
@@ -197,7 +199,6 @@ deps="${PWD}/sets/deps"
 install_script="${PWD}/sets/install"
 deinstall_script="${PWD}/sets/deinstall"
 tmp_deps="/tmp/culldeps"
-basedir="share/basepkg/root"
 homepage="https://github.com/user340/basepkg"
 mail_address="mail@e-yuuki.org"
 toppid=$$
@@ -207,6 +208,7 @@ packages="${PWD}/packages"
 category="base comp etc games man misc text"
 kernel="GENERIC"
 pkgdb="/var/db/basepkg"
+tmpdir="${PWD}/tmp"
 
 #
 # Output error message to STDERR
@@ -317,7 +319,7 @@ validatearch()
     IFS="${nl}"
     for line in ${valid_MACHINE_ARCH}; do
         line="${line%%#*}" # ignore comments
-        line="$( IFS=" ${tab}" ; echo $line )" # normalise white space
+        line="$( IFS=" ${tab}" ; ${ECHO} $line )" # normalise white space
         case "${line} " in
         " ")
             # skip blank lines or comment lines
@@ -356,15 +358,15 @@ validatearch()
 # Output version of NetBSD source set.
 #
 osrelease() {
-    local path=$0
-    local define ver_tag rel_num comment_start NetBSD rel_text rest IFS beta
+    local option; option="$1"
+    local define ver_tag rel_num comment_start NetBSD rel_text rest beta
     exec < ${destdir}/${param}
 
     while
         read define ver_tag rel_num comment_start NetBSD rel_text rest; do
-            [ "${define}" = "#define" ] || continue;
-            [ "${ver_tag}" = "__NetBSD_Version__" ] || continue
-            break
+        [ "${define}" = "#define" ] || continue;
+        [ "${ver_tag}" = "__NetBSD_Version__" ] || continue
+        break
     done
     rel_num=${rel_num%??}
     rel_MMmm=${rel_num%????}
@@ -377,8 +379,20 @@ osrelease() {
     shift 3
     IFS=' '
     set -- ${rel_MM} ${rel_mm#0}${beta} $*
-    IFS=.
-    echo "$*"
+    case "${option}" in
+    -k)
+        if [ ${rel_mm#0} = 99 ]; then
+            IFS=.
+            ${ECHO} "$*"
+        else
+            ${ECHO} "${rel_MM}.${rel_mm#0}"
+        fi
+        ;;
+    *)
+        IFS=.
+        ${ECHO} "$*"
+        ;;
+    esac
 }
 
 #
@@ -387,63 +401,60 @@ osrelease() {
 split_category_from_lists()
 {
     local i j
+    local ad mi md shl module rescue rescue_ad rescue_machine stl
     for i in ${category}; do
         ${TEST} -d ${workdir}/${i} || ${MKDIR} -p ${workdir}/${i}
         ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
         for j in $(${LS} ${lists}); do
-            ${AWK} '
-            ! /^\#/ {
-                #
-                # Ignore obsolete packages.
-                #
-                if ($2 == "'"${i}-obsolete"'")
-                    next
-                #
-                # Ignore pacakge with obsolete tags.
-                #
-                if ($3 ~ "obsolete")
-                    next
-                if ($2 ~ "^'"${i}"'") {
-                    #
-                    # Remove "./" characters.
-                    #
-                    $1 = substr($1, 3);
-                    if ($1 != "") {
-                        gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release}"'/modules");
-                        gsub(/@MACHINE@/, "'"${machine}"'");
-                        gsub(/@OSRELEASE@/, "'"${release}"'");
-                        print
-                    }
-                }
-            }' ${lists}/${j}/mi >> ${workdir}/${i}/FILES
-  
-        if [ -f ${lists}/${j}/md.${machine} ]; then
-            ${AWK} '
-            ! /^\#/ {
-                #
-                # Ignore obsolete packages.
-                #
-                if ($2 == "'"${i}-obsolete"'")
-                    next
-                #
-                # Ignore pacakge with obsolete tags.
-                #
-                if ($3 ~ "obsolete")
-                    next
-                if ($2 ~ "^'"${i}"'") {
-                    #
-                    # Remove "./" characters.
-                    #
-                    $1 = substr($1, 3);
-                    if ($1 != "") {
-                        gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release}"'/modules");
-                        gsub(/@MACHINE@/, "'"${machine}"'");
-                        gsub(/@OSRELEASE@/, "'"${release}"'");
-                        print
-                    }
-                }
-            }' ${lists}/${j}/md.${machine} >> ${workdir}/${i}/FILES
-        fi
+            ad=""
+            mi=""
+            md=""
+            module=""
+            rescue=""
+            rescue_ad=""
+            rescue_machine=""
+            shl=""
+            stl=""
+            ${TEST} -f ${lists}/${j}/ad.${machine} && ad="${lists}/${j}/ad.${machine}"
+            ${TEST} -f ${lists}/${j}/mi && mi="${lists}/${j}/mi"
+            ${TEST} -f ${lists}/${j}/md.${machine} && md="${lists}/${j}/md.${machine}"
+            ${TEST} -f ${lists}/${j}/module.mi && module="${lists}/${j}/module.mi"
+            ${TEST} -f ${lists}/${j}/rescue.mi && rescue="${lists}/${j}/rescue.mi"
+            ${TEST} -f ${lists}/${j}/rescue.ad.${machine} \
+                && rescue_ad="${lists}/${j}/rescue.ad.${machine}"
+            ${TEST} -f ${lists}/${j}/rescue.${machine} \
+                && rescue_machine="${lists}/${j}/rescue.${machine}"
+            ${TEST} -f ${lists}/${j}/shl.mi && shl="${lists}/${j}/shl.mi"
+            ${TEST} -f ${lists}/${j}/stl.mi && stl="${lists}/${j}/stl.mi"
+            ${CAT} \
+                ${ad} ${mi} ${md} ${module} ${rescue} ${rescue_ad} \
+                ${rescue_machine} ${shl} ${stl} \
+            | ${AWK} '
+             ! /^\#/ {
+                 #
+                 # Ignore obsolete packages.
+                 #
+                 if ($2 == "'"${i}-obsolete"'")
+                     next
+                 #
+                 # Ignore pacakge with obsolete tags.
+                 #
+                 if ($3 ~ "obsolete")
+                     next
+                 if ($2 ~ "^'"${i}"'") {
+                     #
+                     # Remove "./" characters.
+                     #
+                     $1 = substr($1, 3);
+                     if ($1 != "") {
+                         gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release_k}"'/modules");
+                         gsub(/@MACHINE@/, "'"${machine}"'");
+                         gsub(/@OSRELEASE@/, "'"${release_k}"'");
+                         print
+                     }
+                 }
+             }' \
+            >> ${workdir}/${i}/FILES
       done
     done
 }
@@ -455,8 +466,9 @@ make_directories_of_package()
 {
     local i
     for i in ${category}; do
-        ${AWK} '{print $2}' ${workdir}/${i}/FILES | ${SORT} | ${UNIQ} | \
-        ${XARGS} -n 1 -I % ${SH} -c "${TEST} -d ${workdir}/${i}/% || ${MKDIR} ${workdir}/${i}/%"
+        ${AWK} '{print $2}' ${workdir}/${i}/FILES | ${SORT} | ${UNIQ} \
+        | ${XARGS} -n 1 -I % ${SH} -c \
+            "${TEST} -d ${workdir}/${i}/% || ${MKDIR} ${workdir}/${i}/%"
     done
 }
 
@@ -553,9 +565,9 @@ make_CONTENTS()
         ${TEST} $(${FILE} ${destdir}/${i} | ${CUT} -d " " -f 2) = "symbolic" && continue
         if [ -d ${destdir}/${i} ]; then
             filename=$(${ECHO} ${i} | ${SED} 's%\/%\\\/%g')
-            ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} | \
-            ${SED} 's%^\.\/%%' | \
-            ${AWK} '
+            ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} \
+            | ${SED} 's%^\.\/%%' \
+            | ${AWK} '
             {
                 print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
             } ' >> ${TMPFILE}
@@ -685,9 +697,13 @@ make_INSTALL()
         if [ $(${ECHO} ${file} | ${CUT} -d "/" -f 1) = "etc" ]; then
             ${TEST} -f ${destdir}/${file} && \
                 mode_user_group=$(
-                    ${STAT} -f '%p %u %g' ${destdir}/${file} | ${SED} 's/^[0-9]\{3\}//'
+                    ${GREP} -e "^\./${file} " ${destdir}/etc/mtree/set.etc \
+                    | ${CUT} -d " " -f 3 -f 4 -f 5 \
+                    | ${XARGS} -n 1 -I % ${EXPR} x% : "x[^=]*=\\(.*\\)" \
+                    | ${TR} '\n' ' '
                 )
-            ${ECHO} "# FILE: /${file} c ${file} ${mode_user_group}" >> ${workdir}/$1/+INSTALL
+            ${ECHO} "# FILE: /${file} c ${file} ${mode_user_group}" \
+                >> ${workdir}/$1/+INSTALL
         fi
     done
 }
@@ -718,8 +734,8 @@ do_pkg_create()
         -f ${workdir}/$1/+CONTENTS \
         ${pkgname} || bomb "$1: ${PKG_CREATE}"
 
-    ${TEST} -d ${packages}/${release}/${machine} || \
-        ${MKDIR} -p ${packages}/${release}/${machine}
+    ${TEST} -d ${packages}/${release}/${machine} \
+        || ${MKDIR} -p ${packages}/${release}/${machine}
 
     ${MV} ./${pkgname}.tgz \
         ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
@@ -735,7 +751,6 @@ make_packages()
 
     for i in ${category}; do
         for j in `${LS} ${workdir}/${i} | ${GREP} -E '^[a-z]+'`; do
-            ${ECHO} "Package ${i}/${j} Creating..."
             make_BUILD_INFO "${i}/${j}"
             make_CONTENTS "${i}/${j}"
             make_DESC_and_COMMENT "${i}/${j}"
@@ -762,9 +777,8 @@ make_kernel_package()
     local category="base"
     local pkgname="base-kernel-${kernel}"
 
-    ${ECHO} "Package ${pkgname} Creating..."
-    ${TEST} -d ${workdir}/${category}/.${pkgname} || \
-        ${MKDIR} -p ${workdir}/${category}/${pkgname}
+    ${TEST} -d ${workdir}/${category}/.${pkgname} \
+        || ${MKDIR} -p ${workdir}/${category}/${pkgname}
 
     # Information of build environment.
     ${CAT} > ${workdir}/${category}/${pkgname}/+BUILD_INFO << _BUILD_INFO_
@@ -802,8 +816,8 @@ _CONTENTS_
     -p ${obj}/sys/arch/${machine}/compile/${kernel} \
     -K ${pkgdb} ${pkgname} || bomb "kernel: ${PKG_CREATE}"
 
-    ${TEST} -d ${packages}/${release}/${machine} || \
-        ${MKDIR} -p ${packages}/${release}/${machine}
+    ${TEST} -d ${packages}/${release}/${machine} \
+        || ${MKDIR} -p ${packages}/${release}/${machine}
 
     ${MV} ./${pkgname}.tgz \
         ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
@@ -837,10 +851,10 @@ _usage_
 }
 
 #
-# In options, 
-#     --obj=/usr/obj
-#           ^^^^^^^^^
-#            take it
+# --obj=/usr/obj
+#       ^^^^^^^^^
+#        take it
+# return -> /usr/obj
 #
 get_optarg()
 {
@@ -907,7 +921,8 @@ export LC_ALL=C LANG=C
 getarch
 validatearch
 destdir="${obj}/destdir.${machine}"
-release="$(osrelease)"
+release="$(osrelease -a)"
+release_k="$(osrelease -k)"
 machine_arch=${MACHINE_ARCH}
 moduledir="stand/${machine}/${release}/modules"
 workdir="${PWD}/work/${release}/${machine}"

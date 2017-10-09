@@ -1,4 +1,4 @@
-# $NetBSD: md.evbmips,v 1.23 2016/10/31 20:22:35 skrll Exp $
+# $NetBSD: md.evbmips,v 1.18 2014/07/23 18:19:43 alnsn Exp $
 ./usr/include/evbmips				comp-c-include
 ./usr/include/evbmips/_G_config.h		comp-obsolete		obsolete
 ./usr/include/evbmips/ansi.h			comp-c-include
@@ -15,7 +15,6 @@
 ./usr/include/evbmips/elf_machdep.h		comp-c-include
 ./usr/include/evbmips/endian.h			comp-c-include
 ./usr/include/evbmips/endian_machdep.h		comp-c-include
-./usr/include/evbmips/fenv.h			comp-c-include
 ./usr/include/evbmips/float.h			comp-c-include
 ./usr/include/evbmips/ieee.h			comp-c-include
 ./usr/include/evbmips/ieeefp.h			comp-c-include
@@ -53,8 +52,8 @@
 ./usr/include/evbmips/rwlock.h			comp-c-include
 ./usr/include/evbmips/setjmp.h			comp-c-include
 ./usr/include/evbmips/signal.h			comp-c-include
-./usr/include/evbmips/sljit_machdep.h		comp-c-include
 ./usr/include/evbmips/sljitarch.h		comp-obsolete		obsolete
+./usr/include/evbmips/sljit_machdep.h		comp-c-include
 ./usr/include/evbmips/stdarg.h			comp-obsolete		obsolete
 ./usr/include/evbmips/trap.h			comp-c-include
 ./usr/include/evbmips/types.h			comp-c-include
