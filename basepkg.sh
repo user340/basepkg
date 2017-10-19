@@ -714,6 +714,15 @@ make_DEINSTALL()
     replace_cmdstr ${deinstall_script} > ${workdir}/$1/+DEINSTALL
 }
 
+output_base_dir () 
+{
+   if [ "X${MACHINE_ARCH}" != "X${MACHINE}" ];then
+     echo ${packages}/${release}/${MACHINE}-${MACHINE_ARCH}
+   else
+     echo ${packages}/${release}/${MACHINE}
+   fi
+}
+
 #
 # "pkg_create" command wrapper.
 # Package moved to ${packages}/All directory.
@@ -734,11 +743,9 @@ do_pkg_create()
         -f ${workdir}/$1/+CONTENTS \
         ${pkgname} || bomb "$1: ${PKG_CREATE}"
 
-    ${TEST} -d ${packages}/${release}/${machine} \
-        || ${MKDIR} -p ${packages}/${release}/${machine}
-
-    ${MV} ./${pkgname}.tgz \
-        ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
+    local _basedir=$(output_base_dir)
+    ${TEST} -d ${_basedir} || ${MKDIR} -p ${_basedir}
+    ${MV} ./${pkgname}.tgz ${_basedir}/${pkgname}-${release}.tgz
 }
 
 #
@@ -763,9 +770,11 @@ make_packages()
         ${FIND} ${packages} -type f \
         \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null
     )"
+
+    local _basedir=$(output_base_dir)
     if [ -n "${pkgs}" ]; then
-        ${CKSUM} -a md5 ${pkgs} > ${packages}/${release}/${machine}/MD5
-        ${CKSUM} -a sha512 ${pkgs} > ${packages}/${release}/${machine}/SHA512
+        ${CKSUM} -a    md5 ${pkgs} > ${_basedir}/MD5
+        ${CKSUM} -a sha512 ${pkgs} > ${_basedir}/SHA512
     fi
 }
 
@@ -777,8 +786,8 @@ make_kernel_package()
     local category="base"
     local pkgname="base-kernel-${kernel}"
 
-    ${TEST} -d ${workdir}/${category}/.${pkgname} \
-        || ${MKDIR} -p ${workdir}/${category}/${pkgname}
+    ${TEST} -d ${workdir}/${category}/.${pkgname} || \
+        ${MKDIR} -p ${workdir}/${category}/${pkgname}
 
     # Information of build environment.
     ${CAT} > ${workdir}/${category}/${pkgname}/+BUILD_INFO << _BUILD_INFO_
@@ -816,11 +825,9 @@ _CONTENTS_
     -p ${obj}/sys/arch/${machine}/compile/${kernel} \
     -K ${pkgdb} ${pkgname} || bomb "kernel: ${PKG_CREATE}"
 
-    ${TEST} -d ${packages}/${release}/${machine} \
-        || ${MKDIR} -p ${packages}/${release}/${machine}
-
-    ${MV} ./${pkgname}.tgz \
-        ${packages}/${release}/${machine}/${pkgname}-${release}.tgz
+    local _basedir=$(output_base_dir)
+    ${TEST} -d ${_basedir} || ${MKDIR} -p ${_basedir}
+    ${MV} ./${pkgname}.tgz ${_basedir}/${pkgname}-${release}.tgz
 }
 
 #
@@ -879,6 +886,22 @@ while [ $# -gt 0 ]; do
     --obj=*)
         obj=$(get_optarg "$1")
         ;;
+    --releasedir)
+        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
+        releasedir=$2
+        shift
+        ;;
+    --releasedir=*)
+        releasedir=$(get_optarg "$1")
+        ;;
+    --destdir)
+        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
+        destdir=$2
+        shift
+        ;;
+    --destdir=*)
+        destdir=$(get_optarg "$1")
+        ;;
     --category=*)
         category=$(get_optarg "$1")
         ;;
@@ -920,13 +943,19 @@ export LC_ALL=C LANG=C
 
 getarch
 validatearch
-destdir="${obj}/destdir.${machine}"
+destdir=${destdir:-"${obj}/destdir.${MACHINE}"}
+releasedir=${releasedir:-.}
 release="$(osrelease -a)"
 release_k="$(osrelease -k)"
 machine_arch=${MACHINE_ARCH}
 moduledir="stand/${machine}/${release}/modules"
-workdir="${PWD}/work/${release}/${machine}"
+workdir="${releasedir}/work/${release}/${machine}"
 kerneldir="${obj}/sys/arch/${machine}/compile"
+packages="${releasedir}/packages"
+
+# least assertions
+${TEST} -f "sets/install"  || bomb "require ./sets/"
+${TEST} "X$release" != "X" || bomb "cannot resolve \$release"
 
 ${TEST} $# -eq 0 && usage
 
