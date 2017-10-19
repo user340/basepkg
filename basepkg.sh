@@ -946,6 +946,10 @@ workdir="${releasedir}/work/${release}/${machine}"
 kerneldir="${obj}/sys/arch/${machine}/compile"
 packages="${releasedir}/packages"
 
+# least assertions
+${TEST} -f "sets/install"  || bomb "require ./sets/"
+${TEST} "X$release" != "X" || bomb "cannot resolve \$release"
+
 ${TEST} $# -eq 0 && usage
 
 # operation
