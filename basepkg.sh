@@ -879,6 +879,22 @@ while [ $# -gt 0 ]; do
     --obj=*)
         obj=$(get_optarg "$1")
         ;;
+    --releasedir)
+        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
+        releasedir=$2
+        shift
+        ;;
+    --releasedir=*)
+        releasedir=$(get_optarg "$1")
+        ;;
+    --destdir)
+        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
+        destdir=$2
+        shift
+        ;;
+    --destdir=*)
+        destdir=$(get_optarg "$1")
+        ;;
     --category=*)
         category=$(get_optarg "$1")
         ;;
@@ -920,13 +936,15 @@ export LC_ALL=C LANG=C
 
 getarch
 validatearch
-destdir="${obj}/destdir.${machine}"
+destdir=${destdir:-"${obj}/destdir.${MACHINE}"}
+releasedir=${releasedir:-.}
 release="$(osrelease -a)"
 release_k="$(osrelease -k)"
 machine_arch=${MACHINE_ARCH}
 moduledir="stand/${machine}/${release}/modules"
-workdir="${PWD}/work/${release}/${machine}"
+workdir="${releasedir}/work/${release}/${machine}"
 kerneldir="${obj}/sys/arch/${machine}/compile"
+packages="${releasedir}/packages"
 
 ${TEST} $# -eq 0 && usage
 
