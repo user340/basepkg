@@ -47,12 +47,12 @@ which which > /dev/null 2>&1 || {
     {
         ans=$(type "$1" 2>/dev/null) || exit $?
         case "$1" in
-            */*) printf '%s\n' $1 ; exit ;;
+            */*) printf '%s\n' "$1" ; exit ;;
         esac
         case "$ans" in
             */*) printf '%s\n' "/${ans#*/}"; exit ;;
         esac
-        printf '%s\n' $1
+        printf '%s\n' "$1"
     }
 }
 
@@ -297,6 +297,7 @@ validatearch()
  (
     foundpair=false foundmachine=false foundarch=false
 
+    # MACHINE_ARCH may not be assigned, but catch at "case ... in"
     case "$MACHINE_ARCH" in
     "")
         bomb "No MACHINE_ARCH provided"
@@ -312,6 +313,7 @@ validatearch()
             # skip blank lines or comment lines
             continue
             ;;
+        # MACHINE may not be assigned, but catch at "case ... in"
         "MACHINE=$MACHINE MACHINE_ARCH=$MACHINE_ARCH "*)
             foundpair=true
             ;;
@@ -355,6 +357,7 @@ osrelease()
     option="$1"
     exec < "$destdir/$param"
 
+    # In this function, "comment_start" and "NetBSD" are unreferenced variables.
     while
         read -r define ver_tag rel_num comment_start NetBSD rel_text rest; do
         [ "$define" = "#define" ] || continue;
@@ -374,7 +377,7 @@ osrelease()
     set -- $rel_MM ${rel_mm#0}$beta "$@"
     case "$option" in
     -k)
-        if [ ${rel_mm#0} = 99 ]; then
+        if [ "${rel_mm#0}" = 99 ]; then
             IFS=.
             echo "$*"
         else
@@ -400,6 +403,8 @@ split_category_from_lists()
     for i in $category; do
         test -d "$workdir/$i" || mkdir -p "$workdir/$i"
         test -f "$workdir/$i/FILES" && rm -f "$workdir/$i/FILES"
+        # XXX: ShellCheck
+        #    SC2045: Iterating over ls output is fragile. Use globs.
         for j in $(ls $lists); do
             ad=""
             mi=""
@@ -499,6 +504,9 @@ make_contents_list()
     done
     i=""
     for i in $category; do
+        # XXX: ShellCheck
+        #    SC2010: Don't use ls | grep. Use a glob or a for loop with a 
+        #            condition to allow non-alphanumeric filenames.
         for j in $(ls "$workdir/$i" | grep '^[a-z]'); do
           awk '
           /^'"$j"'/ {
@@ -569,7 +577,7 @@ make_CONTENTS()
     test -f "$tmp_deps" && sort "$tmp_deps" | uniq >> "$workdir/$1/+CONTENTS"
 
     echo "@cwd /" >> "$workdir/$1/+CONTENTS"
-    cat "$workdir/$1/PLIST" | while read -r i; do
+    while read -r i; do
         test $(file "$destdir/$i" | cut -d " " -f 2) = "symbolic" && continue
         if [ -d "$destdir/$i" ]; then
             filename=$(echo "$i" | sed 's%\/%\\\/%g')
@@ -581,7 +589,7 @@ make_CONTENTS()
             } ' >> "$TMPFILE"
         fi
         test -f "$destdir/$i" && echo "$i" >> "$TMPFILE"
-    done
+    done < "$workdir/$1/PLIST"
 
     sort "$TMPFILE" >> "$workdir/$1/+CONTENTS"
     rm -f "$TMPFILE"
@@ -696,11 +704,11 @@ make_INSTALL()
 
     test -f "$workdir/$1/+CONTENTS" || bomb "+CONTENTS not found."
     grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
-        test $(file "$file" | cut -d " " -f 2) = "symbolic" && continue
-        if [ $(echo "$file" | cut -d "/" -f 1) = "etc" ]; then
+        test "$(file "$file" | cut -d " " -f 2)" = "symbolic" && continue
+        if [ "$(echo "$file" | cut -d "/" -f 1)" = "etc" ]; then
             test -f "$destdir/$file" && \
                 mode_user_group=$(
-                    grep -e "^\./$file " $destdir/etc/mtree/set.etc \
+                    grep -e "^\./$file " "$destdir/etc/mtree/set.etc" \
                     | cut -d " " -f 3 -f 4 -f 5 \
                     | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
                     | tr '\n' ' '
@@ -969,7 +977,7 @@ set -u
 umask 0022
 export LC_ALL=C LANG=C
 
-eval $(getarch)
+eval "$(getarch)"
 validatearch
 destdir=${destdir:-"$obj/destdir.$MACHINE"}
 releasedir=${releasedir:-.}
