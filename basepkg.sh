@@ -224,9 +224,8 @@ MESSAGE
 ################################################################################
 getarch()
 {
-    local IFS
-    local found=""
-    local line
+ (
+    found=""
     
     IFS="$nl"
     for line in $valid_MACHINE_ARCH; do
@@ -276,7 +275,7 @@ getarch()
           for frag in $found; do
               case "$frag" in
               MACHINE=*|MACHINE_ARCH=*)
-                  eval "$frag"
+                  echo "$frag"
                   ;;
               esac
           done
@@ -285,6 +284,7 @@ getarch()
           bomb "Unknown target MACHINE: $machine"
           ;;
       esac
+ )
 }
 
 ################################################################################
@@ -294,9 +294,8 @@ getarch()
 ################################################################################
 validatearch()
 {
-    local IFS
-    local line
-    local foundpair=false foundmachine=false foundarch=false
+ (
+    foundpair=false foundmachine=false foundarch=false
 
     case "$MACHINE_ARCH" in
     "")
@@ -339,6 +338,7 @@ validatearch()
         bomb "MACHINE_ARCH '$MACHINE_ARCH' does not support MACHINE '$MACHINE'"
         ;;
     esac
+ )
 }
 
 
@@ -349,9 +349,10 @@ validatearch()
 # NetBSD source tree (/usr/src).
 #
 ################################################################################
-osrelease() {
-    local option; option="$1"
-    local define ver_tag rel_num comment_start NetBSD rel_text rest beta
+osrelease()
+{
+ (
+    option="$1"
     exec < "$destdir/$param"
 
     while
@@ -385,6 +386,7 @@ osrelease() {
         echo "$*"
         ;;
     esac
+ )
 }
 
 ################################################################################
@@ -394,8 +396,7 @@ osrelease() {
 ################################################################################
 split_category_from_lists()
 {
-    local i j
-    local ad mi md shl module rescue rescue_ad rescue_machine stl
+ (
     for i in $category; do
         test -d "$workdir/$i" || mkdir -p "$workdir/$i"
         test -f "$workdir/$i/FILES" && rm -f "$workdir/$i/FILES"
@@ -420,7 +421,7 @@ split_category_from_lists()
                 && rescue_machine="$lists/$j/rescue.$machine"
             test -f "$lists/$j/shl.mi" && shl="$lists/$j/shl.mi"
             test -f "$lists/$j/stl.mi" && stl="$lists/$j/stl.mi"
-            local moduledir="stand/$machine/$release_k/modules"
+            moduledir="stand/$machine/$release_k/modules"
             cat \
                 $ad $mi $md $module $rescue $rescue_ad \
                 $rescue_machine $shl $stl \
@@ -451,6 +452,7 @@ split_category_from_lists()
                 }' >> "$workdir/$i/FILES"
       done
     done
+ )
 }
 
 ################################################################################
@@ -460,12 +462,13 @@ split_category_from_lists()
 ################################################################################
 make_directories_of_package()
 {
-    local i
+ (
     for i in $category; do
         awk '{print $2}' "$workdir/$i/FILES" | sort | uniq \
         | xargs -n 1 -I % sh -c \
             "test -d $workdir/$i/% || mkdir $workdir/$i/%"
     done
+ )
 }
 
 ################################################################################
@@ -475,7 +478,7 @@ make_directories_of_package()
 ################################################################################
 make_contents_list()
 {
-    local i j
+ (
     for i in $category; do
         awk ' 
         # $1 - file name
@@ -505,6 +508,7 @@ make_contents_list()
           }' "$workdir/$i/CATEGORIZED" > "$workdir/$i/$j/PLIST"
         done
     done
+ )
 }
 
 ################################################################################
@@ -552,10 +556,10 @@ culc_deps()
 ################################################################################
 make_CONTENTS()
 {
-    local TMPFILE=$(mktemp -q || bomb "$TMPFILE")
-    local filename
-    local setname=$(echo $1 | cut -d '/' -f 1 | sed 's/\./-/g')
-    local pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
+ (
+    TMPFILE=$(mktemp -q || bomb "$TMPFILE")
+    setname=$(echo $1 | cut -d '/' -f 1 | sed 's/\./-/g')
+    pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
 
     echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
     echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
@@ -581,6 +585,7 @@ make_CONTENTS()
 
     sort "$TMPFILE" >> "$workdir/$1/+CONTENTS"
     rm -f "$TMPFILE"
+ )
 }
 
 ################################################################################
@@ -590,7 +595,8 @@ make_CONTENTS()
 ################################################################################
 make_DESC_and_COMMENT()
 {
-    local pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
+ (
+    pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
 
     awk '
     /^'"$pkgname"'/ {
@@ -611,6 +617,7 @@ make_DESC_and_COMMENT()
                 printf $i" "
         }
     }' "$comments" > "$workdir/$1/+COMMENT" || bomb "awk +COMMENT"
+ )
 }
 
 replace_cmdstr()
@@ -681,7 +688,8 @@ replace_cmdstr()
 ################################################################################
 make_INSTALL()
 {
-    local mode_user_group=""
+ (
+    mode_user_group=""
 
     test -f "$workdir/$1/+INSTALL" && rm -f "$workdir/$1/+INSTALL"
     replace_cmdstr $install_script > "$workdir/$1/+INSTALL"
@@ -701,6 +709,7 @@ make_INSTALL()
                 >> "$workdir/$1/+INSTALL"
         fi
     done
+ )
 }
 
 make_DEINSTALL()
@@ -725,7 +734,8 @@ output_base_dir ()
 ################################################################################
 do_pkg_create()
 {
-    local pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
+ (
+    pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
 
     pkg_create -v -l -U \
         -B "$workdir/$1/+BUILD_INFO" \
@@ -739,9 +749,10 @@ do_pkg_create()
         -f "$workdir/$1/+CONTENTS" \
         "$pkgname" || bomb "$1: pkg_create"
 
-    local _basedir=$(output_base_dir)
+    _basedir=$(output_base_dir)
     test -d "$_basedir" || mkdir -p "$_basedir"
     mv "./$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
+ )
 }
 
 ################################################################################
@@ -751,9 +762,7 @@ do_pkg_create()
 ################################################################################
 make_packages()
 {
-    local i j
-    local pkgs
-
+ (
     for i in $category; do
         for j in $(ls "$workdir/$i" | grep -E '^[a-z]+'); do
             make_BUILD_INFO "$i/$j"
@@ -769,11 +778,12 @@ make_packages()
         \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null
     )"
 
-    local _basedir=$(output_base_dir)
+    _basedir=$(output_base_dir)
     if [ -n "$pkgs" ]; then
         cksum -a    md5 $pkgs > "$_basedir/MD5"
         cksum -a sha512 $pkgs > "$_basedir/SHA512"
     fi
+ )
 }
 
 ################################################################################
@@ -783,8 +793,9 @@ make_packages()
 ################################################################################
 make_kernel_package()
 {
-    local category="base"
-    local pkgname="base-kernel-$kernel"
+ (
+    category="base"
+    pkgname="base-kernel-$kernel"
 
     test -d "$workdir/$category/.$pkgname" || \
         mkdir -p "$workdir/$category/$pkgname"
@@ -825,9 +836,10 @@ _CONTENTS_
     -p "$obj/sys/arch/$machine/compile/$kernel" \
     -K "$pkgdb" "$pkgname" || bomb "kernel: pkg_create"
 
-    local _basedir=$(output_base_dir)
+    _basedir=$(output_base_dir)
     test -d "$_basedir" || mkdir -p "$_basedir"
     mv "$PWD/$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
+ )
 }
 
 ################################################################################
@@ -957,7 +969,7 @@ set -u
 umask 0022
 export LC_ALL=C LANG=C
 
-getarch
+eval $(getarch)
 validatearch
 destdir=${destdir:-"$obj/destdir.$MACHINE"}
 releasedir=${releasedir:-.}
