@@ -355,7 +355,7 @@ osrelease() {
     exec < ${destdir}/${param}
 
     while
-        read define ver_tag rel_num comment_start NetBSD rel_text rest; do
+        read -r define ver_tag rel_num comment_start NetBSD rel_text rest; do
         [ "${define}" = "#define" ] || continue;
         [ "${ver_tag}" = "__NetBSD_Version__" ] || continue
         break
@@ -537,7 +537,7 @@ culc_deps()
         err "$1: Unknown package dependency."
         return 1
     fi
-    awk '/^'"$1"'/{print $2}' ${deps} | while read depend; do
+    awk '/^'"$1"'/{print $2}' ${deps} | while read -r depend; do
         test ! "${depend}" && return 1
         echo "@pkgdep ${depend}>=${release}" >> ${tmp_deps}
         test "${depend}" = "base-sys-root" && return 0
@@ -565,7 +565,7 @@ make_CONTENTS()
     test -f ${tmp_deps} && sort ${tmp_deps} | uniq >> ${workdir}/$1/+CONTENTS
 
     echo "@cwd /" >> ${workdir}/$1/+CONTENTS
-    cat ${workdir}/$1/PLIST | while read i; do
+    cat ${workdir}/$1/PLIST | while read -r i; do
         test $(file ${destdir}/${i} | cut -d " " -f 2) = "symbolic" && continue
         if [ -d ${destdir}/${i} ]; then
             filename=$(echo ${i} | sed 's%\/%\\\/%g')
@@ -687,7 +687,7 @@ make_INSTALL()
     replace_cmdstr ${install_script} > ${workdir}/$1/+INSTALL
 
     test -f ${workdir}/$1/+CONTENTS || bomb "+CONTENTS not found."
-    grep -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
+    grep -v -e "^@" ${workdir}/$1/+CONTENTS | while read -r file; do
         test $(file ${file} | cut -d " " -f 2) = "symbolic" && continue
         if [ $(echo ${file} | cut -d "/" -f 1) = "etc" ]; then
             test -f ${destdir}/${file} && \
