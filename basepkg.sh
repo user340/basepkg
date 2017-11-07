@@ -1,78 +1,60 @@
 #!/usr/bin/env sh
 #
-# Copyright (c) 2016,2017 Yuuki Enomoto  
-# All rights reserved.  
-#   
-# Redistribution and use in source and binary forms, with or without  
-# modification, are permitted provided that the following conditions are met:  
-#   
+# Copyright (c) 2016,2017 Yuuki Enomoto 
+# All rights reserved. 
+#  
+# Redistribution and use in source and binary forms, with or without 
+# modification, are permitted provided that the following conditions are met: 
+#  
 # * Redistributions of source code must retain the above copyright notice, 
-#   this list of conditions and the following disclaimer.  
-#   
-# * Redistributions in binary form must reproduce the above copyright notice,  
-#   this list of conditions and the following disclaimer in the documentation  
-#   and/or other materials provided with the distribution.  
-#   
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"  
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE  
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  
-# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL  
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
-# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER  
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,  
-# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
+#   this list of conditions and the following disclaimer.
+#  
+# * Redistributions in binary form must reproduce the above copyright notice, 
+#   this list of conditions and the following disclaimer in the documentation 
+#   and/or other materials provided with the distribution. 
+#  
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+# POSSIBILITY OF SUCH DAMAGE.
+#
 
-# POSIX Utilities
-AWK="/usr/bin/awk"
-BASENAME="/usr/bin/basename"
-CAT="/bin/cat"
-CHGRP="/bin/chgrp"
-CHMOD="/bin/chmod"
-CHOWN="/sbin/chown"
-CKSUM="/usr/bin/cksum" 
-CP="/bin/cp"
-CUT="/usr/bin/cut"
-DATE="/bin/date"
-ECHO="/bin/echo"
-ENV="/usr/bin/env"
-EXPR="/bin/expr"
-FILE="/usr/bin/file"
-FIND="/usr/bin/find"
-GREP="/usr/bin/grep"
-KILL="/bin/kill"
-LS="/bin/ls"
-MKDIR="/bin/mkdir"
-MOUNT="/sbin/mount"
-MV="/bin/mv"
-PRINTF="/usr/bin/printf"
-PWD_CMD="/bin/pwd"
-RM="/bin/rm"
-RMDIR="/bin/rmdir"
-SED="/usr/bin/sed"
-SH="/bin/sh"
-SORT="/usr/bin/sort"
-TEST="/bin/test"
-TOUCH="/usr/bin/touch"
-TR="/usr/bin/tr"
-UMOUNT="/sbin/umount"
-UNAME="/usr/bin/uname"
-UNIQ="/usr/bin/uniq"
-XARGS="/usr/bin/xargs"
+################################################################################
+#
+# POSIX undefined commands.
+#     - hostname -- set or print name of current host system.
+#     - mktemp -- make temporary file name.
+#     - pkg_create -- a utility for creating software package distributions.
+#
+################################################################################
 
-# Non-POSIX Utilities
-DISKLABEL="/sbin/disklabel"
-HOSTNAME="/bin/hostname"
-INSTALL="/usr/bin/install"
-INSTALLBOOT="/usr/sbin/installboot"
-MAKEFS="/usr/sbin/makefs"
-MKTEMP="/usr/bin/mktemp"
-STAT="/usr/bin/stat"
-PKG_ADD="/usr/pkg/sbin/pkg_add"
-PKG_CREATE="/usr/pkg/sbin/pkg_create"
-PKG_DELETE="/usr/pkg/sbin/pkg_delete"
-PKG_INFO="/usr/pkg/sbin/pkg_info"
+################################################################################
+#
+# The which(1) command is undefined in POSIX. So this process check the 
+# which(1) command. If not exist in the system, define a function that same as 
+# the which(1) command.
+#
+################################################################################
+which which > /dev/null 2>&1 || {
+    which()
+    {
+        ans=$(type "$1" 2>/dev/null) || exit $?
+        case "$1" in
+            */*) printf '%s\n' $1 ; exit ;;
+        esac
+        case "$ans" in
+            */*) printf '%s\n' "/${ans#*/}"; exit ;;
+        esac
+        printf '%s\n' $1
+    }
+}
 
 nl='
 '
@@ -183,13 +165,13 @@ MACHINE=zaurus		MACHINE_ARCH=arm	ALIAS=ozaurus
 MACHINE=zaurus		MACHINE_ARCH=earm	ALIAS=ezaurus DEFAULT
 '
 
-PWD="$(${PWD_CMD})"
+PWD="$(pwd)"
 progname=${0##*/}
-host="$(${HOSTNAME})"
-opsys="$(${UNAME})"
-osversion="$(${UNAME} -r)"
-pkgtoolversion="$(${PKG_ADD} -V)"
-utcdate="$(${ENV} TZ=UTC LOCALE=C ${DATE} '+%Y-%m-%d %H:%M')"
+host="$(hostname)"
+opsys="$(uname)"
+osversion="$(uname -r)"
+pkgtoolversion="$(pkg_create -V)"
+utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 param="usr/include/sys/param.h"
 lists="${PWD}/sets/lists"
@@ -208,33 +190,38 @@ packages="${PWD}/packages"
 category="base comp etc games man misc text"
 kernel="GENERIC"
 pkgdb="/var/db/basepkg"
-tmpdir="${PWD}/tmp"
 
+################################################################################
 #
-# Output error message to STDERR
+# Output the error message to STDERR
 #
+################################################################################
 err()
 {
-    ${ECHO} "[$(${DATE} +'%Y-%m-%dT%H:%M:%S')] $@" >&2
+    echo "[$(date +'%Y-%m-%dT%H:%M:%S')] $*" >&2
 }
 
+################################################################################
 #
-# Output abbort message. Kill and exit.
+# Output abbort message. Then, kill the process and exit from it.
 #
+################################################################################
 bomb()
 {
-    ${CAT} >&2 <<MESSAGE
+    cat >&2 <<MESSAGE
 
 ERROR: $@
 *** PACKAGING ABORTED ***
 MESSAGE
-    ${KILL} ${toppid}
+    kill ${toppid}
     exit 1
 }
 
+################################################################################
 #
-# Set MACHINE_ARCH variable by MACHINE value.
+# The MACHINE_ARCH variable use MACHINE value as a reference.
 #
+################################################################################
 getarch()
 {
     local IFS
@@ -242,10 +229,9 @@ getarch()
     local line
     
     IFS="${nl}"
-    makewrappermachine="${machine}"
     for line in ${valid_MACHINE_ARCH}; do
         line="${line%%#*}"
-        line="$( IFS=" ${tab}" ; ${ECHO} $line )" # normalise white space
+        line="$( IFS=" ${tab}" ; echo $line )" # normalise white space
         case "${line} " in
         " ")
             # skip blank lines or comment lines
@@ -301,9 +287,11 @@ getarch()
       esac
 }
 
+################################################################################
 #
 # Exit if the pair is not supported.
 #
+################################################################################
 validatearch()
 {
     local IFS
@@ -319,7 +307,7 @@ validatearch()
     IFS="${nl}"
     for line in ${valid_MACHINE_ARCH}; do
         line="${line%%#*}" # ignore comments
-        line="$( IFS=" ${tab}" ; ${ECHO} $line )" # normalise white space
+        line="$( IFS=" ${tab}" ; echo ${line} )" # normalise white space
         case "${line} " in
         " ")
             # skip blank lines or comment lines
@@ -354,9 +342,13 @@ validatearch()
 }
 
 
+################################################################################
 #
-# Output version of NetBSD source set.
+# Output number of version of NetBSD. In default, number of version is drawn 
+# from "/usr/obj/usr/include/sys/param.h". The osrelease() function not require 
+# NetBSD source tree (/usr/src).
 #
+################################################################################
 osrelease() {
     local option; option="$1"
     local define ver_tag rel_num comment_start NetBSD rel_text rest beta
@@ -378,34 +370,36 @@ osrelease() {
     beta=${beta#[0-9]}
     shift 3
     IFS=' '
-    set -- ${rel_MM} ${rel_mm#0}${beta} $*
+    set -- ${rel_MM} ${rel_mm#0}${beta} "$@"
     case "${option}" in
     -k)
         if [ ${rel_mm#0} = 99 ]; then
             IFS=.
-            ${ECHO} "$*"
+            echo "$*"
         else
-            ${ECHO} "${rel_MM}.${rel_mm#0}"
+            echo "${rel_MM}.${rel_mm#0}"
         fi
         ;;
     *)
         IFS=.
-        ${ECHO} "$*"
+        echo "$*"
         ;;
     esac
 }
 
+################################################################################
 #
 # Make category directory and organized files named "FILES".
 #
+################################################################################
 split_category_from_lists()
 {
     local i j
     local ad mi md shl module rescue rescue_ad rescue_machine stl
     for i in ${category}; do
-        ${TEST} -d ${workdir}/${i} || ${MKDIR} -p ${workdir}/${i}
-        ${TEST} -f ${workdir}/${i}/FILES && ${RM} -f ${workdir}/${i}/FILES
-        for j in $(${LS} ${lists}); do
+        test -d ${workdir}/${i} || mkdir -p ${workdir}/${i}
+        test -f ${workdir}/${i}/FILES && rm -f ${workdir}/${i}/FILES
+        for j in $(ls ${lists}); do
             ad=""
             mi=""
             md=""
@@ -415,21 +409,21 @@ split_category_from_lists()
             rescue_machine=""
             shl=""
             stl=""
-            ${TEST} -f ${lists}/${j}/ad.${machine} && ad="${lists}/${j}/ad.${machine}"
-            ${TEST} -f ${lists}/${j}/mi && mi="${lists}/${j}/mi"
-            ${TEST} -f ${lists}/${j}/md.${machine} && md="${lists}/${j}/md.${machine}"
-            ${TEST} -f ${lists}/${j}/module.mi && module="${lists}/${j}/module.mi"
-            ${TEST} -f ${lists}/${j}/rescue.mi && rescue="${lists}/${j}/rescue.mi"
-            ${TEST} -f ${lists}/${j}/rescue.ad.${machine} \
+            test -f ${lists}/${j}/ad.${machine} && ad="${lists}/${j}/ad.${machine}"
+            test -f ${lists}/${j}/mi && mi="${lists}/${j}/mi"
+            test -f ${lists}/${j}/md.${machine} && md="${lists}/${j}/md.${machine}"
+            test -f ${lists}/${j}/module.mi && module="${lists}/${j}/module.mi"
+            test -f ${lists}/${j}/rescue.mi && rescue="${lists}/${j}/rescue.mi"
+            test -f ${lists}/${j}/rescue.ad.${machine} \
                 && rescue_ad="${lists}/${j}/rescue.ad.${machine}"
-            ${TEST} -f ${lists}/${j}/rescue.${machine} \
+            test -f ${lists}/${j}/rescue.${machine} \
                 && rescue_machine="${lists}/${j}/rescue.${machine}"
-            ${TEST} -f ${lists}/${j}/shl.mi && shl="${lists}/${j}/shl.mi"
-            ${TEST} -f ${lists}/${j}/stl.mi && stl="${lists}/${j}/stl.mi"
-            ${CAT} \
+            test -f ${lists}/${j}/shl.mi && shl="${lists}/${j}/shl.mi"
+            test -f ${lists}/${j}/stl.mi && stl="${lists}/${j}/stl.mi"
+            cat \
                 ${ad} ${mi} ${md} ${module} ${rescue} ${rescue_ad} \
                 ${rescue_machine} ${shl} ${stl} \
-            | ${AWK} '
+            | awk '
              ! /^\#/ {
                  #
                  # Ignore obsolete packages.
@@ -459,27 +453,31 @@ split_category_from_lists()
     done
 }
 
+################################################################################
 #
 # Make directories referring to "FILES".
 #
+################################################################################
 make_directories_of_package()
 {
     local i
     for i in ${category}; do
-        ${AWK} '{print $2}' ${workdir}/${i}/FILES | ${SORT} | ${UNIQ} \
-        | ${XARGS} -n 1 -I % ${SH} -c \
-            "${TEST} -d ${workdir}/${i}/% || ${MKDIR} ${workdir}/${i}/%"
+        awk '{print $2}' ${workdir}/${i}/FILES | sort | uniq \
+        | xargs -n 1 -I % sh -c \
+            "test -d ${workdir}/${i}/% || mkdir ${workdir}/${i}/%"
     done
 }
 
+################################################################################
 #
 # List each package's contents and write into "category/package/package.FILE".
 #
+################################################################################
 make_contents_list()
 {
     local i j
     for i in ${category}; do
-        ${AWK} ' 
+        awk ' 
         # $1 - file name
         # $2 - package name
         $2 ~ /\./ {
@@ -498,8 +496,8 @@ make_contents_list()
     done
     i=""
     for i in ${category}; do
-        for j in `${LS} ${workdir}/${i} | ${GREP} '^[a-z]'`; do
-          ${AWK} '
+        for j in $(ls "${workdir}/${i}" | grep '^[a-z]'); do
+          awk '
           /^'"${j}"'/ {
               for (i = 2; i <= NF; i++) {
                   print $i
@@ -509,12 +507,14 @@ make_contents_list()
     done
 }
 
+################################################################################
 #
 # Make "+BUILD_INFO" file.
 #
+################################################################################
 make_BUILD_INFO()
 {
-    ${CAT} > ${workdir}/$1/+BUILD_INFO << _BUILD_INFO_
+    cat > ${workdir}/$1/+BUILD_INFO << _BUILD_INFO_
 OPSYS=${opsys}
 OS_VERSION=${osversion}
 OBJECT_FMT=ELF
@@ -525,68 +525,74 @@ MAINTAINER=${mail_address}
 _BUILD_INFO_
 }
 
+################################################################################
 #
 # Calculate package's dependency.
 #
+################################################################################
 culc_deps()
 {
-    ${GREP} -E "^$1" ${deps} > /dev/null 2>&1
+    grep -E "^$1" ${deps} > /dev/null 2>&1
     if [ $? -eq 1 ]; then
         err "$1: Unknown package dependency."
         return 1
     fi
-    ${AWK} '/^'"$1"'/{print $2}' ${deps} | while read depend; do
-        ${TEST} ! "${depend}" && return 1
-        ${ECHO} "@pkgdep ${depend}>=${release}" >> ${tmp_deps}
-        ${TEST} "${depend}" = "base-sys-root" && return 0
+    awk '/^'"$1"'/{print $2}' ${deps} | while read depend; do
+        test ! "${depend}" && return 1
+        echo "@pkgdep ${depend}>=${release}" >> ${tmp_deps}
+        test "${depend}" = "base-sys-root" && return 0
         culc_deps ${depend} # Recursion.
     done
 }
 
+################################################################################
 #
 # Make "+CONTENTS" file.
 #
+################################################################################
 make_CONTENTS()
 {
-    local TMPFILE=`${MKTEMP} -q || bomb "${TMPFILE}"`
+    local TMPFILE=$(mktemp -q || bomb "${TMPFILE}")
     local filename
-    local setname=`${ECHO} $1 | ${CUT} -d '/' -f 1 | ${SED} 's/\./-/g'`
-    local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+    local setname=$(echo $1 | cut -d '/' -f 1 | sed 's/\./-/g')
+    local pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
 
-    ${ECHO} "@name ${pkgname}-${release}" > ${workdir}/$1/+CONTENTS
-    ${ECHO} "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ${workdir}/$1/+CONTENTS
+    echo "@name ${pkgname}-${release}" > ${workdir}/$1/+CONTENTS
+    echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ${workdir}/$1/+CONTENTS
 
-    ${TEST} -f ${tmp_deps} && ${RM} -f ${tmp_deps}
+    test -f ${tmp_deps} && rm -f ${tmp_deps}
     culc_deps ${pkgname}
-    ${TEST} -f ${tmp_deps} && ${SORT} ${tmp_deps} | ${UNIQ} >> ${workdir}/$1/+CONTENTS
+    test -f ${tmp_deps} && sort ${tmp_deps} | uniq >> ${workdir}/$1/+CONTENTS
 
-    ${ECHO} "@cwd /" >> ${workdir}/$1/+CONTENTS
-    ${CAT} ${workdir}/$1/PLIST | while read i; do
-        ${TEST} $(${FILE} ${destdir}/${i} | ${CUT} -d " " -f 2) = "symbolic" && continue
+    echo "@cwd /" >> ${workdir}/$1/+CONTENTS
+    cat ${workdir}/$1/PLIST | while read i; do
+        test $(file ${destdir}/${i} | cut -d " " -f 2) = "symbolic" && continue
         if [ -d ${destdir}/${i} ]; then
-            filename=$(${ECHO} ${i} | ${SED} 's%\/%\\\/%g')
-            ${AWK} '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} \
-            | ${SED} 's%^\.\/%%' \
-            | ${AWK} '
+            filename=$(echo ${i} | sed 's%\/%\\\/%g')
+            awk '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} \
+            | sed 's%^\.\/%%' \
+            | awk '
             {
                 print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
             } ' >> ${TMPFILE}
         fi
-        ${TEST} -f ${destdir}/${i} && ${ECHO} ${i} >> ${TMPFILE}
+        test -f ${destdir}/${i} && echo ${i} >> ${TMPFILE}
     done
 
-    ${SORT} ${TMPFILE} >> ${workdir}/$1/+CONTENTS
-    ${RM} -f ${TMPFILE}
+    sort ${TMPFILE} >> ${workdir}/$1/+CONTENTS
+    rm -f ${TMPFILE}
 }
 
+################################################################################
 #
 # Make "+DESC" and "+COMMENT" file.
 #
+################################################################################
 make_DESC_and_COMMENT()
 {
-    local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+    local pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
 
-    ${AWK} '
+    awk '
     /^'"${pkgname}"'/ {
         for (i = 2; i <= NF; i++) {
             if (i == NF)
@@ -594,9 +600,9 @@ make_DESC_and_COMMENT()
             else
                 printf $i" "
         }
-    }' ${descrs} > ${workdir}/$1/+DESC || bomb "${AWK} +DESC"
+    }' ${descrs} > ${workdir}/$1/+DESC || bomb "awk +DESC"
 
-    ${AWK} '
+    awk '
     /^'"${pkgname}"'/ {
         for (i = 2; i <= NF; i++) {
             if (i == NF)
@@ -604,67 +610,55 @@ make_DESC_and_COMMENT()
             else
                 printf $i" "
         }
-    }' ${comments} > ${workdir}/$1/+COMMENT || bomb "${AWK} +COMMENT"
-}
-
-_which()
-{
-    ans=$(type "$1" 2>/dev/null) || exit $?
-    case "$1" in
-        */*) ${PRINTF} '%s\n' $1 ; exit ;;
-    esac
-    case "$ans" in
-        */*) ${PRINTF} '%s\n' "/${ans#*/}"; exit ;;
-    esac
-    ${PRINTF} '%s\n' $1
+    }' ${comments} > ${workdir}/$1/+COMMENT || bomb "awk +COMMENT"
 }
 
 replace_cmdstr()
 {
-    ${SED} -e "s%@GROUPADD@%`_which groupadd`%g" \
-           -e "s%@USERADD@%`_which useradd`%" \
-           -e "s%@SH@%`_which sh`%" \
+    sed -e "s%@GROUPADD@%$(which groupadd)%g" \
+           -e "s%@USERADD@%$(which useradd)%" \
+           -e "s%@SH@%$(which sh)%" \
            -e "s%@PREFIX@%/%" \
-           -e "s%@AWK@%`_which awk`%" \
-           -e "s%@BASENAME@%`_which basename`%" \
-           -e "s%@CAT@%`_which cat`%" \
-           -e "s%@CHGRP@%`_which chgrp`%" \
-           -e "s%@CHMOD@%`_which chmod`%" \
-           -e "s%@CHOWN@%`_which chown`%" \
-           -e "s%@CMP@%`_which cmp`%" \
-           -e "s%@CP@%`_which cp`%" \
-           -e "s%@DIRNAME@%`_which dirname`%" \
+           -e "s%@AWK@%$(which awk)%" \
+           -e "s%@BASENAME@%$(which basename)%" \
+           -e "s%@CAT@%$(which cat)%" \
+           -e "s%@CHGRP@%$(which chgrp)%" \
+           -e "s%@CHMOD@%$(which chmod)%" \
+           -e "s%@CHOWN@%$(which chown)%" \
+           -e "s%@CMP@%$(which cmp)%" \
+           -e "s%@CP@%$(which cp)%" \
+           -e "s%@DIRNAME@%$(which dirname)%" \
            -e "s%@ECHO@%echo%" \
-           -e "s%@EGREP@%`_which egrep`%" \
-           -e "s%@EXPR@%`_which expr`%" \
-           -e "s%@FALSE@%`_which false`%" \
-           -e "s%@FIND@%`_which find`%" \
-           -e "s%@GREP@%`_which grep`%" \
-           -e "s%@GTAR@%`_which gtar`%" \
-           -e "s%@HEAD@%`_which head`%" \
-           -e "s%@ID@%`_which id`%" \
-           -e "s%@LINKFARM@%`_which linkfarm`%" \
-           -e "s%@LN@%`_which ln`%" \
-           -e "s%@LOCALBASE@%`_which localbase`%" \
-           -e "s%@LS@%`_which ls`%" \
-           -e "s%@MKDIR@%`_which mkdir` -p%" \
-           -e "s%@MV@%`_which mv`%" \
+           -e "s%@EGREP@%$(which egrep)%" \
+           -e "s%@EXPR@%$(which expr)%" \
+           -e "s%@FALSE@%$(which false)%" \
+           -e "s%@FIND@%$(which find)%" \
+           -e "s%@GREP@%$(which grep)%" \
+           -e "s%@GTAR@%$(which gtar)%" \
+           -e "s%@HEAD@%$(which head)%" \
+           -e "s%@ID@%$(which id)%" \
+           -e "s%@LINKFARM@%$(which linkfarm)%" \
+           -e "s%@LN@%$(which ln)%" \
+           -e "s%@LOCALBASE@%$(which localbase)%" \
+           -e "s%@LS@%$(which ls)%" \
+           -e "s%@MKDIR@%$(which mkdir) -p%" \
+           -e "s%@MV@%$(which mv)%" \
            -e "s%@PKGBASE@%/%" \
-           -e "s%@RM@%`_which  rm`%" \
-           -e "s%@RMDIR@%`_which rmdir`%" \
-           -e "s%@SED@%`_which sed`%" \
-           -e "s%@SETENV@%`_which setenv`%" \
+           -e "s%@RM@%$(which  rm)%" \
+           -e "s%@RMDIR@%$(which rmdir)%" \
+           -e "s%@SED@%$(which sed)%" \
+           -e "s%@SETENV@%$(which setenv)%" \
            -e "s%@ECHO_N@%echo -n%" \
-           -e "s%@PKG_ADMIN@%`_which pkg_admin`%" \
-           -e "s%@PKG_INFO@%`_which pkg_info`%" \
+           -e "s%@PKG_ADMIN@%$(which pkg_admin)%" \
+           -e "s%@PKG_INFO@%$(which pkg_info)%" \
            -e "s%@PWD_CMD@%pwd%" \
-           -e "s%@SORT@%`_which sort`%" \
-           -e "s%@SU@%`_which su`%" \
+           -e "s%@SORT@%$(which sort)%" \
+           -e "s%@SU@%$(which su)%" \
            -e "s%@TEST@%test%" \
-           -e "s%@TOUCH@%`_which touch`%" \
-           -e "s%@TR@%`_which tr`%" \
-           -e "s%@TRUE@%`_which true`%" \
-           -e "s%@XARGS@%`_which xargs`%" \
+           -e "s%@TOUCH@%$(which touch)%" \
+           -e "s%@TR@%$(which tr)%" \
+           -e "s%@TRUE@%$(which true)%" \
+           -e "s%@XARGS@%$(which xargs)%" \
            -e "s%@X11BASE@%/usr/X11R7%" \
            -e "s%@PKG_SYSCONFBASE@%/etc%" \
            -e "s%@PKG_SYSCONFBASEDIR@%/etc%" \
@@ -676,33 +670,34 @@ replace_cmdstr()
            -e "s%@PKG_RCD_SCRIPTS@%NO%" \
            -e "s%@PKG_USER_HOME@%%" \
            -e "s%@PKG_USER_SHELL@%%" \
-           -e "s%@PERL5@%`_which perl`%" $1 || bomb "failed sed"
+           -e "s%@PERL5@%$(which perl)%" $1 || bomb "failed sed"
 }
 
+################################################################################
 #
-# Make "+INSTALL" file.
-# Role of "+INSTALL" is defining absolute path of file, 
-# permission, owner and group.
+# Make "+INSTALL" file. The role of "+INSTALL" is defining absolute path of 
+# file, permission, owner and group.
 #
+################################################################################
 make_INSTALL()
 {
     local mode_user_group=""
 
-    ${TEST} -f ${workdir}/$1/+INSTALL && ${RM} -f ${workdir}/$1/+INSTALL
+    test -f ${workdir}/$1/+INSTALL && rm -f ${workdir}/$1/+INSTALL
     replace_cmdstr ${install_script} > ${workdir}/$1/+INSTALL
 
-    ${TEST} -f ${workdir}/$1/+CONTENTS || bomb "+CONTENTS not found."
-    ${GREP} -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
-        ${TEST} $(${FILE} ${file} | ${CUT} -d " " -f 2) = "symbolic" && continue
-        if [ $(${ECHO} ${file} | ${CUT} -d "/" -f 1) = "etc" ]; then
-            ${TEST} -f ${destdir}/${file} && \
+    test -f ${workdir}/$1/+CONTENTS || bomb "+CONTENTS not found."
+    grep -v -e "^@" ${workdir}/$1/+CONTENTS | while read file; do
+        test $(file ${file} | cut -d " " -f 2) = "symbolic" && continue
+        if [ $(echo ${file} | cut -d "/" -f 1) = "etc" ]; then
+            test -f ${destdir}/${file} && \
                 mode_user_group=$(
-                    ${GREP} -e "^\./${file} " ${destdir}/etc/mtree/set.etc \
-                    | ${CUT} -d " " -f 3 -f 4 -f 5 \
-                    | ${XARGS} -n 1 -I % ${EXPR} x% : "x[^=]*=\\(.*\\)" \
-                    | ${TR} '\n' ' '
+                    grep -e "^\./${file} " ${destdir}/etc/mtree/set.etc \
+                    | cut -d " " -f 3 -f 4 -f 5 \
+                    | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
+                    | tr '\n' ' '
                 )
-            ${ECHO} "# FILE: /${file} c ${file} ${mode_user_group}" \
+            echo "# FILE: /${file} c ${file} ${mode_user_group}" \
                 >> ${workdir}/$1/+INSTALL
         fi
     done
@@ -710,7 +705,7 @@ make_INSTALL()
 
 make_DEINSTALL()
 {
-    ${TEST} -f ${workdir}/$1/+DEINSTALL && ${RM} -f ${workdir}/$1/+DEINSTALL
+    test -f ${workdir}/$1/+DEINSTALL && rm -f ${workdir}/$1/+DEINSTALL
     replace_cmdstr ${deinstall_script} > ${workdir}/$1/+DEINSTALL
 }
 
@@ -723,15 +718,16 @@ output_base_dir ()
    fi
 }
 
+################################################################################
 #
-# "pkg_create" command wrapper.
-# Package moved to ${packages}/All directory.
+# "pkg_create" command wrapper. Package moved to ${packages}/All directory.
 #
+################################################################################
 do_pkg_create()
 {
-    local pkgname=`${ECHO} $1 | ${CUT} -d '/' -f 2 | ${SED} 's/\./-/g'`
+    local pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
 
-    ${PKG_CREATE} -v -l -U \
+    pkg_create -v -l -U \
         -B ${workdir}/$1/+BUILD_INFO \
         -I "/" \
         -i ${workdir}/$1/+INSTALL \
@@ -741,23 +737,25 @@ do_pkg_create()
         -c ${workdir}/$1/+COMMENT \
         -d ${workdir}/$1/+DESC \
         -f ${workdir}/$1/+CONTENTS \
-        ${pkgname} || bomb "$1: ${PKG_CREATE}"
+        ${pkgname} || bomb "$1: pkg_create"
 
     local _basedir=$(output_base_dir)
-    ${TEST} -d ${_basedir} || ${MKDIR} -p ${_basedir}
-    ${MV} ./${pkgname}.tgz ${_basedir}/${pkgname}-${release}.tgz
+    test -d ${_basedir} || mkdir -p ${_basedir}
+    mv ./${pkgname}.tgz ${_basedir}/${pkgname}-${release}.tgz
 }
 
+################################################################################
 #
 # Execute any functions and make MD5 and SHA512.
 #
+################################################################################
 make_packages()
 {
     local i j
     local pkgs
 
     for i in ${category}; do
-        for j in `${LS} ${workdir}/${i} | ${GREP} -E '^[a-z]+'`; do
+        for j in $(ls ${workdir}/${i} | grep -E '^[a-z]+'); do
             make_BUILD_INFO "${i}/${j}"
             make_CONTENTS "${i}/${j}"
             make_DESC_and_COMMENT "${i}/${j}"
@@ -767,30 +765,32 @@ make_packages()
         done
     done
     pkgs="$(
-        ${FIND} ${packages} -type f \
+        find ${packages} -type f \
         \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null
     )"
 
     local _basedir=$(output_base_dir)
     if [ -n "${pkgs}" ]; then
-        ${CKSUM} -a    md5 ${pkgs} > ${_basedir}/MD5
-        ${CKSUM} -a sha512 ${pkgs} > ${_basedir}/SHA512
+        cksum -a    md5 ${pkgs} > ${_basedir}/MD5
+        cksum -a sha512 ${pkgs} > ${_basedir}/SHA512
     fi
 }
 
+################################################################################
 #
 # Make kernel package.
 #
+################################################################################
 make_kernel_package()
 {
     local category="base"
     local pkgname="base-kernel-${kernel}"
 
-    ${TEST} -d ${workdir}/${category}/.${pkgname} || \
-        ${MKDIR} -p ${workdir}/${category}/${pkgname}
+    test -d ${workdir}/${category}/.${pkgname} || \
+        mkdir -p ${workdir}/${category}/${pkgname}
 
     # Information of build environment.
-    ${CAT} > ${workdir}/${category}/${pkgname}/+BUILD_INFO << _BUILD_INFO_
+    cat > ${workdir}/${category}/${pkgname}/+BUILD_INFO << _BUILD_INFO_
 OPSYS=${opsys}
 OS_VERSION=${osversion}
 OBJECT_FMT=ELF
@@ -799,43 +799,45 @@ PKGTOOLS_VERSION=${pkgtoolversion}
 _BUILD_INFO_
 
     # Short description of package.
-    ${CAT} > ${workdir}/${category}/${pkgname}/+COMMENT << _COMMENT_
+    cat > ${workdir}/${category}/${pkgname}/+COMMENT << _COMMENT_
 NetBSD Kernel
 _COMMENT_
 
     # Description of package.
-    ${CAT} > ${workdir}/${category}/${pkgname}/+DESC << _DESC_
+    cat > ${workdir}/${category}/${pkgname}/+DESC << _DESC_
 NetBSD Kernel
 _DESC_
 
     # Package contents.
-    ${CAT} > ${workdir}/${category}/${pkgname}/+CONTENTS << _CONTENTS_
+    cat > ${workdir}/${category}/${pkgname}/+CONTENTS << _CONTENTS_
 @name ${pkgname}-${release}
 @comment Packaged at ${utcdate} UTC by ${user}@${host}
 @cwd / 
 netbsd
 _CONTENTS_
 
-    ${PKG_CREATE} -v -l -U \
+    pkg_create -v -l -U \
     -B ${workdir}/${category}/${pkgname}/+BUILD_INFO \
     -I "/" \
     -c ${workdir}/${category}/${pkgname}/+COMMENT \
     -d ${workdir}/${category}/${pkgname}/+DESC \
     -f ${workdir}/${category}/${pkgname}/+CONTENTS \
     -p ${obj}/sys/arch/${machine}/compile/${kernel} \
-    -K ${pkgdb} ${pkgname} || bomb "kernel: ${PKG_CREATE}"
+    -K ${pkgdb} ${pkgname} || bomb "kernel: pkg_create"
 
     local _basedir=$(output_base_dir)
-    ${TEST} -d ${_basedir} || ${MKDIR} -p ${_basedir}
-    ${MV} ./${pkgname}.tgz ${_basedir}/${pkgname}-${release}.tgz
+    test -d ${_basedir} || mkdir -p ${_basedir}
+    mv ./${pkgname}.tgz ${_basedir}/${pkgname}-${release}.tgz
 }
 
+################################################################################
 #
-# Show usage.
+# Show usage to STDOUT.
 #
+################################################################################
 usage()
 {
-    ${CAT} <<_usage_
+    cat <<_usage_
 
 Usage: ${progname} [--obj obj_dir] [--category category] operation
 
@@ -857,29 +859,39 @@ _usage_
     exit 1
 }
 
+################################################################################
 #
 # --obj=/usr/obj
 #       ^^^^^^^^^
 #        take it
 # return -> /usr/obj
 #
+################################################################################
 get_optarg()
 {
-    ${EXPR} "x$1" : "x[^=]*=\\(.*\\)"
+    expr "x$1" : "x[^=]*=\\(.*\\)"
 }
 
-# Main
+################################################################################
+#
+# Main processes.
+#
+################################################################################
 
-machine="$(${UNAME} -m)"
+machine="$(uname -m)"
 
-# parse long-options
+################################################################################
+#
+# Parse long-options
+#
+################################################################################
 while [ $# -gt 0 ]; do
     case $1 in
     -h|--help)
         usage
         ;;
     --obj)
-        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
+        test -z $2 && (err "What is $1 parameter?" ; exit 1)
         obj=$2
         shift
         ;;
@@ -887,7 +899,7 @@ while [ $# -gt 0 ]; do
         obj=$(get_optarg "$1")
         ;;
     --releasedir)
-        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
+        test -z $2 && (err "What is $1 parameter?" ; exit 1)
         releasedir=$2
         shift
         ;;
@@ -895,7 +907,7 @@ while [ $# -gt 0 ]; do
         releasedir=$(get_optarg "$1")
         ;;
     --destdir)
-        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
+        test -z $2 && (err "What is $1 parameter?" ; exit 1)
         destdir=$2
         shift
         ;;
@@ -906,7 +918,7 @@ while [ $# -gt 0 ]; do
         category=$(get_optarg "$1")
         ;;
     --category)
-        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
+        test -z $2 && (err "What is $1 parameter?" ; exit 1)
         category="$2"
         shift
         ;;
@@ -914,7 +926,7 @@ while [ $# -gt 0 ]; do
         machine=$(get_optarg "$1")
         ;;
     --machine)
-        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
+        test -z $2 && (err "What is $1 parameter?" ; exit 1)
         machine="$2"
         shift
         ;;
@@ -922,7 +934,7 @@ while [ $# -gt 0 ]; do
         kernel=$(get_optarg "$1")
         ;;
     --kernel)
-        ${TEST} -z $2 && (err "What is $1 parameter?" ; exit 1)
+        test -z $2 && (err "What is $1 parameter?" ; exit 1)
         kernel="$2"
         shift
         ;;
@@ -936,7 +948,11 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+################################################################################
+#
 # Initialization
+#
+################################################################################
 set -u
 umask 0022
 export LC_ALL=C LANG=C
@@ -948,18 +964,24 @@ releasedir=${releasedir:-.}
 release="$(osrelease -a)"
 release_k="$(osrelease -k)"
 machine_arch=${MACHINE_ARCH}
-moduledir="stand/${machine}/${release}/modules"
 workdir="${releasedir}/work/${release}/${machine}"
-kerneldir="${obj}/sys/arch/${machine}/compile"
 packages="${releasedir}/packages"
 
+################################################################################
+#
 # least assertions
-${TEST} -f "sets/install"  || bomb "require ./sets/"
-${TEST} "X$release" != "X" || bomb "cannot resolve \$release"
+#
+################################################################################
+test -f "sets/install"  || bomb "require ./sets/"
+test "X$release" != "X" || bomb "cannot resolve \$release"
 
-${TEST} $# -eq 0 && usage
+test $# -eq 0 && usage
 
+################################################################################
+#
 # operation
+#
+################################################################################
 case $1 in
 pkg)
     split_category_from_lists
