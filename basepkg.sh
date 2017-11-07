@@ -420,6 +420,7 @@ split_category_from_lists()
                 && rescue_machine="$lists/$j/rescue.$machine"
             test -f "$lists/$j/shl.mi" && shl="$lists/$j/shl.mi"
             test -f "$lists/$j/stl.mi" && stl="$lists/$j/stl.mi"
+            local moduledir="stand/$machine/$release_k/modules"
             cat \
                 $ad $mi $md $module $rescue $rescue_ad \
                 $rescue_machine $shl $stl \
@@ -441,7 +442,7 @@ split_category_from_lists()
                         #
                         $1 = substr($1, 3);
                         if ($1 != "") {
-                            gsub(/@MODULEDIR@/, "stand/'"$machine"'/'"$release_k"'/modules");
+                            gsub(/@MODULEDIR@/, "'"$moduledir"'");
                             gsub(/@MACHINE@/, "'"$machine"'");
                             gsub(/@OSRELEASE@/, "'"$release_k"'");
                             print
