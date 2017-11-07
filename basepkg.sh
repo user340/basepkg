@@ -193,7 +193,7 @@ pkgdb="/var/db/basepkg"
 
 ################################################################################
 #
-# Output the error message to STDERR
+# Output the error message to standard error. 
 #
 ################################################################################
 err()
@@ -203,7 +203,8 @@ err()
 
 ################################################################################
 #
-# Output abbort message. Then, kill the process and exit from it.
+# Output abbort message to standard error. Then, kill the process and exit 
+# from it.
 #
 ################################################################################
 bomb()
@@ -219,7 +220,9 @@ MESSAGE
 
 ################################################################################
 #
-# The MACHINE_ARCH variable use MACHINE value as a reference.
+# The MACHINE_ARCH variable use $MACHINE value as a reference. This function 
+# takes MACHINE and MACHINE_ARCH pair from $valid_MACHINE_ARCH variable, then 
+# return to standard output.
 #
 ################################################################################
 getarch()
@@ -289,7 +292,8 @@ getarch()
 
 ################################################################################
 #
-# Exit if the pair is not supported.
+# Abort if MACHINE and MACHINE_ARCH pair is not supported by NetBSD.
+# The valid_MACHINE_ARCH value is used in build.sh of NetBSD.
 #
 ################################################################################
 validatearch()
@@ -346,9 +350,9 @@ validatearch()
 
 ################################################################################
 #
-# Output number of version of NetBSD. In default, number of version is drawn 
-# from "/usr/obj/usr/include/sys/param.h". The osrelease() function not require 
-# NetBSD source tree (/usr/src).
+# Output number of version of NetBSD. In default, version number is drawn 
+# from "/usr/obj/usr/include/sys/param.h". This function not require NetBSD 
+# source tree (/usr/src).
 #
 ################################################################################
 osrelease()
@@ -720,15 +724,25 @@ make_INSTALL()
  )
 }
 
+################################################################################
+#
+# Make deinstall script for each packages.
+#
+################################################################################
 make_DEINSTALL()
 {
     test -f "$workdir/$1/+DEINSTALL" && rm -f "$workdir/$1/+DEINSTALL"
     replace_cmdstr "$deinstall_script" > "$workdir/$1/+DEINSTALL"
 }
 
+################################################################################
+#
+# Change directory name depending on same $MACHINE and $MACHINE_ARCH or not.
+#
+################################################################################
 output_base_dir () 
 {
-   if [ "X$MACHINE_ARCH" != "X$MACHINE" ];then
+   if [ "X$MACHINE_ARCH" != "X$MACHINE" ]; then
      echo "$packages/$release/$MACHINE-$MACHINE_ARCH"
    else
      echo "$packages/$release/$MACHINE"
@@ -796,14 +810,17 @@ make_packages()
 
 ################################################################################
 #
-# Make kernel package.
+# Make kernel package. Now, information of meta-data is not write to another 
+# files such as ./sets/comments. Because the packaged file is only kernel 
+# binary named "netbsd". If add the kernel package's information to files that 
+# under the ./sets directory, This function will be deleted.
 #
 ################################################################################
 make_kernel_package()
 {
  (
     category="base"
-    pkgname="base-kernel-$kernel"
+    pkgname="base-kernel-$1"
 
     test -d "$workdir/$category/.$pkgname" || \
         mkdir -p "$workdir/$category/$pkgname"
@@ -841,7 +858,7 @@ _CONTENTS_
     -c "$workdir/$category/$pkgname/+COMMENT" \
     -d "$workdir/$category/$pkgname/+DESC" \
     -f "$workdir/$category/$pkgname/+CONTENTS" \
-    -p "$obj/sys/arch/$machine/compile/$kernel" \
+    -p "$obj/sys/arch/$machine/compile/$1" \
     -K "$pkgdb" "$pkgname" || bomb "kernel: pkg_create"
 
     _basedir=$(output_base_dir)
@@ -852,14 +869,30 @@ _CONTENTS_
 
 ################################################################################
 #
-# Show usage to STDOUT.
+# Packaging all compiled kernels.
+# XXX: A number of kernel packages can install to the system.
+#
+################################################################################
+packaging_all_kernels()
+{
+ (
+    ls $kernobj | while read -r kname; do
+        make_kernel_package "$kname"
+    done
+ )
+}
+
+################################################################################
+#
+# Show usage to standard output.
 #
 ################################################################################
 usage()
 {
     cat <<_usage_
 
-Usage: $progname [--obj obj_dir] [--category category] operation
+Usage: $progname [--obj obj_dir] [--category category] [--machine machine] 
+                 operation
 
  Operation:
     pkg                 Create packages.
@@ -873,8 +906,6 @@ Usage: $progname [--obj obj_dir] [--category category] operation
                         [Default: "base comp etc games man misc text"]
     --machine           Set machine type for MACHINE_ARCH.
                         [Default: $machine]
-    --kernel            Set kernel type.
-                        [Default: GENERIC]
 _usage_
     exit 1
 }
@@ -884,7 +915,7 @@ _usage_
 # --obj=/usr/obj
 #       ^^^^^^^^^
 #        take it
-# return -> /usr/obj
+# In this example, it will return "/usr/obj".
 #
 ################################################################################
 get_optarg()
@@ -894,15 +925,18 @@ get_optarg()
 
 ################################################################################
 #
-# Start of main processes.
+# Start main process from here.
 #
 ################################################################################
 
-machine="$(uname -m)"
+machine="$(uname -m)" # Firstly, set machine hardware name for getarch().
 
 ################################################################################
 #
-# Parse long-options
+# Parsing long option process. In this process, not used getopt(1) and 
+# getopts for the following reasons.
+#     - One character option is difficult to understand.
+#     - The getopt(1) have difference between GNU and BSD.
 #
 ################################################################################
 while [ $# -gt 0 ]; do
@@ -950,14 +984,6 @@ while [ $# -gt 0 ]; do
         machine="$2"
         shift
         ;;
-    --kernel=*)
-        kernel=$(get_optarg "$1")
-        ;;
-    --kernel)
-        test -z $2 && (err "What is $1 parameter?" ; exit 1)
-        kernel="$2"
-        shift
-        ;;
     -|--)
         break
         ;;
@@ -986,6 +1012,7 @@ release_k="$(osrelease -k)"
 machine_arch=$MACHINE_ARCH
 workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
+kernobj="$obj/sys/arch/$machine/compile"
 
 ################################################################################
 #
@@ -1010,7 +1037,7 @@ pkg)
     make_packages
     ;;
 kern)
-    make_kernel_package
+    packaging_all_kernels
     ;;
 *)
     usage
