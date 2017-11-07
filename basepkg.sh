@@ -174,19 +174,19 @@ pkgtoolversion="$(pkg_create -V)"
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 param="usr/include/sys/param.h"
-lists="${PWD}/sets/lists"
-comments="${PWD}/sets/comments"
-descrs="${PWD}/sets/descrs"
-deps="${PWD}/sets/deps"
-install_script="${PWD}/sets/install"
-deinstall_script="${PWD}/sets/deinstall"
+lists="$PWD/sets/lists"
+comments="$PWD/sets/comments"
+descrs="$PWD/sets/descrs"
+deps="$PWD/sets/deps"
+install_script="$PWD/sets/install"
+deinstall_script="$PWD/sets/deinstall"
 tmp_deps="/tmp/culldeps"
 homepage="https://github.com/user340/basepkg"
 mail_address="mail@e-yuuki.org"
 toppid=$$
 
 obj="/usr/obj"
-packages="${PWD}/packages"
+packages="$PWD/packages"
 category="base comp etc games man misc text"
 kernel="GENERIC"
 pkgdb="/var/db/basepkg"
@@ -213,7 +213,7 @@ bomb()
 ERROR: $@
 *** PACKAGING ABORTED ***
 MESSAGE
-    kill ${toppid}
+    kill $toppid
     exit 1
 }
 
@@ -228,31 +228,31 @@ getarch()
     local found=""
     local line
     
-    IFS="${nl}"
-    for line in ${valid_MACHINE_ARCH}; do
+    IFS="$nl"
+    for line in $valid_MACHINE_ARCH; do
         line="${line%%#*}"
-        line="$( IFS=" ${tab}" ; echo $line )" # normalise white space
-        case "${line} " in
+        line="$( IFS=" $tab" ; echo $line )" # normalise white space
+        case "$line " in
         " ")
             # skip blank lines or comment lines
             continue
             ;;
-        *" ALIAS=${machine} "*)
+        *" ALIAS=$machine "*)
             # Found a line with a matching ALIAS=<alias>.
             found="$line"
             break
             ;;
-        "MACHINE=${machine} "*" NO_DEFAULT"*)
+        "MACHINE=$machine "*" NO_DEFAULT"*)
             # Found an explicit "NO_DEFAULT" for this MACHINE.
             found="$line"
             break
             ;;
-        "MACHINE=${machine} "*" DEFAULT"*)
+        "MACHINE=$machine "*" DEFAULT"*)
             # Found an explicit "DEFAULT" for this MACHINE.
             found="$line"
             break
             ;;
-        "MACHINE=${machine} "*)
+        "MACHINE=$machine "*)
             # Found a line for this MACHINE.  If it's the
             # first such line, then tentatively accept it.
             # If it's not the first matching line, then
@@ -273,7 +273,7 @@ getarch()
       "MACHINE="*" MACHINE_ARCH="*)
           # Obey the MACHINE= and MACHINE_ARCH= parts of the line.
           IFS=" "
-          for frag in ${found}; do
+          for frag in $found; do
               case "$frag" in
               MACHINE=*|MACHINE_ARCH=*)
                   eval "$frag"
@@ -282,7 +282,7 @@ getarch()
           done
           ;;
       *)
-          bomb "Unknown target MACHINE: ${machine}"
+          bomb "Unknown target MACHINE: $machine"
           ;;
       esac
 }
@@ -298,45 +298,45 @@ validatearch()
     local line
     local foundpair=false foundmachine=false foundarch=false
 
-    case "${MACHINE_ARCH}" in
+    case "$MACHINE_ARCH" in
     "")
         bomb "No MACHINE_ARCH provided"
         ;;
     esac
 
-    IFS="${nl}"
-    for line in ${valid_MACHINE_ARCH}; do
+    IFS="$nl"
+    for line in $valid_MACHINE_ARCH; do
         line="${line%%#*}" # ignore comments
-        line="$( IFS=" ${tab}" ; echo ${line} )" # normalise white space
-        case "${line} " in
+        line="$( IFS=" $tab" ; echo $line )" # normalise white space
+        case "$line " in
         " ")
             # skip blank lines or comment lines
             continue
             ;;
-        "MACHINE=${MACHINE} MACHINE_ARCH=${MACHINE_ARCH} "*)
+        "MACHINE=$MACHINE MACHINE_ARCH=$MACHINE_ARCH "*)
             foundpair=true
             ;;
-        "MACHINE=${MACHINE} "*)
+        "MACHINE=$MACHINE "*)
             foundmachine=true
             ;;
-        *"MACHINE_ARCH=${MACHINE_ARCH} "*)
+        *"MACHINE_ARCH=$MACHINE_ARCH "*)
             foundarch=true
             ;;
         esac
     done
 
-    case "${foundpair}:${foundmachine}:${foundarch}" in
+    case "$foundpair:$foundmachine:$foundarch" in
     true:*)
         : OK
         ;;
     *:false:*)
-        bomb "Unknown target MACHINE: ${MACHINE}"
+        bomb "Unknown target MACHINE: $MACHINE"
         ;;
     *:*:false)
-        bomb "Unknown target MACHINE_ARCH: ${MACHINE_ARCH}"
+        bomb "Unknown target MACHINE_ARCH: $MACHINE_ARCH"
         ;;
     *)
-        bomb "MACHINE_ARCH '${MACHINE_ARCH}' does not support MACHINE '${MACHINE}'"
+        bomb "MACHINE_ARCH '$MACHINE_ARCH' does not support MACHINE '$MACHINE'"
         ;;
     esac
 }
@@ -352,26 +352,26 @@ validatearch()
 osrelease() {
     local option; option="$1"
     local define ver_tag rel_num comment_start NetBSD rel_text rest beta
-    exec < ${destdir}/${param}
+    exec < "$destdir/$param"
 
     while
         read -r define ver_tag rel_num comment_start NetBSD rel_text rest; do
-        [ "${define}" = "#define" ] || continue;
-        [ "${ver_tag}" = "__NetBSD_Version__" ] || continue
+        [ "$define" = "#define" ] || continue;
+        [ "$ver_tag" = "__NetBSD_Version__" ] || continue
         break
     done
     rel_num=${rel_num%??}
     rel_MMmm=${rel_num%????}
     rel_MM=${rel_MMmm%??}
-    rel_mm=${rel_MMmm#${rel_MM}}
+    rel_mm=${rel_MMmm#$rel_MM}
     IFS=.
-    set -- - ${rel_text}
+    set -- - $rel_text
     beta=${3#[0-9]}
     beta=${beta#[0-9]}
     shift 3
     IFS=' '
-    set -- ${rel_MM} ${rel_mm#0}${beta} "$@"
-    case "${option}" in
+    set -- $rel_MM ${rel_mm#0}$beta "$@"
+    case "$option" in
     -k)
         if [ ${rel_mm#0} = 99 ]; then
             IFS=.
@@ -396,10 +396,10 @@ split_category_from_lists()
 {
     local i j
     local ad mi md shl module rescue rescue_ad rescue_machine stl
-    for i in ${category}; do
-        test -d ${workdir}/${i} || mkdir -p ${workdir}/${i}
-        test -f ${workdir}/${i}/FILES && rm -f ${workdir}/${i}/FILES
-        for j in $(ls ${lists}); do
+    for i in $category; do
+        test -d "$workdir/$i" || mkdir -p "$workdir/$i"
+        test -f "$workdir/$i/FILES" && rm -f "$workdir/$i/FILES"
+        for j in $(ls $lists); do
             ad=""
             mi=""
             md=""
@@ -409,46 +409,45 @@ split_category_from_lists()
             rescue_machine=""
             shl=""
             stl=""
-            test -f ${lists}/${j}/ad.${machine} && ad="${lists}/${j}/ad.${machine}"
-            test -f ${lists}/${j}/mi && mi="${lists}/${j}/mi"
-            test -f ${lists}/${j}/md.${machine} && md="${lists}/${j}/md.${machine}"
-            test -f ${lists}/${j}/module.mi && module="${lists}/${j}/module.mi"
-            test -f ${lists}/${j}/rescue.mi && rescue="${lists}/${j}/rescue.mi"
-            test -f ${lists}/${j}/rescue.ad.${machine} \
-                && rescue_ad="${lists}/${j}/rescue.ad.${machine}"
-            test -f ${lists}/${j}/rescue.${machine} \
-                && rescue_machine="${lists}/${j}/rescue.${machine}"
-            test -f ${lists}/${j}/shl.mi && shl="${lists}/${j}/shl.mi"
-            test -f ${lists}/${j}/stl.mi && stl="${lists}/${j}/stl.mi"
+            test -f "$lists/$j/ad.$machine" && ad="$lists/$j/ad.$machine"
+            test -f "$lists/$j/mi" && mi="$lists/$j/mi"
+            test -f "$lists/$j/md.$machine" && md="$lists/$j/md.$machine"
+            test -f "$lists/$j/module.mi" && module="$lists/$j/module.mi"
+            test -f "$lists/$j/rescue.mi" && rescue="$lists/$j/rescue.mi"
+            test -f "$lists/$j/rescue.ad.$machine" \
+                && rescue_ad="$lists/$j/rescue.ad.$machine"
+            test -f "$lists/$j/rescue.$machine" \
+                && rescue_machine="$lists/$j/rescue.$machine"
+            test -f "$lists/$j/shl.mi" && shl="$lists/$j/shl.mi"
+            test -f "$lists/$j/stl.mi" && stl="$lists/$j/stl.mi"
             cat \
-                ${ad} ${mi} ${md} ${module} ${rescue} ${rescue_ad} \
-                ${rescue_machine} ${shl} ${stl} \
+                $ad $mi $md $module $rescue $rescue_ad \
+                $rescue_machine $shl $stl \
             | awk '
-             ! /^\#/ {
-                 #
-                 # Ignore obsolete packages.
-                 #
-                 if ($2 == "'"${i}-obsolete"'")
-                     next
-                 #
-                 # Ignore pacakge with obsolete tags.
-                 #
-                 if ($3 ~ "obsolete")
-                     next
-                 if ($2 ~ "^'"${i}"'") {
-                     #
-                     # Remove "./" characters.
-                     #
-                     $1 = substr($1, 3);
-                     if ($1 != "") {
-                         gsub(/@MODULEDIR@/, "stand/'"${machine}"'/'"${release_k}"'/modules");
-                         gsub(/@MACHINE@/, "'"${machine}"'");
-                         gsub(/@OSRELEASE@/, "'"${release_k}"'");
-                         print
-                     }
-                 }
-             }' \
-            >> ${workdir}/${i}/FILES
+                ! /^\#/ {
+                    #
+                    # Ignore obsolete packages.
+                    #
+                    if ($2 == "'"$i-obsolete"'")
+                        next
+                    #
+                    # Ignore pacakge with obsolete tags.
+                    #
+                    if ($3 ~ "obsolete")
+                        next
+                    if ($2 ~ "^'"$i"'") {
+                        #
+                        # Remove "./" characters.
+                        #
+                        $1 = substr($1, 3);
+                        if ($1 != "") {
+                            gsub(/@MODULEDIR@/, "stand/'"$machine"'/'"$release_k"'/modules");
+                            gsub(/@MACHINE@/, "'"$machine"'");
+                            gsub(/@OSRELEASE@/, "'"$release_k"'");
+                            print
+                        }
+                    }
+                }' >> "$workdir/$i/FILES"
       done
     done
 }
@@ -461,10 +460,10 @@ split_category_from_lists()
 make_directories_of_package()
 {
     local i
-    for i in ${category}; do
-        awk '{print $2}' ${workdir}/${i}/FILES | sort | uniq \
+    for i in $category; do
+        awk '{print $2}' "$workdir/$i/FILES" | sort | uniq \
         | xargs -n 1 -I % sh -c \
-            "test -d ${workdir}/${i}/% || mkdir ${workdir}/${i}/%"
+            "test -d $workdir/$i/% || mkdir $workdir/$i/%"
     done
 }
 
@@ -476,7 +475,7 @@ make_directories_of_package()
 make_contents_list()
 {
     local i j
-    for i in ${category}; do
+    for i in $category; do
         awk ' 
         # $1 - file name
         # $2 - package name
@@ -492,17 +491,17 @@ make_contents_list()
         END {
             for (pkg in lists)
                 print pkg, lists[pkg]
-        }' ${workdir}/${i}/FILES > ${workdir}/${i}/CATEGORIZED
+        }' "$workdir/$i/FILES" > "$workdir/$i/CATEGORIZED"
     done
     i=""
-    for i in ${category}; do
-        for j in $(ls "${workdir}/${i}" | grep '^[a-z]'); do
+    for i in $category; do
+        for j in $(ls "$workdir/$i" | grep '^[a-z]'); do
           awk '
-          /^'"${j}"'/ {
+          /^'"$j"'/ {
               for (i = 2; i <= NF; i++) {
                   print $i
               }
-          }' ${workdir}/${i}/CATEGORIZED > ${workdir}/${i}/${j}/PLIST
+          }' "$workdir/$i/CATEGORIZED" > "$workdir/$i/$j/PLIST"
         done
     done
 }
@@ -514,14 +513,14 @@ make_contents_list()
 ################################################################################
 make_BUILD_INFO()
 {
-    cat > ${workdir}/$1/+BUILD_INFO << _BUILD_INFO_
-OPSYS=${opsys}
-OS_VERSION=${osversion}
+    cat > "$workdir/$1/+BUILD_INFO" << _BUILD_INFO_
+OPSYS=$opsys
+OS_VERSION=$osversion
 OBJECT_FMT=ELF
-MACHINE_ARCH=${machine_arch}
-PKGTOOLS_VERSION=${pkgtoolversion}
-HOMEPAGE=${homepage}
-MAINTAINER=${mail_address}
+MACHINE_ARCH=$machine_arch
+PKGTOOLS_VERSION=$pkgtoolversion
+HOMEPAGE=$homepage
+MAINTAINER=$mail_address
 _BUILD_INFO_
 }
 
@@ -532,16 +531,16 @@ _BUILD_INFO_
 ################################################################################
 culc_deps()
 {
-    grep -E "^$1" ${deps} > /dev/null 2>&1
+    grep -E "^$1" "$deps" > /dev/null 2>&1
     if [ $? -eq 1 ]; then
         err "$1: Unknown package dependency."
         return 1
     fi
-    awk '/^'"$1"'/{print $2}' ${deps} | while read -r depend; do
-        test ! "${depend}" && return 1
-        echo "@pkgdep ${depend}>=${release}" >> ${tmp_deps}
-        test "${depend}" = "base-sys-root" && return 0
-        culc_deps ${depend} # Recursion.
+    awk '/^'"$1"'/{print $2}' "$deps" | while read -r depend; do
+        test ! "$depend" && return 1
+        echo "@pkgdep $depend>=$release" >> "$tmp_deps"
+        test "$depend" = "base-sys-root" && return 0
+        culc_deps $depend # Recursion.
     done
 }
 
@@ -552,35 +551,35 @@ culc_deps()
 ################################################################################
 make_CONTENTS()
 {
-    local TMPFILE=$(mktemp -q || bomb "${TMPFILE}")
+    local TMPFILE=$(mktemp -q || bomb "$TMPFILE")
     local filename
     local setname=$(echo $1 | cut -d '/' -f 1 | sed 's/\./-/g')
     local pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
 
-    echo "@name ${pkgname}-${release}" > ${workdir}/$1/+CONTENTS
-    echo "@comment Packaged at ${utcdate} UTC by ${user}@${host}" >> ${workdir}/$1/+CONTENTS
+    echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
+    echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
 
-    test -f ${tmp_deps} && rm -f ${tmp_deps}
-    culc_deps ${pkgname}
-    test -f ${tmp_deps} && sort ${tmp_deps} | uniq >> ${workdir}/$1/+CONTENTS
+    test -f "$tmp_deps" && rm -f "$tmp_deps"
+    culc_deps "$pkgname"
+    test -f "$tmp_deps" && sort "$tmp_deps" | uniq >> "$workdir/$1/+CONTENTS"
 
-    echo "@cwd /" >> ${workdir}/$1/+CONTENTS
-    cat ${workdir}/$1/PLIST | while read -r i; do
-        test $(file ${destdir}/${i} | cut -d " " -f 2) = "symbolic" && continue
-        if [ -d ${destdir}/${i} ]; then
-            filename=$(echo ${i} | sed 's%\/%\\\/%g')
-            awk '$1 ~ /^\.\/'"${filename}"'$/{print $0}' ${destdir}/etc/mtree/set.${setname} \
+    echo "@cwd /" >> "$workdir/$1/+CONTENTS"
+    cat "$workdir/$1/PLIST" | while read -r i; do
+        test $(file "$destdir/$i" | cut -d " " -f 2) = "symbolic" && continue
+        if [ -d "$destdir/$i" ]; then
+            filename=$(echo "$i" | sed 's%\/%\\\/%g')
+            awk '$1 ~ /^\.\/'"$filename"'$/{print $0}' "$destdir/etc/mtree/set.$setname" \
             | sed 's%^\.\/%%' \
             | awk '
             {
                 print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
-            } ' >> ${TMPFILE}
+            } ' >> "$TMPFILE"
         fi
-        test -f ${destdir}/${i} && echo ${i} >> ${TMPFILE}
+        test -f "$destdir/$i" && echo "$i" >> "$TMPFILE"
     done
 
-    sort ${TMPFILE} >> ${workdir}/$1/+CONTENTS
-    rm -f ${TMPFILE}
+    sort "$TMPFILE" >> "$workdir/$1/+CONTENTS"
+    rm -f "$TMPFILE"
 }
 
 ################################################################################
@@ -593,84 +592,84 @@ make_DESC_and_COMMENT()
     local pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
 
     awk '
-    /^'"${pkgname}"'/ {
+    /^'"$pkgname"'/ {
         for (i = 2; i <= NF; i++) {
             if (i == NF)
                 printf $i"\n"
             else
                 printf $i" "
         }
-    }' ${descrs} > ${workdir}/$1/+DESC || bomb "awk +DESC"
+    }' "$descrs" > "$workdir/$1/+DESC" || bomb "awk +DESC"
 
     awk '
-    /^'"${pkgname}"'/ {
+    /^'"$pkgname"'/ {
         for (i = 2; i <= NF; i++) {
             if (i == NF)
                 printf $i"\n"
             else
                 printf $i" "
         }
-    }' ${comments} > ${workdir}/$1/+COMMENT || bomb "awk +COMMENT"
+    }' "$comments" > "$workdir/$1/+COMMENT" || bomb "awk +COMMENT"
 }
 
 replace_cmdstr()
 {
     sed -e "s%@GROUPADD@%$(which groupadd)%g" \
-           -e "s%@USERADD@%$(which useradd)%" \
-           -e "s%@SH@%$(which sh)%" \
-           -e "s%@PREFIX@%/%" \
-           -e "s%@AWK@%$(which awk)%" \
-           -e "s%@BASENAME@%$(which basename)%" \
-           -e "s%@CAT@%$(which cat)%" \
-           -e "s%@CHGRP@%$(which chgrp)%" \
-           -e "s%@CHMOD@%$(which chmod)%" \
-           -e "s%@CHOWN@%$(which chown)%" \
-           -e "s%@CMP@%$(which cmp)%" \
-           -e "s%@CP@%$(which cp)%" \
-           -e "s%@DIRNAME@%$(which dirname)%" \
-           -e "s%@ECHO@%echo%" \
-           -e "s%@EGREP@%$(which egrep)%" \
-           -e "s%@EXPR@%$(which expr)%" \
-           -e "s%@FALSE@%$(which false)%" \
-           -e "s%@FIND@%$(which find)%" \
-           -e "s%@GREP@%$(which grep)%" \
-           -e "s%@GTAR@%$(which gtar)%" \
-           -e "s%@HEAD@%$(which head)%" \
-           -e "s%@ID@%$(which id)%" \
-           -e "s%@LINKFARM@%$(which linkfarm)%" \
-           -e "s%@LN@%$(which ln)%" \
-           -e "s%@LOCALBASE@%$(which localbase)%" \
-           -e "s%@LS@%$(which ls)%" \
-           -e "s%@MKDIR@%$(which mkdir) -p%" \
-           -e "s%@MV@%$(which mv)%" \
-           -e "s%@PKGBASE@%/%" \
-           -e "s%@RM@%$(which  rm)%" \
-           -e "s%@RMDIR@%$(which rmdir)%" \
-           -e "s%@SED@%$(which sed)%" \
-           -e "s%@SETENV@%$(which setenv)%" \
-           -e "s%@ECHO_N@%echo -n%" \
-           -e "s%@PKG_ADMIN@%$(which pkg_admin)%" \
-           -e "s%@PKG_INFO@%$(which pkg_info)%" \
-           -e "s%@PWD_CMD@%pwd%" \
-           -e "s%@SORT@%$(which sort)%" \
-           -e "s%@SU@%$(which su)%" \
-           -e "s%@TEST@%test%" \
-           -e "s%@TOUCH@%$(which touch)%" \
-           -e "s%@TR@%$(which tr)%" \
-           -e "s%@TRUE@%$(which true)%" \
-           -e "s%@XARGS@%$(which xargs)%" \
-           -e "s%@X11BASE@%/usr/X11R7%" \
-           -e "s%@PKG_SYSCONFBASE@%/etc%" \
-           -e "s%@PKG_SYSCONFBASEDIR@%/etc%" \
-           -e "s%@PKG_SYSCONFDIR@%/etc%" \
-           -e "s%@CONF_DEPENDS@%%" \
-           -e "s%@PKG_CREATE_USERGROUP@%NO%" \
-           -e "s%@PKG_CONFIG@%YES%" \
-           -e "s%@PKG_CONFIG_PERMS@%YES%" \
-           -e "s%@PKG_RCD_SCRIPTS@%NO%" \
-           -e "s%@PKG_USER_HOME@%%" \
-           -e "s%@PKG_USER_SHELL@%%" \
-           -e "s%@PERL5@%$(which perl)%" $1 || bomb "failed sed"
+        -e "s%@USERADD@%$(which useradd)%" \
+        -e "s%@SH@%$(which sh)%" \
+        -e "s%@PREFIX@%/%" \
+        -e "s%@AWK@%$(which awk)%" \
+        -e "s%@BASENAME@%$(which basename)%" \
+        -e "s%@CAT@%$(which cat)%" \
+        -e "s%@CHGRP@%$(which chgrp)%" \
+        -e "s%@CHMOD@%$(which chmod)%" \
+        -e "s%@CHOWN@%$(which chown)%" \
+        -e "s%@CMP@%$(which cmp)%" \
+        -e "s%@CP@%$(which cp)%" \
+        -e "s%@DIRNAME@%$(which dirname)%" \
+        -e "s%@ECHO@%echo%" \
+        -e "s%@EGREP@%$(which egrep)%" \
+        -e "s%@EXPR@%$(which expr)%" \
+        -e "s%@FALSE@%$(which false)%" \
+        -e "s%@FIND@%$(which find)%" \
+        -e "s%@GREP@%$(which grep)%" \
+        -e "s%@GTAR@%$(which gtar)%" \
+        -e "s%@HEAD@%$(which head)%" \
+        -e "s%@ID@%$(which id)%" \
+        -e "s%@LINKFARM@%$(which linkfarm)%" \
+        -e "s%@LN@%$(which ln)%" \
+        -e "s%@LOCALBASE@%$(which localbase)%" \
+        -e "s%@LS@%$(which ls)%" \
+        -e "s%@MKDIR@%$(which mkdir) -p%" \
+        -e "s%@MV@%$(which mv)%" \
+        -e "s%@PKGBASE@%/%" \
+        -e "s%@RM@%$(which  rm)%" \
+        -e "s%@RMDIR@%$(which rmdir)%" \
+        -e "s%@SED@%$(which sed)%" \
+        -e "s%@SETENV@%$(which setenv)%" \
+        -e "s%@ECHO_N@%echo -n%" \
+        -e "s%@PKG_ADMIN@%$(which pkg_admin)%" \
+        -e "s%@PKG_INFO@%$(which pkg_info)%" \
+        -e "s%@PWD_CMD@%pwd%" \
+        -e "s%@SORT@%$(which sort)%" \
+        -e "s%@SU@%$(which su)%" \
+        -e "s%@TEST@%test%" \
+        -e "s%@TOUCH@%$(which touch)%" \
+        -e "s%@TR@%$(which tr)%" \
+        -e "s%@TRUE@%$(which true)%" \
+        -e "s%@XARGS@%$(which xargs)%" \
+        -e "s%@X11BASE@%/usr/X11R7%" \
+        -e "s%@PKG_SYSCONFBASE@%/etc%" \
+        -e "s%@PKG_SYSCONFBASEDIR@%/etc%" \
+        -e "s%@PKG_SYSCONFDIR@%/etc%" \
+        -e "s%@CONF_DEPENDS@%%" \
+        -e "s%@PKG_CREATE_USERGROUP@%NO%" \
+        -e "s%@PKG_CONFIG@%YES%" \
+        -e "s%@PKG_CONFIG_PERMS@%YES%" \
+        -e "s%@PKG_RCD_SCRIPTS@%NO%" \
+        -e "s%@PKG_USER_HOME@%%" \
+        -e "s%@PKG_USER_SHELL@%%" \
+        -e "s%@PERL5@%$(which perl)%" $1 || bomb "failed sed"
 }
 
 ################################################################################
@@ -683,38 +682,38 @@ make_INSTALL()
 {
     local mode_user_group=""
 
-    test -f ${workdir}/$1/+INSTALL && rm -f ${workdir}/$1/+INSTALL
-    replace_cmdstr ${install_script} > ${workdir}/$1/+INSTALL
+    test -f "$workdir/$1/+INSTALL" && rm -f "$workdir/$1/+INSTALL"
+    replace_cmdstr $install_script > "$workdir/$1/+INSTALL"
 
-    test -f ${workdir}/$1/+CONTENTS || bomb "+CONTENTS not found."
-    grep -v -e "^@" ${workdir}/$1/+CONTENTS | while read -r file; do
-        test $(file ${file} | cut -d " " -f 2) = "symbolic" && continue
-        if [ $(echo ${file} | cut -d "/" -f 1) = "etc" ]; then
-            test -f ${destdir}/${file} && \
+    test -f "$workdir/$1/+CONTENTS" || bomb "+CONTENTS not found."
+    grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
+        test $(file "$file" | cut -d " " -f 2) = "symbolic" && continue
+        if [ $(echo "$file" | cut -d "/" -f 1) = "etc" ]; then
+            test -f "$destdir/$file" && \
                 mode_user_group=$(
-                    grep -e "^\./${file} " ${destdir}/etc/mtree/set.etc \
+                    grep -e "^\./$file " $destdir/etc/mtree/set.etc \
                     | cut -d " " -f 3 -f 4 -f 5 \
                     | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
                     | tr '\n' ' '
                 )
-            echo "# FILE: /${file} c ${file} ${mode_user_group}" \
-                >> ${workdir}/$1/+INSTALL
+            echo "# FILE: /$file c $file $mode_user_group" \
+                >> "$workdir/$1/+INSTALL"
         fi
     done
 }
 
 make_DEINSTALL()
 {
-    test -f ${workdir}/$1/+DEINSTALL && rm -f ${workdir}/$1/+DEINSTALL
-    replace_cmdstr ${deinstall_script} > ${workdir}/$1/+DEINSTALL
+    test -f "$workdir/$1/+DEINSTALL" && rm -f "$workdir/$1/+DEINSTALL"
+    replace_cmdstr "$deinstall_script" > "$workdir/$1/+DEINSTALL"
 }
 
 output_base_dir () 
 {
-   if [ "X${MACHINE_ARCH}" != "X${MACHINE}" ];then
-     echo ${packages}/${release}/${MACHINE}-${MACHINE_ARCH}
+   if [ "X$MACHINE_ARCH" != "X$MACHINE" ];then
+     echo "$packages/$release/$MACHINE-$MACHINE_ARCH"
    else
-     echo ${packages}/${release}/${MACHINE}
+     echo "$packages/$release/$MACHINE"
    fi
 }
 
@@ -728,20 +727,20 @@ do_pkg_create()
     local pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
 
     pkg_create -v -l -U \
-        -B ${workdir}/$1/+BUILD_INFO \
+        -B "$workdir/$1/+BUILD_INFO" \
         -I "/" \
-        -i ${workdir}/$1/+INSTALL \
-        -K ${pkgdb} \
-        -k ${workdir}/$1/+DEINSTALL \
-        -p ${destdir} \
-        -c ${workdir}/$1/+COMMENT \
-        -d ${workdir}/$1/+DESC \
-        -f ${workdir}/$1/+CONTENTS \
-        ${pkgname} || bomb "$1: pkg_create"
+        -i "$workdir/$1/+INSTALL" \
+        -K "$pkgdb" \
+        -k "$workdir/$1/+DEINSTALL" \
+        -p "$destdir" \
+        -c "$workdir/$1/+COMMENT" \
+        -d "$workdir/$1/+DESC" \
+        -f "$workdir/$1/+CONTENTS" \
+        "$pkgname" || bomb "$1: pkg_create"
 
     local _basedir=$(output_base_dir)
-    test -d ${_basedir} || mkdir -p ${_basedir}
-    mv ./${pkgname}.tgz ${_basedir}/${pkgname}-${release}.tgz
+    test -d "$_basedir" || mkdir -p "$_basedir"
+    mv "./$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
 }
 
 ################################################################################
@@ -754,25 +753,25 @@ make_packages()
     local i j
     local pkgs
 
-    for i in ${category}; do
-        for j in $(ls ${workdir}/${i} | grep -E '^[a-z]+'); do
-            make_BUILD_INFO "${i}/${j}"
-            make_CONTENTS "${i}/${j}"
-            make_DESC_and_COMMENT "${i}/${j}"
-            make_INSTALL "${i}/${j}"
-            make_DEINSTALL "${i}/${j}"
-            do_pkg_create "${i}/${j}"
+    for i in $category; do
+        for j in $(ls "$workdir/$i" | grep -E '^[a-z]+'); do
+            make_BUILD_INFO "$i/$j"
+            make_CONTENTS "$i/$j"
+            make_DESC_and_COMMENT "$i/$j"
+            make_INSTALL "$i/$j"
+            make_DEINSTALL "$i/$j"
+            do_pkg_create "$i/$j"
         done
     done
     pkgs="$(
-        find ${packages} -type f \
+        find $packages -type f \
         \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null
     )"
 
     local _basedir=$(output_base_dir)
-    if [ -n "${pkgs}" ]; then
-        cksum -a    md5 ${pkgs} > ${_basedir}/MD5
-        cksum -a sha512 ${pkgs} > ${_basedir}/SHA512
+    if [ -n "$pkgs" ]; then
+        cksum -a    md5 $pkgs > "$_basedir/MD5"
+        cksum -a sha512 $pkgs > "$_basedir/SHA512"
     fi
 }
 
@@ -784,50 +783,50 @@ make_packages()
 make_kernel_package()
 {
     local category="base"
-    local pkgname="base-kernel-${kernel}"
+    local pkgname="base-kernel-$kernel"
 
-    test -d ${workdir}/${category}/.${pkgname} || \
-        mkdir -p ${workdir}/${category}/${pkgname}
+    test -d "$workdir/$category/.$pkgname" || \
+        mkdir -p "$workdir/$category/$pkgname"
 
     # Information of build environment.
-    cat > ${workdir}/${category}/${pkgname}/+BUILD_INFO << _BUILD_INFO_
-OPSYS=${opsys}
-OS_VERSION=${osversion}
+    cat > "$workdir/$category/$pkgname/+BUILD_INFO" << _BUILD_INFO_
+OPSYS=$opsys
+OS_VERSION=$osversion
 OBJECT_FMT=ELF
-MACHINE_ARCH=${machine_arch}
-PKGTOOLS_VERSION=${pkgtoolversion}
+MACHINE_ARCH=$machine_arch
+PKGTOOLS_VERSION=$pkgtoolversion
 _BUILD_INFO_
 
     # Short description of package.
-    cat > ${workdir}/${category}/${pkgname}/+COMMENT << _COMMENT_
+    cat > "$workdir/$category/$pkgname/+COMMENT" << _COMMENT_
 NetBSD Kernel
 _COMMENT_
 
     # Description of package.
-    cat > ${workdir}/${category}/${pkgname}/+DESC << _DESC_
+    cat > "$workdir/$category/$pkgname/+DESC" << _DESC_
 NetBSD Kernel
 _DESC_
 
     # Package contents.
-    cat > ${workdir}/${category}/${pkgname}/+CONTENTS << _CONTENTS_
-@name ${pkgname}-${release}
-@comment Packaged at ${utcdate} UTC by ${user}@${host}
+    cat > "$workdir/$category/$pkgname/+CONTENTS" << _CONTENTS_
+@name $pkgname-$release
+@comment Packaged at $utcdate UTC by $user@$host
 @cwd / 
 netbsd
 _CONTENTS_
 
     pkg_create -v -l -U \
-    -B ${workdir}/${category}/${pkgname}/+BUILD_INFO \
+    -B "$workdir/$category/$pkgname/+BUILD_INFO" \
     -I "/" \
-    -c ${workdir}/${category}/${pkgname}/+COMMENT \
-    -d ${workdir}/${category}/${pkgname}/+DESC \
-    -f ${workdir}/${category}/${pkgname}/+CONTENTS \
-    -p ${obj}/sys/arch/${machine}/compile/${kernel} \
-    -K ${pkgdb} ${pkgname} || bomb "kernel: pkg_create"
+    -c "$workdir/$category/$pkgname/+COMMENT" \
+    -d "$workdir/$category/$pkgname/+DESC" \
+    -f "$workdir/$category/$pkgname/+CONTENTS" \
+    -p "$obj/sys/arch/$machine/compile/$kernel" \
+    -K "$pkgdb" "$pkgname" || bomb "kernel: pkg_create"
 
     local _basedir=$(output_base_dir)
-    test -d ${_basedir} || mkdir -p ${_basedir}
-    mv ./${pkgname}.tgz ${_basedir}/${pkgname}-${release}.tgz
+    test -d "$_basedir" || mkdir -p "$_basedir"
+    mv "$PWD/$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
 }
 
 ################################################################################
@@ -839,7 +838,7 @@ usage()
 {
     cat <<_usage_
 
-Usage: ${progname} [--obj obj_dir] [--category category] operation
+Usage: $progname [--obj obj_dir] [--category category] operation
 
  Operation:
     pkg                 Create packages.
@@ -848,11 +847,11 @@ Usage: ${progname} [--obj obj_dir] [--category category] operation
  Options:
     --help              Show this message and exit.
     --obj               Set obj to NetBSD binaries.
-                        [Default: ${obj}]
+                        [Default: $obj]
     --category          Set category.
                         [Default: "base comp etc games man misc text"]
     --machine           Set machine type for MACHINE_ARCH.
-                        [Default: ${machine}]
+                        [Default: $machine]
     --kernel            Set kernel type.
                         [Default: GENERIC]
 _usage_
@@ -874,7 +873,7 @@ get_optarg()
 
 ################################################################################
 #
-# Main processes.
+# Start of main processes.
 #
 ################################################################################
 
@@ -959,13 +958,13 @@ export LC_ALL=C LANG=C
 
 getarch
 validatearch
-destdir=${destdir:-"${obj}/destdir.${MACHINE}"}
+destdir=${destdir:-"$obj/destdir.$MACHINE"}
 releasedir=${releasedir:-.}
 release="$(osrelease -a)"
 release_k="$(osrelease -k)"
-machine_arch=${MACHINE_ARCH}
-workdir="${releasedir}/work/${release}/${machine}"
-packages="${releasedir}/packages"
+machine_arch=$MACHINE_ARCH
+workdir="$releasedir/work/$release/$machine"
+packages="$releasedir/packages"
 
 ################################################################################
 #
