@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 #
 # Copyright (c) 2016,2017 Yuuki Enomoto 
 # All rights reserved. 
