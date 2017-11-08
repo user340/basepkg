@@ -37,6 +37,14 @@
 
 ################################################################################
 #
+# Please use ShellCheck (https://koalaman/shellcheck) for check your code. If 
+# you checked the code, please pull request to it's repository
+# (https://github.com/user340/basepkg).
+#
+################################################################################
+
+################################################################################
+#
 # The which(1) command is undefined in POSIX. So this process check the 
 # which(1) command. If not exist in the system, define a function that same as 
 # the which(1) command.
