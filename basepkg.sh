@@ -46,6 +46,7 @@ which which > /dev/null 2>&1 || {
     which()
     {
         # XXX: In POSIX sh, 'type' is undefined.
+        # shellcheck disable=SC2039
         ans=$(type "$1" 2>/dev/null) || exit $?
         case "$1" in
             */*) printf '%s\n' "$1" ; exit ;;
@@ -233,6 +234,7 @@ getarch()
     IFS="$nl"
     for line in $valid_MACHINE_ARCH; do
         line="${line%%#*}"
+        # shellcheck disable=SC2086
         line="$( IFS=" $tab" ; echo $line )" # normalise white space
         case "$line " in
         " ")
@@ -302,6 +304,7 @@ validatearch()
     foundpair=false foundmachine=false foundarch=false
 
     # MACHINE_ARCH may not be assigned, but catch at "case ... in"
+    # shellcheck disable=SC2153
     case "$MACHINE_ARCH" in
     "")
         bomb "No MACHINE_ARCH provided"
@@ -311,13 +314,15 @@ validatearch()
     IFS="$nl"
     for line in $valid_MACHINE_ARCH; do
         line="${line%%#*}" # ignore comments
+        # shellcheck disable=SC2086
         line="$( IFS=" $tab" ; echo $line )" # normalise white space
+        # $MACHINE may not be assigned, but catch at "case ... in".
+        # shellcheck disable=SC2153
         case "$line " in
         " ")
             # skip blank lines or comment lines
             continue
             ;;
-        # MACHINE may not be assigned, but catch at "case ... in"
         "MACHINE=$MACHINE MACHINE_ARCH=$MACHINE_ARCH "*)
             foundpair=true
             ;;
@@ -363,6 +368,7 @@ osrelease()
 
     # In this function, "comment_start" and "NetBSD" are unreferenced variables.
     while
+        # shellcheck disable=SC2034
         read -r define ver_tag rel_num comment_start NetBSD rel_text rest; do
         [ "$define" = "#define" ] || continue;
         [ "$ver_tag" = "__NetBSD_Version__" ] || continue
@@ -373,11 +379,13 @@ osrelease()
     rel_MM=${rel_MMmm%??}
     rel_mm=${rel_MMmm#$rel_MM}
     IFS=.
+    # shellcheck disable=SC2086
     set -- - $rel_text
     beta=${3#[0-9]}
     beta=${beta#[0-9]}
     shift 3
     IFS=' '
+    # shellcheck disable=SC2086
     set -- $rel_MM ${rel_mm#0}$beta "$@"
     case "$option" in
     -k)
@@ -428,6 +436,7 @@ split_category_from_lists()
             test -f "$j/shl.mi" && shl="$j/shl.mi"
             test -f "$j/stl.mi" && stl="$j/stl.mi"
             moduledir="stand/$machine/$release_k/modules"
+            # shellcheck disable=SC2086
             cat \
                 $ad $mi $md $module $rescue $rescue_ad \
                 $rescue_machine $shl $stl \
@@ -792,6 +801,8 @@ make_packages()
             do_pkg_create "$i/$n"
         done
     done
+    # shellcheck disable=SC2061
+    # shellcheck disable=SC2035
     pkgs="$(
         find "$packages" -type f \
         \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null
@@ -799,7 +810,9 @@ make_packages()
 
     _basedir=$(output_base_dir)
     if [ -n "$pkgs" ]; then
+        # shellcheck disable=SC2086
         cksum -a    md5 $pkgs > "$_basedir/MD5"
+        # shellcheck disable=SC2086
         cksum -a sha512 $pkgs > "$_basedir/SHA512"
     fi
  )
@@ -873,6 +886,8 @@ _CONTENTS_
 packaging_all_kernels()
 {
  (
+    # shellcheck disable=SC2086
+    # shellcheck disable=SC2012
     ls $kernobj | while read -r kname; do
         make_kernel_package "$kname"
     done
