@@ -552,7 +552,7 @@ culc_deps()
         test ! "$depend" && return 1
         echo "@pkgdep $depend>=$release" >> "$tmp_deps"
         test "$depend" = "base-sys-root" && return 0
-        culc_deps $depend # Recursion.
+        culc_deps "$depend" # Recursion.
     done
 }
 
@@ -684,7 +684,7 @@ replace_cmdstr()
         -e "s%@PKG_RCD_SCRIPTS@%NO%" \
         -e "s%@PKG_USER_HOME@%%" \
         -e "s%@PKG_USER_SHELL@%%" \
-        -e "s%@PERL5@%$(which perl)%" $1 || bomb "failed sed"
+        -e "s%@PERL5@%$(which perl)%" "$1" || bomb "failed sed"
 }
 
 ################################################################################
@@ -699,7 +699,7 @@ make_INSTALL()
     mode_user_group=""
 
     test -f "$workdir/$1/+INSTALL" && rm -f "$workdir/$1/+INSTALL"
-    replace_cmdstr $install_script > "$workdir/$1/+INSTALL"
+    replace_cmdstr "$install_script" > "$workdir/$1/+INSTALL"
 
     test -f "$workdir/$1/+CONTENTS" || bomb "+CONTENTS not found."
     grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
@@ -793,7 +793,7 @@ make_packages()
         done
     done
     pkgs="$(
-        find $packages -type f \
+        find "$packages" -type f \
         \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null
     )"
 
