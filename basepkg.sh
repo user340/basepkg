@@ -45,6 +45,7 @@
 which which > /dev/null 2>&1 || {
     which()
     {
+        # XXX: In POSIX sh, 'type' is undefined.
         ans=$(type "$1" 2>/dev/null) || exit $?
         case "$1" in
             */*) printf '%s\n' "$1" ; exit ;;
@@ -188,7 +189,6 @@ toppid=$$
 obj="/usr/obj"
 packages="$PWD/packages"
 category="base comp etc games man misc text"
-kernel="GENERIC"
 pkgdb="/var/db/basepkg"
 
 ################################################################################
@@ -407,9 +407,7 @@ split_category_from_lists()
     for i in $category; do
         test -d "$workdir/$i" || mkdir -p "$workdir/$i"
         test -f "$workdir/$i/FILES" && rm -f "$workdir/$i/FILES"
-        # XXX: ShellCheck
-        #    SC2045: Iterating over ls output is fragile. Use globs.
-        for j in $(ls $lists); do
+        for j in "$lists"/* ; do
             ad=""
             mi=""
             md=""
@@ -419,17 +417,16 @@ split_category_from_lists()
             rescue_machine=""
             shl=""
             stl=""
-            test -f "$lists/$j/ad.$machine" && ad="$lists/$j/ad.$machine"
-            test -f "$lists/$j/mi" && mi="$lists/$j/mi"
-            test -f "$lists/$j/md.$machine" && md="$lists/$j/md.$machine"
-            test -f "$lists/$j/module.mi" && module="$lists/$j/module.mi"
-            test -f "$lists/$j/rescue.mi" && rescue="$lists/$j/rescue.mi"
-            test -f "$lists/$j/rescue.ad.$machine" \
-                && rescue_ad="$lists/$j/rescue.ad.$machine"
-            test -f "$lists/$j/rescue.$machine" \
-                && rescue_machine="$lists/$j/rescue.$machine"
-            test -f "$lists/$j/shl.mi" && shl="$lists/$j/shl.mi"
-            test -f "$lists/$j/stl.mi" && stl="$lists/$j/stl.mi"
+            test -f "$j/ad.$machine" && ad="$j/ad.$machine"
+            test -f "$j/mi" && mi="$j/mi"
+            test -f "$j/md.$machine" && md="$j/md.$machine"
+            test -f "$j/module.mi" && module="$j/module.mi"
+            test -f "$j/rescue.mi" && rescue="$j/rescue.mi"
+            test -f "$j/rescue.ad.$machine" && rescue_ad="$j/rescue.ad.$machine"
+            test -f "$j/rescue.$machine" \
+                && rescue_machine="$j/rescue.$machine"
+            test -f "$j/shl.mi" && shl="$j/shl.mi"
+            test -f "$j/stl.mi" && stl="$j/stl.mi"
             moduledir="stand/$machine/$release_k/modules"
             cat \
                 $ad $mi $md $module $rescue $rescue_ad \
@@ -508,16 +505,14 @@ make_contents_list()
     done
     i=""
     for i in $category; do
-        # XXX: ShellCheck
-        #    SC2010: Don't use ls | grep. Use a glob or a for loop with a 
-        #            condition to allow non-alphanumeric filenames.
-        for j in $(ls "$workdir/$i" | grep '^[a-z]'); do
-          awk '
-          /^'"$j"'/ {
-              for (i = 2; i <= NF; i++) {
-                  print $i
-              }
-          }' "$workdir/$i/CATEGORIZED" > "$workdir/$i/$j/PLIST"
+        for j in "$workdir/$i"/*; do
+            test -d "$j" || continue
+            awk '
+            /^'"$(basename "$j")"'/ {
+                for (i = 2; i <= NF; i++) {
+                    print $i
+                }
+            }' "$workdir/$i/CATEGORIZED" > "$j/PLIST"
         done
     done
  )
@@ -570,8 +565,8 @@ make_CONTENTS()
 {
  (
     TMPFILE=$(mktemp -q || bomb "$TMPFILE")
-    setname=$(echo $1 | cut -d '/' -f 1 | sed 's/\./-/g')
-    pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
+    setname=$(echo "$1" | cut -d '/' -f 1 | sed 's/\./-/g')
+    pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
 
     echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
     echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
@@ -582,7 +577,7 @@ make_CONTENTS()
 
     echo "@cwd /" >> "$workdir/$1/+CONTENTS"
     while read -r i; do
-        test $(file "$destdir/$i" | cut -d " " -f 2) = "symbolic" && continue
+        test "$(file "$destdir/$i" | cut -d " " -f 2)" = "symbolic" && continue
         if [ -d "$destdir/$i" ]; then
             filename=$(echo "$i" | sed 's%\/%\\\/%g')
             awk '$1 ~ /^\.\/'"$filename"'$/{print $0}' "$destdir/etc/mtree/set.$setname" \
@@ -608,7 +603,7 @@ make_CONTENTS()
 make_DESC_and_COMMENT()
 {
  (
-    pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
+    pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
 
     awk '
     /^'"$pkgname"'/ {
@@ -757,7 +752,7 @@ output_base_dir ()
 do_pkg_create()
 {
  (
-    pkgname=$(echo $1 | cut -d '/' -f 2 | sed 's/\./-/g')
+    pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
 
     pkg_create -v -l -U \
         -B "$workdir/$1/+BUILD_INFO" \
@@ -786,13 +781,15 @@ make_packages()
 {
  (
     for i in $category; do
-        for j in $(ls "$workdir/$i" | grep -E '^[a-z]+'); do
-            make_BUILD_INFO "$i/$j"
-            make_CONTENTS "$i/$j"
-            make_DESC_and_COMMENT "$i/$j"
-            make_INSTALL "$i/$j"
-            make_DEINSTALL "$i/$j"
-            do_pkg_create "$i/$j"
+        for j in "$workdir/$i"/*; do
+            test -d "$j" || continue
+            n=$(basename "$j")
+            make_BUILD_INFO "$i/$n"
+            make_CONTENTS "$i/$n"
+            make_DESC_and_COMMENT "$i/$n"
+            make_INSTALL "$i/$n"
+            make_DEINSTALL "$i/$n"
+            do_pkg_create "$i/$n"
         done
     done
     pkgs="$(
@@ -945,24 +942,24 @@ while [ $# -gt 0 ]; do
         usage
         ;;
     --obj)
-        test -z $2 && (err "What is $1 parameter?" ; exit 1)
-        obj=$2
+        test -z "$2" && (err "What is $1 parameter?" ; exit 1)
+        obj="$2"
         shift
         ;;
     --obj=*)
         obj=$(get_optarg "$1")
         ;;
     --releasedir)
-        test -z $2 && (err "What is $1 parameter?" ; exit 1)
-        releasedir=$2
+        test -z "$2" && (err "What is $1 parameter?" ; exit 1)
+        releasedir="$2"
         shift
         ;;
     --releasedir=*)
         releasedir=$(get_optarg "$1")
         ;;
     --destdir)
-        test -z $2 && (err "What is $1 parameter?" ; exit 1)
-        destdir=$2
+        test -z "$2" && (err "What is $1 parameter?" ; exit 1)
+        destdir="$2"
         shift
         ;;
     --destdir=*)
@@ -972,7 +969,7 @@ while [ $# -gt 0 ]; do
         category=$(get_optarg "$1")
         ;;
     --category)
-        test -z $2 && (err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (err "What is $1 parameter?" ; exit 1)
         category="$2"
         shift
         ;;
@@ -980,7 +977,7 @@ while [ $# -gt 0 ]; do
         machine=$(get_optarg "$1")
         ;;
     --machine)
-        test -z $2 && (err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (err "What is $1 parameter?" ; exit 1)
         machine="$2"
         shift
         ;;
