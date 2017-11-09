@@ -1,5 +1,3 @@
-#!/bin/sh
-#
 # Copyright (c) 2016,2017 Yuuki Enomoto 
 # All rights reserved. 
 #  
@@ -24,32 +22,18 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-#
 
-################################################################################
-#
-# Wrapper function of ldd. Output relation path of library name.
-#
-################################################################################
-wrap_ldd()
 {
-    ldd -f "%p\n" "$1" | sed 's%^\/%%g' | tr '\n' ' '
+    # The first column is package name.
+    for (i = 2; i < NF; i++)
+        # If the library is not registered in list, register it.
+        if (! match(lists[$1], $i))
+            # Concatenation library name.
+            lists[$1] = $i " " lists[$1]
 }
 
-output_dependencies()
-{
- (
-    for prog in "$1/"*; do
-        printf "%s/%s, %s\n" \
-            "$1" "$(basename "$prog")" "$(wrap_ldd "$prog")"
-    done
- )
+END {
+    # Print all contents of lists.
+    for (pkg in lists)
+        print pkg, lists[pkg]
 }
-
-obj="/usr/obj"
-destdir="$obj/destdir.amd64"
-bindir="bin sbin usr/bin usr/sbin"
-
-for dir in $bindir; do
-    { cd "$destdir"; output_dependencies "$dir"; }
-done
