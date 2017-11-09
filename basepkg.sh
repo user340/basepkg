@@ -28,6 +28,15 @@
 
 ################################################################################
 #
+# basepkg.sh -- Main program of basepkg. It does the following works.
+#                   - Make packages of base in reference to /usr/obj (default).
+#                   - Make kernel packages in reference to 
+#                     /usr/obj/sys/<MACHINE>/compile (default).
+#
+################################################################################
+
+################################################################################
+#
 # POSIX undefined commands.
 #     - hostname -- set or print name of current host system.
 #     - mktemp -- make temporary file name.
