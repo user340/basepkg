@@ -37,9 +37,10 @@ destdir="$obj/destdir.amd64"
 bindir="bin sbin usr/bin usr/sbin"
 lists="../sets/lists"
 deps="../sets/deps"
-sett=".set.txt"
-pkgset=".pkgset.txt"
+sett=".set"
+pkgset=".pkgset"
 awk_pkgset="pkgset.awk"
+deplist=".deplist"
 
 ################################################################################
 #
@@ -117,22 +118,23 @@ fn_set_of_pkg_and_lib()
 ################################################################################
 culc_deps()
 {
-    grep "^$1" "$deps" > /dev/null 2>&1
-    if [ $? -eq 1 ]; then
-        printf "$1: Unknown package dependency.\n"
-        return 1
-    fi
+    grep "^$1" "$deps" > /dev/null 2>&1 || return 1 # unknown dependency.
     awk '/^'"$1"'/{print $2}' "$deps" | while read -r depend; do
         test ! "$depend" && return 1
         printf "$depend "
-        test "$depend" = "base-sys-root" && { printf "\n"; return 0; }
+        test "$depend" = "base-sys-root" && return 0;
         culc_deps "$depend" # Recursion.
     done
 }
 
-fn_check_lib()
+fn_deplist()
 {
-
+ (
+    for p in $(cut -d " " -f 1 "$pkgset"); do
+        printf "%s %s\n" \
+            "$p" "$(culc_deps "$p" | tr ' ' '\n' | sort | uniq | tr '\n' ' ')"
+    done
+ )
 }
 
 ################################################################################
@@ -158,3 +160,6 @@ test -f "$pkgset".tmp || fn_set_of_pkg_and_lib > "$pkgset".tmp 2> /dev/null
 # 
 #    base-util-root ./lib/libc.so.12 ./lib/libcrypt.so.1 ./lib/libgcc_s.so.1 ./libutil.so.7
 test -f "$pkgset" || awk -f "$awk_pkgset" "$pkgset".tmp > "$pkgset"
+
+# 4. Output all dependencies of package to "$deplist". 
+test -f "$deplist" || fn_deplist > "$deplist"
