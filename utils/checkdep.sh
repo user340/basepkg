@@ -1,3 +1,38 @@
+#!/bin/sh
+#
+# Copyright (c) 2017 Yuuki Enomoto 
+# All rights reserved. 
+#  
+# Redistribution and use in source and binary forms, with or without 
+# modification, are permitted provided that the following conditions are met: 
+#  
+# * Redistributions of source code must retain the above copyright notice, 
+#   this list of conditions and the following disclaimer.
+#  
+# * Redistributions in binary form must reproduce the above copyright notice, 
+#   this list of conditions and the following disclaimer in the documentation 
+#   and/or other materials provided with the distribution. 
+#  
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+################################################################################
+#
+# checkdep.sh -- Print information of lacking package. It is developer script. 
+#                It is not necessary for general user.
+#
+################################################################################
+
 obj="/usr/obj"
 destdir="$obj/destdir.amd64"
 sets="../sets"
@@ -5,6 +40,20 @@ lists="$sets/lists"
 deps="$sets/deps"
 info="$lists/$(printf "$1" | cut -d "-" -f 1)"
 
+################################################################################
+#
+# Check dependency of given package. It is a recursive function. Example, 
+# file that descripts the following dependency.
+#
+#     A B
+#     B C
+#     C D
+#
+# "fn_deps A" prints the following output.
+#
+#     B C D
+#
+################################################################################
 fn_deps()
 {
     grep "^$1" "$deps" > /dev/null 2>&1 || return 1 # unknown dependency.
@@ -16,6 +65,11 @@ fn_deps()
     done
 }
 
+################################################################################
+#
+# Print binary name that packaged in given package.
+#
+################################################################################
 fn_get_bin()
 {
     grep -h "$1" "$info"/* \
@@ -24,6 +78,11 @@ fn_get_bin()
     | sed "s%^\.%$destdir%"
 }
 
+################################################################################
+#
+# Run ldd to return value from fn_get_bin().
+#
+################################################################################
 fn_ldd()
 {
  (
@@ -33,15 +92,25 @@ fn_ldd()
  ) | tr ' ' '\n' | sort | uniq | tr '\n' ' '
 }
 
+################################################################################
+#
+# Wrapper of fn_ldd()
+#
+################################################################################
 fn_all_ldd()
 {
  (
-    for i in $1 $2; do
+    for i in $1; do
         fn_ldd "$i"
     done
  )
 }
 
+################################################################################
+#
+# Print necessary package name that packaged necessary shared libraries.
+#
+################################################################################
 fn_print_necessary_pkg()
 {
  (
@@ -55,6 +124,11 @@ fn_print_necessary_pkg()
  ) | sort | uniq | tr '\n' ' '
 }
 
+################################################################################
+#
+# Print package name that is wanting in given package.
+#
+################################################################################
 fn_print_lacking_pkg()
 {
     for i in $necessary; do
@@ -70,9 +144,10 @@ fn_print_lacking_pkg()
 depend=$(fn_deps "$1" | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
 
 # 2. Get libraries that required.
-libs=$(fn_all_ldd "$1" "$depend")
+libs=$(fn_all_ldd "$1 $depend")
 
 # 3. Get necessary package information.
 necessary=$(fn_print_necessary_pkg)
 
+# 4. Print lacking package. Please edit basepkg/sets/deps.
 fn_print_lacking_pkg
