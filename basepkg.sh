@@ -569,7 +569,7 @@ _BUILD_INFO_
 ################################################################################
 culc_deps()
 {
-    grep -E "^$1" "$deps" > /dev/null 2>&1
+    grep "^$1" "$deps" > /dev/null 2>&1
     if [ $? -eq 1 ]; then
         err "$1: Unknown package dependency."
         return 1
@@ -1052,6 +1052,9 @@ test -f "sets/install"  || bomb "require ./sets/"
 test "X$release" != "X" || bomb "cannot resolve \$release"
 
 test $# -eq 0 && usage
+which hostname > /dev/null 2>&1 || bomb "hostname not found."
+which mktemp > /dev/null 2>&1 || bomb "mktemp not found."
+pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 
 ################################################################################
 #
