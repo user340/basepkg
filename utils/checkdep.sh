@@ -50,11 +50,12 @@
 fn_deps()
 {
     grep "^$1" "$deps" > /dev/null 2>&1 || return 1 # unknown dependency.
-    awk '/^'"$1"'/{print $2}' "$deps" | while read -r depend; do
-        test ! "$depend" && return 1
-        test "$depend" = "base-sys-root" && { printf "$depend "; return 0; }
-        printf "$depend "
-        fn_deps "$depend" # Recursion.
+    awk '/^'"$1"'/{print $2}' "$deps" | while read -r dep; do
+        test ! "$dep" && return 1
+        test "$dep" = "base-sys-root" \
+            && { printf "%s " "$dep"; return 0; }
+        printf "%s " "$dep"
+        fn_deps "$dep" # Recursion.
     done
 }
 
@@ -149,7 +150,7 @@ destdir="$obj/destdir.amd64"
 sets="../sets"
 lists="$sets/lists"
 deps="$sets/deps"
-info="$lists/$(printf "$1" | cut -d "-" -f 1)"
+info="$lists/$(printf "%s" "$1" | cut -d "-" -f 1)"
 
 # 1. Get dependency infomation
 depend=$(fn_deps "$1" | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
