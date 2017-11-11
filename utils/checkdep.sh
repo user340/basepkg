@@ -33,13 +33,6 @@
 #
 ################################################################################
 
-obj="/usr/obj"
-destdir="$obj/destdir.amd64"
-sets="../sets"
-lists="$sets/lists"
-deps="$sets/deps"
-info="$lists/$(printf "$1" | cut -d "-" -f 1)"
-
 ################################################################################
 #
 # Check dependency of given package. It is a recursive function. Example, 
@@ -87,7 +80,9 @@ fn_ldd()
 {
  (
     fn_get_bin "$1" | while read -r prog; do
-        test -f "$prog" && ldd -f "%p\n" "$prog" | sed 's%^/%./%g' | tr '\n' ' '
+        test -f "$prog" \
+            && ldd -f "%p\n" "$prog" 2> /dev/null \
+               | sed 's%^/%./%g' | tr '\n' ' '
     done
  ) | tr ' ' '\n' | sort | uniq | tr '\n' ' '
 }
@@ -131,14 +126,30 @@ fn_print_necessary_pkg()
 ################################################################################
 fn_print_lacking_pkg()
 {
+ (
     for i in $necessary; do
         for j in $depend; do
             ok="false"
             test "$i" = "$j" && ok="true"
         done
-        test "$ok" = "false" && printf "$1: not including %s\n" "$i"
+        test "$ok" = "false" \
+            && printf "[Warn] %s dependent %s\n" "$1" "$i"
     done
+ )
 }
+
+################################################################################
+#
+# Main
+#
+################################################################################
+
+obj="/usr/obj"
+destdir="$obj/destdir.amd64"
+sets="../sets"
+lists="$sets/lists"
+deps="$sets/deps"
+info="$lists/$(printf "$1" | cut -d "-" -f 1)"
 
 # 1. Get dependency infomation
 depend=$(fn_deps "$1" | tr ' ' '\n' | sort | uniq | tr '\n' ' ')
