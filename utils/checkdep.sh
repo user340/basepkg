@@ -52,7 +52,7 @@ fn_deps()
     grep "^$1" "$deps" > /dev/null 2>&1 || return 1 # unknown dependency.
     awk '/^'"$1"'/{print $2}' "$deps" | while read -r depend; do
         test ! "$depend" && return 1
-        test "$depend" = "base-sys-root" && { printf "$depend"; return 0; }
+        test "$depend" = "base-sys-root" && { printf "$depend "; return 0; }
         printf "$depend "
         fn_deps "$depend" # Recursion.
     done
@@ -161,4 +161,4 @@ libs=$(fn_all_ldd "$1 $depend")
 necessary=$(fn_print_necessary_pkg)
 
 # 4. Print lacking package. Please edit basepkg/sets/deps.
-fn_print_lacking_pkg "$1"
+# fn_print_lacking_pkg "$1"

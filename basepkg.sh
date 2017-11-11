@@ -1054,7 +1054,7 @@ test "X$release" != "X" || bomb "cannot resolve \$release"
 test $# -eq 0 && usage
 which hostname > /dev/null 2>&1 || bomb "hostname not found."
 which mktemp > /dev/null 2>&1 || bomb "mktemp not found."
-pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
+which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 
 ################################################################################
 #
