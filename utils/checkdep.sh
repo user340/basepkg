@@ -136,7 +136,7 @@ fn_print_lacking_pkg()
             ok="false"
             test "$i" = "$j" && ok="true"
         done
-        test "$ok" = "false" && printf "not including %s\n" "$i"
+        test "$ok" = "false" && printf "$1: not including %s\n" "$i"
     done
 }
 
@@ -150,4 +150,4 @@ libs=$(fn_all_ldd "$1 $depend")
 necessary=$(fn_print_necessary_pkg)
 
 # 4. Print lacking package. Please edit basepkg/sets/deps.
-fn_print_lacking_pkg
+fn_print_lacking_pkg "$1"
