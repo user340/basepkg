@@ -910,6 +910,26 @@ packaging_all_kernels()
 
 ################################################################################
 #
+# Clean working directories.
+#
+################################################################################
+fn_clean_workdir()
+{
+    test -w "$workdir" && rm -fr "$workdir"
+}
+
+################################################################################
+#
+# Clean packages.
+#
+################################################################################
+fn_clean_pkg()
+{
+    test -w "$packages" && rm -fr "$packages"
+}
+
+################################################################################
+#
 # Show usage to standard output.
 #
 ################################################################################
@@ -1029,7 +1049,6 @@ set -u
 umask 0022
 export LC_ALL=C LANG=C
 
-test -f "$log" && rm -f "$log"
 
 eval "$(getarch)"
 validatearch
@@ -1063,6 +1082,7 @@ which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 ################################################################################
 case $1 in
 pkg)
+    test -f "$log" && rm -f "$log"
     split_category_from_lists
     make_directories_of_package
     make_contents_list
@@ -1070,6 +1090,12 @@ pkg)
     ;;
 kern)
     packaging_all_kernels
+    ;;
+clean)
+    fn_clean_workdir
+    ;;
+cleanpkg)
+    fn_clean_pkg
     ;;
 *)
     usage
