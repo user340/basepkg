@@ -33,7 +33,9 @@
 #
 ################################################################################
 
-awk '{print $2}' ../basepkg.log | sed 's/:$//g' | while read -r pkg; do
+test -f ../log || { printf "../log: No Such File\n"; exit 1; }
+
+awk '{print $2}' ../log | sed 's/:$//g' | while read -r pkg; do
     head=$(printf "%s" "$pkg" | cut -d "-" -f 1)
     middle="$(printf "%s" "$pkg" | cut -d "-" -f 2)"
     tail=$(printf "%s" "$pkg" | cut -d "-" -f 3)

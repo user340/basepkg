@@ -349,6 +349,7 @@ comp-amd-debug base-sys-usr
 comp-atf-catman base-man-share
 comp-atf-debug base-sys-usr
 comp-atf-htmlman base-man-share
+comp-atf-include base-c-usr
 comp-atf-lib base-sys-usr
 comp-atf-man base-man-share
 comp-atf-piclib base-sys-usr
@@ -363,7 +364,10 @@ comp-bootserver-debug base-sys-usr
 comp-c-bin base-sys-shlib
 comp-c-bin base-sys-usr
 comp-c-catman base-man-share
+comp-c-clib base-sys-usr
 comp-c-debug base-sys-usr
+comp-c-debuglib base-sys-usr
+comp-c-html base-man-share
 comp-c-htmlman base-man-share
 comp-c-include base-objc-usr
 comp-c-lib base-sys-usr
@@ -452,6 +456,7 @@ comp-fortran-lib base-sys-usr
 comp-fortran-man base-man-share
 comp-fortran-proflib base-sys-usr
 comp-games-debug base-sys-usr
+comp-gcc-include base-c-usr
 comp-groff-debug base-sys-usr
 comp-hesiod-debug base-sys-usr
 comp-hfs-debug base-sys-usr
@@ -459,6 +464,7 @@ comp-i18n-debug base-sys-usr
 comp-i18n-lib base-i18n-root
 comp-i18n-shlib base-sys-usr
 comp-ipf-debug base-sys-usr
+comp-ipf-include base-c-usr
 comp-ipf-root base-sys-root
 comp-iscsi-debug base-sys-usr
 comp-iscsi-lib base-sys-usr
@@ -487,6 +493,7 @@ comp-kyua-lib base-sys-usr
 comp-ldap-catman base-man-share
 comp-ldap-debug base-sys-usr
 comp-ldap-htmlman base-man-share
+comp-ldap-include base-c-usr
 comp-ldap-lib base-sys-usr
 comp-ldap-lintlib base-c-usr
 comp-ldap-man base-man-share
@@ -503,6 +510,7 @@ comp-mailwrapper-debug base-sys-usr
 comp-makemandb-debug base-sys-usr
 comp-man-debug base-sys-usr
 comp-mdns-debug base-sys-usr
+comp-mdns-include base-c-usr
 comp-mdns-lib base-sys-usr
 comp-mdns-lintlib base-c-usr
 comp-mdns-piclib base-sys-usr
@@ -521,6 +529,7 @@ comp-nis-debug base-sys-usr
 comp-npf-catman base-man-share
 comp-npf-debug base-sys-usr
 comp-npf-htmlman base-man-share
+comp-npf-include base-c-usr
 comp-npf-lib base-sys-usr
 comp-npf-lintlib base-c-usr
 comp-npf-man base-man-share
@@ -530,6 +539,7 @@ comp-ntfs-debug base-sys-usr
 comp-ntp-debug base-sys-usr
 comp-objc-bin base-sys-usr
 comp-objc-debug base-sys-usr
+comp-objc-include base-objc-usr
 comp-objc-lib base-sys-usr
 comp-objc-piclib base-sys-usr
 comp-objc-proflib base-sys-usr
@@ -548,6 +558,7 @@ comp-ppp-debug base-sys-usr
 comp-puffs-catman base-man-share
 comp-puffs-debug base-sys-usr
 comp-puffs-htmlman base-man-share
+comp-puffs-include base-c-usr
 comp-puffs-lib base-sys-usr
 comp-puffs-lintlib base-c-usr
 comp-puffs-man base-man-share
@@ -557,6 +568,7 @@ comp-rcs-debug base-sys-usr
 comp-refuse-catman base-man-share
 comp-refuse-debug base-sys-usr
 comp-refuse-htmlman base-man-share
+comp-refuse-include base-c-usr
 comp-refuse-lib base-sys-usr
 comp-refuse-lintlib base-c-usr
 comp-refuse-man base-man-share
@@ -576,6 +588,7 @@ comp-smbfs-debug base-sys-usr
 comp-sup-debug base-sys-usr
 comp-sys-catman base-man-share
 comp-sys-debug base-sys-usr
+comp-sys-htmlan base-man-share
 comp-sys-htmlman base-man-share
 comp-sys-man base-man-share
 comp-sys-root base-sys-root

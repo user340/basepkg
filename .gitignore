@@ -1,4 +1,4 @@
-dev/
+dev/*.txt
 log
 packages/
 work/
