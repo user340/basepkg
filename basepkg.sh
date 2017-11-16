@@ -943,6 +943,8 @@ Usage: $progname [--obj obj_dir] [--category category] [--machine machine]
  Operation:
     pkg                 Create packages.
     kern                Create kernel package.
+    clean               Clean working directories.
+    cleanpkg            Clean package directories.
 
  Options:
     --help              Show this message and exit.
