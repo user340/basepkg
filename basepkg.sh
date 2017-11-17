@@ -208,15 +208,16 @@ obj="/usr/obj"
 packages="$PWD/packages"
 category="base comp etc games man misc text"
 pkgdb="/var/db/basepkg"
+log="$PWD/log"
 
 ################################################################################
 #
-# Output the error message to standard error. 
+# Output the error message to log file.
 #
 ################################################################################
 err()
 {
-    echo "[$(date +'%Y-%m-%dT%H:%M:%S')] $*" >&2
+    echo "[$(date +'%Y-%m-%dT%H:%M:%S')] $*" | tee -a "$log"
 }
 
 ################################################################################
@@ -227,11 +228,7 @@ err()
 ################################################################################
 bomb()
 {
-    cat >&2 <<MESSAGE
-
-ERROR: $@
-*** PACKAGING ABORTED ***
-MESSAGE
+    printf "ERROR: %s\n *** PACKAGING ABORTED ***\n" "$@" | tee -a "$log"
     kill $toppid
     exit 1
 }
@@ -571,7 +568,7 @@ culc_deps()
 {
     grep "^$1" "$deps" > /dev/null 2>&1
     if [ $? -eq 1 ]; then
-        err "$1: Unknown package dependency."
+        err "$1 Unknown package dependency."
         return 1
     fi
     awk '/^'"$1"'/{print $2}' "$deps" | while read -r depend; do
@@ -780,7 +777,7 @@ do_pkg_create()
  (
     pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
 
-    pkg_create -v -l -U \
+    { pkg_create -v -l -U \
         -B "$workdir/$1/+BUILD_INFO" \
         -I "/" \
         -i "$workdir/$1/+INSTALL" \
@@ -790,7 +787,7 @@ do_pkg_create()
         -c "$workdir/$1/+COMMENT" \
         -d "$workdir/$1/+DESC" \
         -f "$workdir/$1/+CONTENTS" \
-        "$pkgname" || bomb "$1: pkg_create"
+        "$pkgname" | tee -a "$log"; } || bomb "$1: pkg_create"
 
     _basedir=$(output_base_dir)
     test -d "$_basedir" || mkdir -p "$_basedir"
@@ -879,14 +876,14 @@ _DESC_
 netbsd
 _CONTENTS_
 
-    pkg_create -v -l -U \
+    { pkg_create -v -l -U \
     -B "$workdir/$category/$pkgname/+BUILD_INFO" \
     -I "/" \
     -c "$workdir/$category/$pkgname/+COMMENT" \
     -d "$workdir/$category/$pkgname/+DESC" \
     -f "$workdir/$category/$pkgname/+CONTENTS" \
     -p "$obj/sys/arch/$machine/compile/$1" \
-    -K "$pkgdb" "$pkgname" || bomb "kernel: pkg_create"
+    -K "$pkgdb" "$pkgname" | tee -a "$log"; } || bomb "kernel: pkg_create"
 
     _basedir=$(output_base_dir)
     test -d "$_basedir" || mkdir -p "$_basedir"
@@ -913,6 +910,26 @@ packaging_all_kernels()
 
 ################################################################################
 #
+# Clean working directories.
+#
+################################################################################
+fn_clean_workdir()
+{
+    test -w "$workdir" && rm -fr "$workdir"
+}
+
+################################################################################
+#
+# Clean packages.
+#
+################################################################################
+fn_clean_pkg()
+{
+    test -w "$packages" && rm -fr "$packages"
+}
+
+################################################################################
+#
 # Show usage to standard output.
 #
 ################################################################################
@@ -926,6 +943,8 @@ Usage: $progname [--obj obj_dir] [--category category] [--machine machine]
  Operation:
     pkg                 Create packages.
     kern                Create kernel package.
+    clean               Clean working directories.
+    cleanpkg            Clean package directories.
 
  Options:
     --help              Show this message and exit.
@@ -1032,6 +1051,7 @@ set -u
 umask 0022
 export LC_ALL=C LANG=C
 
+
 eval "$(getarch)"
 validatearch
 destdir=${destdir:-"$obj/destdir.$MACHINE"}
@@ -1056,6 +1076,7 @@ which hostname > /dev/null 2>&1 || bomb "hostname not found."
 which mktemp > /dev/null 2>&1 || bomb "mktemp not found."
 which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 
+
 ################################################################################
 #
 # operation
@@ -1063,6 +1084,7 @@ which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 ################################################################################
 case $1 in
 pkg)
+    test -f "$log" && rm -f "$log"
     split_category_from_lists
     make_directories_of_package
     make_contents_list
@@ -1070,6 +1092,12 @@ pkg)
     ;;
 kern)
     packaging_all_kernels
+    ;;
+clean)
+    fn_clean_workdir
+    ;;
+cleanpkg)
+    fn_clean_pkg
     ;;
 *)
     usage

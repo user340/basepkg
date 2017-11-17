@@ -49,7 +49,7 @@ or `pkgin install pkg_install` for pkg\_* softwares.
 Run basepkg.sh script with **pkg** option.
 
     # ./basepkg.sh pkg
-    # ./basepkg.sh kern-pkg
+    # ./basepkg.sh kern
 
 Packages are created under the packages/<release-version>/<machine> directory.
 
@@ -72,10 +72,3 @@ Basepkg imported to pkgsrc-wip. You can install basepkg to your system through p
 
 "basepkg.sh" and README are installed to /usr/pkg/share/basepkg.
 
-### 6. Unresolved issues
-
-- Construct the NetBSD base system package delivery network.
-- Write the document on each package such as Debian.
-- Develop kernel package we can easy upgrade and rollback.
-- pkg\_* tools must continuously be backward-compatible against previous version.
-- Permission, user and group of file problem. We need to process such as `pax -M`
