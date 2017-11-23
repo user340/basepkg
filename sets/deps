@@ -89,6 +89,7 @@ base-isdn-bin base-sys-shlib
 base-isdn-bin base-sys-usr
 base-isdn-examples base-sys-share
 base-isns-shlib base-sys-usr
+base-kernel-modules base-sys-root
 base-krb5-bin base-crypto-shlib
 base-krb5-bin base-sys-shlib
 base-krb5-bin base-sys-usr
@@ -690,6 +691,8 @@ etc-timed-rc base-sys-root
 etc-util-etc base-sys-root
 etc-x11-rc base-sys-root
 games-games-bin base-games-usr
+games-games-bin games-games-root
+games-games-bin games-games-share
 games-games-catman base-man-share
 games-games-htmlman base-man-share
 games-games-man base-man-share

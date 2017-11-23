@@ -757,7 +757,8 @@ ADD)
 					${ECHO} "${PKGNAME}: $file already exists"
 				elif ${TEST} -f "$f_eg" -o -c "$f_eg"; then
 					${ECHO} "${PKGNAME}: copying $f_eg to $file"
-					${MV} $f_eg $file
+                    ${CP} $f_eg "$file".new
+					${MV} "$file".new $file
 					case $f_user in
 					"")	;;
 					*)	${CHOWN} $f_user $file ;;

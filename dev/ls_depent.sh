@@ -35,7 +35,7 @@
 sets="../sets"
 lists="$sets/lists"
 
-grep -h -r -E '^\./bin|^\./usr/bin|^\./sbin|^\./usr/sbin' "$lists" \
+grep -h -r -E '^\./bin|^\./usr/bin|^\./sbin|^\./usr/sbin|^\./usr/games' "$lists" \
 | grep -v "obsolete" \
 | awk '{print $2}' \
 | sort | uniq | while read -r pkgname; do
