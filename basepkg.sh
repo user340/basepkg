@@ -199,6 +199,7 @@ descrs="$PWD/sets/descrs"
 deps="$PWD/sets/deps"
 install_script="$PWD/sets/install"
 deinstall_script="$PWD/sets/deinstall"
+est="$PWD/sets/essentials"
 tmp_deps="/tmp/culldeps"
 homepage="https://github.com/user340/basepkg"
 mail_address="mail@e-yuuki.org"
@@ -749,8 +750,24 @@ make_INSTALL()
 ################################################################################
 make_DEINSTALL()
 {
-    test -f "$workdir/$1/+DEINSTALL" && rm -f "$workdir/$1/+DEINSTALL"
     replace_cmdstr "$deinstall_script" > "$workdir/$1/+DEINSTALL"
+}
+
+################################################################################
+#
+# Make preserve-file.
+#
+################################################################################
+make_PRESERVE()
+{
+    while read -r e_pkg; do
+        e_path=$(find $workdir -name "$e_pkg" -type d)
+
+        # For debug.
+        # printf "%s-%s" "$e_pkg" "$release"
+
+        printf "%s-%s" "$e_pkg" "$release" > "$e_path/+PRESERVE"
+    done < "$est"
 }
 
 ################################################################################
@@ -1068,7 +1085,7 @@ kernobj="$obj/sys/arch/$machine/compile"
 # least assertions
 #
 ################################################################################
-test -f "sets/install"  || bomb "require ./sets/"
+test -f "$install_script"  || bomb "require $install_script"
 test "X$release" != "X" || bomb "cannot resolve \$release"
 
 test $# -eq 0 && usage
