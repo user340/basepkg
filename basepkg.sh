@@ -760,14 +760,16 @@ make_DEINSTALL()
 ################################################################################
 make_PRESERVE()
 {
+ (
     while read -r e_pkg; do
         e_path=$(find "$workdir" -name "$e_pkg" -type d)
 
-        # For debug.
-        # printf "%s-%s" "$e_pkg" "$release"
+        #For debug.
+        #printf "%s-%s -> %s\n" "$e_pkg" "$release" "$e_path/+PRESERVE"
 
-        printf "%s-%s" "$e_pkg" "$release" > "$e_path/+PRESERVE"
+        test "$e_path" && printf "%s-%s" "$e_pkg" "$release" > "$e_path/+PRESERVE"
     done < "$est"
+ )
 }
 
 ################################################################################
@@ -807,6 +809,7 @@ do_pkg_create()
 
     test -f "$workdir/$1/+PRESERVE" && option="$option -n $workdir/$1/+PRESERVE"
 
+    # shellcheck disable=SC2086
     { pkg_create $option "$pkgname" | tee -a "$log"; } \
         || bomb "$1: pkg_create"
 
@@ -1120,6 +1123,9 @@ clean)
     ;;
 cleanpkg)
     fn_clean_pkg
+    ;;
+test)
+    make_PRESERVE
     ;;
 *)
     usage
