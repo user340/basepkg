@@ -760,14 +760,16 @@ make_DEINSTALL()
 ################################################################################
 make_PRESERVE()
 {
+ (
     while read -r e_pkg; do
-        e_path=$(find $workdir -name "$e_pkg" -type d)
+        e_path=$(find "$workdir" -name "$e_pkg" -type d)
 
-        # For debug.
-        # printf "%s-%s" "$e_pkg" "$release"
+        #For debug.
+        #printf "%s-%s -> %s\n" "$e_pkg" "$release" "$e_path/+PRESERVE"
 
-        printf "%s-%s" "$e_pkg" "$release" > "$e_path/+PRESERVE"
+        test "$e_path" && printf "%s-%s" "$e_pkg" "$release" > "$e_path/+PRESERVE"
     done < "$est"
+ )
 }
 
 ################################################################################
@@ -794,17 +796,22 @@ do_pkg_create()
  (
     pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
 
-    { pkg_create -v -l -U \
-        -B "$workdir/$1/+BUILD_INFO" \
-        -I "/" \
-        -i "$workdir/$1/+INSTALL" \
-        -K "$pkgdb" \
-        -k "$workdir/$1/+DEINSTALL" \
-        -p "$destdir" \
-        -c "$workdir/$1/+COMMENT" \
-        -d "$workdir/$1/+DESC" \
-        -f "$workdir/$1/+CONTENTS" \
-        "$pkgname" | tee -a "$log"; } || bomb "$1: pkg_create"
+    option="-v -l -U 
+    -B $workdir/$1/+BUILD_INFO
+    -I /
+    -i $workdir/$1/+INSTALL
+    -K $pkgdb
+    -k $workdir/$1/+DEINSTALL
+    -p $destdir
+    -c $workdir/$1/+COMMENT
+    -d $workdir/$1/+DESC
+    -f $workdir/$1/+CONTENTS"
+
+    test -f "$workdir/$1/+PRESERVE" && option="$option -n $workdir/$1/+PRESERVE"
+
+    # shellcheck disable=SC2086
+    { pkg_create $option "$pkgname" | tee -a "$log"; } \
+        || bomb "$1: pkg_create"
 
     _basedir=$(output_base_dir)
     test -d "$_basedir" || mkdir -p "$_basedir"
@@ -1105,6 +1112,7 @@ pkg)
     split_category_from_lists
     make_directories_of_package
     make_contents_list
+    make_PRESERVE
     make_packages
     ;;
 kern)
@@ -1115,6 +1123,9 @@ clean)
     ;;
 cleanpkg)
     fn_clean_pkg
+    ;;
+test)
+    make_PRESERVE
     ;;
 *)
     usage
