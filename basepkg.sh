@@ -46,8 +46,8 @@
 
 ################################################################################
 #
-# Please use ShellCheck (https://koalaman/shellcheck) for check your code. If 
-# you checked the code, please pull request to it's repository
+# Please use ShellCheck (https://koalaman/shellcheck) for your code. 
+# After checked your code, please pull request to it's repository
 # (https://github.com/user340/basepkg).
 #
 ################################################################################
