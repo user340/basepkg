@@ -11,7 +11,9 @@ base-sys-share
 base-sys-shlib
 base-sys-usr
 base-sysutil-bin
-base-sysutil-examples
+base-sysutil-root
+base-sysutil-share
+base-sysutil-bin
 base-sysutil-root
 base-sysutil-share
 etc-sys-defaults
