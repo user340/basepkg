@@ -58,6 +58,9 @@
 # which(1) command. If not exist in the system, define a function that same as 
 # the which(1) command.
 #
+# Thank you for Tomoyuki Matsu'ura and USP Laboratory(www.usp-lab.com), 
+# ISBN978-4-86354-177-1, pp. 50-51.
+#
 ################################################################################
 which which > /dev/null 2>&1 || {
     which()
