@@ -592,8 +592,8 @@ make_CONTENTS()
 {
  (
     TMPFILE=$(mktemp -q || bomb "$TMPFILE")
-    setname=$(echo "$1" | cut -d '/' -f 1 | sed 's/\./-/g')
-    pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
+    setname=$(echo "${1%/*}" | sed 's/\./-/g')
+    pkgname=$(echo "${1#*/}" | sed 's/\./-/g')
 
     echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
     echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
@@ -630,7 +630,7 @@ make_CONTENTS()
 make_DESC_and_COMMENT()
 {
  (
-    pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
+    pkgname=$(echo "${1#*/}" | sed 's/\./-/g')
 
     awk '
     /^'"$pkgname"'/ {
@@ -767,7 +767,7 @@ make_PRESERVE()
     while read -r e_pkg; do
         e_path=$(find "$workdir" -name "$e_pkg" -type d)
 
-        #For debug.
+        # For debug.
         #printf "%s-%s -> %s\n" "$e_pkg" "$release" "$e_path/+PRESERVE"
 
         test "$e_path" && printf "%s-%s" "$e_pkg" "$release" > "$e_path/+PRESERVE"
@@ -797,7 +797,7 @@ output_base_dir ()
 do_pkg_create()
 {
  (
-    pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
+    pkgname=$(echo "${1#*/}" | sed 's/\./-/g')
 
     option="-v -l -U 
     -B $workdir/$1/+BUILD_INFO
@@ -887,12 +887,12 @@ _BUILD_INFO_
 
     # Short description of package.
     cat > "$workdir/$category/$pkgname/+COMMENT" << _COMMENT_
-NetBSD Kernel
+NetBSD $1 Kernel
 _COMMENT_
 
     # Description of package.
     cat > "$workdir/$category/$pkgname/+DESC" << _DESC_
-NetBSD Kernel
+NetBSD $1 Kernel
 _DESC_
 
     # Package contents.
