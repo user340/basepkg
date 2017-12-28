@@ -592,8 +592,8 @@ make_CONTENTS()
 {
  (
     TMPFILE=$(mktemp -q || bomb "$TMPFILE")
-    setname=$(echo "${1%/*}" | sed 's/\./-/g')
-    pkgname=$(echo "${1#*/}" | sed 's/\./-/g')
+    setname=${1%/*} # E.g. "base/base-sys-root" --> "base"
+    pkgname=${1#*/} # E.g. "base/base-sys-root" --> "base-sys-root"
 
     echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
     echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
@@ -797,7 +797,7 @@ output_base_dir ()
 do_pkg_create()
 {
  (
-    pkgname=$(echo "${1#*/}" | sed 's/\./-/g')
+    pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
 
     option="-v -l -U 
     -B $workdir/$1/+BUILD_INFO
