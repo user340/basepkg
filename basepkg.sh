@@ -205,7 +205,7 @@ deinstall_script="$PWD/sets/deinstall"
 est="$PWD/sets/essentials"
 tmp_deps="/tmp/culldeps"
 homepage="https://github.com/user340/basepkg"
-mail_address="mail@e-yuuki.org"
+mail_address="uki@e-yuuki.org"
 toppid=$$
 
 obj="/usr/obj"
@@ -630,7 +630,7 @@ make_CONTENTS()
 make_DESC_and_COMMENT()
 {
  (
-    pkgname=$(echo "${1#*/}" | sed 's/\./-/g')
+    pkgname="${1#*/}"
 
     awk '
     /^'"$pkgname"'/ {
@@ -730,8 +730,8 @@ make_INSTALL()
 
     test -f "$workdir/$1/+CONTENTS" || bomb "+CONTENTS not found."
     grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
-        test "$(file "$file" | cut -d " " -f 2)" = "symbolic" && continue
-        if [ "$(echo "$file" | cut -d "/" -f 1)" = "etc" ]; then
+        test "$(file "$obj/$file" | cut -d " " -f 2)" = "symbolic" && continue
+        if [ "${file%%/*}" = "etc" ]; then
             test -f "$destdir/$file" && \
                 mode_user_group=$(
                     grep -e "^\./$file " "$destdir/etc/mtree/set.etc" \
@@ -1112,11 +1112,17 @@ which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 case $1 in
 pkg)
     test -f "$log" && rm -f "$log"
+    # { printf "Starting split_category_from_lists()...\n"; date; }
     split_category_from_lists
+    # { printf "End split_category_from_lists(). Starting make_directories_of_package()...\n"; date; }
     make_directories_of_package
+    # { printf "End make_directories_of_package(). Starting make_contents_list()...\n"; date; }
     make_contents_list
+    # { printf "End make_contents_list(). Starting make_PRESERVE()...\n"; date; }
     make_PRESERVE
+    # { printf "End make_PRESERVE(). Starting make_packages()...\n"; date; }
     make_packages
+    # { printf "End make_packages().\n"; date; }
     ;;
 kern)
     packaging_all_kernels
@@ -1126,9 +1132,6 @@ clean)
     ;;
 cleanpkg)
     fn_clean_pkg
-    ;;
-test)
-    make_PRESERVE
     ;;
 *)
     usage
