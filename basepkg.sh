@@ -212,16 +212,15 @@ obj="/usr/obj"
 packages="$PWD/packages"
 category="base comp etc games man misc text"
 pkgdb="/var/db/basepkg"
-log="$PWD/log"
 
 ################################################################################
 #
-# Output the error message to log file.
+# Output the error message.
 #
 ################################################################################
 err()
 {
-    echo "[$(date +'%Y-%m-%dT%H:%M:%S')] $*" | tee -a "$log"
+    echo "[$(date +'%Y-%m-%dT%H:%M:%S')] $*"
 }
 
 ################################################################################
@@ -232,7 +231,7 @@ err()
 ################################################################################
 bomb()
 {
-    printf "ERROR: %s\n *** PACKAGING ABORTED ***\n" "$@" | tee -a "$log"
+    printf "ERROR: %s\n *** PACKAGING ABORTED ***\n" "$@"
     kill $toppid
     exit 1
 }
@@ -810,8 +809,7 @@ do_pkg_create()
     test -f "$workdir/$1/+PRESERVE" && option="$option -n $workdir/$1/+PRESERVE"
 
     # shellcheck disable=SC2086
-    { pkg_create $option "$pkgname" | tee -a "$log"; } \
-        || bomb "$1: pkg_create"
+    pkg_create $option "$pkgname" || bomb "$1: pkg_create"
 
     _basedir=$(output_base_dir)
     test -d "$_basedir" || mkdir -p "$_basedir"
@@ -900,14 +898,14 @@ _DESC_
 netbsd
 _CONTENTS_
 
-    { pkg_create -v -l -U \
+    pkg_create -v -l -U \
     -B "$workdir/$category/$pkgname/+BUILD_INFO" \
     -I "/" \
     -c "$workdir/$category/$pkgname/+COMMENT" \
     -d "$workdir/$category/$pkgname/+DESC" \
     -f "$workdir/$category/$pkgname/+CONTENTS" \
     -p "$obj/sys/arch/$machine/compile/$1" \
-    -K "$pkgdb" "$pkgname" | tee -a "$log"; } || bomb "kernel: pkg_create"
+    -K "$pkgdb" "$pkgname" || bomb "kernel: pkg_create"
 
     _basedir=$(output_base_dir)
     test -d "$_basedir" || mkdir -p "$_basedir"
@@ -1075,7 +1073,6 @@ set -u
 umask 0022
 export LC_ALL=C LANG=C
 
-
 eval "$(getarch)"
 validatearch
 destdir=${destdir:-"$obj/destdir.$MACHINE"}
@@ -1100,7 +1097,6 @@ which hostname > /dev/null 2>&1 || bomb "hostname not found."
 which mktemp > /dev/null 2>&1 || bomb "mktemp not found."
 which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 
-
 ################################################################################
 #
 # operation
@@ -1108,18 +1104,11 @@ which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 ################################################################################
 case $1 in
 pkg)
-    test -f "$log" && rm -f "$log"
-    # { printf "Starting split_category_from_lists()...\n"; date; }
     split_category_from_lists
-    # { printf "End split_category_from_lists(). Starting make_directories_of_package()...\n"; date; }
     make_directories_of_package
-    # { printf "End make_directories_of_package(). Starting make_contents_list()...\n"; date; }
     make_contents_list
-    # { printf "End make_contents_list(). Starting make_PRESERVE()...\n"; date; }
     make_PRESERVE
-    # { printf "End make_PRESERVE(). Starting make_packages()...\n"; date; }
     make_packages
-    # { printf "End make_packages().\n"; date; }
     ;;
 kern)
     packaging_all_kernels
