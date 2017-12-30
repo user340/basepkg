@@ -516,9 +516,6 @@ make_contents_list()
         awk ' 
         # $1 - file name
         # $2 - package name
-        $2 ~ /\./ {
-            gsub(/\./, "-", $2)
-        }
         {
             if ($2 in lists)
                 lists[$2] = $1 " " lists[$2]
