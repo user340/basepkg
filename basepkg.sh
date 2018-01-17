@@ -210,7 +210,7 @@ toppid=$$
 
 obj="/usr/obj"
 packages="$PWD/packages"
-category="base comp etc games man misc text"
+category="base comp etc games man misc modules text"
 pkgdb="/var/db/basepkg"
 
 ################################################################################

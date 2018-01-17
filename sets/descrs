@@ -729,6 +729,7 @@ misc-sys-examples	example configuration files for kernel functionality
 misc-sysutil-examples	example configuration files for system utilities
 misc-usd-doc	the User's Supplementary Documents for BSD 
 misc-util-htmldoc	HTML documentation for miscellaneous utilities 
+modules-base-kernel Kernel modules for NetBSD
 text-groff-bin	Groff (GNU Troff) is a document processor which reads plain text mixed
 text-groff-bin	with formatting commands and produces formatted output. Included in this
 text-groff-bin	release are implementations of troff, pic, eqn, tbl, refer, the -man

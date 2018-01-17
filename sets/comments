@@ -464,6 +464,7 @@ misc-sys-examples example configuration files for kernel functionality
 misc-sysutil-examples example configuration files for system utilities
 misc-usd-doc the User's Supplementary Documents for BSD
 misc-util-htmldoc HTML documentation for miscellaneous utilities
+modules-base-kernel Kernel modules for NetBSD
 text-groff-bin the groff family of text formatters (nroff, troff, groff, and related utilities)
 text-groff-catman formatted manual pages for the groff family of text formatters
 text-groff-font fonts for the groff family of text formatters
