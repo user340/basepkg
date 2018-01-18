@@ -24,7 +24,33 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
+
+# Copyright (c) 2001-2011 The NetBSD Foundation, Inc.
+# All rights reserved.
 #
+# This code is derived from software contributed to The NetBSD Foundation
+# by Todd Vierling and Luke Mewburn.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE NETBSD FOUNDATION, INC. AND CONTRIBUTORS
+# ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
 
 ################################################################################
 #
@@ -207,6 +233,7 @@ tmp_deps="/tmp/culldeps"
 homepage="https://github.com/user340/basepkg"
 mail_address="uki@e-yuuki.org"
 toppid=$$
+results=".basepkg.log"
 
 obj="/usr/obj"
 packages="$PWD/packages"
@@ -429,6 +456,7 @@ osrelease()
 split_category_from_lists()
 {
  (
+    printf "===> split_category_from_lists()\n" | tee -a $results
     for i in $category; do
         test -d "$workdir/$i" || mkdir -p "$workdir/$i"
         test -f "$workdir/$i/FILES" && rm -f "$workdir/$i/FILES"
@@ -495,6 +523,7 @@ split_category_from_lists()
 make_directories_of_package()
 {
  (
+    printf "===> make_directories_of_package()\n" | tee -a $results
     for i in $category; do
         awk '{print $2}' "$workdir/$i/FILES" | sort | uniq \
         | xargs -n 1 -I % sh -c \
@@ -511,6 +540,7 @@ make_directories_of_package()
 make_contents_list()
 {
  (
+    printf "===> make_contents_list()\n" | tee -a $results
     for i in $category; do
         awk ' 
         # $1 - file name
@@ -825,6 +855,7 @@ do_pkg_create()
 make_packages()
 {
  (
+    printf "===> make_packages()\n" | tee -a $results
     for i in $category; do
         for j in "$workdir/$i"/*; do
             test -d "$j" || continue
@@ -922,6 +953,7 @@ _CONTENTS_
 packaging_all_kernels()
 {
  (
+    printf "===> packaging_all_kernels()\n" | tee -a $results
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
     ls $kernobj | while read -r kname; do
@@ -937,6 +969,7 @@ packaging_all_kernels()
 ################################################################################
 fn_clean_workdir()
 {
+    printf "fn_clean_workdir()\n"
     test -w "$workdir" && rm -fr "$workdir"
 }
 
@@ -947,6 +980,7 @@ fn_clean_workdir()
 ################################################################################
 fn_clean_pkg()
 {
+    printf "fn_clean_pkg()\n"
     test -w "$packages" && rm -fr "$packages"
 }
 
@@ -993,6 +1027,25 @@ get_optarg()
     expr "x$1" : "x[^=]*=\\(.*\\)"
 }
 
+start_message()
+{
+    printf "===> basepkg.sh command: %s\n" "$1" | tee -a $results
+    printf "===> basepkg.sh started: %s\n" "$2" | tee -a $results
+    printf "===> NetBSD version:     %s\n" "$release" | tee -a $results
+    printf "===> MACHINE:            %s\n" "$machine" | tee -a $results
+    printf "===> MACHINE_ARCH:       %s\n" "$machine_arch" | tee -a $results
+    printf "===> Build platform:     %s %s %s\n" "$opsys" "$osversion" "$(uname -m)" | tee -a $results
+}
+
+result_message()
+{
+    printf "===> basepkg.sh ended:   %s\n" "$1" | tee -a $results
+    printf "===> Summary of results:\n"
+    sed -e 's/^===>/    /g' $results
+    printf "===> .\n"
+    rm -f $results
+}
+
 ################################################################################
 #
 # Start main process from here.
@@ -1000,6 +1053,7 @@ get_optarg()
 ################################################################################
 
 machine="$(uname -m)" # Firstly, set machine hardware name for getarch().
+commandline="$0 $*"
 
 ################################################################################
 #
@@ -1083,6 +1137,7 @@ machine_arch=$MACHINE_ARCH
 workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
 kernobj="$obj/sys/arch/$machine/compile"
+start=$(date)
 
 ################################################################################
 #
@@ -1104,20 +1159,28 @@ which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 ################################################################################
 case $1 in
 pkg)
+    start_message "$commandline" "$start"
     split_category_from_lists
     make_directories_of_package
     make_contents_list
     make_PRESERVE
     make_packages
+    result_message "$(date)" 
     ;;
 kern)
+    start_message "$commandline" "$start"
     packaging_all_kernels
+    result_message "$(date)" 
     ;;
 clean)
+    start_message "$commandline" "$start"
     fn_clean_workdir
+    result_message "$(date)" 
     ;;
 cleanpkg)
+    start_message "$commandline" "$start"
     fn_clean_pkg
+    result_message "$(date)" 
     ;;
 *)
     usage
