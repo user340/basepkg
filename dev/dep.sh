@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2017 Yuuki Enomoto 
+# Copyright (c) 2017,2018 Yuuki Enomoto 
 # All rights reserved. 
 #  
 # Redistribution and use in source and binary forms, with or without 

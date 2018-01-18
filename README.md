@@ -1,5 +1,5 @@
 # License
-Copyright (c) 2016,2017 Yuuki Enomoto
+Copyright (c) 2016,2017,2018 Yuuki Enomoto
 
 All rights reserved.
 

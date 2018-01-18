@@ -2223,7 +2223,7 @@
 ./usr/libdata/debug/usr/tests/syscall/t_truncate.debug			tests-obsolete		obsolete
 ./usr/libdata/debug/usr/tests/syscall/t_umask.debug			tests-obsolete		obsolete
 ./usr/libdata/debug/usr/tests/syscall/t_unlink.debug			tests-obsolete		obsolete
-./usr/libdata/debug/usr/tests/usr.bin/id/h_id.debug			tests-usr.bin-debug	debug,atf
+./usr/libdata/debug/usr/tests/usr.bin/id/h_id.debug			tests-usr-bin-debug	debug,atf
 ./usr/libdata/debug/usr/tests/util/df/h_df.debug			tests-obsolete		obsolete
 ./usr/libdata/debug/usr/tests/util/id/h_id.debug			tests-obsolete		obsolete
 ./usr/libdata/debug/usr/tests/util/systrace/h_have_systrace.debug	tests-obsolete		obsolete

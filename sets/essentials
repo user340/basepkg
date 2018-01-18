@@ -24,3 +24,4 @@ etc-sys-root
 etc-sysutil-etc
 etc-sysutil-log
 etc-sysutil-rc
+modules-base-kernel

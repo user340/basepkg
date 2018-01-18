@@ -1905,7 +1905,7 @@
 ./usr/sbin/uuchk				base-obsolete		obsolete
 ./usr/sbin/veriexecgen				base-sysutil-bin
 ./usr/sbin/vipw					base-sysutil-bin
-./usr/sbin/vnconfig				base-sysutil-bin
+./usr/sbin/vnconfig				base-sysutil-root
 ./usr/sbin/vndconfig				base-sysutil-bin
 ./usr/sbin/wake					base-obsolete		obsolete
 ./usr/sbin/wakeonlan				base-netutil-bin

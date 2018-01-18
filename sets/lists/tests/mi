@@ -159,10 +159,10 @@
 ./usr/libdata/debug/usr/tests/sbin					tests-sbin-tests
 ./usr/libdata/debug/usr/tests/sbin/resize_ffs				tests-sbin-tests
 ./usr/libdata/debug/usr/tests/syscall					tests-obsolete		obsolete
-./usr/libdata/debug/usr/tests/usr.bin					tests-usr.bin-debug
-./usr/libdata/debug/usr/tests/usr.bin/id				tests-usr.bin-debug
-./usr/libdata/debug/usr/tests/usr.bin/netpgpverify			tests-usr.bin-debug
-./usr/libdata/debug/usr/tests/usr.sbin					tests-usr.sbin-debug
+./usr/libdata/debug/usr/tests/usr.bin					tests-usr-bin-debug
+./usr/libdata/debug/usr/tests/usr.bin/id				tests-usr-bin-debug
+./usr/libdata/debug/usr/tests/usr.bin/netpgpverify			tests-usr-bin-debug
+./usr/libdata/debug/usr/tests/usr.sbin					tests-usr-sbin-debug
 ./usr/libdata/debug/usr/tests/util					tests-obsolete		obsolete
 ./usr/libdata/debug/usr/tests/util/df					tests-obsolete		obsolete
 ./usr/libdata/debug/usr/tests/util/id					tests-obsolete		obsolete
@@ -3303,375 +3303,375 @@
 ./usr/tests/toolchain/cc			tests-obsolete		obsolete
 ./usr/tests/toolchain/cc/Atffile		tests-obsolete		obsolete
 ./usr/tests/toolchain/cc/t_hello		tests-obsolete		obsolete
-./usr/tests/usr.bin				tests-usr.bin-tests
-./usr/tests/usr.bin/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/Kyuafile			tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/awk				tests-usr.bin-tests
-./usr/tests/usr.bin/awk/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/awk/d_assign_NF.awk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_assign_NF.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_assign_NF.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_big_regexp.awk	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_big_regexp.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_big_regexp.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_end1.awk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_end1.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_end1.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_end2.awk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_end2.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_end2.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_period.awk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_period.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_period.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_string1.awk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_string1.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_tolower.awk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_tolower.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_tolower.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_toupper.awk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_toupper.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/d_toupper.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/awk/t_awk			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/basename			tests-usr.bin-tests
-./usr/tests/usr.bin/basename/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/basename/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/basename/t_basename		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/bzip2			tests-usr.bin-tests
-./usr/tests/usr.bin/bzip2/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/bzip2/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/bzip2/d_sample1.bz2		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/bzip2/d_sample1.ref		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/bzip2/d_sample2.bz2		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/bzip2/d_sample2.ref		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/bzip2/d_sample3.bz2		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/bzip2/d_sample3.ref		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/bzip2/t_bzip2		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cc				tests-usr.bin-tests
-./usr/tests/usr.bin/cc/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cc/Kyuafile			tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/cc/t_hello			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cmp				tests-usr.bin-tests
-./usr/tests/usr.bin/cmp/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cmp/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/cmp/t_cmp			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config			tests-usr.bin-tests
-./usr/tests/usr.bin/config/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/config/Makefile.regress	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/d_deffs_redef	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/d_loop		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/d_loop2		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/d_no_pseudo		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/d_postponed_orphan	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/d_pseudo_parent	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/d_shadow_instance	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/files		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/files.regress	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/std.regress		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/support		tests-usr.bin-tests
-./usr/tests/usr.bin/config/support/arch		tests-usr.bin-tests
-./usr/tests/usr.bin/config/support/arch/regress				tests-usr.bin-tests
-./usr/tests/usr.bin/config/support/arch/regress/conf			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/support/arch/regress/conf/Makefile.regress	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/support/arch/regress/conf/files.regress		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/support/arch/regress/conf/std.regress		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/support/conf		tests-usr.bin-tests
-./usr/tests/usr.bin/config/support/conf/Makefile.kern.inc	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/support/conf/files	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/config/t_config		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cut				tests-usr.bin-tests
-./usr/tests/usr.bin/cut/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cut/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/cut/d_basic.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cut/d_cut.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cut/d_dflag.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cut/d_dsflag.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cut/d_latin1.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cut/d_sflag.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cut/d_utf8.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/cut/t_cut			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/diff			tests-usr.bin-tests
-./usr/tests/usr.bin/diff/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/diff/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/diff/d_mallocv1.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/diff/d_mallocv2.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/diff/t_diff			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/dirname			tests-usr.bin-tests
-./usr/tests/usr.bin/dirname/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/dirname/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/dirname/t_dirname		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/find			tests-usr.bin-tests
-./usr/tests/usr.bin/find/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/find/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/find/t_find			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep			tests-usr.bin-tests
-./usr/tests/usr.bin/grep/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/grep/d_basic.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_begin_end_a.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_begin_end_b.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_binary.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_context2_a.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_context2_b.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_context2_c.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_context_a.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_context_a.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_context_b.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_context_b.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_context_c.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_context_d.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_egrep.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_file_exp.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_file_exp.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_ignore_case.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_input		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_invert.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_invert.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_recurse.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_recurse_symlink.err	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_recurse_symlink.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_whole_line.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_word_regexps.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/d_zgrep.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/grep/t_grep			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/gzip			tests-usr.bin-tests
-./usr/tests/usr.bin/gzip/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/gzip/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/gzip/t_gzip			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/id				tests-usr.bin-tests
-./usr/tests/usr.bin/id/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/id/Kyuafile			tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/id/h_id			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/id/t_groups			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/id/t_id			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/id/t_whoami			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/infocmp			tests-usr.bin-tests
-./usr/tests/usr.bin/infocmp/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/infocmp/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/infocmp/t_terminfo		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/jot				tests-usr.bin-tests
-./usr/tests/usr.bin/jot/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/jot/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/jot/d_basic.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/jot/t_jot			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/m4				tests-usr.bin-tests
-./usr/tests/usr.bin/m4/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/m4/Kyuafile			tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/m4/d_ff_after_dnl.m4.uue	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/m4/d_ff_after_dnl.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/m4/d_m4wrap-P.m4		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/m4/d_m4wrap-P.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/m4/d_m4wrap.m4		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/m4/d_m4wrap.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/m4/t_m4			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make			tests-usr.bin-tests
-./usr/tests/usr.bin/make/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/make/d_comment.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_comment.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_cond1.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_cond1.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_dotwait.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_dotwait.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_export.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_export.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_export_all.mk	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_export_all.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_moderrs.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_moderrs.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_modmatch.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_modmatch.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_modmisc.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_modmisc.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_modorder.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_modorder.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_modts.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_modts.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_modword.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_modword.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_posix.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_posix.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_qequals.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_qequals.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_ternary.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_ternary.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_unmatchedvarparen.mk	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_unmatchedvarparen.out	tests-usr.bin-tests
-./usr/tests/usr.bin/make/d_varcmd.mk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/d_varcmd.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/make/t_make			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/mkdep			tests-usr.bin-tests
-./usr/tests/usr.bin/mkdep/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/mkdep/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/mkdep/t_mkdep		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/nbperf			tests-usr.bin-tests
-./usr/tests/usr.bin/nbperf/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/nbperf/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/nbperf/h_nbperf		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/nbperf/hash_driver.c	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/nbperf/t_nbperf		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/netpgpverify			tests-usr.bin-tests
-./usr/tests/usr.bin/netpgpverify/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/netpgpverify/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/netpgpverify/t_netpgpverify		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/pr				tests-usr.bin-tests
-./usr/tests/usr.bin/pr/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/pr/Kyuafile			tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/pr/d_basic.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/pr/d_basic.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/pr/t_basic			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/rump_server			tests-usr.bin-tests
-./usr/tests/usr.bin/rump_server/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/rump_server/Kyuafile	tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/rump_server/t_disk		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff			tests-usr.bin-tests
-./usr/tests/usr.bin/sdiff/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/sdiff/d_dot.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_flags_l.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_flags_s.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_flags_w.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_iflags_a1.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_iflags_a2.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_iflags_b1.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_iflags_b2.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_iflags_c1.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_iflags_c2.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_iflags_d1.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_iflags_d2.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_input1		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_input2		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_oneline.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_oneline_a.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_oneline_b.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_same.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_short.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_tabends.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_tabends_a.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_tabends_b.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_tabends_c.out	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_tabs.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_tabs1.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/d_tabs2.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sdiff/t_sdiff		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sed				tests-usr.bin-tests
-./usr/tests/usr.bin/sed/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sed/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/sed/d_c2048.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sed/t_sed			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/shmif_dumpbus				tests-usr.bin-tests
-./usr/tests/usr.bin/shmif_dumpbus/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/shmif_dumpbus/Kyuafile			tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/shmif_dumpbus/d_pcap.out.bz2.uue		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/shmif_dumpbus/d_pkthdrs.out.bz2.uue		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/shmif_dumpbus/shmbus.bz2.uue		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/shmif_dumpbus/t_basic			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sort				tests-usr.bin-tests
-./usr/tests/usr.bin/sort/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sort/Kyuafile			tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/sort/d_any_char_dflag_out.txt	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sort/d_any_char_fflag_out.txt	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sort/d_any_char_iflag_out.txt	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sort/d_any_char_in.txt		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/sort/t_sort				tests-usr.bin-tests	atf
-./usr/tests/usr.bin/tmux			tests-usr.bin-tests
-./usr/tests/usr.bin/tmux/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/tmux/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/tmux/t_tmux			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/tr				tests-usr.bin-tests
-./usr/tests/usr.bin/tr/Atffile			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/tr/Kyuafile			tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/tr/t_basic			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/unifdef			tests-usr.bin-tests
-./usr/tests/usr.bin/unifdef/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/unifdef/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/unifdef/d_basic.in		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/unifdef/d_basic.out		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/unifdef/t_basic		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/vmstat			tests-usr.bin-tests
-./usr/tests/usr.bin/vmstat/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/vmstat/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/vmstat/t_vmstat		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint			tests-usr.bin-tests
-./usr/tests/usr.bin/xlint/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/Kyuafile		tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/xlint/lint1			tests-usr.bin-tests
-./usr/tests/usr.bin/xlint/lint1/Atffile		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/Kyuafile	tests-usr.bin-tests	atf,kyua
-./usr/tests/usr.bin/xlint/lint1/d_alignof.c			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_complex_num.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_complex_split.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_decls_after_stmt.c	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_decls_after_stmt2.c	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_decls_after_stmt3.c	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_for_loops.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_func.c			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_recursive_init.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_struct_init.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_union_init1.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_union_init2.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c99_union_init3.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c9x_array_init.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_c9x_recursive_init.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_cast_init.c			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_cast_init2.c			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_cast_lhs.c			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_compound_literals1.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_compound_literals2.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_constant_conv1.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_constant_conv2.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_cvt_constant.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_cvt_in_ternary.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_ellipsis_in_switch.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_gcc_compound_statements1.c	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_gcc_compound_statements2.c	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_gcc_compound_statements3.c	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_gcc_extension.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_gcc_func.c			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_gcc_variable_array_init.c	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_incorrect_array_size.c	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_long_double_int.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_nested_structs.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_nolimit_init.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_packed_structs.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_shift_to_narrower_type.c	tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_type_conv1.c			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_type_conv2.c			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_type_conv3.c			tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_typename_as_var.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/d_zero_sized_arrays.c		tests-usr.bin-tests	atf
-./usr/tests/usr.bin/xlint/lint1/t_integration			tests-usr.bin-tests	atf
-./usr/tests/usr.sbin				tests-usr.sbin-tests
-./usr/tests/usr.sbin/Atffile			tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/Kyuafile			tests-usr.sbin-tests	atf,kyua
-./usr/tests/usr.sbin/mtree			tests-usr.sbin-tests
-./usr/tests/usr.sbin/mtree/Atffile		tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/mtree/Kyuafile		tests-usr.sbin-tests	atf,kyua
-./usr/tests/usr.sbin/mtree/d_convert.in		tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/mtree/d_convert_C.out	tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/mtree/d_convert_C_S.out	tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/mtree/d_convert_D.out	tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/mtree/d_convert_D_S.out	tests-usr.sbin-tests	atf
+./usr/tests/usr.bin				tests-usr-bin-tests
+./usr/tests/usr.bin/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/Kyuafile			tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/awk				tests-usr-bin-tests
+./usr/tests/usr.bin/awk/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/awk/d_assign_NF.awk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_assign_NF.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_assign_NF.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_big_regexp.awk	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_big_regexp.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_big_regexp.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_end1.awk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_end1.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_end1.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_end2.awk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_end2.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_end2.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_period.awk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_period.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_period.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_string1.awk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_string1.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_tolower.awk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_tolower.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_tolower.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_toupper.awk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_toupper.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/d_toupper.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/awk/t_awk			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/basename			tests-usr-bin-tests
+./usr/tests/usr.bin/basename/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/basename/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/basename/t_basename		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/bzip2			tests-usr-bin-tests
+./usr/tests/usr.bin/bzip2/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/bzip2/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/bzip2/d_sample1.bz2		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/bzip2/d_sample1.ref		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/bzip2/d_sample2.bz2		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/bzip2/d_sample2.ref		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/bzip2/d_sample3.bz2		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/bzip2/d_sample3.ref		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/bzip2/t_bzip2		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cc				tests-usr-bin-tests
+./usr/tests/usr.bin/cc/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cc/Kyuafile			tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/cc/t_hello			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cmp				tests-usr-bin-tests
+./usr/tests/usr.bin/cmp/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cmp/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/cmp/t_cmp			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config			tests-usr-bin-tests
+./usr/tests/usr.bin/config/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/config/Makefile.regress	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/d_deffs_redef	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/d_loop		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/d_loop2		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/d_no_pseudo		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/d_postponed_orphan	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/d_pseudo_parent	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/d_shadow_instance	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/files		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/files.regress	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/std.regress		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/support		tests-usr-bin-tests
+./usr/tests/usr.bin/config/support/arch		tests-usr-bin-tests
+./usr/tests/usr.bin/config/support/arch/regress				tests-usr-bin-tests
+./usr/tests/usr.bin/config/support/arch/regress/conf			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/support/arch/regress/conf/Makefile.regress	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/support/arch/regress/conf/files.regress		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/support/arch/regress/conf/std.regress		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/support/conf		tests-usr-bin-tests
+./usr/tests/usr.bin/config/support/conf/Makefile.kern.inc	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/support/conf/files	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/config/t_config		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cut				tests-usr-bin-tests
+./usr/tests/usr.bin/cut/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cut/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/cut/d_basic.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cut/d_cut.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cut/d_dflag.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cut/d_dsflag.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cut/d_latin1.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cut/d_sflag.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cut/d_utf8.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/cut/t_cut			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/diff			tests-usr-bin-tests
+./usr/tests/usr.bin/diff/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/diff/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/diff/d_mallocv1.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/diff/d_mallocv2.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/diff/t_diff			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/dirname			tests-usr-bin-tests
+./usr/tests/usr.bin/dirname/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/dirname/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/dirname/t_dirname		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/find			tests-usr-bin-tests
+./usr/tests/usr.bin/find/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/find/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/find/t_find			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep			tests-usr-bin-tests
+./usr/tests/usr.bin/grep/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/grep/d_basic.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_begin_end_a.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_begin_end_b.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_binary.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_context2_a.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_context2_b.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_context2_c.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_context_a.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_context_a.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_context_b.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_context_b.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_context_c.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_context_d.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_egrep.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_file_exp.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_file_exp.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_ignore_case.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_input		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_invert.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_invert.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_recurse.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_recurse_symlink.err	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_recurse_symlink.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_whole_line.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_word_regexps.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/d_zgrep.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/grep/t_grep			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/gzip			tests-usr-bin-tests
+./usr/tests/usr.bin/gzip/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/gzip/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/gzip/t_gzip			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/id				tests-usr-bin-tests
+./usr/tests/usr.bin/id/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/id/Kyuafile			tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/id/h_id			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/id/t_groups			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/id/t_id			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/id/t_whoami			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/infocmp			tests-usr-bin-tests
+./usr/tests/usr.bin/infocmp/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/infocmp/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/infocmp/t_terminfo		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/jot				tests-usr-bin-tests
+./usr/tests/usr.bin/jot/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/jot/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/jot/d_basic.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/jot/t_jot			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/m4				tests-usr-bin-tests
+./usr/tests/usr.bin/m4/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/m4/Kyuafile			tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/m4/d_ff_after_dnl.m4.uue	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/m4/d_ff_after_dnl.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/m4/d_m4wrap-P.m4		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/m4/d_m4wrap-P.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/m4/d_m4wrap.m4		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/m4/d_m4wrap.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/m4/t_m4			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make			tests-usr-bin-tests
+./usr/tests/usr.bin/make/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/make/d_comment.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_comment.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_cond1.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_cond1.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_dotwait.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_dotwait.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_export.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_export.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_export_all.mk	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_export_all.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_moderrs.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_moderrs.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_modmatch.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_modmatch.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_modmisc.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_modmisc.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_modorder.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_modorder.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_modts.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_modts.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_modword.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_modword.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_posix.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_posix.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_qequals.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_qequals.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_ternary.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_ternary.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_unmatchedvarparen.mk	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_unmatchedvarparen.out	tests-usr-bin-tests
+./usr/tests/usr.bin/make/d_varcmd.mk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/d_varcmd.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/make/t_make			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/mkdep			tests-usr-bin-tests
+./usr/tests/usr.bin/mkdep/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/mkdep/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/mkdep/t_mkdep		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/nbperf			tests-usr-bin-tests
+./usr/tests/usr.bin/nbperf/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/nbperf/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/nbperf/h_nbperf		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/nbperf/hash_driver.c	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/nbperf/t_nbperf		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/netpgpverify			tests-usr-bin-tests
+./usr/tests/usr.bin/netpgpverify/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/netpgpverify/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/netpgpverify/t_netpgpverify		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/pr				tests-usr-bin-tests
+./usr/tests/usr.bin/pr/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/pr/Kyuafile			tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/pr/d_basic.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/pr/d_basic.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/pr/t_basic			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/rump_server			tests-usr-bin-tests
+./usr/tests/usr.bin/rump_server/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/rump_server/Kyuafile	tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/rump_server/t_disk		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff			tests-usr-bin-tests
+./usr/tests/usr.bin/sdiff/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/sdiff/d_dot.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_flags_l.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_flags_s.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_flags_w.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_iflags_a1.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_iflags_a2.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_iflags_b1.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_iflags_b2.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_iflags_c1.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_iflags_c2.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_iflags_d1.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_iflags_d2.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_input1		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_input2		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_oneline.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_oneline_a.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_oneline_b.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_same.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_short.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_tabends.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_tabends_a.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_tabends_b.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_tabends_c.out	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_tabs.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_tabs1.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/d_tabs2.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sdiff/t_sdiff		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sed				tests-usr-bin-tests
+./usr/tests/usr.bin/sed/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sed/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/sed/d_c2048.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sed/t_sed			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/shmif_dumpbus				tests-usr-bin-tests
+./usr/tests/usr.bin/shmif_dumpbus/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/shmif_dumpbus/Kyuafile			tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/shmif_dumpbus/d_pcap.out.bz2.uue		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/shmif_dumpbus/d_pkthdrs.out.bz2.uue		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/shmif_dumpbus/shmbus.bz2.uue		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/shmif_dumpbus/t_basic			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sort				tests-usr-bin-tests
+./usr/tests/usr.bin/sort/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sort/Kyuafile			tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/sort/d_any_char_dflag_out.txt	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sort/d_any_char_fflag_out.txt	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sort/d_any_char_iflag_out.txt	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sort/d_any_char_in.txt		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/sort/t_sort				tests-usr-bin-tests	atf
+./usr/tests/usr.bin/tmux			tests-usr-bin-tests
+./usr/tests/usr.bin/tmux/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/tmux/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/tmux/t_tmux			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/tr				tests-usr-bin-tests
+./usr/tests/usr.bin/tr/Atffile			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/tr/Kyuafile			tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/tr/t_basic			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/unifdef			tests-usr-bin-tests
+./usr/tests/usr.bin/unifdef/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/unifdef/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/unifdef/d_basic.in		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/unifdef/d_basic.out		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/unifdef/t_basic		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/vmstat			tests-usr-bin-tests
+./usr/tests/usr.bin/vmstat/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/vmstat/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/vmstat/t_vmstat		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint			tests-usr-bin-tests
+./usr/tests/usr.bin/xlint/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/Kyuafile		tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/xlint/lint1			tests-usr-bin-tests
+./usr/tests/usr.bin/xlint/lint1/Atffile		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/Kyuafile	tests-usr-bin-tests	atf,kyua
+./usr/tests/usr.bin/xlint/lint1/d_alignof.c			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_complex_num.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_complex_split.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_decls_after_stmt.c	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_decls_after_stmt2.c	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_decls_after_stmt3.c	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_for_loops.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_func.c			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_recursive_init.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_struct_init.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_union_init1.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_union_init2.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c99_union_init3.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c9x_array_init.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_c9x_recursive_init.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_cast_init.c			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_cast_init2.c			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_cast_lhs.c			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_compound_literals1.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_compound_literals2.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_constant_conv1.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_constant_conv2.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_cvt_constant.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_cvt_in_ternary.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_ellipsis_in_switch.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_gcc_compound_statements1.c	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_gcc_compound_statements2.c	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_gcc_compound_statements3.c	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_gcc_extension.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_gcc_func.c			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_gcc_variable_array_init.c	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_incorrect_array_size.c	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_long_double_int.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_nested_structs.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_nolimit_init.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_packed_structs.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_shift_to_narrower_type.c	tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_type_conv1.c			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_type_conv2.c			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_type_conv3.c			tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_typename_as_var.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/d_zero_sized_arrays.c		tests-usr-bin-tests	atf
+./usr/tests/usr.bin/xlint/lint1/t_integration			tests-usr-bin-tests	atf
+./usr/tests/usr.sbin				tests-usr-sbin-tests
+./usr/tests/usr.sbin/Atffile			tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/Kyuafile			tests-usr-sbin-tests	atf,kyua
+./usr/tests/usr.sbin/mtree			tests-usr-sbin-tests
+./usr/tests/usr.sbin/mtree/Atffile		tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/mtree/Kyuafile		tests-usr-sbin-tests	atf,kyua
+./usr/tests/usr.sbin/mtree/d_convert.in		tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/mtree/d_convert_C.out	tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/mtree/d_convert_C_S.out	tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/mtree/d_convert_D.out	tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/mtree/d_convert_D_S.out	tests-usr-sbin-tests	atf
 ./usr/tests/usr.sbin/mtree/d_create.out		tests-obsolete		obsolete
-./usr/tests/usr.sbin/mtree/d_merge.in		tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/mtree/d_merge_C_M.out	tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/mtree/d_merge_C_M_S.out	tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/mtree/mtree_d_create.out	tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/mtree/netbsd6_d_create.out	tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/mtree/t_mtree		tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/tcpdump			tests-usr.sbin-tests
-./usr/tests/usr.sbin/tcpdump/Atffile		tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/tcpdump/Kyuafile		tests-usr.sbin-tests	atf,kyua
-./usr/tests/usr.sbin/tcpdump/t_tcpdump		tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/traceroute			tests-usr.sbin-tests
-./usr/tests/usr.sbin/traceroute/Atffile		tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/traceroute/Kyuafile	tests-usr.sbin-tests	atf,kyua
-./usr/tests/usr.sbin/traceroute/t_traceroute	tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/useradd			tests-usr.sbin-tests
-./usr/tests/usr.sbin/useradd/Atffile		tests-usr.sbin-tests	atf
-./usr/tests/usr.sbin/useradd/Kyuafile		tests-usr.sbin-tests	atf,kyua
-./usr/tests/usr.sbin/useradd/t_useradd		tests-usr.sbin-tests	atf
+./usr/tests/usr.sbin/mtree/d_merge.in		tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/mtree/d_merge_C_M.out	tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/mtree/d_merge_C_M_S.out	tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/mtree/mtree_d_create.out	tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/mtree/netbsd6_d_create.out	tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/mtree/t_mtree		tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/tcpdump			tests-usr-sbin-tests
+./usr/tests/usr.sbin/tcpdump/Atffile		tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/tcpdump/Kyuafile		tests-usr-sbin-tests	atf,kyua
+./usr/tests/usr.sbin/tcpdump/t_tcpdump		tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/traceroute			tests-usr-sbin-tests
+./usr/tests/usr.sbin/traceroute/Atffile		tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/traceroute/Kyuafile	tests-usr-sbin-tests	atf,kyua
+./usr/tests/usr.sbin/traceroute/t_traceroute	tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/useradd			tests-usr-sbin-tests
+./usr/tests/usr.sbin/useradd/Atffile		tests-usr-sbin-tests	atf
+./usr/tests/usr.sbin/useradd/Kyuafile		tests-usr-sbin-tests	atf,kyua
+./usr/tests/usr.sbin/useradd/t_useradd		tests-usr-sbin-tests	atf
 ./usr/tests/util				tests-obsolete		obsolete
 ./usr/tests/util/Atffile			tests-obsolete		obsolete
 ./usr/tests/util/awk				tests-obsolete		obsolete

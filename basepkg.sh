@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2016,2017 Yuuki Enomoto 
+# Copyright (c) 2016,2017,2018 Yuuki Enomoto 
 # All rights reserved. 
 #  
 # Redistribution and use in source and binary forms, with or without 
@@ -24,7 +24,33 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
+
+# Copyright (c) 2001-2011 The NetBSD Foundation, Inc.
+# All rights reserved.
 #
+# This code is derived from software contributed to The NetBSD Foundation
+# by Todd Vierling and Luke Mewburn.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE NETBSD FOUNDATION, INC. AND CONTRIBUTORS
+# ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
 
 ################################################################################
 #
@@ -57,6 +83,9 @@
 # The which(1) command is undefined in POSIX. So this process check the 
 # which(1) command. If not exist in the system, define a function that same as 
 # the which(1) command.
+#
+# Thank you for Tomoyuki Matsu'ura and USP Laboratory(www.usp-lab.com), 
+# ISBN978-4-86354-177-1, pp. 50-51.
 #
 ################################################################################
 which which > /dev/null 2>&1 || {
@@ -202,23 +231,23 @@ deinstall_script="$PWD/sets/deinstall"
 est="$PWD/sets/essentials"
 tmp_deps="/tmp/culldeps"
 homepage="https://github.com/user340/basepkg"
-mail_address="mail@e-yuuki.org"
+mail_address="uki@e-yuuki.org"
 toppid=$$
+results=".basepkg.log"
 
 obj="/usr/obj"
 packages="$PWD/packages"
-category="base comp etc games man misc text"
+category="base comp etc games man misc modules text"
 pkgdb="/var/db/basepkg"
-log="$PWD/log"
 
 ################################################################################
 #
-# Output the error message to log file.
+# Output the error message.
 #
 ################################################################################
 err()
 {
-    echo "[$(date +'%Y-%m-%dT%H:%M:%S')] $*" | tee -a "$log"
+    echo "[$(date +'%Y-%m-%dT%H:%M:%S')] $*"
 }
 
 ################################################################################
@@ -229,7 +258,7 @@ err()
 ################################################################################
 bomb()
 {
-    printf "ERROR: %s\n *** PACKAGING ABORTED ***\n" "$@" | tee -a "$log"
+    printf "ERROR: %s\n *** PACKAGING ABORTED ***\n" "$@"
     kill $toppid
     exit 1
 }
@@ -427,6 +456,7 @@ osrelease()
 split_category_from_lists()
 {
  (
+    printf "===> split_category_from_lists()\n" | tee -a $results
     for i in $category; do
         test -d "$workdir/$i" || mkdir -p "$workdir/$i"
         test -f "$workdir/$i/FILES" && rm -f "$workdir/$i/FILES"
@@ -493,6 +523,7 @@ split_category_from_lists()
 make_directories_of_package()
 {
  (
+    printf "===> make_directories_of_package()\n" | tee -a $results
     for i in $category; do
         awk '{print $2}' "$workdir/$i/FILES" | sort | uniq \
         | xargs -n 1 -I % sh -c \
@@ -509,13 +540,11 @@ make_directories_of_package()
 make_contents_list()
 {
  (
+    printf "===> make_contents_list()\n" | tee -a $results
     for i in $category; do
         awk ' 
         # $1 - file name
         # $2 - package name
-        $2 ~ /\./ {
-            gsub(/\./, "-", $2)
-        }
         {
             if ($2 in lists)
                 lists[$2] = $1 " " lists[$2]
@@ -589,8 +618,8 @@ make_CONTENTS()
 {
  (
     TMPFILE=$(mktemp -q || bomb "$TMPFILE")
-    setname=$(echo "$1" | cut -d '/' -f 1 | sed 's/\./-/g')
-    pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
+    setname=${1%/*} # E.g. "base/base-sys-root" --> "base"
+    pkgname=${1#*/} # E.g. "base/base-sys-root" --> "base-sys-root"
 
     echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
     echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
@@ -627,7 +656,7 @@ make_CONTENTS()
 make_DESC_and_COMMENT()
 {
  (
-    pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
+    pkgname="${1#*/}"
 
     awk '
     /^'"$pkgname"'/ {
@@ -727,8 +756,8 @@ make_INSTALL()
 
     test -f "$workdir/$1/+CONTENTS" || bomb "+CONTENTS not found."
     grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
-        test "$(file "$file" | cut -d " " -f 2)" = "symbolic" && continue
-        if [ "$(echo "$file" | cut -d "/" -f 1)" = "etc" ]; then
+        test "$(file "$obj/$file" | cut -d " " -f 2)" = "symbolic" && continue
+        if [ "${file%%/*}" = "etc" ]; then
             test -f "$destdir/$file" && \
                 mode_user_group=$(
                     grep -e "^\./$file " "$destdir/etc/mtree/set.etc" \
@@ -764,7 +793,7 @@ make_PRESERVE()
     while read -r e_pkg; do
         e_path=$(find "$workdir" -name "$e_pkg" -type d)
 
-        #For debug.
+        # For debug.
         #printf "%s-%s -> %s\n" "$e_pkg" "$release" "$e_path/+PRESERVE"
 
         test "$e_path" && printf "%s-%s" "$e_pkg" "$release" > "$e_path/+PRESERVE"
@@ -794,7 +823,7 @@ output_base_dir ()
 do_pkg_create()
 {
  (
-    pkgname=$(echo "$1" | cut -d '/' -f 2 | sed 's/\./-/g')
+    pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
 
     option="-v -l -U 
     -B $workdir/$1/+BUILD_INFO
@@ -810,8 +839,7 @@ do_pkg_create()
     test -f "$workdir/$1/+PRESERVE" && option="$option -n $workdir/$1/+PRESERVE"
 
     # shellcheck disable=SC2086
-    { pkg_create $option "$pkgname" | tee -a "$log"; } \
-        || bomb "$1: pkg_create"
+    pkg_create $option "$pkgname" || bomb "$1: pkg_create"
 
     _basedir=$(output_base_dir)
     test -d "$_basedir" || mkdir -p "$_basedir"
@@ -827,6 +855,7 @@ do_pkg_create()
 make_packages()
 {
  (
+    printf "===> make_packages()\n" | tee -a $results
     for i in $category; do
         for j in "$workdir/$i"/*; do
             test -d "$j" || continue
@@ -884,12 +913,12 @@ _BUILD_INFO_
 
     # Short description of package.
     cat > "$workdir/$category/$pkgname/+COMMENT" << _COMMENT_
-NetBSD Kernel
+NetBSD $1 Kernel
 _COMMENT_
 
     # Description of package.
     cat > "$workdir/$category/$pkgname/+DESC" << _DESC_
-NetBSD Kernel
+NetBSD $1 Kernel
 _DESC_
 
     # Package contents.
@@ -900,14 +929,14 @@ _DESC_
 netbsd
 _CONTENTS_
 
-    { pkg_create -v -l -U \
+    pkg_create -v -l -U \
     -B "$workdir/$category/$pkgname/+BUILD_INFO" \
     -I "/" \
     -c "$workdir/$category/$pkgname/+COMMENT" \
     -d "$workdir/$category/$pkgname/+DESC" \
     -f "$workdir/$category/$pkgname/+CONTENTS" \
     -p "$obj/sys/arch/$machine/compile/$1" \
-    -K "$pkgdb" "$pkgname" | tee -a "$log"; } || bomb "kernel: pkg_create"
+    -K "$pkgdb" "$pkgname" || bomb "kernel: pkg_create"
 
     _basedir=$(output_base_dir)
     test -d "$_basedir" || mkdir -p "$_basedir"
@@ -924,6 +953,7 @@ _CONTENTS_
 packaging_all_kernels()
 {
  (
+    printf "===> packaging_all_kernels()\n" | tee -a $results
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
     ls $kernobj | while read -r kname; do
@@ -939,6 +969,7 @@ packaging_all_kernels()
 ################################################################################
 fn_clean_workdir()
 {
+    printf "fn_clean_workdir()\n"
     test -w "$workdir" && rm -fr "$workdir"
 }
 
@@ -949,6 +980,7 @@ fn_clean_workdir()
 ################################################################################
 fn_clean_pkg()
 {
+    printf "fn_clean_pkg()\n"
     test -w "$packages" && rm -fr "$packages"
 }
 
@@ -995,6 +1027,25 @@ get_optarg()
     expr "x$1" : "x[^=]*=\\(.*\\)"
 }
 
+start_message()
+{
+    printf "===> basepkg.sh command: %s\n" "$1" | tee -a $results
+    printf "===> basepkg.sh started: %s\n" "$2" | tee -a $results
+    printf "===> NetBSD version:     %s\n" "$release" | tee -a $results
+    printf "===> MACHINE:            %s\n" "$machine" | tee -a $results
+    printf "===> MACHINE_ARCH:       %s\n" "$machine_arch" | tee -a $results
+    printf "===> Build platform:     %s %s %s\n" "$opsys" "$osversion" "$(uname -m)" | tee -a $results
+}
+
+result_message()
+{
+    printf "===> basepkg.sh ended:   %s\n" "$1" | tee -a $results
+    printf "===> Summary of results:\n"
+    sed -e 's/^===>/    /g' $results
+    printf "===> .\n"
+    rm -f $results
+}
+
 ################################################################################
 #
 # Start main process from here.
@@ -1002,6 +1053,7 @@ get_optarg()
 ################################################################################
 
 machine="$(uname -m)" # Firstly, set machine hardware name for getarch().
+commandline="$0 $*"
 
 ################################################################################
 #
@@ -1075,7 +1127,6 @@ set -u
 umask 0022
 export LC_ALL=C LANG=C
 
-
 eval "$(getarch)"
 validatearch
 destdir=${destdir:-"$obj/destdir.$MACHINE"}
@@ -1086,6 +1137,7 @@ machine_arch=$MACHINE_ARCH
 workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
 kernobj="$obj/sys/arch/$machine/compile"
+start=$(date)
 
 ################################################################################
 #
@@ -1100,7 +1152,6 @@ which hostname > /dev/null 2>&1 || bomb "hostname not found."
 which mktemp > /dev/null 2>&1 || bomb "mktemp not found."
 which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 
-
 ################################################################################
 #
 # operation
@@ -1108,24 +1159,28 @@ which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
 ################################################################################
 case $1 in
 pkg)
-    test -f "$log" && rm -f "$log"
+    start_message "$commandline" "$start"
     split_category_from_lists
     make_directories_of_package
     make_contents_list
     make_PRESERVE
     make_packages
+    result_message "$(date)" 
     ;;
 kern)
+    start_message "$commandline" "$start"
     packaging_all_kernels
+    result_message "$(date)" 
     ;;
 clean)
+    start_message "$commandline" "$start"
     fn_clean_workdir
+    result_message "$(date)" 
     ;;
 cleanpkg)
+    start_message "$commandline" "$start"
     fn_clean_pkg
-    ;;
-test)
-    make_PRESERVE
+    result_message "$(date)" 
     ;;
 *)
     usage

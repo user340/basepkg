@@ -75,6 +75,7 @@ base-gnats-bin base-sys-usr
 base-gnats-share base-sys-share
 base-groff-font base-sys-share
 base-groff-share base-sys-share
+base-groff-share base-terminfo-share
 base-hesiod-bin base-sys-shlib
 base-hesiod-bin base-sys-usr
 base-hfs-root base-sys-root
@@ -158,6 +159,7 @@ base-lpr-usr base-sys-usr
 base-lvm-root base-sys-root
 base-lvm-shlib base-sys-usr
 base-magic-share base-sys-share
+base-magic-share base-terminfo-share
 base-mail-bin base-sys-shlib
 base-mail-bin base-sys-usr
 base-mail-root base-sys-root
@@ -234,6 +236,7 @@ base-puffs-usr base-sys-usr
 base-rcs-bin base-sys-shlib
 base-rcs-bin base-sys-usr
 base-reference-share base-sys-share
+base-reference-share base-terminfo-share
 base-refuse-bin base-sys-usr
 base-refuse-shlib base-sys-usr
 base-rescue-root base-sys-root
@@ -275,7 +278,6 @@ base-sup-bin base-sys-shlib
 base-sup-bin base-sys-usr
 base-sup-examples base-sys-share
 base-sys-examples base-sys-share
-base-sys-root base-sys-root
 base-sys-share base-sys-root
 base-sys-shlib base-sys-usr
 base-sys-usr base-sys-root
@@ -378,6 +380,7 @@ comp-c-piclib base-sys-usr
 comp-c-proflib base-sys-usr
 comp-c-root base-sys-root
 comp-c-share base-sys-share
+comp-c-share base-terminfo-share
 comp-c-shlib base-sys-usr
 comp-c_locale-be base-locale-share
 comp-c_locale-ca base-locale-ca
@@ -617,6 +620,7 @@ comp-util-sbin base-sys-shlib
 comp-util-sbin base-sys-usr
 comp-util-share base-sys-share
 comp-util-share base-util-share
+comp-util-share base-terminfo-share
 comp-utils-debug base-sys-usr
 comp-video-debug base-sys-usr
 comp-zfs-debug base-sys-usr
@@ -974,6 +978,8 @@ misc-tmux-examples base-sys-share
 misc-usd-doc base-usd-share
 misc-util-htmldoc base-htmldoc-share
 misc-xml-share base-sys-share
+modules-sys-root base-sys-root
+modules-base-kernel modules-sys-root
 text-groff-bin base-sys-shlib
 text-groff-bin base-sys-usr
 text-groff-catman base-man-share
@@ -989,3 +995,4 @@ text-sys-root base-sys-root
 text-texinfo-bin base-sys-shlib
 text-texinfo-bin base-sys-usr
 text-texinfo-share base-sys-share
+text-texinfo-share base-terminfo-share
