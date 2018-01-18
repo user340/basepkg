@@ -278,7 +278,6 @@ base-sup-bin base-sys-shlib
 base-sup-bin base-sys-usr
 base-sup-examples base-sys-share
 base-sys-examples base-sys-share
-base-sys-root base-sys-root
 base-sys-share base-sys-root
 base-sys-shlib base-sys-usr
 base-sys-usr base-sys-root
