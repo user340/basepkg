@@ -258,7 +258,7 @@ err()
 ################################################################################
 bomb()
 {
-    printf "ERROR: %s\n *** PACKAGING ABORTED ***\n" "$@"
+    printf "ERROR: %s\\n *** PACKAGING ABORTED ***\\n" "$@"
     kill $toppid
     exit 1
 }
@@ -456,7 +456,7 @@ osrelease()
 split_category_from_lists()
 {
  (
-    printf "===> split_category_from_lists()\n" | tee -a $results
+    printf "===> split_category_from_lists()\\n" | tee -a $results
     for i in $category; do
         test -d "$workdir/$i" || mkdir -p "$workdir/$i"
         test -f "$workdir/$i/FILES" && rm -f "$workdir/$i/FILES"
@@ -523,7 +523,7 @@ split_category_from_lists()
 make_directories_of_package()
 {
  (
-    printf "===> make_directories_of_package()\n" | tee -a $results
+    printf "===> make_directories_of_package()\\n" | tee -a $results
     for i in $category; do
         awk '{print $2}' "$workdir/$i/FILES" | sort | uniq \
         | xargs -n 1 -I % sh -c \
@@ -540,7 +540,7 @@ make_directories_of_package()
 make_contents_list()
 {
  (
-    printf "===> make_contents_list()\n" | tee -a $results
+    printf "===> make_contents_list()\\n" | tee -a $results
     for i in $category; do
         awk ' 
         # $1 - file name
@@ -760,7 +760,7 @@ make_INSTALL()
         if [ "${file%%/*}" = "etc" ]; then
             test -f "$destdir/$file" && \
                 mode_user_group=$(
-                    grep -e "^\./$file " "$destdir/etc/mtree/set.etc" \
+                    grep -e "^\\./$file " "$destdir/etc/mtree/set.etc" \
                     | cut -d " " -f 3 -f 4 -f 5 \
                     | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
                     | tr '\n' ' '
@@ -855,7 +855,7 @@ do_pkg_create()
 make_packages()
 {
  (
-    printf "===> make_packages()\n" | tee -a $results
+    printf "===> make_packages()\\n" | tee -a $results
     for i in $category; do
         for j in "$workdir/$i"/*; do
             test -d "$j" || continue
@@ -953,7 +953,7 @@ _CONTENTS_
 packaging_all_kernels()
 {
  (
-    printf "===> packaging_all_kernels()\n" | tee -a $results
+    printf "===> packaging_all_kernels()\\n" | tee -a $results
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
     ls $kernobj | while read -r kname; do
@@ -969,7 +969,7 @@ packaging_all_kernels()
 ################################################################################
 fn_clean_workdir()
 {
-    printf "fn_clean_workdir()\n"
+    printf "fn_clean_workdir()\\n"
     test -w "$workdir" && rm -fr "$workdir"
 }
 
@@ -980,7 +980,7 @@ fn_clean_workdir()
 ################################################################################
 fn_clean_pkg()
 {
-    printf "fn_clean_pkg()\n"
+    printf "fn_clean_pkg()\\n"
     test -w "$packages" && rm -fr "$packages"
 }
 
@@ -1029,20 +1029,20 @@ get_optarg()
 
 start_message()
 {
-    printf "===> basepkg.sh command: %s\n" "$1" | tee -a $results
-    printf "===> basepkg.sh started: %s\n" "$2" | tee -a $results
-    printf "===> NetBSD version:     %s\n" "$release" | tee -a $results
-    printf "===> MACHINE:            %s\n" "$machine" | tee -a $results
-    printf "===> MACHINE_ARCH:       %s\n" "$machine_arch" | tee -a $results
-    printf "===> Build platform:     %s %s %s\n" "$opsys" "$osversion" "$(uname -m)" | tee -a $results
+    printf "===> basepkg.sh command: %s\\n" "$1" | tee -a $results
+    printf "===> basepkg.sh started: %s\\n" "$2" | tee -a $results
+    printf "===> NetBSD version:     %s\\n" "$release" | tee -a $results
+    printf "===> MACHINE:            %s\\n" "$machine" | tee -a $results
+    printf "===> MACHINE_ARCH:       %s\\n" "$machine_arch" | tee -a $results
+    printf "===> Build platform:     %s %s %s\\n" "$opsys" "$osversion" "$(uname -m)" | tee -a $results
 }
 
 result_message()
 {
-    printf "===> basepkg.sh ended:   %s\n" "$1" | tee -a $results
-    printf "===> Summary of results:\n"
+    printf "===> basepkg.sh ended:   %s\\n" "$1" | tee -a $results
+    printf "===> Summary of results:\\n"
     sed -e 's/^===>/    /g' $results
-    printf "===> .\n"
+    printf "===> .\\n"
     rm -f $results
 }
 
