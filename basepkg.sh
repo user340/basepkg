@@ -630,7 +630,6 @@ make_CONTENTS()
 
     echo "@cwd /" >> "$workdir/$1/+CONTENTS"
     while read -r i; do
-        test "$(file "$destdir/$i" | cut -d " " -f 2)" = "symbolic" && continue
         if [ -d "$destdir/$i" ]; then
             filename=$(echo "$i" | sed 's%\/%\\\/%g')
             awk '$1 ~ /^\.\/'"$filename"'$/{print $0}' "$destdir/etc/mtree/set.$setname" \
@@ -646,6 +645,32 @@ make_CONTENTS()
     sort "$TMPFILE" >> "$workdir/$1/+CONTENTS"
     rm -f "$TMPFILE"
  )
+}
+
+################################################################################
+#
+# Make "+SIZE_PKG" file.
+#
+################################################################################
+make_SIZE_PKG()
+{
+    # Sum of file size.
+    grep -v '^@' < "$workdir/$1/+CONTENTS" \
+        | xargs -I % ls -l "$destdir/"% \
+        | awk '{sum+=$5} END{print sum}' \
+        > "$workdir/$1/+SIZE_PKG.tmp"
+
+    # Sum of directory size.
+    grep '^@exec install -d -o root -g wheel -m' < "$workdir/$1/+CONTENTS" \
+        | wc -l \
+        | xargs -I % expr % \* 512 \
+        >> "$workdir/$1/+SIZE_PKG.tmp"
+
+    # Sum of file and directory size.
+    awk '{sum+=$1} END{print sum}' < "$workdir/$1/+SIZE_PKG.tmp" \
+        > "$workdir/$1/+SIZE_PKG"
+
+    rm -f "$workdir/$1/+SIZE_PKG.tmp"
 }
 
 ################################################################################
@@ -834,7 +859,8 @@ do_pkg_create()
     -p $destdir
     -c $workdir/$1/+COMMENT
     -d $workdir/$1/+DESC
-    -f $workdir/$1/+CONTENTS"
+    -f $workdir/$1/+CONTENTS
+    -s $workdir/$1/+SIZE_PKG"
 
     test -f "$workdir/$1/+PRESERVE" && option="$option -n $workdir/$1/+PRESERVE"
 
@@ -862,6 +888,7 @@ make_packages()
             n=$(basename "$j")
             make_BUILD_INFO "$i/$n"
             make_CONTENTS "$i/$n"
+            make_SIZE_PKG "$i/$n"
             make_DESC_and_COMMENT "$i/$n"
             make_INSTALL "$i/$n"
             make_DEINSTALL "$i/$n"
