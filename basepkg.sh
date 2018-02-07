@@ -675,6 +675,28 @@ make_SIZE_PKG()
 
 ################################################################################
 #
+# Make "+SIZE_PKG" file.
+#
+################################################################################
+make_SIZE_ALL()
+{
+    grep '^@pkgdep' "$workdir/$1/+CONTENTS" \
+        | cut -d " " -f 2 \
+        | cut -d ">=" -f 1 \
+        | xargs -I % find "$workdir" -type d -name % \
+        | xargs -I % cat %/+SIZE_PKG \
+        | awk '{sum+=$1} END{print sum}' \
+        > "$workdir/$1/+SIZE_ALL.tmp"
+
+    cat "$workdir/$1/+SIZE_PKG" "$workdir/$1/+SIZE_ALL.tmp" \
+        | awk '{sum+=$1}END{print sum}' \
+        > "$workdir/$1/+SIZE_ALL"
+
+    rm -f "$workdir/$1/+SIZE_ALL.tmp"
+}
+
+################################################################################
+#
 # Make "+DESC" and "+COMMENT" file.
 #
 ################################################################################
@@ -860,7 +882,8 @@ do_pkg_create()
     -c $workdir/$1/+COMMENT
     -d $workdir/$1/+DESC
     -f $workdir/$1/+CONTENTS
-    -s $workdir/$1/+SIZE_PKG"
+    -s $workdir/$1/+SIZE_PKG
+    -S $workdir/$1/+SIZE_ALL"
 
     test -f "$workdir/$1/+PRESERVE" && option="$option -n $workdir/$1/+PRESERVE"
 
@@ -882,19 +905,24 @@ make_packages()
 {
  (
     printf "===> make_packages()\\n" | tee -a $results
-    for i in $category; do
-        for j in "$workdir/$i"/*; do
-            test -d "$j" || continue
-            n=$(basename "$j")
-            make_BUILD_INFO "$i/$n"
-            make_CONTENTS "$i/$n"
-            make_SIZE_PKG "$i/$n"
-            make_DESC_and_COMMENT "$i/$n"
-            make_INSTALL "$i/$n"
-            make_DEINSTALL "$i/$n"
-            do_pkg_create "$i/$n"
-        done
+    find "$workdir" -type d -name '*-*-*' \
+        | sed "s|$workdir/||g" \
+        | while read -r pkg; do
+            make_BUILD_INFO "$pkg"
+            make_CONTENTS "$pkg"
+            make_SIZE_PKG "$pkg"
+            make_DESC_and_COMMENT "$pkg"
+            make_INSTALL "$pkg"
+            make_DEINSTALL "$pkg"
     done
+
+    find "$workdir" -type d -name '*-*-*' \
+        | sed "s|$workdir/||g" \
+        | while read -r pkg; do
+            make_SIZE_ALL "$pkg"
+            do_pkg_create "$pkg"
+    done
+    
     # shellcheck disable=SC2061
     # shellcheck disable=SC2035
     pkgs="$(
@@ -956,6 +984,14 @@ _DESC_
 netbsd
 _CONTENTS_
 
+    # Size of kernel.
+    ls -l "$obj/sys/arch/$machine/compile/$1/netbsd" \
+        | awk '{print $5}' \
+        > "$workdir/$category/$pkgname/+SIZE_PKG"
+
+    # XXX: Size all.
+    cp "$workdir/$category/$pkgname/+SIZE_PKG" "$workdir/$category/$pkgname/+SIZE_ALL"
+
     pkg_create -v -l -U \
     -B "$workdir/$category/$pkgname/+BUILD_INFO" \
     -I "/" \
@@ -963,6 +999,8 @@ _CONTENTS_
     -d "$workdir/$category/$pkgname/+DESC" \
     -f "$workdir/$category/$pkgname/+CONTENTS" \
     -p "$obj/sys/arch/$machine/compile/$1" \
+    -s "$workdir/$category/$pkgname/+SIZE_PKG" \
+    -S "$workdir/$category/$pkgname/+SIZE_ALL" \
     -K "$pkgdb" "$pkgname" || bomb "kernel: pkg_create"
 
     _basedir=$(output_base_dir)
