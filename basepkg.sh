@@ -258,7 +258,7 @@ err()
 ################################################################################
 bomb()
 {
-    printf "ERROR: %s\n *** PACKAGING ABORTED ***\n" "$@"
+    printf "ERROR: %s\\n *** PACKAGING ABORTED ***\\n" "$@"
     kill $toppid
     exit 1
 }
@@ -456,7 +456,7 @@ osrelease()
 split_category_from_lists()
 {
  (
-    printf "===> split_category_from_lists()\n" | tee -a $results
+    printf "===> split_category_from_lists()\\n" | tee -a $results
     for i in $category; do
         test -d "$workdir/$i" || mkdir -p "$workdir/$i"
         test -f "$workdir/$i/FILES" && rm -f "$workdir/$i/FILES"
@@ -523,7 +523,7 @@ split_category_from_lists()
 make_directories_of_package()
 {
  (
-    printf "===> make_directories_of_package()\n" | tee -a $results
+    printf "===> make_directories_of_package()\\n" | tee -a $results
     for i in $category; do
         awk '{print $2}' "$workdir/$i/FILES" | sort | uniq \
         | xargs -n 1 -I % sh -c \
@@ -540,7 +540,7 @@ make_directories_of_package()
 make_contents_list()
 {
  (
-    printf "===> make_contents_list()\n" | tee -a $results
+    printf "===> make_contents_list()\\n" | tee -a $results
     for i in $category; do
         awk ' 
         # $1 - file name
@@ -630,7 +630,6 @@ make_CONTENTS()
 
     echo "@cwd /" >> "$workdir/$1/+CONTENTS"
     while read -r i; do
-        test "$(file "$destdir/$i" | cut -d " " -f 2)" = "symbolic" && continue
         if [ -d "$destdir/$i" ]; then
             filename=$(echo "$i" | sed 's%\/%\\\/%g')
             awk '$1 ~ /^\.\/'"$filename"'$/{print $0}' "$destdir/etc/mtree/set.$setname" \
@@ -646,6 +645,53 @@ make_CONTENTS()
     sort "$TMPFILE" >> "$workdir/$1/+CONTENTS"
     rm -f "$TMPFILE"
  )
+}
+
+################################################################################
+#
+# Make "+SIZE_PKG" file.
+#
+################################################################################
+make_SIZE_PKG()
+{
+    # Sum of file size.
+    grep -v '^@' < "$workdir/$1/+CONTENTS" \
+        | xargs -I % ls -l "$destdir/"% \
+        | awk '{sum+=$5} END{print sum}' \
+        > "$workdir/$1/+SIZE_PKG.tmp"
+
+    # Sum of directory size.
+    grep -c '^@exec install -d -o root -g wheel -m' < "$workdir/$1/+CONTENTS" \
+        | xargs -I % expr % \* 512 \
+        >> "$workdir/$1/+SIZE_PKG.tmp"
+
+    # Sum of file and directory size.
+    awk '{sum+=$1} END{print sum}' < "$workdir/$1/+SIZE_PKG.tmp" \
+        > "$workdir/$1/+SIZE_PKG"
+
+    rm -f "$workdir/$1/+SIZE_PKG.tmp"
+}
+
+################################################################################
+#
+# Make "+SIZE_PKG" file.
+#
+################################################################################
+make_SIZE_ALL()
+{
+    grep '^@pkgdep' "$workdir/$1/+CONTENTS" \
+        | cut -d " " -f 2 \
+        | cut -d ">=" -f 1 \
+        | xargs -I % find "$workdir" -type d -name % \
+        | xargs -I % cat %/+SIZE_PKG \
+        | awk '{sum+=$1} END{print sum}' \
+        > "$workdir/$1/+SIZE_ALL.tmp"
+
+    cat "$workdir/$1/+SIZE_PKG" "$workdir/$1/+SIZE_ALL.tmp" \
+        | awk '{sum+=$1}END{print sum}' \
+        > "$workdir/$1/+SIZE_ALL"
+
+    rm -f "$workdir/$1/+SIZE_ALL.tmp"
 }
 
 ################################################################################
@@ -760,7 +806,7 @@ make_INSTALL()
         if [ "${file%%/*}" = "etc" ]; then
             test -f "$destdir/$file" && \
                 mode_user_group=$(
-                    grep -e "^\./$file " "$destdir/etc/mtree/set.etc" \
+                    grep -e "^\\./$file " "$destdir/etc/mtree/set.etc" \
                     | cut -d " " -f 3 -f 4 -f 5 \
                     | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
                     | tr '\n' ' '
@@ -834,7 +880,9 @@ do_pkg_create()
     -p $destdir
     -c $workdir/$1/+COMMENT
     -d $workdir/$1/+DESC
-    -f $workdir/$1/+CONTENTS"
+    -f $workdir/$1/+CONTENTS
+    -s $workdir/$1/+SIZE_PKG
+    -S $workdir/$1/+SIZE_ALL"
 
     test -f "$workdir/$1/+PRESERVE" && option="$option -n $workdir/$1/+PRESERVE"
 
@@ -855,19 +903,25 @@ do_pkg_create()
 make_packages()
 {
  (
-    printf "===> make_packages()\n" | tee -a $results
-    for i in $category; do
-        for j in "$workdir/$i"/*; do
-            test -d "$j" || continue
-            n=$(basename "$j")
-            make_BUILD_INFO "$i/$n"
-            make_CONTENTS "$i/$n"
-            make_DESC_and_COMMENT "$i/$n"
-            make_INSTALL "$i/$n"
-            make_DEINSTALL "$i/$n"
-            do_pkg_create "$i/$n"
-        done
+    printf "===> make_packages()\\n" | tee -a $results
+    find "$workdir" -type d -name '*-*-*' \
+        | sed "s|$workdir/||g" \
+        | while read -r pkg; do
+            make_BUILD_INFO "$pkg"
+            make_CONTENTS "$pkg"
+            make_SIZE_PKG "$pkg"
+            make_DESC_and_COMMENT "$pkg"
+            make_INSTALL "$pkg"
+            make_DEINSTALL "$pkg"
     done
+
+    find "$workdir" -type d -name '*-*-*' \
+        | sed "s|$workdir/||g" \
+        | while read -r pkg; do
+            make_SIZE_ALL "$pkg"
+            do_pkg_create "$pkg"
+    done
+    
     # shellcheck disable=SC2061
     # shellcheck disable=SC2035
     pkgs="$(
@@ -929,6 +983,14 @@ _DESC_
 netbsd
 _CONTENTS_
 
+    # Size of kernel.
+    du "$obj/sys/arch/$machine/compile/$1/netbsd" \
+        | cut -f 1 \
+        > "$workdir/$category/$pkgname/+SIZE_PKG"
+
+    # XXX: Size all.
+    cp "$workdir/$category/$pkgname/+SIZE_PKG" "$workdir/$category/$pkgname/+SIZE_ALL"
+
     pkg_create -v -l -U \
     -B "$workdir/$category/$pkgname/+BUILD_INFO" \
     -I "/" \
@@ -936,6 +998,8 @@ _CONTENTS_
     -d "$workdir/$category/$pkgname/+DESC" \
     -f "$workdir/$category/$pkgname/+CONTENTS" \
     -p "$obj/sys/arch/$machine/compile/$1" \
+    -s "$workdir/$category/$pkgname/+SIZE_PKG" \
+    -S "$workdir/$category/$pkgname/+SIZE_ALL" \
     -K "$pkgdb" "$pkgname" || bomb "kernel: pkg_create"
 
     _basedir=$(output_base_dir)
@@ -953,7 +1017,7 @@ _CONTENTS_
 packaging_all_kernels()
 {
  (
-    printf "===> packaging_all_kernels()\n" | tee -a $results
+    printf "===> packaging_all_kernels()\\n" | tee -a $results
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
     ls $kernobj | while read -r kname; do
@@ -969,7 +1033,7 @@ packaging_all_kernels()
 ################################################################################
 fn_clean_workdir()
 {
-    printf "fn_clean_workdir()\n"
+    printf "fn_clean_workdir()\\n"
     test -w "$workdir" && rm -fr "$workdir"
 }
 
@@ -980,7 +1044,7 @@ fn_clean_workdir()
 ################################################################################
 fn_clean_pkg()
 {
-    printf "fn_clean_pkg()\n"
+    printf "fn_clean_pkg()\\n"
     test -w "$packages" && rm -fr "$packages"
 }
 
@@ -1029,20 +1093,20 @@ get_optarg()
 
 start_message()
 {
-    printf "===> basepkg.sh command: %s\n" "$1" | tee -a $results
-    printf "===> basepkg.sh started: %s\n" "$2" | tee -a $results
-    printf "===> NetBSD version:     %s\n" "$release" | tee -a $results
-    printf "===> MACHINE:            %s\n" "$machine" | tee -a $results
-    printf "===> MACHINE_ARCH:       %s\n" "$machine_arch" | tee -a $results
-    printf "===> Build platform:     %s %s %s\n" "$opsys" "$osversion" "$(uname -m)" | tee -a $results
+    printf "===> basepkg.sh command: %s\\n" "$1" | tee -a $results
+    printf "===> basepkg.sh started: %s\\n" "$2" | tee -a $results
+    printf "===> NetBSD version:     %s\\n" "$release" | tee -a $results
+    printf "===> MACHINE:            %s\\n" "$machine" | tee -a $results
+    printf "===> MACHINE_ARCH:       %s\\n" "$machine_arch" | tee -a $results
+    printf "===> Build platform:     %s %s %s\\n" "$opsys" "$osversion" "$(uname -m)" | tee -a $results
 }
 
 result_message()
 {
-    printf "===> basepkg.sh ended:   %s\n" "$1" | tee -a $results
-    printf "===> Summary of results:\n"
+    printf "===> basepkg.sh ended:   %s\\n" "$1" | tee -a $results
+    printf "===> Summary of results:\\n"
     sed -e 's/^===>/    /g' $results
-    printf "===> .\n"
+    printf "===> .\\n"
     rm -f $results
 }
 
