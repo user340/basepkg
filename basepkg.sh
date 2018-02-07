@@ -661,8 +661,7 @@ make_SIZE_PKG()
         > "$workdir/$1/+SIZE_PKG.tmp"
 
     # Sum of directory size.
-    grep '^@exec install -d -o root -g wheel -m' < "$workdir/$1/+CONTENTS" \
-        | wc -l \
+    grep -c '^@exec install -d -o root -g wheel -m' < "$workdir/$1/+CONTENTS" \
         | xargs -I % expr % \* 512 \
         >> "$workdir/$1/+SIZE_PKG.tmp"
 
@@ -985,8 +984,8 @@ netbsd
 _CONTENTS_
 
     # Size of kernel.
-    ls -l "$obj/sys/arch/$machine/compile/$1/netbsd" \
-        | awk '{print $5}' \
+    du "$obj/sys/arch/$machine/compile/$1/netbsd" \
+        | cut -f 1 \
         > "$workdir/$category/$pkgname/+SIZE_PKG"
 
     # XXX: Size all.
