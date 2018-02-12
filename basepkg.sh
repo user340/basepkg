@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2016,2017,2018 Yuuki Enomoto 
+# Copyright (c) 2016, 2017, 2018 Yuuki Enomoto
 # All rights reserved. 
 #  
 # Redistribution and use in source and binary forms, with or without 
@@ -231,7 +231,7 @@ deinstall_script="$PWD/sets/deinstall"
 est="$PWD/sets/essentials"
 tmp_deps="/tmp/culldeps"
 homepage="https://github.com/user340/basepkg"
-mail_address="uki@e-yuuki.org"
+mail_address="mail@e-yuuki.org"
 toppid=$$
 results=".basepkg.log"
 
