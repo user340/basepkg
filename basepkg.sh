@@ -618,8 +618,10 @@ make_CONTENTS()
 {
  (
     TMPFILE=$(mktemp -q || bomb "$TMPFILE")
-    setname=${1%/*} # E.g. "base/base-sys-root" --> "base"
-    pkgname=${1#*/} # E.g. "base/base-sys-root" --> "base-sys-root"
+    setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
+    pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
+    prefix="/"
+    test "$setname" = "etc" && prefix="/var/tmp/basepkg"
 
     echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
     echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
@@ -628,7 +630,7 @@ make_CONTENTS()
     culc_deps "$pkgname"
     test -f "$tmp_deps" && sort "$tmp_deps" | uniq >> "$workdir/$1/+CONTENTS"
 
-    echo "@cwd /" >> "$workdir/$1/+CONTENTS"
+    echo "@cwd $prefix" >> "$workdir/$1/+CONTENTS"
     while read -r i; do
         if [ -d "$destdir/$i" ]; then
             filename=$(echo "$i" | sed 's%\/%\\\/%g')
@@ -869,11 +871,11 @@ output_base_dir ()
 do_pkg_create()
 {
  (
+    setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
     pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
 
     option="-v -l -U 
     -B $workdir/$1/+BUILD_INFO
-    -I /
     -i $workdir/$1/+INSTALL
     -K $pkgdb
     -k $workdir/$1/+DEINSTALL
@@ -885,6 +887,12 @@ do_pkg_create()
     -S $workdir/$1/+SIZE_ALL"
 
     test -f "$workdir/$1/+PRESERVE" && option="$option -n $workdir/$1/+PRESERVE"
+
+    if [ "$setname" = "etc" ]; then
+        option="$option -I /var/tmp/basepkg"
+    else
+        option="$option -I /"
+    fi
 
     # shellcheck disable=SC2086
     pkg_create $option "$pkgname" || bomb "$1: pkg_create"
