@@ -1,0 +1,41 @@
+.Dd March 08, 2018
+.Dt BASEPKG.SH 1
+.Os
+.Sh NAME
+.Nm basepkg.sh
+.Nd NetBSD base system packaging tool
+.Sh SYNOPSIS
+.Nm
+.Op Fl Fl obj Ar obj_dir
+.Op Fl Fl category Ar category
+.Op Fl Fl machine Ar machine
+.Ar Operation
+.Sh OPERATION
+.Nm
+has the following operations.
+.Bl -tag -width indent
+.It Ar pkg
+Create packages.
+.It Ar kern
+Create kernel package.
+.It Ar clean
+Clean working directories.
+.It Ar cleanpkg
+Clean pakcage directories.
+.El
+.Sh DESCRIPTION
+.Nm
+is core shell script of basepkg.
+.Sh SEE ALSO
+basepkg(1)
+.Pp
+Official Repository:
+.Ar https://github.com/user340/basepkg
+.Sh AUTHOR
+.Bl -tag -width indent -compact
+.It "Yuuki Enomoto"
+Initial work
+.El
+.Sh BUG REPORT
+Please send bug reports to
+.Ar uki@e-yuuki.org.
