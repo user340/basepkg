@@ -806,14 +806,17 @@ make_INSTALL()
     grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
         test "$(file "$obj/$file" | cut -d " " -f 2)" = "symbolic" && continue
         if [ "${file%%/*}" = "etc" ]; then
-            test -f "$destdir/$file" && \
-                mode_user_group=$(
-                    grep -e "^\\./$file " "$destdir/etc/mtree/set.etc" \
-                    | cut -d " " -f 3 -f 4 -f 5 \
-                    | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
-                    | tr '\n' ' '
-                )
-            echo "# FILE: /$file c $file $mode_user_group" \
+            if [ -f "$destdir/$file" ]; then
+                user_group_mode=$(grep -e "^\\./$file " "$destdir/etc/mtree/set.etc" \
+                                    | cut -d " " -f 3 -f 4 -f 5 \
+                                    | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
+                                    | tr '\n' ' '
+                                )
+                mode=$(echo "$user_group_mode" | cut -d " " -f 3)
+                user=$(echo "$user_group_mode" | cut -d " " -f 1)
+                group=$(echo "$user_group_mode" | cut -d " " -f 2)
+            fi
+            echo "# FILE: /$file c $file $mode $user $group" \
                 >> "$workdir/$1/+INSTALL"
         fi
     done
