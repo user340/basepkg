@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2016,2017,2018 Yuuki Enomoto 
+# Copyright (c) 2016, 2017, 2018 Yuuki Enomoto
 # All rights reserved. 
 #  
 # Redistribution and use in source and binary forms, with or without 
@@ -231,7 +231,7 @@ deinstall_script="$PWD/sets/deinstall"
 est="$PWD/sets/essentials"
 tmp_deps="/tmp/culldeps"
 homepage="https://github.com/user340/basepkg"
-mail_address="uki@e-yuuki.org"
+mail_address="mail@e-yuuki.org"
 toppid=$$
 results=".basepkg.log"
 
@@ -618,8 +618,10 @@ make_CONTENTS()
 {
  (
     TMPFILE=$(mktemp -q || bomb "$TMPFILE")
-    setname=${1%/*} # E.g. "base/base-sys-root" --> "base"
-    pkgname=${1#*/} # E.g. "base/base-sys-root" --> "base-sys-root"
+    setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
+    pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
+    prefix="/"
+    test "$setname" = "etc" && prefix="/var/tmp/basepkg"
 
     echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
     echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
@@ -628,7 +630,7 @@ make_CONTENTS()
     culc_deps "$pkgname"
     test -f "$tmp_deps" && sort "$tmp_deps" | uniq >> "$workdir/$1/+CONTENTS"
 
-    echo "@cwd /" >> "$workdir/$1/+CONTENTS"
+    echo "@cwd $prefix" >> "$workdir/$1/+CONTENTS"
     while read -r i; do
         if [ -d "$destdir/$i" ]; then
             filename=$(echo "$i" | sed 's%\/%\\\/%g')
@@ -804,14 +806,17 @@ make_INSTALL()
     grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
         test "$(file "$obj/$file" | cut -d " " -f 2)" = "symbolic" && continue
         if [ "${file%%/*}" = "etc" ]; then
-            test -f "$destdir/$file" && \
-                mode_user_group=$(
-                    grep -e "^\\./$file " "$destdir/etc/mtree/set.etc" \
-                    | cut -d " " -f 3 -f 4 -f 5 \
-                    | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
-                    | tr '\n' ' '
-                )
-            echo "# FILE: /$file c $file $mode_user_group" \
+            if [ -f "$destdir/$file" ]; then
+                user_group_mode=$(grep -e "^\\./$file " "$destdir/etc/mtree/set.etc" \
+                                    | cut -d " " -f 3 -f 4 -f 5 \
+                                    | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
+                                    | tr '\n' ' '
+                                )
+                mode=$(echo "$user_group_mode" | cut -d " " -f 3)
+                user=$(echo "$user_group_mode" | cut -d " " -f 1)
+                group=$(echo "$user_group_mode" | cut -d " " -f 2)
+            fi
+            echo "# FILE: /$file c $file $mode $user $group" \
                 >> "$workdir/$1/+INSTALL"
         fi
     done
@@ -869,11 +874,11 @@ output_base_dir ()
 do_pkg_create()
 {
  (
+    setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
     pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
 
     option="-v -l -U 
     -B $workdir/$1/+BUILD_INFO
-    -I /
     -i $workdir/$1/+INSTALL
     -K $pkgdb
     -k $workdir/$1/+DEINSTALL
@@ -886,6 +891,12 @@ do_pkg_create()
 
     test -f "$workdir/$1/+PRESERVE" && option="$option -n $workdir/$1/+PRESERVE"
 
+    if [ "$setname" = "etc" ]; then
+        option="$option -I /var/tmp/basepkg"
+    else
+        option="$option -I /"
+    fi
+
     # shellcheck disable=SC2086
     pkg_create $option "$pkgname" || bomb "$1: pkg_create"
 
@@ -893,6 +904,12 @@ do_pkg_create()
     test -d "$_basedir" || mkdir -p "$_basedir"
     mv "./$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
  )
+}
+
+make_checksum()
+{
+    ls | grep 'tgz$' | xargs -I % cksum -a md5 % > MD5
+    ls | grep 'tgz$' | xargs -I % cksum -a sha512 % > SHA512
 }
 
 ################################################################################
@@ -922,20 +939,8 @@ make_packages()
             do_pkg_create "$pkg"
     done
     
-    # shellcheck disable=SC2061
-    # shellcheck disable=SC2035
-    pkgs="$(
-        find "$packages" -type f \
-        \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null
-    )"
-
     _basedir=$(output_base_dir)
-    if [ -n "$pkgs" ]; then
-        # shellcheck disable=SC2086
-        cksum -a    md5 $pkgs > "$_basedir/MD5"
-        # shellcheck disable=SC2086
-        cksum -a sha512 $pkgs > "$_basedir/SHA512"
-    fi
+    cd "$_basedir" && make_checksum
  )
 }
 
