@@ -906,6 +906,12 @@ do_pkg_create()
  )
 }
 
+make_checksum()
+{
+    ls | grep 'tgz$' | xargs -I % cksum -a md5 % > MD5
+    ls | grep 'tgz$' | xargs -I % cksum -a sha512 % > SHA512
+}
+
 ################################################################################
 #
 # Execute any functions and make MD5 and SHA512.
@@ -933,20 +939,8 @@ make_packages()
             do_pkg_create "$pkg"
     done
     
-    # shellcheck disable=SC2061
-    # shellcheck disable=SC2035
-    pkgs="$(
-        find "$packages" -type f \
-        \! -name MD5 \! -name *SUM \! -name SHA512 2>/dev/null
-    )"
-
     _basedir=$(output_base_dir)
-    if [ -n "$pkgs" ]; then
-        # shellcheck disable=SC2086
-        cksum -a    md5 $pkgs > "$_basedir/MD5"
-        # shellcheck disable=SC2086
-        cksum -a sha512 $pkgs > "$_basedir/SHA512"
-    fi
+    cd "$_basedir" && make_checksum
  )
 }
 
