@@ -64,11 +64,11 @@ CONF_IGNORE_FILES="*[~#] *.OLD *.orig *,v .pkgsrc */.pkgsrc"
 
 case "${PKG_CONFIG:-@PKG_CONFIG@}" in
 [Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
-	_PKG_CONFIG=yes
-	;;
+    _PKG_CONFIG=yes
+    ;;
 [Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
-	_PKG_CONFIG=yes
-	;;
+    _PKG_CONFIG=yes
+    ;;
 esac
 
 # $NetBSD: usergroup,v 1.3 2009/10/29 20:19:27 joerg Exp $
@@ -78,7 +78,7 @@ esac
 #
 case "${STAGE},$1" in
 UNPACK,|UNPACK,+USERGROUP)
-	${CAT} > ./+USERGROUP << 'EOF'
+    ${CAT} > ./+USERGROUP << 'EOF'
 #!@SH@
 #
 # +USERGROUP - users and groups management script
@@ -100,12 +100,12 @@ UNPACK,|UNPACK,+USERGROUP)
 # script that name the users and groups that this package requires to
 # exist to function correctly, e.g.
 #
-#	# USER: foo:foogrp::The Foomister
-#	# GROUP: foogrp
+#    # USER: foo:foogrp::The Foomister
+#    # GROUP: foogrp
 #
 # The USER lines are of the form:
 #
-#	user:group[:[userid][:[descr][:[home][:shell]]]]
+#    user:group[:[userid][:[descr][:[home][:shell]]]]
 #
 # Only the user and group are required; everything else is optional,
 # but the colons must be in the right places when specifying optional
@@ -113,7 +113,7 @@ UNPACK,|UNPACK,+USERGROUP)
 #
 # The GROUP lines are of the form:
 #
-#	group[:groupid]
+#    group[:groupid]
 #
 # Only the group is required; the groupid is optional.
 #
@@ -149,34 +149,34 @@ PKG_REFCOUNT_GROUPS_DBDIR="${PKG_REFCOUNT_DBDIR}/groups"
 
 case "${PKG_CREATE_USERGROUP:-@PKG_CREATE_USERGROUP@}" in
 [Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
-	_PKG_CREATE_USERGROUP=yes
-	;;
+    _PKG_CREATE_USERGROUP=yes
+    ;;
 [Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
-	_PKG_CREATE_USERGROUP=no
-	;;
+    _PKG_CREATE_USERGROUP=no
+    ;;
 esac
 
 listwrap()
 {
-	_length=$1
-	_buffer=
-	while read _line; do
-		set -- $_line
-		for _word; do
-			case $_buffer in
-			"")	_buffer="$_word" ;;
-			*)	_buffer="$_buffer  $_word" ;;
-			esac
-			if ${TEST} ${#_buffer} -gt $_length; then
-				${ECHO} "	$_buffer"
-				_buffer=
-			fi
-		done
-	done
-	case $_buffer in
-	"")	;;
-	*)	${ECHO} "	$_buffer" ;;
-	esac
+    _length=$1
+    _buffer=
+    while read _line; do
+        set -- $_line
+        for _word; do
+            case $_buffer in
+            "")    _buffer="$_word" ;;
+            *)    _buffer="$_buffer  $_word" ;;
+            esac
+            if ${TEST} ${#_buffer} -gt $_length; then
+                ${ECHO} "    $_buffer"
+                _buffer=
+            fi
+        done
+    done
+    case $_buffer in
+    "")    ;;
+    *)    ${ECHO} "    $_buffer" ;;
+    esac
 }
 
 # DO NOT CHANGE THE FOLLOWING LINE!
@@ -185,275 +185,275 @@ listwrap()
 exitcode=0
 case $ACTION in
 ADD)
-	${SED} -n "/^\# GROUP: /{s/^\# GROUP: //;p;}" ${SELF} | ${SORT} -u |
-	{ while read line; do
-		SAVEIFS="$IFS"; IFS=":"
-		set -- $line
-		group="$1"; groupid="$2"
-		IFS="$SAVEIFS"
-		case $group in
-		"")	continue ;;
-		esac
-		shadow_dir="${PKG_REFCOUNT_GROUPS_DBDIR}/$group"
-		preexist="$shadow_dir/+PREEXISTING"
-		token="$shadow_dir/${PKGNAME}"
-		if ${TEST} ! -d "$shadow_dir"; then
-			${MKDIR} $shadow_dir
-			group_exists $group $groupid &&
-				${ECHO} "${PKGNAME}" > $preexist
-		fi
-		if ${TEST} -f "$token" && \
-		   ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
-			:
-		else
-			${ECHO} "${PKG_METADATA_DIR}" >> $token
-		fi
-		case ${_PKG_CREATE_USERGROUP} in
-		yes)
-			group_exists $group $groupid
-			case $? in
-			0)	;;
-			1)	addgroup "$group" "$groupid" ;;
-			esac
-			;;
-		esac
-	done; }
-	${SED} -n "/^\# USER: /{s/^\# USER: //;p;}" ${SELF} | ${SORT} -u |
-	{ while read line; do
-		SAVEIFS="$IFS"; IFS=":"
-		set -- $line
-		user="$1"; group="$2"; userid="$3"
-		descr="$4"; home="$5" shell="$6"
-		IFS="$SAVEIFS"
-		case $user in
-		"")	continue ;;
-		esac
-		case $group in
-		"")	continue ;;
-		esac
-		shadow_dir="${PKG_REFCOUNT_USERS_DBDIR}/$user"
-		preexist="$shadow_dir/+PREEXISTING"
-		token="$shadow_dir/${PKGNAME}"
-		if ${TEST} ! -d "$shadow_dir"; then
-			${MKDIR} $shadow_dir
-			user_exists $user $userid &&
-				${ECHO} "${PKGNAME}" > $preexist
-		fi
-		if ${TEST} -f "$token" && \
-		   ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
-			:
-		else
-			${ECHO} "${PKG_METADATA_DIR}" >> $token
-		fi
-		case ${_PKG_CREATE_USERGROUP} in
-		yes)
-			group_exists $group || continue
-			user_exists $user $userid
-			case $? in
-			0)	;;
-			1)	adduser "$user" "$group" "$userid"	\
-					"$descr" "$home" "$shell"
-				;;
-			esac
-			;;
-		esac
-	done; }
-	;;
+    ${SED} -n "/^\# GROUP: /{s/^\# GROUP: //;p;}" ${SELF} | ${SORT} -u |
+    { while read line; do
+        SAVEIFS="$IFS"; IFS=":"
+        set -- $line
+        group="$1"; groupid="$2"
+        IFS="$SAVEIFS"
+        case $group in
+        "")    continue ;;
+        esac
+        shadow_dir="${PKG_REFCOUNT_GROUPS_DBDIR}/$group"
+        preexist="$shadow_dir/+PREEXISTING"
+        token="$shadow_dir/${PKGNAME}"
+        if ${TEST} ! -d "$shadow_dir"; then
+            ${MKDIR} $shadow_dir
+            group_exists $group $groupid &&
+                ${ECHO} "${PKGNAME}" > $preexist
+        fi
+        if ${TEST} -f "$token" && \
+           ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
+            :
+        else
+            ${ECHO} "${PKG_METADATA_DIR}" >> $token
+        fi
+        case ${_PKG_CREATE_USERGROUP} in
+        yes)
+            group_exists $group $groupid
+            case $? in
+            0)    ;;
+            1)    addgroup "$group" "$groupid" ;;
+            esac
+            ;;
+        esac
+    done; }
+    ${SED} -n "/^\# USER: /{s/^\# USER: //;p;}" ${SELF} | ${SORT} -u |
+    { while read line; do
+        SAVEIFS="$IFS"; IFS=":"
+        set -- $line
+        user="$1"; group="$2"; userid="$3"
+        descr="$4"; home="$5" shell="$6"
+        IFS="$SAVEIFS"
+        case $user in
+        "")    continue ;;
+        esac
+        case $group in
+        "")    continue ;;
+        esac
+        shadow_dir="${PKG_REFCOUNT_USERS_DBDIR}/$user"
+        preexist="$shadow_dir/+PREEXISTING"
+        token="$shadow_dir/${PKGNAME}"
+        if ${TEST} ! -d "$shadow_dir"; then
+            ${MKDIR} $shadow_dir
+            user_exists $user $userid &&
+                ${ECHO} "${PKGNAME}" > $preexist
+        fi
+        if ${TEST} -f "$token" && \
+           ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
+            :
+        else
+            ${ECHO} "${PKG_METADATA_DIR}" >> $token
+        fi
+        case ${_PKG_CREATE_USERGROUP} in
+        yes)
+            group_exists $group || continue
+            user_exists $user $userid
+            case $? in
+            0)    ;;
+            1)    adduser "$user" "$group" "$userid"    \
+                    "$descr" "$home" "$shell"
+                ;;
+            esac
+            ;;
+        esac
+    done; }
+    ;;
 
 REMOVE)
-	${SED} -n "/^\# USER: /{s/^\# USER: //;p;}" ${SELF} | ${SORT} -u |
-	{ while read line; do
-		SAVEIFS="$IFS"; IFS=":"
-		set -- $line
-		user="$1"; group="$2"; userid="$3"
-		descr="$4"; home="$5" shell="$6"
-		IFS="$SAVEIFS"
-		case $user in
-		"")	continue ;;
-		esac
-		shadow_dir="${PKG_REFCOUNT_USERS_DBDIR}/$user"
-		preexist="$shadow_dir/+PREEXISTING"
-		token="$shadow_dir/${PKGNAME}"
-		tokentmp="$token.tmp.$$"
-		if ${TEST} -f "$token" && \
-		   ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
-			${CAT} "$token" | ${GREP} -v "^${PKG_METADATA_DIR}$" > $tokentmp
-			case `${CAT} $tokentmp | ${SED} -n "$="` in
-			"")
-				${RM} -f $preexist $token $token.tmp.*
-				${RMDIR} -p $shadow_dir 2>/dev/null || ${TRUE}
-				;;
-			*)
-				${MV} -f $tokentmp $token
-				;;
-			esac
-		fi
-	done; }
-	${SED} -n "/^\# GROUP: /{s/^\# GROUP: //;p;}" ${SELF} | ${SORT} -u |
-	{ while read line; do
-		SAVEIFS="$IFS"; IFS=":"
-		set -- $line
-		group="$1"; groupid="$2"
-		IFS="$SAVEIFS"
-		case $group in
-		"")	continue ;;
-		esac
-		shadow_dir="${PKG_REFCOUNT_GROUPS_DBDIR}/$group"
-		preexist="$shadow_dir/+PREEXISTING"
-		token="$shadow_dir/${PKGNAME}"
-		tokentmp="$token.tmp.$$"
-		if ${TEST} -f "$token" && \
-		   ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
-			${CAT} "$token" | ${GREP} -v "^${PKG_METADATA_DIR}$" > $tokentmp
-			case `${CAT} $tokentmp | ${SED} -n "$="` in
-			"")
-				${RM} -f $preexist $token $token.tmp.*
-				${RMDIR} -p $shadow_dir 2>/dev/null || ${TRUE}
-				;;
-			*)
-				${MV} -f $tokentmp $token
-				;;
-			esac
-		fi
-	done; }
-	;;
+    ${SED} -n "/^\# USER: /{s/^\# USER: //;p;}" ${SELF} | ${SORT} -u |
+    { while read line; do
+        SAVEIFS="$IFS"; IFS=":"
+        set -- $line
+        user="$1"; group="$2"; userid="$3"
+        descr="$4"; home="$5" shell="$6"
+        IFS="$SAVEIFS"
+        case $user in
+        "")    continue ;;
+        esac
+        shadow_dir="${PKG_REFCOUNT_USERS_DBDIR}/$user"
+        preexist="$shadow_dir/+PREEXISTING"
+        token="$shadow_dir/${PKGNAME}"
+        tokentmp="$token.tmp.$$"
+        if ${TEST} -f "$token" && \
+           ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
+            ${CAT} "$token" | ${GREP} -v "^${PKG_METADATA_DIR}$" > $tokentmp
+            case `${CAT} $tokentmp | ${SED} -n "$="` in
+            "")
+                ${RM} -f $preexist $token $token.tmp.*
+                ${RMDIR} -p $shadow_dir 2>/dev/null || ${TRUE}
+                ;;
+            *)
+                ${MV} -f $tokentmp $token
+                ;;
+            esac
+        fi
+    done; }
+    ${SED} -n "/^\# GROUP: /{s/^\# GROUP: //;p;}" ${SELF} | ${SORT} -u |
+    { while read line; do
+        SAVEIFS="$IFS"; IFS=":"
+        set -- $line
+        group="$1"; groupid="$2"
+        IFS="$SAVEIFS"
+        case $group in
+        "")    continue ;;
+        esac
+        shadow_dir="${PKG_REFCOUNT_GROUPS_DBDIR}/$group"
+        preexist="$shadow_dir/+PREEXISTING"
+        token="$shadow_dir/${PKGNAME}"
+        tokentmp="$token.tmp.$$"
+        if ${TEST} -f "$token" && \
+           ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
+            ${CAT} "$token" | ${GREP} -v "^${PKG_METADATA_DIR}$" > $tokentmp
+            case `${CAT} $tokentmp | ${SED} -n "$="` in
+            "")
+                ${RM} -f $preexist $token $token.tmp.*
+                ${RMDIR} -p $shadow_dir 2>/dev/null || ${TRUE}
+                ;;
+            *)
+                ${MV} -f $tokentmp $token
+                ;;
+            esac
+        fi
+    done; }
+    ;;
 
 CHECK-ADD)
-	${SED} -n "/^\# GROUP: /{s/^\# GROUP: //;p;}" ${SELF} | ${SORT} -u |
-	{ while read line; do
-		SAVEIFS="$IFS"; IFS=":"
-		set -- $line
-		group="$1"; groupid="$2"
-		IFS="$SAVEIFS"
-		case $group in
-		"")	continue ;;
-		*)	group_exists $group $groupid && continue ;;
-		esac
-		case "$printed_header" in
-		yes)	;;
-		*)	printed_header=yes
-			${ECHO} "==========================================================================="
-			${ECHO} "The following groups need to be created for ${PKGNAME}:"
-			${ECHO} ""
-			;;
-		esac
-		case $groupid in
-		"")	${ECHO} "	$group" ;;
-		*)	${ECHO} "	$group (gid = $groupid)" ;;
-		esac
-	done
-	case "$printed_header" in
-	yes)	${ECHO} ""
-		${ECHO} "==========================================================================="
-		exit 1
-		;;
-	esac; }
-	${TEST} $? -eq 0 || exitcode=1
-	${SED} -n "/^\# USER: /{s/^\# USER: //;p;}" ${SELF} | ${SORT} -u |
-	{ while read line; do
-		SAVEIFS="$IFS"; IFS=":"
-		set -- $line
-		user="$1"; group="$2"; userid="$3"
-		descr="$4"; home="$5" shell="$6"
-		IFS="$SAVEIFS"
-		case $user in
-		"")	continue ;;
-		*)	user_exists $user $userid && continue ;;
-		esac
-		case "$printed_header" in
-		yes)	;;
-		*)	printed_header=yes
-			${ECHO} "==========================================================================="
-			${ECHO} "The following users need to be created for ${PKGNAME}:"
-			${ECHO} ""
-			;;
-		esac
-		: ${home:="@PKG_USER_HOME@"}
-		: ${shell:="@PKG_USER_SHELL@"}
-		case $userid in
-		"")	${ECHO} "	$user: $group, $home, $shell" ;;
-		*)	${ECHO} "	$user (uid = $userid): $group, $home, $shell" ;;
-		esac
-	done
-	case "$printed_header" in
-	yes)	${ECHO} ""
-		${ECHO} "==========================================================================="
-		exit 1
-		;;
-	esac; }
-	${TEST} $? -eq 0 || exitcode=1
-	;;
+    ${SED} -n "/^\# GROUP: /{s/^\# GROUP: //;p;}" ${SELF} | ${SORT} -u |
+    { while read line; do
+        SAVEIFS="$IFS"; IFS=":"
+        set -- $line
+        group="$1"; groupid="$2"
+        IFS="$SAVEIFS"
+        case $group in
+        "")    continue ;;
+        *)    group_exists $group $groupid && continue ;;
+        esac
+        case "$printed_header" in
+        yes)    ;;
+        *)    printed_header=yes
+            ${ECHO} "==========================================================================="
+            ${ECHO} "The following groups need to be created for ${PKGNAME}:"
+            ${ECHO} ""
+            ;;
+        esac
+        case $groupid in
+        "")    ${ECHO} "    $group" ;;
+        *)    ${ECHO} "    $group (gid = $groupid)" ;;
+        esac
+    done
+    case "$printed_header" in
+    yes)    ${ECHO} ""
+        ${ECHO} "==========================================================================="
+        exit 1
+        ;;
+    esac; }
+    ${TEST} $? -eq 0 || exitcode=1
+    ${SED} -n "/^\# USER: /{s/^\# USER: //;p;}" ${SELF} | ${SORT} -u |
+    { while read line; do
+        SAVEIFS="$IFS"; IFS=":"
+        set -- $line
+        user="$1"; group="$2"; userid="$3"
+        descr="$4"; home="$5" shell="$6"
+        IFS="$SAVEIFS"
+        case $user in
+        "")    continue ;;
+        *)    user_exists $user $userid && continue ;;
+        esac
+        case "$printed_header" in
+        yes)    ;;
+        *)    printed_header=yes
+            ${ECHO} "==========================================================================="
+            ${ECHO} "The following users need to be created for ${PKGNAME}:"
+            ${ECHO} ""
+            ;;
+        esac
+        : ${home:="@PKG_USER_HOME@"}
+        : ${shell:="@PKG_USER_SHELL@"}
+        case $userid in
+        "")    ${ECHO} "    $user: $group, $home, $shell" ;;
+        *)    ${ECHO} "    $user (uid = $userid): $group, $home, $shell" ;;
+        esac
+    done
+    case "$printed_header" in
+    yes)    ${ECHO} ""
+        ${ECHO} "==========================================================================="
+        exit 1
+        ;;
+    esac; }
+    ${TEST} $? -eq 0 || exitcode=1
+    ;;
 
 CHECK-REMOVE)
-	${SED} -n "/^\# USER: /{s/^\# USER: //;p;}" ${SELF} | ${SORT} -u |
-	{ while read line; do
-		SAVEIFS="$IFS"; IFS=":"
-		set -- $line
-		user="$1"; group="$2"; userid="$3"
-		descr="$4"; home="$5" shell="$6"
-		IFS="$SAVEIFS"
-		case $user in
-		"")	continue ;;
-		*)	user_exists $user $userid || continue ;;
-		esac
-		shadow_dir="${PKG_REFCOUNT_USERS_DBDIR}/$user"
-		${TEST} ! -d "$shadow_dir" || continue	# refcount isn't zero
-		existing_users="$existing_users $user"
-	done
-	case $existing_users in
-	"")	;;
-	*)	${ECHO} "==========================================================================="
-		${ECHO} "The following users are no longer being used by ${PKGNAME},"
-		${ECHO} "and they can be removed if no other software is using them:"
-		${ECHO} ""
-		${ECHO} "$existing_users" | listwrap 40
-		${ECHO} ""
-		${ECHO} "==========================================================================="
-		exit 1
-		;;
-	esac; }
-	${TEST} $? -eq 0 || exitcode=1
-	${SED} -n "/^\# GROUP: /{s/^\# GROUP: //;p;}" ${SELF} | ${SORT} -u |
-	{ while read line; do
-		SAVEIFS="$IFS"; IFS=":"
-		set -- $line
-		group="$1"; groupid="$2"
-		IFS="$SAVEIFS"
-		case $group in
-		"")	continue ;;
-		*)	group_exists $group $groupid || continue ;;
-		esac
-		shadow_dir="${PKG_REFCOUNT_GROUPS_DBDIR}/$group"
-		${TEST} ! -d "$shadow_dir" || continue	# refcount isn't zero
-		existing_groups="$existing_groups $group"
-	done
-	case $existing_groups in
-	"")	;;
-	*)	${ECHO} "==========================================================================="
-		${ECHO} "The following groups are no longer being used by ${PKGNAME},"
-		${ECHO} "and they can be removed if no other software is using them:"
-		${ECHO} ""
-		${ECHO} "$existing_groups" | listwrap 40
-		${ECHO} ""
-		${ECHO} "==========================================================================="
-		exit 1
-		;;
-	esac; }
-	${TEST} $? -eq 0 || exitcode=1
-	;;
+    ${SED} -n "/^\# USER: /{s/^\# USER: //;p;}" ${SELF} | ${SORT} -u |
+    { while read line; do
+        SAVEIFS="$IFS"; IFS=":"
+        set -- $line
+        user="$1"; group="$2"; userid="$3"
+        descr="$4"; home="$5" shell="$6"
+        IFS="$SAVEIFS"
+        case $user in
+        "")    continue ;;
+        *)    user_exists $user $userid || continue ;;
+        esac
+        shadow_dir="${PKG_REFCOUNT_USERS_DBDIR}/$user"
+        ${TEST} ! -d "$shadow_dir" || continue    # refcount isn't zero
+        existing_users="$existing_users $user"
+    done
+    case $existing_users in
+    "")    ;;
+    *)    ${ECHO} "==========================================================================="
+        ${ECHO} "The following users are no longer being used by ${PKGNAME},"
+        ${ECHO} "and they can be removed if no other software is using them:"
+        ${ECHO} ""
+        ${ECHO} "$existing_users" | listwrap 40
+        ${ECHO} ""
+        ${ECHO} "==========================================================================="
+        exit 1
+        ;;
+    esac; }
+    ${TEST} $? -eq 0 || exitcode=1
+    ${SED} -n "/^\# GROUP: /{s/^\# GROUP: //;p;}" ${SELF} | ${SORT} -u |
+    { while read line; do
+        SAVEIFS="$IFS"; IFS=":"
+        set -- $line
+        group="$1"; groupid="$2"
+        IFS="$SAVEIFS"
+        case $group in
+        "")    continue ;;
+        *)    group_exists $group $groupid || continue ;;
+        esac
+        shadow_dir="${PKG_REFCOUNT_GROUPS_DBDIR}/$group"
+        ${TEST} ! -d "$shadow_dir" || continue    # refcount isn't zero
+        existing_groups="$existing_groups $group"
+    done
+    case $existing_groups in
+    "")    ;;
+    *)    ${ECHO} "==========================================================================="
+        ${ECHO} "The following groups are no longer being used by ${PKGNAME},"
+        ${ECHO} "and they can be removed if no other software is using them:"
+        ${ECHO} ""
+        ${ECHO} "$existing_groups" | listwrap 40
+        ${ECHO} ""
+        ${ECHO} "==========================================================================="
+        exit 1
+        ;;
+    esac; }
+    ${TEST} $? -eq 0 || exitcode=1
+    ;;
 
 *)
-	${ECHO} "Usage: ./+USERGROUP ADD|REMOVE [metadatadir]"
-	${ECHO} "       ./+USERGROUP CHECK-ADD|CHECK-REMOVE [metadatadir]"
-	;;
+    ${ECHO} "Usage: ./+USERGROUP ADD|REMOVE [metadatadir]"
+    ${ECHO} "       ./+USERGROUP CHECK-ADD|CHECK-REMOVE [metadatadir]"
+    ;;
 esac
 exit $exitcode
 
 EOF
-	${SED} -n "/^\# GROUP: /p" ${SELF} >> ./+USERGROUP
-	${SED} -n "/^\# USER: /p" ${SELF} >> ./+USERGROUP
-	${CHMOD} +x ./+USERGROUP
-	;;
+    ${SED} -n "/^\# GROUP: /p" ${SELF} >> ./+USERGROUP
+    ${SED} -n "/^\# USER: /p" ${SELF} >> ./+USERGROUP
+    ${CHMOD} +x ./+USERGROUP
+    ;;
 esac
 
 # $NetBSD: usergroupfuncs,v 1.4 2013/04/03 09:35:19 jperkin Exp $
@@ -466,143 +466,143 @@ esac
 #
 # Platform-specific replacements for this file should be located at:
 #
-#	pkgsrc/mk/pkginstall/usergroupfuncs.${OPSYS}
+#    pkgsrc/mk/pkginstall/usergroupfuncs.${OPSYS}
 #
 
 # group_exists group [groupid]
-#	Returns 0 if $group exists and has gid $groupid
-#	Returns 1 if neither $group nor $groupid exist
-#	Returns 2 if $group or $groupid exist but don't match
-#	Returns 3 for all errors
+#    Returns 0 if $group exists and has gid $groupid
+#    Returns 1 if neither $group nor $groupid exist
+#    Returns 2 if $group or $groupid exist but don't match
+#    Returns 3 for all errors
 #
 group_exists()
 {
-	_group="$1"; _groupid="$2"
-	${TEST} -n "$_group" || return 3
+    _group="$1"; _groupid="$2"
+    ${TEST} -n "$_group" || return 3
 
-	# Check using chgrp to work properly in an NSS/NIS environment.
-	_tmpdir="./.pkginstall.$$"
-	${MKDIR} -p $_tmpdir 2>/dev/null || return 3
-	${CHMOD} 0700 $_tmpdir
-	_testpath="$_tmpdir/group_exists"
-	${ECHO} > $_testpath
-	if ${CHGRP} $_group $_testpath >/dev/null 2>&1; then
-		# $_group exists
-		_id=`${LS} -ln $_testpath 2>/dev/null | ${AWK} '{ print $4 }'`
-		${TEST} -n "$_groupid" || _groupid=$_id
-		if ${TEST} "$_groupid" = "$_id"; then
-			${RM} -fr $_tmpdir; return 0
-		fi
-		${RM} -fr $_tmpdir; return 2
-	elif ${TEST} -z "$_groupid"; then
-		# $_group doesn't exist and $_groupid is not set
-		${RM} -fr $_tmpdir; return 1
-	elif ${CHGRP} $_groupid $_testpath >/dev/null 2>&1; then
-		_name=`${LS} -l $_testpath 2>/dev/null | ${AWK} '{ print $4 }'`
-		if ${TEST} "$_name" != "$_groupid"; then
-			# $_group doesn't exist, but $_groupid exists
-			${RM} -fr $_tmpdir; return 2
-		fi
-		# neither $_group nor $_groupid exist
-		${RM} -fr $_tmpdir; return 1
-	fi
-	${RM} -fr $_tmpdir; return 3
+    # Check using chgrp to work properly in an NSS/NIS environment.
+    _tmpdir="./.pkginstall.$$"
+    ${MKDIR} -p $_tmpdir 2>/dev/null || return 3
+    ${CHMOD} 0700 $_tmpdir
+    _testpath="$_tmpdir/group_exists"
+    ${ECHO} > $_testpath
+    if ${CHGRP} $_group $_testpath >/dev/null 2>&1; then
+        # $_group exists
+        _id=`${LS} -ln $_testpath 2>/dev/null | ${AWK} '{ print $4 }'`
+        ${TEST} -n "$_groupid" || _groupid=$_id
+        if ${TEST} "$_groupid" = "$_id"; then
+            ${RM} -fr $_tmpdir; return 0
+        fi
+        ${RM} -fr $_tmpdir; return 2
+    elif ${TEST} -z "$_groupid"; then
+        # $_group doesn't exist and $_groupid is not set
+        ${RM} -fr $_tmpdir; return 1
+    elif ${CHGRP} $_groupid $_testpath >/dev/null 2>&1; then
+        _name=`${LS} -l $_testpath 2>/dev/null | ${AWK} '{ print $4 }'`
+        if ${TEST} "$_name" != "$_groupid"; then
+            # $_group doesn't exist, but $_groupid exists
+            ${RM} -fr $_tmpdir; return 2
+        fi
+        # neither $_group nor $_groupid exist
+        ${RM} -fr $_tmpdir; return 1
+    fi
+    ${RM} -fr $_tmpdir; return 3
 }
 
 # user_exists user [userid]
-#	Returns 0 if $user exists and has uid $userid
-#	Returns 1 if neither $user nor $userid exist
-#	Returns 2 if $user or $userid exist but don't match
-#	Returns 3 for all errors
+#    Returns 0 if $user exists and has uid $userid
+#    Returns 1 if neither $user nor $userid exist
+#    Returns 2 if $user or $userid exist but don't match
+#    Returns 3 for all errors
 #
 user_exists()
 {
-	_user="$1"; _userid="$2"
-	${TEST} -n "$_user" || return 3
+    _user="$1"; _userid="$2"
+    ${TEST} -n "$_user" || return 3
 
-	# Check using chown to work properly in an NSS/NIS environment.
-	_tmpdir="./.pkginstall.$$"
-	${MKDIR} -p $_tmpdir 2>/dev/null || return 3
-	${CHMOD} 0700 $_tmpdir
-	_testpath="$_tmpdir/user_exists"
-	${ECHO} > $_testpath
-	if ${CHOWN} $_user $_testpath >/dev/null 2>&1; then
-		# $_user exists
-		_id=`${LS} -ln $_testpath 2>/dev/null | ${AWK} '{ print $3 }'`
-		${TEST} -n "$_userid" || _userid=$_id
-		if ${TEST} "$_userid" = "$_id"; then
-			${RM} -fr $_tmpdir; return 0
-		fi
-		${RM} -fr $_tmpdir; return 2
-	elif ${TEST} -z "$_userid"; then
-		# $_user doesn't exist and $_userid is not set
-		${RM} -fr $_tmpdir; return 1
-	elif ${CHOWN} $_userid $_testpath >/dev/null 2>&1; then
-		_name=`${LS} -l $_testpath 2>/dev/null | ${AWK} '{ print $3 }'`
-		if ${TEST} "$_name" != "$_userid"; then
-			# $_user doesn't exist, but $_userid exists
-			${RM} -fr $_tmpdir; return 2
-		fi
-		# neither $_user nor $_userid exist
-		${RM} -fr $_tmpdir; return 1
-	fi
-	${RM} -fr $_tmpdir; return 3
+    # Check using chown to work properly in an NSS/NIS environment.
+    _tmpdir="./.pkginstall.$$"
+    ${MKDIR} -p $_tmpdir 2>/dev/null || return 3
+    ${CHMOD} 0700 $_tmpdir
+    _testpath="$_tmpdir/user_exists"
+    ${ECHO} > $_testpath
+    if ${CHOWN} $_user $_testpath >/dev/null 2>&1; then
+        # $_user exists
+        _id=`${LS} -ln $_testpath 2>/dev/null | ${AWK} '{ print $3 }'`
+        ${TEST} -n "$_userid" || _userid=$_id
+        if ${TEST} "$_userid" = "$_id"; then
+            ${RM} -fr $_tmpdir; return 0
+        fi
+        ${RM} -fr $_tmpdir; return 2
+    elif ${TEST} -z "$_userid"; then
+        # $_user doesn't exist and $_userid is not set
+        ${RM} -fr $_tmpdir; return 1
+    elif ${CHOWN} $_userid $_testpath >/dev/null 2>&1; then
+        _name=`${LS} -l $_testpath 2>/dev/null | ${AWK} '{ print $3 }'`
+        if ${TEST} "$_name" != "$_userid"; then
+            # $_user doesn't exist, but $_userid exists
+            ${RM} -fr $_tmpdir; return 2
+        fi
+        # neither $_user nor $_userid exist
+        ${RM} -fr $_tmpdir; return 1
+    fi
+    ${RM} -fr $_tmpdir; return 3
 }
 
 # adduser user group [userid] [descr] [home] [shell]
 adduser()
 {
-	user="$1"; group="$2"; userid="$3"
-	descr="$4"; home="$5" shell="$6"
-	${TEST} $# -eq 6 || return 1
-	${TEST} -n "$user" || return 2
-	${TEST} -n "$group" || return 2
+    user="$1"; group="$2"; userid="$3"
+    descr="$4"; home="$5" shell="$6"
+    ${TEST} $# -eq 6 || return 1
+    ${TEST} -n "$user" || return 2
+    ${TEST} -n "$group" || return 2
 
-	USERADD="@USERADD@"
+    USERADD="@USERADD@"
 
-	case $user in
-	${PKGNAME%-[0-9]*})	descr_dflt="$user user" ;;
-	*)			descr_dflt="${PKGNAME%-[0-9]*} $user user" ;;
-	esac
-	: ${descr:="$descr_dflt"}
-	: ${home:="@PKG_USER_HOME@"}
-	: ${shell:="@PKG_USER_SHELL@"}
+    case $user in
+    ${PKGNAME%-[0-9]*})    descr_dflt="$user user" ;;
+    *)            descr_dflt="${PKGNAME%-[0-9]*} $user user" ;;
+    esac
+    : ${descr:="$descr_dflt"}
+    : ${home:="@PKG_USER_HOME@"}
+    : ${shell:="@PKG_USER_SHELL@"}
 
-	if ${TEST} -n "${USERADD}" -a -x "${USERADD}"; then
-		${ECHO} "${PKGNAME}: Creating user \`\`$user''"
-		case $userid in
-		"")
-			${USERADD}					\
-				-c "$descr" -d "$home" -s "$shell"	\
-				-g $group $user
-			;;
-		*)
-			${USERADD}					\
-				-c "$descr" -d "$home" -s "$shell"	\
-				-g $group -u $userid $user
-			;;
-		esac
-	fi
-	return 0
+    if ${TEST} -n "${USERADD}" -a -x "${USERADD}"; then
+        ${ECHO} "${PKGNAME}: Creating user \`\`$user''"
+        case $userid in
+        "")
+            ${USERADD}                    \
+                -c "$descr" -d "$home" -s "$shell"    \
+                -g $group $user
+            ;;
+        *)
+            ${USERADD}                    \
+                -c "$descr" -d "$home" -s "$shell"    \
+                -g $group -u $userid $user
+            ;;
+        esac
+    fi
+    return 0
 }
 
 # addgroup group [groupid]
 addgroup()
 {
-	group="$1"; groupid="$2"
-	${TEST} $# -eq 2 || return 1
-	${TEST} -n "$group" || return 2
+    group="$1"; groupid="$2"
+    ${TEST} $# -eq 2 || return 1
+    ${TEST} -n "$group" || return 2
 
-	GROUPADD="@GROUPADD@"
+    GROUPADD="@GROUPADD@"
 
-	if ${TEST} -n "${GROUPADD}" -a -x "${GROUPADD}"; then
-		${ECHO} "${PKGNAME}: Creating group \`\`$group''"
-		case $groupid in
-		"")	${GROUPADD} $group ;;
-		*)	${GROUPADD} -g $groupid $group ;;
-		esac
-	fi
-	return 0
+    if ${TEST} -n "${GROUPADD}" -a -x "${GROUPADD}"; then
+        ${ECHO} "${PKGNAME}: Creating group \`\`$group''"
+        case $groupid in
+        "")    ${GROUPADD} $group ;;
+        *)    ${GROUPADD} -g $groupid $group ;;
+        esac
+    fi
+    return 0
 }
 
 # $NetBSD: files,v 1.9 2014/12/30 15:13:20 wiz Exp $
@@ -612,7 +612,7 @@ addgroup()
 #
 case "${STAGE},$1" in
 UNPACK,|UNPACK,+FILES)
-	${CAT} > ./+FILES << 'EOF'
+    ${CAT} > ./+FILES << 'EOF'
 #!@SH@
 #
 # +FILES - reference-counted configuration file management script
@@ -640,8 +640,8 @@ UNPACK,|UNPACK,+FILES)
 # name the files that this package requires to exist to function
 # correctly, along with the locations of the example files, e.g.
 #
-#	# FILE: /etc/bar.conf c /example/bar.conf
-#	# FILE: /etc/baz/conf c /example/baz.conf 0600 foo-user foo-group
+#    # FILE: /etc/bar.conf c /example/bar.conf
+#    # FILE: /etc/baz/conf c /example/baz.conf 0600 foo-user foo-group
 #
 # For each FILE entry, if the file path is relative, then it is taken to
 # be relative to ${PKG_PREFIX}.
@@ -649,9 +649,9 @@ UNPACK,|UNPACK,+FILES)
 # The second field in each FILE entry is a set of flags with the following
 # meaning:
 #
-#	c	file is copied into place
-#	f	ignore ${PKG_CONFIG}
-#	r	file is an rc.d script (consider ${PKG_RCD_SCRIPTS})
+#    c    file is copied into place
+#    f    ignore ${PKG_CONFIG}
+#    r    file is an rc.d script (consider ${PKG_RCD_SCRIPTS})
 #
 AWK="@AWK@"
 CAT="@CAT@"
@@ -680,27 +680,27 @@ ACTION=$1
 
 case "${PKG_CONFIG:-@PKG_CONFIG@}" in
 [Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
-	_PKG_CONFIG=yes
-	;;
+    _PKG_CONFIG=yes
+    ;;
 [Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
-	_PKG_CONFIG=no
-	;;
+    _PKG_CONFIG=no
+    ;;
 esac
 case "${PKG_CONFIG_PERMS:-@PKG_CONFIG_PERMS@}" in
 [Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
-	_PKG_CONFIG_PERMS=yes
-	;;
+    _PKG_CONFIG_PERMS=yes
+    ;;
 [Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
-	_PKG_CONFIG_PERMS=no
-	;;
+    _PKG_CONFIG_PERMS=no
+    ;;
 esac
 case "${PKG_RCD_SCRIPTS:-@PKG_RCD_SCRIPTS@}" in
 [Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
-	_PKG_RCD_SCRIPTS=yes
-	;;
+    _PKG_RCD_SCRIPTS=yes
+    ;;
 [Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
-	_PKG_RCD_SCRIPTS=no
-	;;
+    _PKG_RCD_SCRIPTS=no
+    ;;
 esac
 
 CURDIR=`${PWD_CMD}`
@@ -713,314 +713,314 @@ PKG_REFCOUNT_FILES_DBDIR="${PKG_REFCOUNT_DBDIR}/files"
 exitcode=0
 case $ACTION in
 ADD)
-	${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -u |
-	while read file f_flags f_eg f_mode f_user f_group; do
-		case $file in
-		"")	continue ;;
-		[!/]*)	file="$file" ;;
-		esac
-		case $f_flags in
-		*c*)	;;
-		*)	continue ;;
-		esac
-		case $f_eg in
-		"")	continue ;;
-		[!/]*)	f_eg="${PKG_PREFIX}/$f_eg" ;;
-		esac
+    ${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -u |
+    while read file f_flags f_eg f_mode f_user f_group; do
+        case $file in
+        "")    continue ;;
+        [!/]*)    file="$file" ;;
+        esac
+        case $f_flags in
+        *c*)    ;;
+        *)    continue ;;
+        esac
+        case $f_eg in
+        "")    continue ;;
+        [!/]*)    f_eg="${PKG_PREFIX}/$f_eg" ;;
+        esac
 
-		shadow_dir="${PKG_REFCOUNT_FILES_DBDIR}$file"
-		perms="$shadow_dir/+PERMISSIONS"
-		preexist="$shadow_dir/+PREEXISTING"
-		token="$shadow_dir/${PKGNAME}"
-		if ${TEST} ! -d "$shadow_dir"; then
-			${MKDIR} $shadow_dir
-			${TEST} ! -f "$file" ||
-				${ECHO} "${PKGNAME}" > $preexist
-		fi
-		if ${TEST} -f "$token" && \
-		   ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
-			:
-		else
-			${ECHO} "${PKG_METADATA_DIR}" >> $token
-		fi
+        shadow_dir="${PKG_REFCOUNT_FILES_DBDIR}$file"
+        perms="$shadow_dir/+PERMISSIONS"
+        preexist="$shadow_dir/+PREEXISTING"
+        token="$shadow_dir/${PKGNAME}"
+        if ${TEST} ! -d "$shadow_dir"; then
+            ${MKDIR} $shadow_dir
+            ${TEST} ! -f "$file" ||
+                ${ECHO} "${PKGNAME}" > $preexist
+        fi
+        if ${TEST} -f "$token" && \
+           ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
+            :
+        else
+            ${ECHO} "${PKG_METADATA_DIR}" >> $token
+        fi
 
-		case $f_mode$f_user$f_group in
-		"")	;;
-	 	*)	${ECHO} "$f_mode $f_user $f_group" > $perms ;;
-		esac
-		if ${TEST} ! -f "$file" -a ! -f "$f_eg" -a ! -c "$f_eg"; then
-			:
-		else
-			case "$f_flags:$_PKG_CONFIG:$_PKG_RCD_SCRIPTS" in
-			*f*:*:*|[!r]:yes:*|[!r][!r]:yes:*|[!r][!r][!r]:yes:*|*r*:yes:yes)
-				if ${TEST} -f "$file"; then
-					${ECHO} "${PKGNAME}: $file already exists"
-				elif ${TEST} -f "$f_eg" -o -c "$f_eg"; then
-					${ECHO} "${PKGNAME}: copying $f_eg to $file"
+        case $f_mode$f_user$f_group in
+        "")    ;;
+         *)    ${ECHO} "$f_mode $f_user $f_group" > $perms ;;
+        esac
+        if ${TEST} ! -f "$file" -a ! -f "$f_eg" -a ! -c "$f_eg"; then
+            :
+        else
+            case "$f_flags:$_PKG_CONFIG:$_PKG_RCD_SCRIPTS" in
+            *f*:*:*|[!r]:yes:*|[!r][!r]:yes:*|[!r][!r][!r]:yes:*|*r*:yes:yes)
+                if ${TEST} -f "$file"; then
+                    ${ECHO} "${PKGNAME}: $file already exists"
+                elif ${TEST} -f "$f_eg" -o -c "$f_eg"; then
+                    ${ECHO} "${PKGNAME}: copying $f_eg to $file"
                     ${CP} $f_eg "$file".new
-					${MV} "$file".new $file
-					case $f_user in
-					"")	;;
-					*)	${CHOWN} $f_user $file ;;
-					esac
-					case $f_group in
-					"")	;;
-					*)	${CHGRP} $f_group $file ;;
-					esac
-					case $f_mode in
-					"")	;;
-					*)	${CHMOD} $f_mode $file ;;
-					esac
-				fi
-				;;
-			esac
-		fi
-	done
-	;;
+                    ${MV} "$file".new $file
+                    case $f_user in
+                    "")    ;;
+                    *)    ${CHOWN} $f_user $file ;;
+                    esac
+                    case $f_group in
+                    "")    ;;
+                    *)    ${CHGRP} $f_group $file ;;
+                    esac
+                    case $f_mode in
+                    "")    ;;
+                    *)    ${CHMOD} $f_mode $file ;;
+                    esac
+                fi
+                ;;
+            esac
+        fi
+    done
+    ;;
 
 REMOVE)
-	${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -ru |
-	while read file f_flags f_eg f_mode f_user f_group; do
-		case $file in
-		"")	continue ;;
-		[!/]*)	file="$file" ;;
-		esac
-		case $f_flags in
-		*c*)	;;
-		*)	continue ;;
-		esac
-		case $f_eg in
-		"")	continue ;;
-		[!/]*)	f_eg="${PKG_PREFIX}/$f_eg" ;;
-		esac
+    ${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -ru |
+    while read file f_flags f_eg f_mode f_user f_group; do
+        case $file in
+        "")    continue ;;
+        [!/]*)    file="$file" ;;
+        esac
+        case $f_flags in
+        *c*)    ;;
+        *)    continue ;;
+        esac
+        case $f_eg in
+        "")    continue ;;
+        [!/]*)    f_eg="${PKG_PREFIX}/$f_eg" ;;
+        esac
 
-		shadow_dir="${PKG_REFCOUNT_FILES_DBDIR}$file"
-		perms="$shadow_dir/+PERMISSIONS"
-		preexist="$shadow_dir/+PREEXISTING"
-		token="$shadow_dir/${PKGNAME}"
-		tokentmp="$token.tmp.$$"
-		if ${TEST} -f "$token" && \
-		   ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
-			${CAT} "$token" | ${GREP} -v "^${PKG_METADATA_DIR}$" > $tokentmp
-			case `${CAT} $tokentmp | ${SED} -n "$="` in
-			"")
-				if ${TEST} -f "$preexist"; then
-					:
-				elif ${TEST} -f "$file" -a \( -f "$f_eg" -o -c "$f_eg" \) && \
-				     ${CMP} -s "$file" "$f_eg"; then
-					case "$f_flags:$_PKG_CONFIG:$_PKG_RCD_SCRIPTS" in
-					*f*:*:*|[!r]:yes:*|[!r][!r]:yes:*|[!r][!r][!r]:yes:*|*r*:yes:yes)
-						${RM} -f "$file"
-						;;
-					esac
-				fi
-				${RM} -f $perms $preexist $token $token.tmp.*
-				${RMDIR} -p $shadow_dir 2>/dev/null || ${TRUE}
-				;;
-			*)
-				${MV} -f $tokentmp $token
-				;;
-			esac
-		fi
-	done
-	;;
+        shadow_dir="${PKG_REFCOUNT_FILES_DBDIR}$file"
+        perms="$shadow_dir/+PERMISSIONS"
+        preexist="$shadow_dir/+PREEXISTING"
+        token="$shadow_dir/${PKGNAME}"
+        tokentmp="$token.tmp.$$"
+        if ${TEST} -f "$token" && \
+           ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
+            ${CAT} "$token" | ${GREP} -v "^${PKG_METADATA_DIR}$" > $tokentmp
+            case `${CAT} $tokentmp | ${SED} -n "$="` in
+            "")
+                if ${TEST} -f "$preexist"; then
+                    :
+                elif ${TEST} -f "$file" -a \( -f "$f_eg" -o -c "$f_eg" \) && \
+                     ${CMP} -s "$file" "$f_eg"; then
+                    case "$f_flags:$_PKG_CONFIG:$_PKG_RCD_SCRIPTS" in
+                    *f*:*:*|[!r]:yes:*|[!r][!r]:yes:*|[!r][!r][!r]:yes:*|*r*:yes:yes)
+                        ${RM} -f "$file"
+                        ;;
+                    esac
+                fi
+                ${RM} -f $perms $preexist $token $token.tmp.*
+                ${RMDIR} -p $shadow_dir 2>/dev/null || ${TRUE}
+                ;;
+            *)
+                ${MV} -f $tokentmp $token
+                ;;
+            esac
+        fi
+    done
+    ;;
 
 PERMS)
-	${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -ru |
-	while read file f_flags f_eg f_mode f_user f_group; do
-		case $_PKG_CONFIG:$_PKG_CONFIG_PERMS in
-		yes:yes)	;;
-		*)		continue ;;
-		esac
-		case $file in
-		"")	continue ;;
-		[!/]*)	file="$file" ;;
-		esac
-		case $f_user in
-		"")	;;
-		*)	${CHOWN} $f_user $file ;;
-		esac
-		case $f_group in
-		"")	;;
-		*)	${CHGRP} $f_group $file ;;
-		esac
-		case $f_mode in
-		"")	;;
-		*)	${CHMOD} $f_mode $file ;;
-		esac
-	done
-	;;
+    ${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -ru |
+    while read file f_flags f_eg f_mode f_user f_group; do
+        case $_PKG_CONFIG:$_PKG_CONFIG_PERMS in
+        yes:yes)    ;;
+        *)        continue ;;
+        esac
+        case $file in
+        "")    continue ;;
+        [!/]*)    file="$file" ;;
+        esac
+        case $f_user in
+        "")    ;;
+        *)    ${CHOWN} $f_user $file ;;
+        esac
+        case $f_group in
+        "")    ;;
+        *)    ${CHGRP} $f_group $file ;;
+        esac
+        case $f_mode in
+        "")    ;;
+        *)    ${CHMOD} $f_mode $file ;;
+        esac
+    done
+    ;;
 
 CHECK-ADD)
-	${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -ru |
-	{ while read file f_flags f_eg f_mode f_user f_group; do
-		case $file in
-		"")	continue ;;
-		[!/]*)	file="$file" ;;
-		esac
-		${TEST} ! -f "$file" || continue
-		case $f_flags in
-		*c*)	;;
-		*)	continue ;;
-		esac
-		case $f_eg in
-		"")	continue ;;
-		[!/]*)	f_eg="${PKG_PREFIX}/$f_eg" ;;
-		esac
+    ${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -ru |
+    { while read file f_flags f_eg f_mode f_user f_group; do
+        case $file in
+        "")    continue ;;
+        [!/]*)    file="$file" ;;
+        esac
+        ${TEST} ! -f "$file" || continue
+        case $f_flags in
+        *c*)    ;;
+        *)    continue ;;
+        esac
+        case $f_eg in
+        "")    continue ;;
+        [!/]*)    f_eg="${PKG_PREFIX}/$f_eg" ;;
+        esac
 
-		case "$printed_header" in
-		yes)	;;
-		*)	printed_header=yes
-			${ECHO} "==========================================================================="
-			${ECHO} "The following files should be created for ${PKGNAME}:"
-			;;
-		esac
-		${ECHO} ""
-		case $f_mode:$f_user:$f_group in
-		::)
-			${ECHO} "	$file"
-			;;
-		[!:]*::)
-			${ECHO} "	$file (m=$f_mode)"
-			;;
-		[!:]*:[!:]*:)
-			${ECHO} "	$file (m=$f_mode, o=$f_user)"
-			;;
-		[!:]*:[!:]*:[!:]*)
-			${ECHO} "	$file (m=$f_mode, o=$f_user, g=$f_group)"
-			;;
-		esac
-		${TEST} ! -f "$f_eg" || ${ECHO} "	    [$f_eg]"
-	done
-	case "$printed_header" in
-	yes)	${ECHO} ""
-		${ECHO} "==========================================================================="
-		exit 1
-		;;
-	esac; }
-	${TEST} $? -eq 0 || exitcode=1
-	;;
+        case "$printed_header" in
+        yes)    ;;
+        *)    printed_header=yes
+            ${ECHO} "==========================================================================="
+            ${ECHO} "The following files should be created for ${PKGNAME}:"
+            ;;
+        esac
+        ${ECHO} ""
+        case $f_mode:$f_user:$f_group in
+        ::)
+            ${ECHO} "    $file"
+            ;;
+        [!:]*::)
+            ${ECHO} "    $file (m=$f_mode)"
+            ;;
+        [!:]*:[!:]*:)
+            ${ECHO} "    $file (m=$f_mode, o=$f_user)"
+            ;;
+        [!:]*:[!:]*:[!:]*)
+            ${ECHO} "    $file (m=$f_mode, o=$f_user, g=$f_group)"
+            ;;
+        esac
+        ${TEST} ! -f "$f_eg" || ${ECHO} "        [$f_eg]"
+    done
+    case "$printed_header" in
+    yes)    ${ECHO} ""
+        ${ECHO} "==========================================================================="
+        exit 1
+        ;;
+    esac; }
+    ${TEST} $? -eq 0 || exitcode=1
+    ;;
 
 CHECK-REMOVE)
-	${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -ru |
-	{ while read file f_flags f_eg f_mode f_user f_group; do
-		case $file in
-		"")	continue ;;
-		[!/]*)	file="$file" ;;
-		esac
-		${TEST} -f "$file" || continue
-		shadow_dir="${PKG_REFCOUNT_FILES_DBDIR}$file"
-		${TEST} ! -d "$shadow_dir" || continue	# refcount isn't zero
-		case "$printed_header" in
-		yes)	;;
-		*)	printed_header=yes
-			${ECHO} "==========================================================================="
-			${ECHO} "The following files are no longer being used by ${PKGNAME},"
-			${ECHO} "and they can be removed if no other packages are using them:"
-			${ECHO} ""
-			;;
-		esac
-		${ECHO} "	$file"
-	done
-	case "$printed_header" in
-	yes)	${ECHO} ""
-		${ECHO} "==========================================================================="
-		exit 1
-		;;
-	esac; }
-	${TEST} $? -eq 0 || exitcode=1
-	;;
+    ${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -ru |
+    { while read file f_flags f_eg f_mode f_user f_group; do
+        case $file in
+        "")    continue ;;
+        [!/]*)    file="$file" ;;
+        esac
+        ${TEST} -f "$file" || continue
+        shadow_dir="${PKG_REFCOUNT_FILES_DBDIR}$file"
+        ${TEST} ! -d "$shadow_dir" || continue    # refcount isn't zero
+        case "$printed_header" in
+        yes)    ;;
+        *)    printed_header=yes
+            ${ECHO} "==========================================================================="
+            ${ECHO} "The following files are no longer being used by ${PKGNAME},"
+            ${ECHO} "and they can be removed if no other packages are using them:"
+            ${ECHO} ""
+            ;;
+        esac
+        ${ECHO} "    $file"
+    done
+    case "$printed_header" in
+    yes)    ${ECHO} ""
+        ${ECHO} "==========================================================================="
+        exit 1
+        ;;
+    esac; }
+    ${TEST} $? -eq 0 || exitcode=1
+    ;;
 
 CHECK-PERMS)
-	tmpdir="./.pkginstall.$$"
-	${MKDIR} -p $tmpdir 2>/dev/null || exit 1
-	${CHMOD} 0700 $tmpdir
-	${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -ru |
-	{ while read file f_flags f_eg f_mode f_user f_group; do
-		case $file in
-		"")	continue ;;
-		[!/]*)	file="$file" ;;
-		esac
-		${TEST} -f "$file" || continue
-		case $f_mode:$f_user:$f_group in
-		::)	continue ;;
-		esac
+    tmpdir="./.pkginstall.$$"
+    ${MKDIR} -p $tmpdir 2>/dev/null || exit 1
+    ${CHMOD} 0700 $tmpdir
+    ${SED} -n "/^\# FILE: /{s/^\# FILE: //;p;}" ${SELF} | ${SORT} -ru |
+    { while read file f_flags f_eg f_mode f_user f_group; do
+        case $file in
+        "")    continue ;;
+        [!/]*)    file="$file" ;;
+        esac
+        ${TEST} -f "$file" || continue
+        case $f_mode:$f_user:$f_group in
+        ::)    continue ;;
+        esac
 
-		perms=`${LS} -l $file | ${AWK} '{ print $1":"$3":"$4 }'`
-		testpath="$tmpdir/file_perms"
-		${ECHO} > $testpath
-		${CHMOD} $f_mode $testpath 2>/dev/null
-		longmode=`${LS} -l $testpath | ${AWK} '{ print $1 }'`
-		case $f_mode:$f_user:$f_group in
-		:[!:]*:)
-			case "$perms" in
-			*:$f_user:*)	continue ;;
-			esac
-			;;
-		:[!:]*:[!:]*)
-			case "$perms" in
-			*:$f_user:$f_group)	continue ;;
-			esac
-			;;
-		[!:]*::)
-			case "$perms" in
-			$longmode:*:*)	continue ;;
-			esac
-			;;
-		[!:]*:[!:]*:)
-			case "$perms" in
-			$longmode:$f_user:*)	continue ;;
-			esac
-			;;
-		[!:]*:[!:]*:[!:]*)
-			case "$perms" in
-			$longmode:$f_user:$f_group)	continue ;;
-			esac
-			;;
-		esac
+        perms=`${LS} -l $file | ${AWK} '{ print $1":"$3":"$4 }'`
+        testpath="$tmpdir/file_perms"
+        ${ECHO} > $testpath
+        ${CHMOD} $f_mode $testpath 2>/dev/null
+        longmode=`${LS} -l $testpath | ${AWK} '{ print $1 }'`
+        case $f_mode:$f_user:$f_group in
+        :[!:]*:)
+            case "$perms" in
+            *:$f_user:*)    continue ;;
+            esac
+            ;;
+        :[!:]*:[!:]*)
+            case "$perms" in
+            *:$f_user:$f_group)    continue ;;
+            esac
+            ;;
+        [!:]*::)
+            case "$perms" in
+            $longmode:*:*)    continue ;;
+            esac
+            ;;
+        [!:]*:[!:]*:)
+            case "$perms" in
+            $longmode:$f_user:*)    continue ;;
+            esac
+            ;;
+        [!:]*:[!:]*:[!:]*)
+            case "$perms" in
+            $longmode:$f_user:$f_group)    continue ;;
+            esac
+            ;;
+        esac
 
-		case "$printed_header" in
-		yes)	;;
-		*)	printed_header=yes
-			${ECHO} "==========================================================================="
-			${ECHO} "The following files are used by ${PKGNAME} and have"
-			${ECHO} "the wrong ownership and/or permissions:"
-			${ECHO} ""
-			;;
-		esac
-		case $f_mode:$f_user:$f_group in
-		[!:]*::)
-			${ECHO} "	$file (m=$f_mode)"
-			;;
-		[!:]*:[!:]*:)
-			${ECHO} "	$file (m=$f_mode, o=$f_user)"
-			;;
-		[!:]*:[!:]*:[!:]*)
-			${ECHO} "	$file (m=$f_mode, o=$f_user, g=$f_group)"
-			;;
-		esac
-	done
-	case "$printed_header" in
-	yes)	${ECHO} ""
-		${ECHO} "==========================================================================="
-		exit 1
-		;;
-	esac; }
-	${TEST} $? -eq 0 || exitcode=1
-	${RM} -fr $tmpdir
-	;;
+        case "$printed_header" in
+        yes)    ;;
+        *)    printed_header=yes
+            ${ECHO} "==========================================================================="
+            ${ECHO} "The following files are used by ${PKGNAME} and have"
+            ${ECHO} "the wrong ownership and/or permissions:"
+            ${ECHO} ""
+            ;;
+        esac
+        case $f_mode:$f_user:$f_group in
+        [!:]*::)
+            ${ECHO} "    $file (m=$f_mode)"
+            ;;
+        [!:]*:[!:]*:)
+            ${ECHO} "    $file (m=$f_mode, o=$f_user)"
+            ;;
+        [!:]*:[!:]*:[!:]*)
+            ${ECHO} "    $file (m=$f_mode, o=$f_user, g=$f_group)"
+            ;;
+        esac
+    done
+    case "$printed_header" in
+    yes)    ${ECHO} ""
+        ${ECHO} "==========================================================================="
+        exit 1
+        ;;
+    esac; }
+    ${TEST} $? -eq 0 || exitcode=1
+    ${RM} -fr $tmpdir
+    ;;
 
 *)
-	${ECHO} "Usage: ./+FILES ADD|REMOVE|PERMS [metadatadir]"
-	${ECHO} "       ./+FILES CHECK-ADD|CHECK-REMOVE|CHECK-PERMS [metadatadir]"
-	;;
+    ${ECHO} "Usage: ./+FILES ADD|REMOVE|PERMS [metadatadir]"
+    ${ECHO} "       ./+FILES CHECK-ADD|CHECK-REMOVE|CHECK-PERMS [metadatadir]"
+    ;;
 esac
 exit $exitcode
 
 EOF
-	${SED} -n "/^\# FILE: /p" ${SELF} >> ./+FILES
-	${CHMOD} +x ./+FILES
-	;;
+    ${SED} -n "/^\# FILE: /p" ${SELF} >> ./+FILES
+    ${CHMOD} +x ./+FILES
+    ;;
 esac
 
 # $NetBSD: dirs,v 1.4 2008/01/04 21:50:27 heinz Exp $
@@ -1030,7 +1030,7 @@ esac
 #
 case "${STAGE},$1" in
 UNPACK,|UNPACK,+DIRS)
-	${CAT} > ./+DIRS << 'EOF'
+    ${CAT} > ./+DIRS << 'EOF'
 #!@SH@
 #
 # +DIRS - reference-counted directory management script
@@ -1058,9 +1058,9 @@ UNPACK,|UNPACK,+DIRS)
 # name the directories that this package requires to exist to function
 # correctly, e.g.
 #
-#	# DIR: /etc/foo m
-#	# DIR: /var/log/foo/tmp mo 0700 foo-user foo-group
-#	# DIR: share/foo-plugins fm
+#    # DIR: /etc/foo m
+#    # DIR: /var/log/foo/tmp mo 0700 foo-user foo-group
+#    # DIR: share/foo-plugins fm
 #
 # For each DIR entry, if the directory path is relative, then it is taken
 # to be relative to ${PKG_PREFIX}.
@@ -1068,9 +1068,9 @@ UNPACK,|UNPACK,+DIRS)
 # The second field in each DIR entry is a set of flags with the following
 # meanings:
 #
-#	f	ignore ${PKG_CONFIG}
-#	m	create (make) the directory when ADDing
-#	o	directory is owned by the package
+#    f    ignore ${PKG_CONFIG}
+#    m    create (make) the directory when ADDing
+#    o    directory is owned by the package
 #
 AWK="@AWK@"
 CAT="@CAT@"
@@ -1104,385 +1104,385 @@ PKG_REFCOUNT_DIRS_DBDIR="${PKG_REFCOUNT_DBDIR}/dirs"
 
 case "${PKG_CONFIG:-@PKG_CONFIG@}" in
 [Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
-	_PKG_CONFIG=yes
-	;;
+    _PKG_CONFIG=yes
+    ;;
 [Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
-	_PKG_CONFIG=no
-	;;
+    _PKG_CONFIG=no
+    ;;
 esac
 case "${PKG_CONFIG_PERMS:-@PKG_CONFIG_PERMS@}" in
 [Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
-	_PKG_CONFIG_PERMS=yes
-	;;
+    _PKG_CONFIG_PERMS=yes
+    ;;
 [Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
-	_PKG_CONFIG_PERMS=no
-	;;
+    _PKG_CONFIG_PERMS=no
+    ;;
 esac
 
 exitcode=0
 case $ACTION in
 ADD)
-	${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -u |
-	while read dir d_flags d_mode d_user d_group; do
-		case $dir in
-		"")	continue ;;
-		[!/]*)	dir="${PKG_PREFIX}/$dir" ;;
-		esac
-		case $d_flags in
-		*m*)	;;
-		*)	continue ;;
-		esac
-		shadow_dir="${PKG_REFCOUNT_DIRS_DBDIR}$dir"
-		perms="$shadow_dir/+PERMISSIONS"
-		preexist="$shadow_dir/+PREEXISTING"
-		token="$shadow_dir/${PKGNAME}"
-		if ${TEST} ! -d "$shadow_dir"; then
-			${MKDIR} $shadow_dir
-			${TEST} ! -d "$dir" ||
-				${ECHO} "${PKGNAME}" > $preexist
-		fi
-		if ${TEST} -f "$token" && \
-		   ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
-			:
-		else
-			${ECHO} "${PKG_METADATA_DIR}" >> $token
-		fi
-		case $d_mode$d_user$d_group in
-		"")	;;
-		*)	${ECHO} "$d_user $d_group $d_mode" > $perms ;;
-		esac
-		case $d_flags:$_PKG_CONFIG in
-		*f*:*|*:yes)
-			${MKDIR} $dir
-			case $d_user in
-			"")	;;
-			*)	${CHOWN} $d_user $dir ;;
-			esac
-			case $d_group in
-			"")	;;
-			*)	${CHGRP} $d_group $dir ;;
-			esac
-			case $d_mode in
-			"")	;;
-			*)	${CHMOD} $d_mode $dir ;;
-			esac
-			;;
-		esac
-	done
-	;;
+    ${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -u |
+    while read dir d_flags d_mode d_user d_group; do
+        case $dir in
+        "")    continue ;;
+        [!/]*)    dir="${PKG_PREFIX}/$dir" ;;
+        esac
+        case $d_flags in
+        *m*)    ;;
+        *)    continue ;;
+        esac
+        shadow_dir="${PKG_REFCOUNT_DIRS_DBDIR}$dir"
+        perms="$shadow_dir/+PERMISSIONS"
+        preexist="$shadow_dir/+PREEXISTING"
+        token="$shadow_dir/${PKGNAME}"
+        if ${TEST} ! -d "$shadow_dir"; then
+            ${MKDIR} $shadow_dir
+            ${TEST} ! -d "$dir" ||
+                ${ECHO} "${PKGNAME}" > $preexist
+        fi
+        if ${TEST} -f "$token" && \
+           ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
+            :
+        else
+            ${ECHO} "${PKG_METADATA_DIR}" >> $token
+        fi
+        case $d_mode$d_user$d_group in
+        "")    ;;
+        *)    ${ECHO} "$d_user $d_group $d_mode" > $perms ;;
+        esac
+        case $d_flags:$_PKG_CONFIG in
+        *f*:*|*:yes)
+            ${MKDIR} $dir
+            case $d_user in
+            "")    ;;
+            *)    ${CHOWN} $d_user $dir ;;
+            esac
+            case $d_group in
+            "")    ;;
+            *)    ${CHGRP} $d_group $dir ;;
+            esac
+            case $d_mode in
+            "")    ;;
+            *)    ${CHMOD} $d_mode $dir ;;
+            esac
+            ;;
+        esac
+    done
+    ;;
 
 REMOVE)
-	${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -ru |
-	while read dir d_flags d_mode d_user d_group; do
-		case $dir in
-		"")	continue ;;
-		[!/]*)	dir="${PKG_PREFIX}/$dir" ;;
-		esac
-		case $d_flags in
-		*m*)	;;
-		*)	continue ;;
-		esac
-		shadow_dir="${PKG_REFCOUNT_DIRS_DBDIR}$dir"
-		perms="$shadow_dir/+PERMISSIONS"
-		preexist="$shadow_dir/+PREEXISTING"
-		token="$shadow_dir/${PKGNAME}"
-		tokentmp="$token.tmp.$$"
-		if ${TEST} -f "$token" && \
-		   ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
-			${CAT} "$token" | ${GREP} -v "^${PKG_METADATA_DIR}$" > $tokentmp
-			case `${CAT} $tokentmp | ${SED} -n "$="` in
-			"")
-				${TEST} -f "$preexist" ||
-					{ case $d_flags:$_PKG_CONFIG in
-					  *f*:*|*:yes)
-						${RMDIR} -p $dir 2>/dev/null || ${TRUE};
-						;;
-					  esac; }
-				${RM} -f $perms $preexist $token $token.tmp.*
-				${RMDIR} -p $shadow_dir 2>/dev/null || ${TRUE}
-				;;
-			*)
-				${MV} -f $tokentmp $token
-				;;
-			esac
-		fi
-	done
-	;;
+    ${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -ru |
+    while read dir d_flags d_mode d_user d_group; do
+        case $dir in
+        "")    continue ;;
+        [!/]*)    dir="${PKG_PREFIX}/$dir" ;;
+        esac
+        case $d_flags in
+        *m*)    ;;
+        *)    continue ;;
+        esac
+        shadow_dir="${PKG_REFCOUNT_DIRS_DBDIR}$dir"
+        perms="$shadow_dir/+PERMISSIONS"
+        preexist="$shadow_dir/+PREEXISTING"
+        token="$shadow_dir/${PKGNAME}"
+        tokentmp="$token.tmp.$$"
+        if ${TEST} -f "$token" && \
+           ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
+            ${CAT} "$token" | ${GREP} -v "^${PKG_METADATA_DIR}$" > $tokentmp
+            case `${CAT} $tokentmp | ${SED} -n "$="` in
+            "")
+                ${TEST} -f "$preexist" ||
+                    { case $d_flags:$_PKG_CONFIG in
+                      *f*:*|*:yes)
+                        ${RMDIR} -p $dir 2>/dev/null || ${TRUE};
+                        ;;
+                      esac; }
+                ${RM} -f $perms $preexist $token $token.tmp.*
+                ${RMDIR} -p $shadow_dir 2>/dev/null || ${TRUE}
+                ;;
+            *)
+                ${MV} -f $tokentmp $token
+                ;;
+            esac
+        fi
+    done
+    ;;
 
 PERMS)
-	${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -u |
-	while read dir d_flags d_mode d_user d_group; do
-		case $_PKG_CONFIG:$_PKG_CONFIG_PERMS in
-		yes:yes)	;;
-		*)		continue ;;
-		esac
-		case $dir in
-		"")	continue ;;
-		[!/]*)	dir="${PKG_PREFIX}/$dir" ;;
-		esac
-		case $d_user in
-		"")	;;
-		*)	${CHOWN} $d_user $dir ;;
-		esac
-		case $d_group in
-		"")	;;
-		*)	${CHGRP} $d_group $dir ;;
-		esac
-		case $d_mode in
-		"")	;;
-		*)	${CHMOD} $d_mode $dir ;;
-		esac
-	done
-	;;
+    ${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -u |
+    while read dir d_flags d_mode d_user d_group; do
+        case $_PKG_CONFIG:$_PKG_CONFIG_PERMS in
+        yes:yes)    ;;
+        *)        continue ;;
+        esac
+        case $dir in
+        "")    continue ;;
+        [!/]*)    dir="${PKG_PREFIX}/$dir" ;;
+        esac
+        case $d_user in
+        "")    ;;
+        *)    ${CHOWN} $d_user $dir ;;
+        esac
+        case $d_group in
+        "")    ;;
+        *)    ${CHGRP} $d_group $dir ;;
+        esac
+        case $d_mode in
+        "")    ;;
+        *)    ${CHMOD} $d_mode $dir ;;
+        esac
+    done
+    ;;
 
 CHECK-ADD)
-	${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -u |
-	{ while read dir d_flags d_mode d_user d_group; do
-		case $dir in
-		"")	continue ;;
-		[!/]*)	dir="${PKG_PREFIX}/$dir" ;;
-		esac
-		${TEST} ! -d "$dir" || continue
-		case $d_flags in
-		*m*)	;;
-		*)	continue ;;
-		esac
-		case "$printed_header" in
-		yes)	;;
-		*)	printed_header=yes
-			${ECHO} "==========================================================================="
-			${ECHO} "The following directories should be created for ${PKGNAME}:"
-			${ECHO} ""
-			;;
-		esac
-		case $d_user:$d_group:$d_mode in
-		[!:]*:[!:]*:[!:]*)
-			${ECHO} "	$dir (m=$d_mode, o=$d_user, g=$d_group)"
-			;;
-		*)
-			${ECHO} "	$dir"
-			;;
-		esac
-	done
-	case "$printed_header" in
-	yes)	${ECHO} ""
-		${ECHO} "==========================================================================="
-		exit 1
-		;;
-	esac; }
-	${TEST} $? -eq 0 || exitcode=1
-	;;
+    ${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -u |
+    { while read dir d_flags d_mode d_user d_group; do
+        case $dir in
+        "")    continue ;;
+        [!/]*)    dir="${PKG_PREFIX}/$dir" ;;
+        esac
+        ${TEST} ! -d "$dir" || continue
+        case $d_flags in
+        *m*)    ;;
+        *)    continue ;;
+        esac
+        case "$printed_header" in
+        yes)    ;;
+        *)    printed_header=yes
+            ${ECHO} "==========================================================================="
+            ${ECHO} "The following directories should be created for ${PKGNAME}:"
+            ${ECHO} ""
+            ;;
+        esac
+        case $d_user:$d_group:$d_mode in
+        [!:]*:[!:]*:[!:]*)
+            ${ECHO} "    $dir (m=$d_mode, o=$d_user, g=$d_group)"
+            ;;
+        *)
+            ${ECHO} "    $dir"
+            ;;
+        esac
+    done
+    case "$printed_header" in
+    yes)    ${ECHO} ""
+        ${ECHO} "==========================================================================="
+        exit 1
+        ;;
+    esac; }
+    ${TEST} $? -eq 0 || exitcode=1
+    ;;
 
 CHECK-REMOVE)
-	${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -ru |
-	{ while read dir d_flags d_mode d_user d_group; do
-		case $dir in
-		"")	continue ;;
-		[!/]*)	dir="${PKG_PREFIX}/$dir" ;;
-		esac
-		${TEST} -d "$dir" || continue
-		case $d_flags in
-		*o*)	;;
-		*)	continue ;;
-		esac
-		shadow_dir="${PKG_REFCOUNT_DIRS_DBDIR}$dir"
-		${TEST} ! -d "$shadow_dir" || continue	# refcount isn't zero
-		case "$printed_header" in
-		yes)	;;
-		*)	printed_header=yes
-			${ECHO} "==========================================================================="
-			${ECHO} "The following directories are no longer being used by ${PKGNAME},"
-			${ECHO} "and they can be removed if no other packages are using them:"
-			${ECHO} ""
-			;;
-		esac
-		${ECHO} "	$dir"
-	done
-	case "$printed_header" in
-	yes)	${ECHO} ""
-		${ECHO} "==========================================================================="
-		exit 1
-		;;
-	esac; }
-	${TEST} $? -eq 0 || exitcode=1
-	;;
+    ${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -ru |
+    { while read dir d_flags d_mode d_user d_group; do
+        case $dir in
+        "")    continue ;;
+        [!/]*)    dir="${PKG_PREFIX}/$dir" ;;
+        esac
+        ${TEST} -d "$dir" || continue
+        case $d_flags in
+        *o*)    ;;
+        *)    continue ;;
+        esac
+        shadow_dir="${PKG_REFCOUNT_DIRS_DBDIR}$dir"
+        ${TEST} ! -d "$shadow_dir" || continue    # refcount isn't zero
+        case "$printed_header" in
+        yes)    ;;
+        *)    printed_header=yes
+            ${ECHO} "==========================================================================="
+            ${ECHO} "The following directories are no longer being used by ${PKGNAME},"
+            ${ECHO} "and they can be removed if no other packages are using them:"
+            ${ECHO} ""
+            ;;
+        esac
+        ${ECHO} "    $dir"
+    done
+    case "$printed_header" in
+    yes)    ${ECHO} ""
+        ${ECHO} "==========================================================================="
+        exit 1
+        ;;
+    esac; }
+    ${TEST} $? -eq 0 || exitcode=1
+    ;;
 
 CHECK-PERMS)
-	tmpdir="./.pkginstall.$$"
-	${MKDIR} -p $tmpdir 2>/dev/null || exit 1
-	${CHMOD} 0700 $tmpdir
-	${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -ru |
-	{ while read dir d_flags d_mode d_user d_group; do
-		case $dir in
-		"")	continue ;;
-		[!/]*)	dir="${PKG_PREFIX}/$dir" ;;
-		esac
-		${TEST} -d "$dir" || continue
-		case $d_user:$d_group:$d_mode in
-		::)	continue ;;
-		esac
+    tmpdir="./.pkginstall.$$"
+    ${MKDIR} -p $tmpdir 2>/dev/null || exit 1
+    ${CHMOD} 0700 $tmpdir
+    ${SED} -n "/^\# DIR: /{s/^\# DIR: //;p;}" ${SELF} | ${SORT} -ru |
+    { while read dir d_flags d_mode d_user d_group; do
+        case $dir in
+        "")    continue ;;
+        [!/]*)    dir="${PKG_PREFIX}/$dir" ;;
+        esac
+        ${TEST} -d "$dir" || continue
+        case $d_user:$d_group:$d_mode in
+        ::)    continue ;;
+        esac
 
-		perms=`${LS} -ld $dir | ${AWK} '{ print $1":"$3":"$4 }'`
-		testpath="$tmpdir/dir_perms"
-		${MKDIR} -p $testpath
-		${CHMOD} $d_mode $testpath 2>/dev/null
-		longmode=`${LS} -ld $testpath | ${AWK} '{ print $1 }'`
-		case $d_mode:$d_user:$d_group in
-		:[!:]*:)
-			case "$perms" in
-			*:$d_user:*)	continue ;;
-			esac
-			;;
-		:[!:]*:[!:]*)
-			case "$perms" in
-			*:$d_user:$d_group)	continue ;;
-			esac
-			;;
-		[!:]*::)
-			case "$perms" in
-			$longmode:*:*)	continue ;;
-			esac
-			;;
-		[!:]*:[!:]*:)
-			case "$perms" in
-			$longmode:$d_user:*)	continue ;;
-			esac
-			;;
-		[!:]*:[!:]*:[!:]*)
-			case "$perms" in
-			$longmode:$d_user:$d_group)	continue ;;
-			esac
-			;;
-		esac
+        perms=`${LS} -ld $dir | ${AWK} '{ print $1":"$3":"$4 }'`
+        testpath="$tmpdir/dir_perms"
+        ${MKDIR} -p $testpath
+        ${CHMOD} $d_mode $testpath 2>/dev/null
+        longmode=`${LS} -ld $testpath | ${AWK} '{ print $1 }'`
+        case $d_mode:$d_user:$d_group in
+        :[!:]*:)
+            case "$perms" in
+            *:$d_user:*)    continue ;;
+            esac
+            ;;
+        :[!:]*:[!:]*)
+            case "$perms" in
+            *:$d_user:$d_group)    continue ;;
+            esac
+            ;;
+        [!:]*::)
+            case "$perms" in
+            $longmode:*:*)    continue ;;
+            esac
+            ;;
+        [!:]*:[!:]*:)
+            case "$perms" in
+            $longmode:$d_user:*)    continue ;;
+            esac
+            ;;
+        [!:]*:[!:]*:[!:]*)
+            case "$perms" in
+            $longmode:$d_user:$d_group)    continue ;;
+            esac
+            ;;
+        esac
 
-		case "$printed_header" in
-		yes)	;;
-		*)	printed_header=yes
-			${ECHO} "==========================================================================="
-			${ECHO} "The following directories are used by ${PKGNAME} and"
-			${ECHO} "have the wrong ownership and/or permissions:"
-			${ECHO} ""
-			;;
-		esac
-		case $d_mode:$d_user:$d_group in
-		[!:]*::)
-			${ECHO} "	$dir (m=$d_mode)"
-			;;
-		[!:]*:[!:]*:)
-			${ECHO} "	$dir (m=$d_mode, o=$d_user)"
-			;;
-		[!:]*:[!:]*:[!:]*)
-			${ECHO} "	$dir (m=$d_mode, o=$d_user, g=$d_group)"
-			;;
-		esac
-	done
-	case "$printed_header" in
-	yes)	${ECHO} ""
-		${ECHO} "==========================================================================="
-		exit 1
-		;;
-	esac; }
-	${TEST} $? -eq 0 || exitcode=1
-	${RM} -fr $tmpdir
-	;;
+        case "$printed_header" in
+        yes)    ;;
+        *)    printed_header=yes
+            ${ECHO} "==========================================================================="
+            ${ECHO} "The following directories are used by ${PKGNAME} and"
+            ${ECHO} "have the wrong ownership and/or permissions:"
+            ${ECHO} ""
+            ;;
+        esac
+        case $d_mode:$d_user:$d_group in
+        [!:]*::)
+            ${ECHO} "    $dir (m=$d_mode)"
+            ;;
+        [!:]*:[!:]*:)
+            ${ECHO} "    $dir (m=$d_mode, o=$d_user)"
+            ;;
+        [!:]*:[!:]*:[!:]*)
+            ${ECHO} "    $dir (m=$d_mode, o=$d_user, g=$d_group)"
+            ;;
+        esac
+    done
+    case "$printed_header" in
+    yes)    ${ECHO} ""
+        ${ECHO} "==========================================================================="
+        exit 1
+        ;;
+    esac; }
+    ${TEST} $? -eq 0 || exitcode=1
+    ${RM} -fr $tmpdir
+    ;;
 
 *)
-	${ECHO} "Usage: ./+DIRS ADD|REMOVE|PERMS [metadatadir]"
-	${ECHO} "       ./+DIRS CHECK-ADD|CHECK-REMOVE|CHECK-PERMS [metadatadir]"
-	;;
+    ${ECHO} "Usage: ./+DIRS ADD|REMOVE|PERMS [metadatadir]"
+    ${ECHO} "       ./+DIRS CHECK-ADD|CHECK-REMOVE|CHECK-PERMS [metadatadir]"
+    ;;
 esac
 exit $exitcode
 
 EOF
-	${SED} -n "/^\# DIR: /p" ${SELF} >> ./+DIRS
-	${CHMOD} +x ./+DIRS
-	;;
+    ${SED} -n "/^\# DIR: /p" ${SELF} >> ./+DIRS
+    ${CHMOD} +x ./+DIRS
+    ;;
 esac
 
 # $NetBSD: install,v 1.5 2017/06/14 16:23:09 prlw1 Exp $
 
 case ${STAGE} in
 PRE-INSTALL)
-	#
-	# Unpack the helper scriptlets.
-	#
-	${SH} ${SELF} ${PKGNAME} UNPACK
-	#
-	# Require that necessary users and groups exist or else fail the
-	# installation of the package.
-	#
-	${TEST} ! -x ./+USERGROUP ||
-		{ ./+USERGROUP ADD ${PKG_METADATA_DIR}
-		  if ./+USERGROUP CHECK-ADD ${PKG_METADATA_DIR}; then
-			:
-		  else
-			exit 1
-		  fi; }
-	${TEST} ! -x ./+DIRS ||
-		./+DIRS ADD ${PKG_METADATA_DIR}
-	${TEST} ! -x ./+DIRS ||
-		./+DIRS PERMS ${PKG_METADATA_DIR}
+    #
+    # Unpack the helper scriptlets.
+    #
+    ${SH} ${SELF} ${PKGNAME} UNPACK
+    #
+    # Require that necessary users and groups exist or else fail the
+    # installation of the package.
+    #
+    ${TEST} ! -x ./+USERGROUP ||
+        { ./+USERGROUP ADD ${PKG_METADATA_DIR}
+          if ./+USERGROUP CHECK-ADD ${PKG_METADATA_DIR}; then
+            :
+          else
+            exit 1
+          fi; }
+    ${TEST} ! -x ./+DIRS ||
+        ./+DIRS ADD ${PKG_METADATA_DIR}
+    ${TEST} ! -x ./+DIRS ||
+        ./+DIRS PERMS ${PKG_METADATA_DIR}
         ;;
 
 POST-INSTALL)
-	#
-	# Rebuild the system run-time library search path database.
-	#
-	${TEST} ! -x ./+SHLIBS ||
-		./+SHLIBS ADD ${PKG_METADATA_DIR}
-	#
-	# Copy configuration/support files into place.
-	#
+    #
+    # Rebuild the system run-time library search path database.
+    #
+    ${TEST} ! -x ./+SHLIBS ||
+        ./+SHLIBS ADD ${PKG_METADATA_DIR}
+    #
+    # Copy configuration/support files into place.
+    #
         ${TEST} ! -x ./+FILES ||
-		./+FILES ADD ${PKG_METADATA_DIR}
+        ./+FILES ADD ${PKG_METADATA_DIR}
         ${TEST} ! -x ./+FILES ||
-		./+FILES PERMS ${PKG_METADATA_DIR}
-	#
-	# Set special permissions on any files/directories that need them.
-	#
-	${TEST} ! -x ./+PERMS ||
-		./+PERMS ${PKG_METADATA_DIR}
-	#
-	# Update any fonts databases.
-	#
-	${TEST} ! -x ./+FONTS ||
-		./+FONTS ${PKG_METADATA_DIR}
+        ./+FILES PERMS ${PKG_METADATA_DIR}
+    #
+    # Set special permissions on any files/directories that need them.
+    #
+    ${TEST} ! -x ./+PERMS ||
+        ./+PERMS ${PKG_METADATA_DIR}
+    #
+    # Update any fonts databases.
+    #
+    ${TEST} ! -x ./+FONTS ||
+        ./+FONTS ${PKG_METADATA_DIR}
 
-	#
-	# Update any icon theme caches.
-	#
-	${TEST} ! -x ./+ICON_THEMES ||
-		./+ICON_THEMES UPDATE ${PKG_METADATA_DIR}
+    #
+    # Update any icon theme caches.
+    #
+    ${TEST} ! -x ./+ICON_THEMES ||
+        ./+ICON_THEMES UPDATE ${PKG_METADATA_DIR}
 
-	# Check for any missing bits after we're finished installing.
-	#
-	${TEST} ! -x ./+DIRS ||
-		./+DIRS CHECK-ADD ${PKG_METADATA_DIR}
-	${TEST} ! -x ./+DIRS ||
-		./+DIRS CHECK-PERMS ${PKG_METADATA_DIR}
-	${TEST} ! -x ./+FILES ||
-		./+FILES CHECK-ADD ${PKG_METADATA_DIR}
-	${TEST} ! -x ./+FILES ||
-		./+FILES CHECK-PERMS ${PKG_METADATA_DIR}
+    # Check for any missing bits after we're finished installing.
+    #
+    ${TEST} ! -x ./+DIRS ||
+        ./+DIRS CHECK-ADD ${PKG_METADATA_DIR}
+    ${TEST} ! -x ./+DIRS ||
+        ./+DIRS CHECK-PERMS ${PKG_METADATA_DIR}
+    ${TEST} ! -x ./+FILES ||
+        ./+FILES CHECK-ADD ${PKG_METADATA_DIR}
+    ${TEST} ! -x ./+FILES ||
+        ./+FILES CHECK-PERMS ${PKG_METADATA_DIR}
 
-	#
-	# Register shells in /etc/shells.
-	#
-	${TEST} ! -x ./+SHELL ||
-		./+SHELL ADD ${PKG_METADATA_DIR}
-	${TEST} ! -x ./+SHELL ||
-		./+SHELL CHECK-ADD ${PKG_METADATA_DIR}
-	#
-	# Register info files.
-	#
-	${TEST} ! -x ./+INFO_FILES ||
-		./+INFO_FILES ADD ${PKG_METADATA_DIR}
+    #
+    # Register shells in /etc/shells.
+    #
+    ${TEST} ! -x ./+SHELL ||
+        ./+SHELL ADD ${PKG_METADATA_DIR}
+    ${TEST} ! -x ./+SHELL ||
+        ./+SHELL CHECK-ADD ${PKG_METADATA_DIR}
+    #
+    # Register info files.
+    #
+    ${TEST} ! -x ./+INFO_FILES ||
+        ./+INFO_FILES ADD ${PKG_METADATA_DIR}
 
   #
   # Register package into ocaml-findlib.
   #
   ${TEST} ! -x ./+OCAML_FINDLIB_REGISTER ||
     ./+OCAML_FINDLIB_REGISTER ADD ${PKG_METADATA_DIR}
-	;;
+    ;;
 esac
 
