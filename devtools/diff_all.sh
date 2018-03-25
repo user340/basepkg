@@ -37,7 +37,7 @@ _check_new_list()
 {
     ls "$original_lists/$1" | grep -v "CVS" > "$org.$1"
     ls "$basepkg_lists/$1"  > "$bpkg.$1"
-    diff -u "$org.$1" "$bpkg.$1"
+    diff -u "$bpkg.$1" "$org.$1"
 }
 
 _do_diff()
