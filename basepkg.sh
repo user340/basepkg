@@ -24,7 +24,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-
+#
 # Copyright (c) 2001-2011 The NetBSD Foundation, Inc.
 # All rights reserved.
 #
@@ -51,34 +51,26 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+#
 
-################################################################################
 #
-# basepkg.sh -- Main program of basepkg. It does the following works.
-#                   - Make packages of base in reference to /usr/obj (default).
-#                   - Make kernel packages in reference to 
-#                     /usr/obj/sys/<MACHINE>/compile (default).
+# basepkg.sh -- Main program in basepkg framework.
 #
-################################################################################
-
-################################################################################
+# It does the following works.
+#     - Make packages of base in reference to /usr/obj (default).
+#     - Make kernel packages in reference to 
+#       /usr/obj/sys/<MACHINE>/compile (default).
 #
-# POSIX undefined commands.
-#     - hostname -- set or print name of current host system.
-#     - mktemp -- make temporary file name.
-#     - pkg_create -- a utility for creating software package distributions.
-#
-################################################################################
-
-################################################################################
+# These are POSIX undefined command.
+#     - hostname(1) -- set or print name of current host system.
+#     - mktemp(1) -- make temporary file name.
+#     - pkg_create(1) -- a utility for creating software package distributions.
 #
 # Please use ShellCheck (https://koalaman/shellcheck) for your code. 
 # After checked your code, please pull request to it's repository
 # (https://github.com/user340/basepkg).
 #
-################################################################################
 
-################################################################################
 #
 # The which(1) command is undefined in POSIX. So this process check the 
 # which(1) command. If not exist in the system, define a function that same as 
@@ -87,7 +79,6 @@
 # Thank you for Tomoyuki Matsu'ura and USP Laboratory(www.usp-lab.com), 
 # ISBN978-4-86354-177-1, pp. 50-51.
 #
-################################################################################
 which which > /dev/null 2>&1 || {
     which()
     {
@@ -240,37 +231,32 @@ packages="$PWD/packages"
 category="base comp etc games man misc modules text"
 pkgdb="/var/db/basepkg"
 
-################################################################################
 #
-# Output the error message.
+# Output the error message with date.
 #
-################################################################################
-err()
+_err()
 {
     echo "[$(date +'%Y-%m-%dT%H:%M:%S')] $*"
 }
 
-################################################################################
 #
-# Output abbort message to standard error. Then, kill the process and exit 
-# from it.
+# Output abbort message to standard error.
+# Then, kill the process and exit.
 #
-################################################################################
-bomb()
+_bomb()
 {
     printf "ERROR: %s\\n *** PACKAGING ABORTED ***\\n" "$@"
+    test -f "$results" && rm -f "$results"
     kill $toppid
     exit 1
 }
 
-################################################################################
 #
 # The MACHINE_ARCH variable use $MACHINE value as a reference. This function 
 # takes MACHINE and MACHINE_ARCH pair from $valid_MACHINE_ARCH variable, then 
 # return to standard output.
 #
-################################################################################
-getarch()
+_getarch()
 {
  (
     found=""
@@ -330,19 +316,17 @@ getarch()
           done
           ;;
       *)
-          bomb "Unknown target MACHINE: $machine"
+          _bomb "Unknown target MACHINE: $machine"
           ;;
       esac
  )
 }
 
-################################################################################
 #
 # Abort if MACHINE and MACHINE_ARCH pair is not supported by NetBSD.
 # The valid_MACHINE_ARCH value is used in build.sh of NetBSD.
 #
-################################################################################
-validatearch()
+_validate_arch()
 {
  (
     foundpair=false foundmachine=false foundarch=false
@@ -351,7 +335,7 @@ validatearch()
     # shellcheck disable=SC2153
     case "$MACHINE_ARCH" in
     "")
-        bomb "No MACHINE_ARCH provided"
+        _bomb "No MACHINE_ARCH provided"
         ;;
     esac
 
@@ -384,27 +368,25 @@ validatearch()
         : OK
         ;;
     *:false:*)
-        bomb "Unknown target MACHINE: $MACHINE"
+        _bomb "Unknown target MACHINE: $MACHINE"
         ;;
     *:*:false)
-        bomb "Unknown target MACHINE_ARCH: $MACHINE_ARCH"
+        _bomb "Unknown target MACHINE_ARCH: $MACHINE_ARCH"
         ;;
     *)
-        bomb "MACHINE_ARCH '$MACHINE_ARCH' does not support MACHINE '$MACHINE'"
+        _bomb "MACHINE_ARCH '$MACHINE_ARCH' does not support MACHINE '$MACHINE'"
         ;;
     esac
  )
 }
 
 
-################################################################################
 #
 # Output number of version of NetBSD. In default, version number is drawn 
 # from "/usr/obj/usr/include/sys/param.h". This function not require NetBSD 
 # source tree (/usr/src).
 #
-################################################################################
-osrelease()
+_osrelease()
 {
  (
     option="$1"
@@ -448,15 +430,13 @@ osrelease()
  )
 }
 
-################################################################################
 #
 # Make category directory and organized files named "FILES".
 #
-################################################################################
-split_category_from_lists()
+_split_category()
 {
  (
-    printf "===> split_category_from_lists()\\n" | tee -a $results
+    printf "===> _split_category()\\n" | tee -a $results
     for i in $category; do
         test -d "$workdir/$i" || mkdir -p "$workdir/$i"
         test -f "$workdir/$i/FILES" && rm -f "$workdir/$i/FILES"
@@ -515,15 +495,13 @@ split_category_from_lists()
  )
 }
 
-################################################################################
 #
-# Make directories referring to "FILES".
+# Make package tree referring to "FILES".
 #
-################################################################################
-make_directories_of_package()
+_mk_pkgtree()
 {
  (
-    printf "===> make_directories_of_package()\\n" | tee -a $results
+    printf "===> _mk_pkgtree()\\n" | tee -a $results
     for i in $category; do
         awk '{print $2}' "$workdir/$i/FILES" | sort | uniq \
         | xargs -n 1 -I % sh -c \
@@ -532,15 +510,13 @@ make_directories_of_package()
  )
 }
 
-################################################################################
 #
 # List each package's contents and write into "category/package/package.FILE".
 #
-################################################################################
-make_contents_list()
+_mk_plist()
 {
  (
-    printf "===> make_contents_list()\\n" | tee -a $results
+    printf "===> _mk_plist()\\n" | tee -a $results
     for i in $category; do
         awk ' 
         # $1 - file name
@@ -571,12 +547,10 @@ make_contents_list()
  )
 }
 
-################################################################################
 #
 # Make "+BUILD_INFO" file.
 #
-################################################################################
-make_BUILD_INFO()
+_BUILD_INFO()
 {
     cat > "$workdir/$1/+BUILD_INFO" << _BUILD_INFO_
 OPSYS=$opsys
@@ -589,35 +563,31 @@ MAINTAINER=$mail_address
 _BUILD_INFO_
 }
 
-################################################################################
 #
 # Calculate package's dependency.
 #
-################################################################################
-culc_deps()
+_mk_depend()
 {
     grep "^$1" "$deps" > /dev/null 2>&1
     if [ $? -eq 1 ]; then
-        err "$1 Unknown package dependency."
+        _err "$1 Unknown package dependency."
         return 1
     fi
     awk '/^'"$1"'/{print $2}' "$deps" | while read -r depend; do
         test ! "$depend" && return 1
         echo "@pkgdep $depend>=$release" >> "$tmp_deps"
         test "$depend" = "base-sys-root" && return 0
-        culc_deps "$depend" # Recursion.
+        _mk_depend "$depend" # Recursion.
     done
 }
 
-################################################################################
 #
 # Make "+CONTENTS" file.
 #
-################################################################################
-make_CONTENTS()
+_CONTENTS()
 {
  (
-    TMPFILE=$(mktemp -q || bomb "$TMPFILE")
+    TMPFILE=$(mktemp -q || _bomb "$TMPFILE")
     setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
     pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
     prefix="/"
@@ -627,7 +597,7 @@ make_CONTENTS()
     echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
 
     test -f "$tmp_deps" && rm -f "$tmp_deps"
-    culc_deps "$pkgname"
+    _mk_depend "$pkgname"
     test -f "$tmp_deps" && sort "$tmp_deps" | uniq >> "$workdir/$1/+CONTENTS"
 
     echo "@cwd $prefix" >> "$workdir/$1/+CONTENTS"
@@ -649,12 +619,10 @@ make_CONTENTS()
  )
 }
 
-################################################################################
 #
 # Make "+SIZE_PKG" file.
 #
-################################################################################
-make_SIZE_PKG()
+_SIZE_PKG()
 {
     # Sum of file size.
     grep -v '^@' < "$workdir/$1/+CONTENTS" \
@@ -674,12 +642,10 @@ make_SIZE_PKG()
     rm -f "$workdir/$1/+SIZE_PKG.tmp"
 }
 
-################################################################################
 #
 # Make "+SIZE_PKG" file.
 #
-################################################################################
-make_SIZE_ALL()
+_SIZE_ALL()
 {
     grep '^@pkgdep' "$workdir/$1/+CONTENTS" \
         | cut -d " " -f 2 \
@@ -696,12 +662,10 @@ make_SIZE_ALL()
     rm -f "$workdir/$1/+SIZE_ALL.tmp"
 }
 
-################################################################################
 #
 # Make "+DESC" and "+COMMENT" file.
 #
-################################################################################
-make_DESC_and_COMMENT()
+_DESC_and_COMMENT()
 {
  (
     pkgname="${1#*/}"
@@ -714,7 +678,7 @@ make_DESC_and_COMMENT()
             else
                 printf $i" "
         }
-    }' "$descrs" > "$workdir/$1/+DESC" || bomb "awk +DESC"
+    }' "$descrs" > "$workdir/$1/+DESC" || _bomb "awk +DESC"
 
     awk '
     /^'"$pkgname"'/ {
@@ -724,11 +688,14 @@ make_DESC_and_COMMENT()
             else
                 printf $i" "
         }
-    }' "$comments" > "$workdir/$1/+COMMENT" || bomb "awk +COMMENT"
+    }' "$comments" > "$workdir/$1/+COMMENT" || _bomb "awk +COMMENT"
  )
 }
 
-replace_cmdstr()
+#
+# For +INSTALL and +DEINSTALL
+#
+_replace_cmdstr()
 {
     sed -e "s%@GROUPADD@%$(which groupadd)%g" \
         -e "s%@USERADD@%$(which useradd)%" \
@@ -785,24 +752,22 @@ replace_cmdstr()
         -e "s%@PKG_RCD_SCRIPTS@%NO%" \
         -e "s%@PKG_USER_HOME@%%" \
         -e "s%@PKG_USER_SHELL@%%" \
-        -e "s%@PERL5@%$(which perl)%" "$1" || bomb "failed sed"
+        -e "s%@PERL5@%$(which perl)%" "$1" || _bomb "failed sed"
 }
 
-################################################################################
 #
 # Make "+INSTALL" file. The role of "+INSTALL" is defining absolute path of 
 # file, permission, owner and group.
 #
-################################################################################
-make_INSTALL()
+_INSTALL()
 {
  (
     mode_user_group=""
 
     test -f "$workdir/$1/+INSTALL" && rm -f "$workdir/$1/+INSTALL"
-    replace_cmdstr "$install_script" > "$workdir/$1/+INSTALL"
+    _replace_cmdstr "$install_script" > "$workdir/$1/+INSTALL"
 
-    test -f "$workdir/$1/+CONTENTS" || bomb "+CONTENTS not found."
+    test -f "$workdir/$1/+CONTENTS" || _bomb "+CONTENTS not found."
     grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
         test "$(file "$obj/$file" | cut -d " " -f 2)" = "symbolic" && continue
         if [ "${file%%/*}" = "etc" ]; then
@@ -823,22 +788,18 @@ make_INSTALL()
  )
 }
 
-################################################################################
 #
 # Make deinstall script for each packages.
 #
-################################################################################
-make_DEINSTALL()
+_DEINSTALL()
 {
-    replace_cmdstr "$deinstall_script" > "$workdir/$1/+DEINSTALL"
+    _replace_cmdstr "$deinstall_script" > "$workdir/$1/+DEINSTALL"
 }
 
-################################################################################
 #
 # Make preserve-file.
 #
-################################################################################
-make_PRESERVE()
+_PRESERVE()
 {
  (
     while read -r e_pkg; do
@@ -852,12 +813,10 @@ make_PRESERVE()
  )
 }
 
-################################################################################
 #
 # Change directory name depending on same $MACHINE and $MACHINE_ARCH or not.
 #
-################################################################################
-output_base_dir () 
+_put_basedir() 
 {
    if [ "X$MACHINE_ARCH" != "X$MACHINE" ]; then
      echo "$packages/$release/$MACHINE-$MACHINE_ARCH"
@@ -866,12 +825,10 @@ output_base_dir ()
    fi
 }
 
-################################################################################
 #
 # "pkg_create" command wrapper. Package moved to ${packages}/All directory.
 #
-################################################################################
-do_pkg_create()
+_do_pkg_create()
 {
  (
     setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
@@ -898,65 +855,66 @@ do_pkg_create()
     fi
 
     # shellcheck disable=SC2086
-    pkg_create $option "$pkgname" || bomb "$1: pkg_create"
+    pkg_create $option "$pkgname" || _bomb "$1: pkg_create"
 
-    _basedir=$(output_base_dir)
+    _basedir=$(_put_basedir)
     test -d "$_basedir" || mkdir -p "$_basedir"
     mv "./$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
  )
 }
 
-make_checksum()
+_mk_checksum()
 {
     ls | grep 'tgz$' | xargs -I % cksum -a md5 % > MD5
     ls | grep 'tgz$' | xargs -I % cksum -a sha512 % > SHA512
 }
 
-################################################################################
 #
 # Execute any functions and make MD5 and SHA512.
 #
-################################################################################
-make_packages()
+_mk_pkg()
 {
  (
-    printf "===> make_packages()\\n" | tee -a $results
+    printf "===> _mk_pkg()\\n" | tee -a $results
     find "$workdir" -type d -name '*-*-*' \
         | sed "s|$workdir/||g" \
         | while read -r pkg; do
-            make_BUILD_INFO "$pkg"
-            make_CONTENTS "$pkg"
-            make_SIZE_PKG "$pkg"
-            make_DESC_and_COMMENT "$pkg"
-            make_INSTALL "$pkg"
-            make_DEINSTALL "$pkg"
+            _BUILD_INFO "$pkg"
+            _CONTENTS "$pkg"
+            _SIZE_PKG "$pkg"
+            _DESC_and_COMMENT "$pkg"
+            _INSTALL "$pkg"
+            _DEINSTALL "$pkg"
     done
 
     find "$workdir" -type d -name '*-*-*' \
         | sed "s|$workdir/||g" \
         | while read -r pkg; do
-            make_SIZE_ALL "$pkg"
-            do_pkg_create "$pkg"
+            _SIZE_ALL "$pkg"
+            _do_pkg_create "$pkg"
     done
     
-    _basedir=$(output_base_dir)
-    cd "$_basedir" && make_checksum
+    _basedir=$(_put_basedir)
+    cd "$_basedir" && _mk_checksum
  )
 }
 
-################################################################################
 #
 # Make kernel package. Now, information of meta-data is not write to another 
 # files such as ./sets/comments. Because the packaged file is only kernel 
 # binary named "netbsd". If add the kernel package's information to files that 
 # under the ./sets directory, This function will be deleted.
 #
-################################################################################
-make_kernel_package()
+_mk_kpkg()
 {
  (
     category="base"
     pkgname="base-kernel-$1"
+
+    if [ ! -f "$obj/sys/arch/$machine/compile/$1/netbsd" ]; then
+        _err "$1/netbsd not found."
+        return 1
+    fi
 
     test -d "$workdir/$category/.$pkgname" || \
         mkdir -p "$workdir/$category/$pkgname"
@@ -1005,60 +963,52 @@ _CONTENTS_
     -p "$obj/sys/arch/$machine/compile/$1" \
     -s "$workdir/$category/$pkgname/+SIZE_PKG" \
     -S "$workdir/$category/$pkgname/+SIZE_ALL" \
-    -K "$pkgdb" "$pkgname" || bomb "kernel: pkg_create"
+    -K "$pkgdb" "$pkgname" || _bomb "kernel: pkg_create"
 
-    _basedir=$(output_base_dir)
+    _basedir=$(_put_basedir)
     test -d "$_basedir" || mkdir -p "$_basedir"
     mv "$PWD/$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
  )
 }
 
-################################################################################
 #
 # Packaging all compiled kernels.
 # XXX: A number of kernel packages can install to the system.
 #
-################################################################################
-packaging_all_kernels()
+_mk_all_kpkg()
 {
  (
-    printf "===> packaging_all_kernels()\\n" | tee -a $results
+    printf "===> _mk_all_kpkg()\\n" | tee -a $results
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
     ls $kernobj | while read -r kname; do
-        make_kernel_package "$kname"
+        _mk_kpkg "$kname"
     done
  )
 }
 
-################################################################################
 #
 # Clean working directories.
 #
-################################################################################
-fn_clean_workdir()
+_clean_work()
 {
-    printf "fn_clean_workdir()\\n"
+    printf "_clean_workdir()\\n"
     test -w "$workdir" && rm -fr "$workdir"
 }
 
-################################################################################
 #
 # Clean packages.
 #
-################################################################################
-fn_clean_pkg()
+_clean_pkg()
 {
-    printf "fn_clean_pkg()\\n"
+    printf "_clean_pkg()\\n"
     test -w "$packages" && rm -fr "$packages"
 }
 
-################################################################################
 #
 # Show usage to standard output.
 #
-################################################################################
-usage()
+_usage()
 {
     cat <<_usage_
 
@@ -1083,20 +1033,18 @@ _usage_
     exit 1
 }
 
-################################################################################
 #
 # --obj=/usr/obj
 #       ^^^^^^^^^
 #        take it
 # In this example, it will return "/usr/obj".
 #
-################################################################################
-get_optarg()
+_getopt()
 {
     expr "x$1" : "x[^=]*=\\(.*\\)"
 }
 
-start_message()
+_begin_msg()
 {
     printf "===> basepkg.sh command: %s\\n" "$1" | tee -a $results
     printf "===> basepkg.sh started: %s\\n" "$2" | tee -a $results
@@ -1106,7 +1054,7 @@ start_message()
     printf "===> Build platform:     %s %s %s\\n" "$opsys" "$osversion" "$(uname -m)" | tee -a $results
 }
 
-result_message()
+_end_msg()
 {
     printf "===> basepkg.sh ended:   %s\\n" "$1" | tee -a $results
     printf "===> Summary of results:\\n"
@@ -1115,65 +1063,60 @@ result_message()
     rm -f $results
 }
 
-################################################################################
 #
-# Start main process from here.
+# Begin main process.
 #
-################################################################################
-
-machine="$(uname -m)" # Firstly, set machine hardware name for getarch().
+machine="$(uname -m)" # Firstly, set machine hardware name for _getarch().
 commandline="$0 $*"
 
-################################################################################
 #
 # Parsing long option process. In this process, not used getopt(1) and 
 # getopts for the following reasons.
 #     - One character option is difficult to understand.
 #     - The getopt(1) have difference between GNU and BSD.
 #
-################################################################################
 while [ $# -gt 0 ]; do
     case $1 in
     -h|--help)
-        usage
+        _usage
         ;;
     --obj)
-        test -z "$2" && (err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
         obj="$2"
         shift
         ;;
     --obj=*)
-        obj=$(get_optarg "$1")
+        obj=$(_getopt "$1")
         ;;
     --releasedir)
-        test -z "$2" && (err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
         releasedir="$2"
         shift
         ;;
     --releasedir=*)
-        releasedir=$(get_optarg "$1")
+        releasedir=$(_getopt "$1")
         ;;
     --destdir)
-        test -z "$2" && (err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
         destdir="$2"
         shift
         ;;
     --destdir=*)
-        destdir=$(get_optarg "$1")
+        destdir=$(_getopt "$1")
         ;;
     --category=*)
-        category=$(get_optarg "$1")
+        category=$(_getopt "$1")
         ;;
     --category)
-        test -z "$2" && (err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
         category="$2"
         shift
         ;;
     --machine=*)
-        machine=$(get_optarg "$1")
+        machine=$(_getopt "$1")
         ;;
     --machine)
-        test -z "$2" && (err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
         machine="$2"
         shift
         ;;
@@ -1187,73 +1130,70 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-################################################################################
 #
 # Initialization
 #
-################################################################################
 set -u
 umask 0022
 export LC_ALL=C LANG=C
 
-eval "$(getarch)"
-validatearch
+eval "$(_getarch)"
+_validate_arch
 destdir=${destdir:-"$obj/destdir.$MACHINE"}
 releasedir=${releasedir:-.}
-release="$(osrelease -a)"
-release_k="$(osrelease -k)"
+release="$(_osrelease -a)"
+release_k="$(_osrelease -k)"
 machine_arch=$MACHINE_ARCH
 workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
 kernobj="$obj/sys/arch/$machine/compile"
 start=$(date)
 
-################################################################################
 #
 # least assertions
 #
-################################################################################
-test -f "$install_script"  || bomb "require $install_script"
-test "X$release" != "X" || bomb "cannot resolve \$release"
+test -f "$install_script"  || _bomb "require $install_script"
+test "X$release" != "X" || _bomb "cannot resolve \$release"
 
-test $# -eq 0 && usage
-which hostname > /dev/null 2>&1 || bomb "hostname not found."
-which mktemp > /dev/null 2>&1 || bomb "mktemp not found."
-which pkg_create > /dev/null 2>&1 || bomb "pkg_create not found."
+test $# -eq 0 && _usage
+which hostname > /dev/null 2>&1 || _bomb "hostname(1) not found."
+which mktemp > /dev/null 2>&1 || _bomb "mktemp(1) not found."
+which pkg_create > /dev/null 2>&1 || _bomb "pkg_create(1) not found."
 
-################################################################################
 #
 # operation
 #
-################################################################################
 case $1 in
 pkg)
-    start_message "$commandline" "$start"
-    split_category_from_lists
-    make_directories_of_package
-    make_contents_list
-    make_PRESERVE
-    make_packages
-    result_message "$(date)" 
+    _begin_msg "$commandline" "$start"
+    _split_category
+    _mk_pkgtree
+    _mk_plist
+    _PRESERVE
+    _mk_pkg
+    _end_msg "$(date)" 
     ;;
 kern)
-    start_message "$commandline" "$start"
-    packaging_all_kernels
-    result_message "$(date)" 
+    _begin_msg "$commandline" "$start"
+    _mk_all_kpkg
+    _end_msg "$(date)" 
     ;;
 clean)
-    start_message "$commandline" "$start"
-    fn_clean_workdir
-    result_message "$(date)" 
+    _begin_msg "$commandline" "$start"
+    _clean_work
+    _end_msg "$(date)" 
     ;;
 cleanpkg)
-    start_message "$commandline" "$start"
-    fn_clean_pkg
-    result_message "$(date)" 
+    _begin_msg "$commandline" "$start"
+    _clean_pkg
+    _end_msg "$(date)" 
     ;;
 *)
-    usage
+    _usage
     ;;
 esac
 
+#
+# Success.
+#
 exit 0
