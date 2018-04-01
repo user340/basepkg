@@ -26,11 +26,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-################################################################################
 #
 # ls_depent.sh -- Wrapper of checkdep.sh. Please run this script.
 #
-################################################################################
 
 sets="../sets"
 lists="$sets/lists"

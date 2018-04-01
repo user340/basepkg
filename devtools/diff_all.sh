@@ -26,12 +26,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-################################################################################
 #
 # diff_all.sh -- Output all difference between basepkg's lists and original 
 #                lists into standard output.
 #
-################################################################################
 
 _check_new_list()
 {
