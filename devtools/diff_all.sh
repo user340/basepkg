@@ -41,7 +41,8 @@ _check_new_list()
 _do_diff()
 {
     ls "$basepkg_lists/$1" \
-    | xargs -I % -n 1 diff -u "$basepkg_lists/$1/"% "$original_lists/$1/"%
+    | xargs -I % -n 1 diff -u "$basepkg_lists/$1/"% "$original_lists/$1/"% \
+    2>&1
 }
 
 tmpfs="/var/shm"
