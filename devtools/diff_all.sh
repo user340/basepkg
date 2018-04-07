@@ -31,6 +31,12 @@
 #                lists into standard output.
 #
 
+_bomb()
+{
+    printf "%s\\n" "$1"
+    exit 1
+}
+
 _check_new_list()
 {
     ls "$original_lists/$1" | grep -v "CVS" > "$org.$1"
@@ -53,6 +59,8 @@ basepkg_lists="../sets/lists"
 original_lists="/usr/src/distrib/sets/lists"
 
 categories="base comp debug etc games man misc modules tests text xbase xcomp xdebug xetc xfont xserver"
+
+test -d "$tmpfs" || _bomb "$tmpfs not found."
 
 for i in $categories; do
     _check_new_list "$i"
