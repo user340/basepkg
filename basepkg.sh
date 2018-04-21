@@ -768,6 +768,7 @@ _INSTALL()
     _replace_cmdstr "$install_script" > "$workdir/$1/+INSTALL"
 
     test -f "$workdir/$1/+CONTENTS" || _bomb "+CONTENTS not found."
+    # For +FILES routine which is conained in sets/install script.
     grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
         test "$(file "$obj/$file" | cut -d " " -f 2)" = "symbolic" && continue
         if [ "${file%%/*}" = "etc" ]; then
