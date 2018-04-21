@@ -27,23 +27,45 @@
 #
 
 #
-# This script written for update syspkg's dependency file. 
-# It is temporal script for basepkg developer.
+# diff_all.sh -- Output all difference between basepkg's lists and original 
+#                lists into standard output.
 #
-test -f ../log || { printf "../log: No Such File\n"; exit 1; }
 
-awk '{print $2}' ../log | sed 's/:$//g' | while read -r pkg; do
-    head=$(printf "%s" "$pkg" | cut -d "-" -f 1)
-    middle="$(printf "%s" "$pkg" | cut -d "-" -f 2)"
-    tail=$(printf "%s" "$pkg" | cut -d "-" -f 3)
-    case "$tail" in
-        "root") printf "%s base-sys-root\n" "$pkg" ;;
-        "piclib" | "proflib" | "usr" | "etc" | "rc" | "defaults" | "bin" | "debug" | "shlib" | "lib") printf "%s base-sys-usr\n" "$pkg" ;;
-        "locale") printf "%s base-locale-share\n" "$pkg" ;;
-        "share" | "examples") printf "%s base-sys-share\n" "$pkg" ;;
-        "htmlman" | "catman" | "man") printf "%s base-man-share\n" "$pkg" ;;
-        "doc") printf "%s %s-share\n" "$pkg" "$head-$middle" ;;
-        "lintlib") printf "%s base-c-usr\n" "$pkg" ;;
-        *) ;;
-    esac
+_bomb()
+{
+    printf "%s\\n" "$1"
+    exit 1
+}
+
+_check_new_list()
+{
+    ls "$original_lists/$1" | grep -v "CVS" > "$org.$1"
+    ls "$basepkg_lists/$1"  > "$bpkg.$1"
+    diff -u "$bpkg.$1" "$org.$1"
+}
+
+_do_diff()
+{
+    ls "$basepkg_lists/$1" \
+    | xargs -I % -n 1 diff -u "$basepkg_lists/$1/"% "$original_lists/$1/"% \
+    2>&1
+}
+
+tmpfs="/var/shm"
+org="$tmpfs/org.txt"
+bpkg="$tmpfs/bpkg.txt"
+
+basepkg_lists="../sets/lists"
+original_lists="/usr/src/distrib/sets/lists"
+
+categories="base comp debug etc games man misc modules tests text xbase xcomp xdebug xetc xfont xserver"
+
+test -d "$tmpfs" || _bomb "$tmpfs not found."
+
+for i in $categories; do
+    _check_new_list "$i"
+done
+
+for j in $categories; do
+    _do_diff "$j"
 done

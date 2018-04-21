@@ -1905,7 +1905,7 @@
 ./usr/sbin/uuchk				base-obsolete		obsolete
 ./usr/sbin/veriexecgen				base-sysutil-bin
 ./usr/sbin/vipw					base-sysutil-bin
-./usr/sbin/vnconfig				base-sysutil-root
+./usr/sbin/vnconfig				base-sysutil-bin
 ./usr/sbin/vndconfig				base-sysutil-bin
 ./usr/sbin/wake					base-obsolete		obsolete
 ./usr/sbin/wakeonlan				base-netutil-bin
@@ -5547,7 +5547,7 @@
 ./usr/share/zoneinfo/Canada			base-sys-share
 ./usr/share/zoneinfo/Canada/Atlantic		base-sys-share		share
 ./usr/share/zoneinfo/Canada/Central		base-sys-share		share
-./usr/share/zoneinfo/Canada/East-Saskatchewan	base-sys-share		share
+./usr/share/zoneinfo/Canada/East-Saskatchewan	base-obsolete		obsolete
 ./usr/share/zoneinfo/Canada/Eastern		base-sys-share		share
 ./usr/share/zoneinfo/Canada/Mountain		base-sys-share		share
 ./usr/share/zoneinfo/Canada/Newfoundland	base-sys-share		share
