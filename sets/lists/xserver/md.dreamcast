@@ -1,11 +1,6 @@
 #	$NetBSD: md.dreamcast,v 1.19 2014/01/02 16:46:40 tho Exp $
 ./etc/X11/xorg.conf.jpkbd				-unknown-	xorg
 ./etc/X11/xorg.conf.uskbd				-unknown-	xorg
-./usr/X11R6/bin/X					-unknown-	x11
-./usr/X11R6/bin/Xdreamcast				-unknown-	x11
-./usr/X11R6/man/cat1/Xdreamcast.0			-unknown-	x11,.cat
-./usr/X11R6/man/html1/Xdreamcast.html			-unknown-	x11,html
-./usr/X11R6/man/man1/Xdreamcast.1			-unknown-	x11,.man
 ./usr/X11R7/bin/X					-unknown-	xorg
 ./usr/X11R7/bin/Xorg					-unknown-	xorg
 ./usr/X11R7/bin/cvt					-unknown-	xorg
