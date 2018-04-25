@@ -2,10 +2,10 @@
 #
 # Note: don't delete entries from here - mark them as "obsolete" instead.
 #
-./etc/drirc						-unknown-	xorg
-./etc/X11/fs/config					-unknown-	x11
-./etc/X11/fs/config					-unknown-	xorg
-./etc/X11/lbxproxy/AtomControl				-obsolete-	obsolete,xorg
+./etc/drirc						xetc-x11-etc	xorg
+./etc/X11/fs/config					xetc-x11-etc	x11
+./etc/X11/fs/config					xetc-x11-etc	xorg
+./etc/X11/lbxproxy/AtomControl				xetc-obsolete	obsolete,xorg
 ./etc/X11/lbxproxy/AtomControl				-unknown-	x11
 ./etc/X11/proxymngr/pmconfig				-unknown-	x11
 ./etc/X11/proxymngr/pmconfig				-unknown-	xorg

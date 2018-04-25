@@ -1,6 +1,6 @@
 # $NetBSD: md.i386,v 1.45.2.1 2016/12/12 09:32:34 msaitoh Exp $
 #./usr/libdata/lint/llib-lIntelXvMC.ln			-unknown-	lint,xorg
-./usr/X11R7/include/intel_bufmgr.h			xcomp-x11-obsolete	obsolete
+./usr/X11R7/include/intel_bufmgr.h			xcomp-obsolete	obsolete
 ./usr/X11R7/lib/libI810XvMC.a				xcomp-I810XvMC-lib	xorg
 ./usr/X11R7/lib/libI810XvMC_p.a				xcomp-I810XvMC-lib	profile,xorg
 ./usr/X11R7/lib/libI810XvMC_pic.a			xcomp-I810XvMC-lib	xorg,picinstall
