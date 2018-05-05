@@ -222,13 +222,13 @@ deinstall_script="$PWD/sets/deinstall"
 est="$PWD/sets/essentials"
 tmp_deps="/tmp/culldeps"
 homepage="https://github.com/user340/basepkg"
-mail_address="mail@e-yuuki.org"
+mail_address="uki@e-yuuki.org"
 toppid=$$
 results=".basepkg.log"
 
 obj="/usr/obj"
 packages="$PWD/packages"
-category="base comp etc games man misc modules text"
+category="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
 pkgdb="/var/db/basepkg"
 
 #
