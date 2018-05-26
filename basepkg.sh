@@ -694,53 +694,54 @@ _DESC_and_COMMENT()
 
 #
 # For +INSTALL and +DEINSTALL
+# basepkg is only for NetBSD. For this reason, file path is almost hard coded.
 #
 _replace_cmdstr()
 {
-    sed -e "s%@GROUPADD@%$(which groupadd)%g" \
-        -e "s%@USERADD@%$(which useradd)%" \
-        -e "s%@SH@%$(which sh)%" \
+    sed -e "s%@GROUPADD@%/usr/sbin/groupadd%g" \
+        -e "s%@USERADD@%/usr/sbin/useradd%" \
+        -e "s%@SH@%/bin/sh%" \
         -e "s%@PREFIX@%/%" \
-        -e "s%@AWK@%$(which awk)%" \
-        -e "s%@BASENAME@%$(which basename)%" \
-        -e "s%@CAT@%$(which cat)%" \
-        -e "s%@CHGRP@%$(which chgrp)%" \
-        -e "s%@CHMOD@%$(which chmod)%" \
-        -e "s%@CHOWN@%$(which chown)%" \
-        -e "s%@CMP@%$(which cmp)%" \
-        -e "s%@CP@%$(which cp)%" \
-        -e "s%@DIRNAME@%$(which dirname)%" \
+        -e "s%@AWK@%/usr/bin/awk%" \
+        -e "s%@BASENAME@%/usr/bin/basename%" \
+        -e "s%@CAT@%/bin/cat%" \
+        -e "s%@CHGRP@%/bin/chgrp%" \
+        -e "s%@CHMOD@%/bin/chmod%" \
+        -e "s%@CHOWN@%/bin/chown%" \
+        -e "s%@CMP@%/usr/bin/cmp%" \
+        -e "s%@CP@%/bin/cp%" \
+        -e "s%@DIRNAME@%/usr/bin/dirname%" \
         -e "s%@ECHO@%echo%" \
-        -e "s%@EGREP@%$(which egrep)%" \
-        -e "s%@EXPR@%$(which expr)%" \
-        -e "s%@FALSE@%$(which false)%" \
-        -e "s%@FIND@%$(which find)%" \
-        -e "s%@GREP@%$(which grep)%" \
-        -e "s%@GTAR@%$(which gtar)%" \
-        -e "s%@HEAD@%$(which head)%" \
-        -e "s%@ID@%$(which id)%" \
-        -e "s%@LINKFARM@%$(which linkfarm)%" \
-        -e "s%@LN@%$(which ln)%" \
-        -e "s%@LOCALBASE@%$(which localbase)%" \
-        -e "s%@LS@%$(which ls)%" \
-        -e "s%@MKDIR@%$(which mkdir) -p%" \
-        -e "s%@MV@%$(which mv)%" \
+        -e "s%@EGREP@%/usr/bin/egrep%" \
+        -e "s%@EXPR@%/bin/expr%" \
+        -e "s%@FALSE@%/usr/bin/false%" \
+        -e "s%@FIND@%/usr/bin/find%" \
+        -e "s%@GREP@%/usr/bin/grep%" \
+        -e "s%@GTAR@%/bin/tar%" \
+        -e "s%@HEAD@%/usr/bin/head%" \
+        -e "s%@ID@%/usr/bin/id%" \
+        -e "s%@LINKFARM@%linkfarm%" \
+        -e "s%@LN@%/bin/ln%" \
+        -e "s%@LOCALBASE@%localbase%" \
+        -e "s%@LS@%/bin/ls%" \
+        -e "s%@MKDIR@%/bin/mkdir -p%" \
+        -e "s%@MV@%/bin/mv%" \
         -e "s%@PKGBASE@%/%" \
-        -e "s%@RM@%$(which  rm)%" \
-        -e "s%@RMDIR@%$(which rmdir)%" \
-        -e "s%@SED@%$(which sed)%" \
-        -e "s%@SETENV@%$(which setenv)%" \
+        -e "s%@RM@%/bin/rm%" \
+        -e "s%@RMDIR@%/bin/rmdir%" \
+        -e "s%@SED@%/usr/bin/sed%" \
+        -e "s%@SETENV@%setenv%" \
         -e "s%@ECHO_N@%echo -n%" \
-        -e "s%@PKG_ADMIN@%$(which pkg_admin)%" \
-        -e "s%@PKG_INFO@%$(which pkg_info)%" \
+        -e "s%@PKG_ADMIN@%pkg_admin%" \
+        -e "s%@PKG_INFO@%pkg_info%" \
         -e "s%@PWD_CMD@%pwd%" \
-        -e "s%@SORT@%$(which sort)%" \
-        -e "s%@SU@%$(which su)%" \
+        -e "s%@SORT@%/usr/bin/sort%" \
+        -e "s%@SU@%/usr/bin/su%" \
         -e "s%@TEST@%test%" \
-        -e "s%@TOUCH@%$(which touch)%" \
-        -e "s%@TR@%$(which tr)%" \
-        -e "s%@TRUE@%$(which true)%" \
-        -e "s%@XARGS@%$(which xargs)%" \
+        -e "s%@TOUCH@%/usr/bin/touch%" \
+        -e "s%@TR@%/usr/bin/tr%" \
+        -e "s%@TRUE@%/usr/bin/true%" \
+        -e "s%@XARGS@%/usr/bin/xargs%" \
         -e "s%@X11BASE@%/usr/X11R7%" \
         -e "s%@PKG_SYSCONFBASE@%/etc%" \
         -e "s%@PKG_SYSCONFBASEDIR@%/etc%" \
