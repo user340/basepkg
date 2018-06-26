@@ -99,6 +99,7 @@ nl='
 '
 tab='		'
 
+# From build.sh
 valid_MACHINE_ARCH='
 MACHINE=acorn26		MACHINE_ARCH=arm
 MACHINE=acorn32		MACHINE_ARCH=arm
