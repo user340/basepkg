@@ -3588,7 +3588,7 @@
 ./usr/lib/libgcc_p.a				comp-c-proflib		obsolete
 ./usr/lib/libgcc_s.a				comp-obsolete		obsolete
 ./usr/lib/libgcov.a				comp-c-lib		gcccmds
-./usr/lib/libgmp.a				-unknown-		obsolete
+./usr/lib/libgmp.a				comp-obsolete		obsolete
 ./usr/lib/libgmp.a				comp-c-lib		obsolete
 ./usr/lib/libgmp_p.a				comp-c-proflib		obsolete
 ./usr/lib/libgnumalloc.a			comp-c-lib
@@ -3672,10 +3672,10 @@
 ./usr/lib/libmilter.a				comp-obsolete		obsolete
 ./usr/lib/libmj.a				comp-c-lib		crypto
 ./usr/lib/libmj_p.a				comp-c-proflib		profile,crypto
-./usr/lib/libmpc.a				-unknown-		obsolete
+./usr/lib/libmpc.a				comp-obsolete		obsolete
 ./usr/lib/libmpc.a				comp-c-lib		obsolete
 ./usr/lib/libmpc_p.a				comp-c-proflib		obsolete
-./usr/lib/libmpfr.a				-unknown-		obsolete
+./usr/lib/libmpfr.a				comp-obsolete		obsolete
 ./usr/lib/libmpfr.a				comp-c-lib		obsolete
 ./usr/lib/libmpfr_p.a				comp-c-proflib		obsolete
 ./usr/lib/libmudflap.a				comp-c-lib		gcc=45

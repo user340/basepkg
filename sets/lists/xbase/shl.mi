@@ -64,7 +64,7 @@
 ./usr/X11R7/lib/libXaw6.so.7.0			xbase-x11-shlib		xorg
 ./usr/X11R7/lib/libXaw7.so			xbase-x11-shlib		xorg
 ./usr/X11R7/lib/libXaw7.so.10			xbase-x11-shlib		xorg
-./usr/X11R7/lib/libXaw7.so.10.0			-unknown		xorg
+./usr/X11R7/lib/libXaw7.so.10.0			xbase-x11-shlib		xorg
 ./usr/X11R7/lib/libXaw8.so			xbase-obsolete		obsolete
 ./usr/X11R7/lib/libXaw8.so.9			xbase-obsolete		obsolete
 ./usr/X11R7/lib/libXaw8.so.9.0			xbase-obsolete		obsolete

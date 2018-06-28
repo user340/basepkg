@@ -30,7 +30,7 @@
 # This script written for update syspkg's dependency file. 
 # It is temporal script for basepkg developer.
 #
-test -f ../log || { printf "../log: No Such File\n"; exit 1; }
+test -f ../../log || { printf "../log: No Such File\n"; exit 1; }
 
 awk '{print $2}' ../log | sed 's/:$//g' | while read -r pkg; do
     head=$(printf "%s" "$pkg" | cut -d "-" -f 1)
