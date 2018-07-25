@@ -11,7 +11,8 @@ for dir in $target; do
      | grep -v "CVS" \
      | xargs -I % cut -f 1 "$lists/$dir/"% \
      | grep -v "^#" \
-     | sort > "$tmpfs/original_lists"
+     | sort \
+     | uniq >> "$tmpfs/original_lists"
 done
 
 for bdir in $target; do
@@ -19,7 +20,8 @@ for bdir in $target; do
      | grep -v "CVS" \
      | xargs -I % cut -f 1 "$blists/$dir/"% \
      | grep -v "^#" \
-     | sort > "$tmpfs/basepkg_lists"
+     | sort \
+     | uniq >> "$tmpfs/basepkg_lists"
 done
 
-diff -u "$tmpfs/original_lists" "$tmpfs/basepkg_lists"
+diff -u "$tmpfs/basepkg_lists" "$tmpfs/original_lists" 
