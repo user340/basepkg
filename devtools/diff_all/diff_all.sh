@@ -55,7 +55,7 @@ tmpfs="/var/shm"
 org="$tmpfs/org.txt"
 bpkg="$tmpfs/bpkg.txt"
 
-basepkg_lists="../sets/lists"
+basepkg_lists="../../sets/lists"
 original_lists="/usr/src/distrib/sets/lists"
 
 categories="base comp debug etc games man misc modules tests text xbase xcomp xdebug xetc xfont xserver"

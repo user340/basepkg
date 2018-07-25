@@ -71,30 +71,6 @@
 # (https://github.com/user340/basepkg).
 #
 
-#
-# The which(1) command is undefined in POSIX. So this process check the 
-# which(1) command. If not exist in the system, define a function that same as 
-# the which(1) command.
-#
-# Thank you for Tomoyuki Matsu'ura and USP Laboratory(www.usp-lab.com), 
-# ISBN978-4-86354-177-1, pp. 50-51.
-#
-which which > /dev/null 2>&1 || {
-    which()
-    {
-        # XXX: In POSIX sh, 'type' is undefined.
-        # shellcheck disable=SC2039
-        ans=$(type "$1" 2>/dev/null) || exit $?
-        case "$1" in
-            */*) printf '%s\n' "$1" ; exit ;;
-        esac
-        case "$ans" in
-            */*) printf '%s\n' "/${ans#*/}"; exit ;;
-        esac
-        printf '%s\n' "$1"
-    }
-}
-
 nl='
 '
 tab='		'
@@ -754,7 +730,7 @@ _replace_cmdstr()
         -e "s%@PKG_RCD_SCRIPTS@%NO%" \
         -e "s%@PKG_USER_HOME@%%" \
         -e "s%@PKG_USER_SHELL@%%" \
-        -e "s%@PERL5@%$(which perl)%" "$1" || _bomb "failed sed"
+        -e "s%@PERL5@%$(command -v perl)%" "$1" || _bomb "failed sed"
 }
 
 #
@@ -764,7 +740,7 @@ _replace_cmdstr()
 _INSTALL()
 {
  (
-    mode_user_group=""
+    user_group_mode=""
 
     test -f "$workdir/$1/+INSTALL" && rm -f "$workdir/$1/+INSTALL"
     _replace_cmdstr "$install_script" > "$workdir/$1/+INSTALL"
@@ -868,8 +844,8 @@ _do_pkg_create()
 
 _mk_checksum()
 {
-    ls | grep 'tgz$' | xargs -I % cksum -a md5 % > MD5
-    ls | grep 'tgz$' | xargs -I % cksum -a sha512 % > SHA512
+    echo ./*.tgz | xargs -I % cksum -a md5 % > MD5
+    echo ./*.tgz | xargs -I % cksum -a sha512 % > SHA512
 }
 
 #
@@ -1159,9 +1135,9 @@ test -f "$install_script"  || _bomb "require $install_script"
 test "X$release" != "X" || _bomb "cannot resolve \$release"
 
 test $# -eq 0 && _usage
-which hostname > /dev/null 2>&1 || _bomb "hostname(1) not found."
-which mktemp > /dev/null 2>&1 || _bomb "mktemp(1) not found."
-which pkg_create > /dev/null 2>&1 || _bomb "pkg_create(1) not found."
+command -v hostname > /dev/null 2>&1 || _bomb "hostname(1) not found."
+command -v mktemp > /dev/null 2>&1 || _bomb "mktemp(1) not found."
+command -v pkg_create > /dev/null 2>&1 || _bomb "pkg_create(1) not found."
 
 #
 # operation
