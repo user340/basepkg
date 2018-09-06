@@ -37,6 +37,12 @@ discussion and others.
     1.3. Run basepkg.sh
     1.4. How to install package
     1.5. pkgsrc-wip
+2. History
+    2.1. syspkgs
+    2.2. Motivations
+    2.3. Presentations
+3. TODO
+4. References
 
 ===============================================================================
 1. How to use
@@ -46,19 +52,26 @@ discussion and others.
 1.1. Build the NetBSD distribution
 -------------------------------------------------------------------------------
 
-In this procedure, NetBSD source sets is in /usr/src, NetBSD build-tools is in
+In this procedure, NetBSD source tree is in /usr/src, NetBSD build-tools is in
 /usr/tools, NetBSD compiled objects is in /usr/obj, NetBSD version is 7.1.2,
 machine is amd64, and machine archtecture is x86_64.
 
-First, download NetBSD source sets and extract to /usr/src. Then, build it.
+How to build NetBSD source tree is here. Don't read if you understand or done
+it.
 
-    # cd g
+First, download NetBSD source sets. Then extract it to /usr/src directory.
+
     # ftp ftp://ftp.netbsd.org/pub/NetBSD/NetBSD-7.1.2/source/
+    ...
     ftp> mget .tgz
+    ...
     ftp> bye
-    # ls | grep 'tgz$' | xargs -n 1 tar zxf
+    # ls | grep 'tgz$' | xargs -n 1 -I % tar zxf -C /
     # ls | grep 'tgz$' | xargs rm
-    # mkdir gusr/obj /usr/tools
+
+Second, build it using build.sh.
+
+    # mkdir /usr/obj /usr/tools
     # cd /usr/src
     # ./build.sh -O ../obj -T ../tools -x -X ../xsrc tools
     # ./build.sh -O ../obj -T ../tools -x -X ../xsrc distribution
@@ -67,14 +80,22 @@ First, download NetBSD source sets and extract to /usr/src. Then, build it.
 1.2. Install pkgtools/pkg_install
 -------------------------------------------------------------------------------
 
-    # cd /usr
-    # ftp ftp://ftp.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.gz
-    # tar zxf pkgsrc.tar.gz
-    # rm pkgsrc.tar.gz
-    # cd pkgsrc/pkgtools/pkg_install
-    # make install clean clean-depen
+basepkg(1) is tested by latest pkgtools/pkg_install[1]. I recommend that
+install it from pkgsrc(7).
 
-or use pkgin instead of pkgsrc.
+How to get pkgsrc(7) is here. Don't read if you understand or done it.
+
+    # ftp ftp://ftp.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.gz
+    # tar zxf pkgsrc.tar.gz -C /usr
+    # rm pkgsrc.tar.gz
+
+Run make(1) with "install clean clean-depends" targets on pkgtools/pkg_install.
+
+    # cd /usr/pkgsrc/pkgtools/pkg_install
+    # make install clean clean-depends
+
+Or we can use pkgin(1) instead of pkgsrc(7). pkgin is a binary package manager
+for pkgsrc(7)[2].
 
 -------------------------------------------------------------------------------
 1.3. Run basepkg.sh
@@ -92,11 +113,10 @@ packages/<release-version>/<machine>-<machine_arch> directory.
 1.4. How to install package
 -------------------------------------------------------------------------------
 
-Running pkg_add(1) with "-K var/db/basepkg" for separate database from pkgsrc.
+Running pkg_add(1) with "-K var/db/basepkg" for separate database from
+pkgsrc(7).
 
     # pkg_add -K /var/db/basepkg games-games-bin-7.1.tgz
-
-Contents installed to the system.
 
 But etc categorized packages are exception. They are installed to
 /var/tmp/basepkg because the way keeps from overwrite existing files under the
@@ -109,11 +129,48 @@ manually.
 1.5. pkgsrc-wip
 -------------------------------------------------------------------------------
 
-basepkg imported to pkgsrc-wip. You can install basepkg to your system using
-pkgsrc-wip. But it supporting only latest version package.
+basepkg(1) is imported to pkgsrc-wip[3]. You can install basepkg to your system
+using pkgsrc-wip. But it supporting only latest version package.
 
     # cd /usr/pkgsrc/wip/basepkg
     # make install clean clean-depends
 
-basepkg.sh(1), README and others are installed to /usr/pkg/basepkg.
+basepkg.sh(1), README and others are installed to /usr/pkg/basepkg. You can run
+basepkg.sh(1) on /usr/pkg/basepkg directory. Packages are placed in
+/usr/pkg/basepkg/packages directory.
 
+===============================================================================
+2. History
+===============================================================================
+
+-------------------------------------------------------------------------------
+2.1. syspkgs
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+2.2. Motivation
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+2.3. Presentations
+-------------------------------------------------------------------------------
+
+The presentations about basepkg(1) are here.
+
+AsiaBSDCon 2018
+    http://www.netbsd.org/gallery/presentations/yuuki/2018_AsiaBSDCon/AsiaBSDCon2018-basepkg-paper.pdf 
+
+AsiaBSDCon 2017
+    http://www.netbsd.org/gallery/presentations/yuuki/2017_AsiaBSDCon/basepkg.pdf  
+
+===============================================================================
+3. TODO
+===============================================================================
+
+===============================================================================
+4. References
+===============================================================================
+
+[1] http://pkgsrc.se/pkgtools/pkg_install 
+[2] http://pkgin.net
+[3] https://pkgsrc.org/wip
