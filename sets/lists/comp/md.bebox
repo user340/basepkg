@@ -1,4 +1,4 @@
-# $NetBSD: md.bebox,v 1.38 2014/07/23 18:19:43 alnsn Exp $
+# $NetBSD: md.bebox,v 1.40 2015/12/20 16:22:39 christos Exp $
 ./usr/include/bebox				comp-c-include
 ./usr/include/bebox/_G_config.h			comp-obsolete		obsolete
 ./usr/include/bebox/ansi.h			comp-c-include
@@ -19,6 +19,7 @@
 ./usr/include/bebox/elf_machdep.h		comp-c-include
 ./usr/include/bebox/endian.h			comp-c-include
 ./usr/include/bebox/endian_machdep.h		comp-c-include
+./usr/include/bebox/fenv.h			comp-c-include
 ./usr/include/bebox/float.h			comp-c-include
 ./usr/include/bebox/fpu.h			comp-c-include
 ./usr/include/bebox/frame.h			comp-c-include
@@ -56,8 +57,8 @@
 ./usr/include/bebox/rwlock.h			comp-c-include
 ./usr/include/bebox/setjmp.h			comp-c-include
 ./usr/include/bebox/signal.h			comp-c-include
-./usr/include/bebox/sljitarch.h			comp-obsolete		obsolete
 ./usr/include/bebox/sljit_machdep.h		comp-c-include
+./usr/include/bebox/sljitarch.h			comp-obsolete		obsolete
 ./usr/include/bebox/spkr.h			comp-c-include
 ./usr/include/bebox/spr.h			comp-obsolete		obsolete
 ./usr/include/bebox/stdarg.h			comp-obsolete		obsolete
