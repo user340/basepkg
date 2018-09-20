@@ -1,4 +1,4 @@
-# $NetBSD: rescue.mi,v 1.36 2014/08/09 18:32:34 apb Exp $
+# $NetBSD: rescue.mi,v 1.40 2017/05/21 15:28:37 riastradh Exp $
 #
 # Note: don't delete entries from here - mark them as "obsolete" instead.
 #
@@ -11,7 +11,7 @@
 ./rescue/bzip2					base-rescue-root
 ./rescue/cat					base-rescue-root
 ./rescue/ccdconfig				base-rescue-root
-./rescue/cgdconfig				base-rescue-root	crypto
+./rescue/cgdconfig				base-rescue-root
 ./rescue/chgrp					base-rescue-root
 ./rescue/chio					base-rescue-root
 ./rescue/chmod					base-rescue-root
@@ -127,18 +127,18 @@
 ./rescue/route					base-rescue-root
 ./rescue/routed					base-rescue-root
 ./rescue/rrestore				base-rescue-root
-./rescue/rtsol					base-rescue-root	use_inet6
+./rescue/rtsol					base-obsolete		obsolete
 ./rescue/savecore				base-rescue-root
 ./rescue/scan_ffs				base-rescue-root
-./rescue/scp					base-rescue-root	crypto
+./rescue/scp					base-rescue-root
 ./rescue/scsictl				base-rescue-root
 ./rescue/setkey					base-rescue-root
 ./rescue/sh					base-rescue-root
 ./rescue/shutdown				base-rescue-root
 ./rescue/slattach				base-rescue-root
 ./rescue/sleep					base-rescue-root
-./rescue/slogin					base-rescue-root	crypto
-./rescue/ssh					base-rescue-root	crypto
+./rescue/slogin					base-rescue-root
+./rescue/ssh					base-rescue-root
 ./rescue/stty					base-rescue-root
 ./rescue/swapctl				base-rescue-root
 ./rescue/swapon					base-rescue-root
@@ -155,6 +155,7 @@
 ./rescue/veriexecctl				base-rescue-root
 ./rescue/vi					base-rescue-root
 ./rescue/vnconfig				base-rescue-root
+./rescue/vndconfig				base-rescue-root
 ./rescue/wdogctl				base-rescue-root
 ./rescue/wsconsctl				base-rescue-root
 ./rescue/zcat					base-rescue-root
