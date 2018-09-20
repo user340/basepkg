@@ -1,0 +1,8 @@
+diff --git a/sets/lists/debug/md.sgimips b/sets/lists/debug/md.sgimips
+index 08d89f61..c309c44a 100644
+--- a/sets/lists/debug/md.sgimips
++++ b/sets/lists/debug/md.sgimips
+@@ -1,2 +1,2 @@
+ # $NetBSD: md.sgimips,v 1.2 2013/01/16 21:11:09 christos Exp $
+-./usr/libdata/debug/usr/mdec/sgivol.debug	-unknown-		debug
++./usr/libdata/debug/usr/mdec/sgivol.debug	comp-sysutil-debug		debug
