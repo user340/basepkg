@@ -1,0 +1,82 @@
+diff --git a/sets/lists/comp/ad.mips b/sets/lists/comp/ad.mips
+index 2fa0a50f..ed74f514 100644
+--- a/sets/lists/comp/ad.mips
++++ b/sets/lists/comp/ad.mips
+@@ -91,9 +91,9 @@
+ ./usr/libdata/ldscripts/elf32btsmip.x		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32btsmip.xbn		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32btsmip.xc		comp-util-bin		binutils,arch64
+-./usr/libdata/ldscripts/elf32btsmip.xd		-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf32btsmip.xdc		-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf32btsmip.xdw		-unknown-		binutils,arch64
++./usr/libdata/ldscripts/elf32btsmip.xd		comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf32btsmip.xdc		comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf32btsmip.xdw		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32btsmip.xn		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32btsmip.xr		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32btsmip.xs		comp-util-bin		binutils,arch64
+@@ -104,9 +104,9 @@
+ ./usr/libdata/ldscripts/elf32btsmipn32.x	comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32btsmipn32.xbn	comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32btsmipn32.xc	comp-util-bin		binutils,arch64
+-./usr/libdata/ldscripts/elf32btsmipn32.xd	-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf32btsmipn32.xdc	-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf32btsmipn32.xdw	-unknown-		binutils,arch64
++./usr/libdata/ldscripts/elf32btsmipn32.xd	comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf32btsmipn32.xdc	comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf32btsmipn32.xdw	comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32btsmipn32.xn	comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32btsmipn32.xr	comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32btsmipn32.xs	comp-util-bin		binutils,arch64
+@@ -117,9 +117,9 @@
+ ./usr/libdata/ldscripts/elf32ltsmip.x		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32ltsmip.xbn		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32ltsmip.xc		comp-util-bin		binutils,arch64
+-./usr/libdata/ldscripts/elf32ltsmip.xd		-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf32ltsmip.xdc		-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf32ltsmip.xdw		-unknown-		binutils,arch64
++./usr/libdata/ldscripts/elf32ltsmip.xd		comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf32ltsmip.xdc		comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf32ltsmip.xdw		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32ltsmip.xn		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32ltsmip.xr		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32ltsmip.xs		comp-util-bin		binutils,arch64
+@@ -130,9 +130,9 @@
+ ./usr/libdata/ldscripts/elf32ltsmipn32.x	comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32ltsmipn32.xbn	comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32ltsmipn32.xc	comp-util-bin		binutils,arch64
+-./usr/libdata/ldscripts/elf32ltsmipn32.xd	-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf32ltsmipn32.xdc	-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf32ltsmipn32.xdw	-unknown-		binutils,arch64
++./usr/libdata/ldscripts/elf32ltsmipn32.xd	comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf32ltsmipn32.xdc	comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf32ltsmipn32.xdw	comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32ltsmipn32.xn	comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32ltsmipn32.xr	comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf32ltsmipn32.xs	comp-util-bin		binutils,arch64
+@@ -143,9 +143,9 @@
+ ./usr/libdata/ldscripts/elf64btsmip.x		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf64btsmip.xbn		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf64btsmip.xc		comp-util-bin		binutils,arch64
+-./usr/libdata/ldscripts/elf64btsmip.xd		-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf64btsmip.xdc		-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf64btsmip.xdw		-unknown-		binutils,arch64
++./usr/libdata/ldscripts/elf64btsmip.xd		comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf64btsmip.xdc		comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf64btsmip.xdw		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf64btsmip.xn		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf64btsmip.xr		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf64btsmip.xs		comp-util-bin		binutils,arch64
+@@ -156,9 +156,9 @@
+ ./usr/libdata/ldscripts/elf64ltsmip.x		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf64ltsmip.xbn		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf64ltsmip.xc		comp-util-bin		binutils,arch64
+-./usr/libdata/ldscripts/elf64ltsmip.xd		-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf64ltsmip.xdc		-unknown-		binutils,arch64
+-./usr/libdata/ldscripts/elf64ltsmip.xdw		-unknown-		binutils,arch64
++./usr/libdata/ldscripts/elf64ltsmip.xd		comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf64ltsmip.xdc		comp-util-bin		binutils,arch64
++./usr/libdata/ldscripts/elf64ltsmip.xdw		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf64ltsmip.xn		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf64ltsmip.xr		comp-util-bin		binutils,arch64
+ ./usr/libdata/ldscripts/elf64ltsmip.xs		comp-util-bin		binutils,arch64
