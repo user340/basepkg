@@ -7,8 +7,14 @@
 #   $ ./xpkg.py xbase < ../sets/lists/xbase/mi
 
 import argparse
+import os
 import re
 import sys
+
+
+def find_result(top):
+    return {os.path.join(root, name)
+            for root, _, files in os.walk(top) for name in files}
 
 
 def xnaming(line, category):
