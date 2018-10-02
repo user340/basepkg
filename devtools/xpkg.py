@@ -1,19 +1,17 @@
 #!/usr/pkg/bin/python3.7
+#
+# It is filter script. It doesn't open any file.
+# EXAMPLE
+#   $ cat ../sets/lists/xbase/mi | ./xpkg.py xbase
+# or
+#   $ ./xpkg.py xbase < ../sets/lists/xbase/mi
 
 import argparse
-import os
 import re
-import subprocess
+import sys
 
 
-def locating(filename):
-    arguments = ["find", "/usr/obj", "-name", filename]
-    result = subprocess.run(arguments, stdout=subprocess.PIPE, timeout=10)
-    # print(result.stdout.decode('utf-8'))
-    return result.stdout.decode('utf-8')
-
-
-def naming(line):
+def xnaming(line, category):
     # It may includes empty items. So remove it.
     colums = [colum for colum in line.split('\t') if colum]
     # Usually a line contains three colums. But it sometimes contains two
@@ -33,37 +31,14 @@ def naming(line):
         print(line, end='')
 
 
-listdir = '../sets/lists'
-try:
-    # Firstly, Is listdir (in default, ../sets/lists) exits?
-    if not os.path.isdir(listdir):
-        raise NotADirectoryError(listdir + ' is not directory')
+# Parse arguments.
+arg = argparse.ArgumentParser()
+arg.add_argument('category',
+                 help='specify the category name of under the sets/lists')
+args = arg.parse_args()
+category = args.category
 
-    # Parse arguments.
-    arg = argparse.ArgumentParser()
-    arg.add_argument('category',
-                     help='specify the category name of under the sets/lists')
-    arg.add_argument('filename',
-                     help='specify the filename of the category')
-    args = arg.parse_args()
-    category = args.category
-    filename = args.filename
-    target = os.path.join(listdir, category, filename)
-
-    # Is target file exits?
-    if not os.path.isfile(target):
-        raise FileNotFoundError(target + ': no such file')
-
-    # Open the target file.
-    with open(target, mode='r', encoding='utf-8') as f:
-        [naming(line) for line in f]
-except FileNotFoundError:
-    raise
-except NotADirectoryError:
-    raise
-except OSError:
-    raise
-except subprocess.TimeoutExpired:
-    raise
-except subprocess.CalledProcessError:
-    raise
+# Main
+# It calls xnaming() function line by line from stdin. The xnaming() function
+# works for only replacing text.
+[xnaming(line, category) for line in iter(sys.stdin.readline, "")]
