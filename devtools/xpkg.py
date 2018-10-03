@@ -14,7 +14,7 @@ import sys
 
 def find_result(top):
     return {os.path.join(root, name)
-            for root, _, files in os.walk(top) for name in files}
+                for root, _, files in os.walk(top) for name in files}
 
 
 def xnaming(line, category):
@@ -40,11 +40,15 @@ def xnaming(line, category):
 # Parse arguments.
 arg = argparse.ArgumentParser()
 arg.add_argument('category',
-                 help='specify the category name of under the sets/lists')
+                 help='Specify the category name of under the sets/lists')
+arg.add_argument('--objdir', '-O',
+                 type=str,
+                 help='Set object root directory.')
 args = arg.parse_args()
 category = args.category
+objdir = '/usr/obj' if args.objdir is None else args.objdir
 
 # Main
 # It calls xnaming() function line by line from stdin. The xnaming() function
 # works for only replacing text.
-[xnaming(line, category) for line in iter(sys.stdin.readline, "")]
+#[xnaming(line, category) for line in iter(sys.stdin.readline, "")]
