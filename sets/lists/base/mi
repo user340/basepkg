@@ -1,4 +1,4 @@
-# $NetBSD: mi,v 1.1087.2.10 2017/03/02 07:46:02 snj Exp $
+# $NetBSD: mi,v 1.1158.2.2 2017/11/02 21:02:06 snj Exp $
 #
 # Note:	Don't delete entries from here - mark them as "obsolete" instead,
 #	unless otherwise stated below.
@@ -77,6 +77,7 @@
 ./dev/log					base-sys-root
 ./etc						base-sys-root
 ./etc/X11					base-x11-root
+./etc/X11/ctwm					base-x11-root
 ./etc/X11/fs					base-x11-root
 ./etc/X11/lbxproxy				base-x11-root
 ./etc/X11/proxymngr				base-x11-root
@@ -104,6 +105,7 @@
 ./etc/mtree					base-sys-root
 ./etc/mtree/set.base				base-sys-root
 ./etc/namedb					base-bind-root
+./etc/nsd					base-sys-root
 ./etc/obsolete					base-obsolete		obsolete
 ./etc/openldap					base-ldap-root
 ./etc/openssl					base-crypto-root
@@ -122,12 +124,13 @@
 ./etc/sliphome					base-slip-root
 ./etc/ssh					base-sys-root
 ./etc/systrace					base-obsolete		obsolete
+./etc/unbound					base-sys-root
 ./etc/uucp					base-obsolete		obsolete
 ./etc/zfs					base-zfs-root
-./lib						base-sys-root
+./lib						base-sys-root		compatdir
 ./lib/libdes.so					base-obsolete		obsolete
 ./lib/libssp.so					base-obsolete		obsolete
-./lib/npf					base-sys-root
+./lib/npf					base-sys-root		compatfile
 ./libdata					base-sys-root
 ./libdata/firmware				base-firmware-root
 ./libdata/firmware/if_athn			base-firmware-root
@@ -145,6 +148,35 @@
 ./libdata/firmware/if_iwi/ipw2200-bss.fw	base-firmware-root
 ./libdata/firmware/if_iwi/ipw2200-ibss.fw	base-firmware-root
 ./libdata/firmware/if_iwi/ipw2200-sniffer.fw	base-firmware-root
+./libdata/firmware/if_iwm			base-firmware-root
+./libdata/firmware/if_iwm/LICENSE.iwlwifi-3160-ucode	base-firmware-root
+./libdata/firmware/if_iwm/LICENSE.iwlwifi-3168-ucode	base-firmware-root
+./libdata/firmware/if_iwm/LICENSE.iwlwifi-7260-ucode	base-firmware-root
+./libdata/firmware/if_iwm/LICENSE.iwlwifi-7265-ucode	base-firmware-root
+./libdata/firmware/if_iwm/LICENSE.iwlwifi-8000-ucode	base-firmware-root
+./libdata/firmware/if_iwm/LICENSE.iwlwifi-8265-ucode	base-firmware-root
+./libdata/firmware/if_iwm/README.iwlwifi-3160-ucode	base-firmware-root
+./libdata/firmware/if_iwm/README.iwlwifi-3168-ucode	base-firmware-root
+./libdata/firmware/if_iwm/README.iwlwifi-7260-ucode	base-firmware-root
+./libdata/firmware/if_iwm/README.iwlwifi-7265-ucode	base-firmware-root
+./libdata/firmware/if_iwm/README.iwlwifi-8000-ucode	base-firmware-root
+./libdata/firmware/if_iwm/README.iwlwifi-8265-ucode	base-firmware-root
+./libdata/firmware/if_iwm/iwlwifi-3160-16.ucode	base-obsolete	obsolete
+./libdata/firmware/if_iwm/iwlwifi-3160-17.ucode	base-firmware-root
+./libdata/firmware/if_iwm/iwlwifi-3160-9.ucode	base-obsolete	obsolete
+./libdata/firmware/if_iwm/iwlwifi-3168-22.ucode	base-firmware-root
+./libdata/firmware/if_iwm/iwlwifi-7260-16.ucode	base-obsolete	obsolete
+./libdata/firmware/if_iwm/iwlwifi-7260-17.ucode	base-firmware-root
+./libdata/firmware/if_iwm/iwlwifi-7260-9.ucode	base-obsolete	obsolete
+./libdata/firmware/if_iwm/iwlwifi-7265-16.ucode	base-obsolete	obsolete
+./libdata/firmware/if_iwm/iwlwifi-7265-17.ucode	base-firmware-root
+./libdata/firmware/if_iwm/iwlwifi-7265-9.ucode	base-obsolete	obsolete
+./libdata/firmware/if_iwm/iwlwifi-7265D-16.ucode	base-obsolete	obsolete
+./libdata/firmware/if_iwm/iwlwifi-7265D-17.ucode	base-obsolete	obsolete
+./libdata/firmware/if_iwm/iwlwifi-7265D-22.ucode	base-firmware-root
+./libdata/firmware/if_iwm/iwlwifi-8000C-16.ucode	base-obsolete	obsolete
+./libdata/firmware/if_iwm/iwlwifi-8000C-22.ucode	base-firmware-root
+./libdata/firmware/if_iwm/iwlwifi-8265-22.ucode	base-firmware-root
 ./libdata/firmware/if_iwn			base-firmware-root
 ./libdata/firmware/if_iwn/LICENSE.iwlwifi-100-ucode	base-firmware-root
 ./libdata/firmware/if_iwn/LICENSE.iwlwifi-1000-ucode	base-firmware-root
@@ -191,11 +223,17 @@
 ./libdata/firmware/if_otus/otus-init		base-firmware-root
 ./libdata/firmware/if_otus/otus-license		base-firmware-root
 ./libdata/firmware/if_otus/otus-main		base-firmware-root
+./libdata/firmware/if_rtwn			base-firmware-root
+./libdata/firmware/if_rtwn/Realtek-Firmware-License.txt	base-firmware-root
+./libdata/firmware/if_rtwn/rtl8192cfw.bin	base-firmware-root
+./libdata/firmware/if_rtwn/rtl8192cfwU.bin	base-firmware-root
+./libdata/firmware/if_rtwn/rtl8192cfwU_B.bin	base-firmware-root
 ./libdata/firmware/if_urtwn			base-firmware-root
 ./libdata/firmware/if_urtwn/Realtek-Firmware-License.txt	base-firmware-root
 ./libdata/firmware/if_urtwn/rtl8188eufw.bin	base-firmware-root
 ./libdata/firmware/if_urtwn/rtl8192cfw.bin	base-firmware-root
 ./libdata/firmware/if_urtwn/rtl8192cfwU.bin	base-firmware-root
+./libdata/firmware/if_urtwn/rtl8192eefw.bin	base-firmware-root
 ./libdata/firmware/if_wpi			base-firmware-root
 ./libdata/firmware/if_wpi/LICENSE.ipw3945-ucode	base-obsolete	obsolete
 ./libdata/firmware/if_wpi/LICENSE.iwlwifi-3945-ucode	base-firmware-root
@@ -363,6 +401,7 @@
 ./libdata/firmware/ral/ral-rt2561		base-firmware-root
 ./libdata/firmware/ral/ral-rt2561s		base-firmware-root
 ./libdata/firmware/ral/ral-rt2661		base-firmware-root
+./libdata/firmware/ral/ral-rt2860		base-firmware-root
 ./libdata/firmware/rum				base-firmware-root
 ./libdata/firmware/rum/rum-license		base-firmware-root
 ./libdata/firmware/rum/rum-rt2573		base-firmware-root
@@ -373,7 +412,7 @@
 ./libdata/firmware/run/run-rt2870		base-firmware-root
 ./libdata/firmware/run/run-rt3071		base-firmware-root
 ./libdata/firmware/upgt				base-firmware-root
-./libdata/firmware/urtwn			base-firmware-root obsolete
+./libdata/firmware/urtwn			base-obsolete obsolete
 ./libdata/firmware/zyd				base-firmware-root
 ./libdata/firmware/zyd/zd1211-licence		base-obsolete			obsolete
 ./libdata/firmware/zyd/zd1211-license		base-firmware-root
@@ -388,14 +427,14 @@
 ./libexec/dhcpcd-hooks				base-dhcpcd-root
 ./libexec/dhcpcd-hooks/01-test			base-dhcpcd-root
 ./libexec/dhcpcd-hooks/02-dump			base-dhcpcd-root
-./libexec/dhcpcd-hooks/10-mtu			base-dhcpcd-root
-./libexec/dhcpcd-hooks/10-resolv.conf		base-obsolete			obsolete
-./libexec/dhcpcd-hooks/10-wpa_supplicant	base-dhcpcd-root
-./libexec/dhcpcd-hooks/14-lookup-hostname	base-obsolete			obsolete
-./libexec/dhcpcd-hooks/15-hostname		base-obsolete			obsolete
-./libexec/dhcpcd-hooks/15-timezone		base-dhcpcd-root
+./libexec/dhcpcd-hooks/10-mtu			base-obsolete      obsolete
+./libexec/dhcpcd-hooks/10-resolv.conf		base-obsolete      obsolete
+./libexec/dhcpcd-hooks/10-wpa_supplicant	base-obsolete      obsolete
+./libexec/dhcpcd-hooks/14-lookup-hostname	base-obsolete      obsolete
+./libexec/dhcpcd-hooks/15-hostname		base-obsolete      obsolete
+./libexec/dhcpcd-hooks/15-timezone		base-obsolete      obsolete
 ./libexec/dhcpcd-hooks/20-resolv.conf		base-dhcpcd-root
-./libexec/dhcpcd-hooks/29-lookup-hostname	base-dhcpcd-root
+./libexec/dhcpcd-hooks/29-lookup-hostname	base-obsolete      obsolete
 ./libexec/dhcpcd-hooks/30-hostname		base-dhcpcd-root
 ./libexec/dhcpcd-hooks/50-ntp.conf		base-dhcpcd-root
 ./libexec/dhcpcd-run-hooks			base-dhcpcd-root
@@ -417,8 +456,9 @@
 ./sbin/blacklistctl				base-sysutil-root
 ./sbin/blacklistd				base-sysutil-root
 ./sbin/brconfig					base-netutil-root
+./sbin/canconfig				base-netutil-root
 ./sbin/ccdconfig				base-sysutil-root
-./sbin/cgdconfig				base-sysutil-root	crypto
+./sbin/cgdconfig				base-sysutil-root
 ./sbin/chown					base-sysutil-root
 ./sbin/clri					base-sysutil-root
 ./sbin/devpubd					base-sysutil-root
@@ -510,6 +550,7 @@
 ./sbin/nfsiod					base-obsolete		obsolete
 ./sbin/nologin					base-sysutil-root
 ./sbin/npfctl					base-npf-bin		npf
+./sbin/nvmectl					base-sysutil-root
 ./sbin/pdisk					base-sysutil-root
 ./sbin/pfctl					base-pf-root		pf
 ./sbin/pflogd					base-pf-root		pf
@@ -532,13 +573,14 @@
 ./sbin/route					base-netutil-root
 ./sbin/routed					base-router-root
 ./sbin/rrestore					base-netutil-root
-./sbin/rtsol					base-netutil-root	use_inet6
-./sbin/rump.cgdconfig				base-sysutil-root	crypto,rump
+./sbin/rtsol					base-obsolete		obsolete
+./sbin/rump.cgdconfig				base-sysutil-root	rump
 ./sbin/rump.ifconfig				base-netutil-root	rump
 ./sbin/rump.modload				base-sysutil-root	rump
 ./sbin/rump.modstat				base-sysutil-root	rump
 ./sbin/rump.modunload				base-sysutil-root	rump
 ./sbin/rump.ping				base-netutil-root	rump
+./sbin/rump.ping6				base-netutil-root	inet6,rump
 ./sbin/rump.raidctl				base-sysutil-root	rump
 ./sbin/rump.route				base-netutil-root	rump
 ./sbin/rump.sysctl				base-sysutil-root	rump
@@ -596,7 +638,7 @@
 ./usr/bin/basename				base-util-bin
 ./usr/bin/batch					base-cron-bin
 ./usr/bin/bc					base-util-bin
-./usr/bin/bdes					base-crypto-bin		crypto
+./usr/bin/bdes					base-crypto-bin
 ./usr/bin/biff					base-mail-bin
 ./usr/bin/bthset				base-util-bin
 ./usr/bin/btkey					base-util-bin
@@ -779,11 +821,12 @@
 ./usr/bin/more					base-util-bin
 ./usr/bin/mset					base-obsolete		obsolete
 ./usr/bin/msgs					base-util-bin
-./usr/bin/nbsvtool				base-crypto-bin		crypto
+./usr/bin/nbsvtool				base-crypto-bin
+./usr/bin/nc					base-netutil-bin
 ./usr/bin/netgroup				base-nis-bin
-./usr/bin/netpgp				base-crypto-bin		crypto
-./usr/bin/netpgpkeys				base-crypto-bin		crypto
-./usr/bin/netpgpverify				base-crypto-bin		crypto
+./usr/bin/netpgp				base-crypto-bin
+./usr/bin/netpgpkeys				base-crypto-bin
+./usr/bin/netpgpverify				base-crypto-bin
 ./usr/bin/netstat				base-netutil-bin
 ./usr/bin/newaliases				base-mailwrapper-bin
 ./usr/bin/newgrp				base-util-bin
@@ -799,7 +842,7 @@
 ./usr/bin/nview					base-obsolete		obsolete
 ./usr/bin/od					base-util-bin
 ./usr/bin/openpgp				base-obsolete		obsolete
-./usr/bin/openssl				base-crypto-bin		crypto
+./usr/bin/openssl				base-crypto-bin
 ./usr/bin/page					base-util-bin
 ./usr/bin/pagesize				base-util-bin
 ./usr/bin/passwd				base-util-bin
@@ -819,9 +862,10 @@
 ./usr/bin/printf				base-util-bin
 ./usr/bin/progress				base-util-bin
 ./usr/bin/purgestat				base-mailwrapper-bin
+./usr/bin/pwait					base-util-bin
 ./usr/bin/pwhash				base-util-bin
-./usr/bin/qsafe					base-util-bin		crypto
-./usr/bin/qsieve				base-util-bin		crypto
+./usr/bin/qsafe					base-util-bin
+./usr/bin/qsieve				base-util-bin
 ./usr/bin/qsubst				base-util-bin
 ./usr/bin/quota					base-util-bin
 ./usr/bin/radioctl				base-audio-bin
@@ -857,7 +901,7 @@
 ./usr/bin/rusers				base-netutil-bin
 ./usr/bin/rwall					base-netutil-bin
 ./usr/bin/rwho					base-netutil-bin
-./usr/bin/scp					base-secsh-bin		crypto
+./usr/bin/scp					base-secsh-bin
 ./usr/bin/script				base-util-bin
 ./usr/bin/sdiff					base-util-bin
 ./usr/bin/sdpquery				base-util-bin
@@ -865,7 +909,7 @@
 ./usr/bin/send-pr				base-gnats-bin
 ./usr/bin/seq					base-util-bin
 ./usr/bin/setextattr				base-util-bin
-./usr/bin/sftp					base-secsh-bin		crypto
+./usr/bin/sftp					base-secsh-bin
 ./usr/bin/sha1					base-util-bin
 ./usr/bin/shar					base-util-bin
 ./usr/bin/shlock				base-util-bin
@@ -876,22 +920,23 @@
 ./usr/bin/skeyaudit				base-util-bin		skey
 ./usr/bin/skeyinfo				base-util-bin		skey
 ./usr/bin/skeyinit				base-util-bin		skey
-./usr/bin/slogin				base-secsh-bin		crypto
+./usr/bin/slogin				base-secsh-bin
 ./usr/bin/smbutil				base-util-bin
 ./usr/bin/sockstat				base-util-bin
 ./usr/bin/sort					base-util-bin
 ./usr/bin/spell					base-util-bin
 ./usr/bin/split					base-util-bin
 ./usr/bin/sqlite3				base-util-bin
-./usr/bin/ssh					base-secsh-bin		crypto
-./usr/bin/ssh-add				base-secsh-bin		crypto
-./usr/bin/ssh-agent				base-secsh-bin		crypto
-./usr/bin/ssh-keygen				base-secsh-bin		crypto
-./usr/bin/ssh-keyscan				base-secsh-bin		crypto
+./usr/bin/ssh					base-secsh-bin
+./usr/bin/ssh-add				base-secsh-bin
+./usr/bin/ssh-agent				base-secsh-bin
+./usr/bin/ssh-keygen				base-secsh-bin
+./usr/bin/ssh-keyscan				base-secsh-bin
 ./usr/bin/stat					base-util-bin
 ./usr/bin/string2key				base-krb5-bin		kerberos
 ./usr/bin/su					base-util-bin
 ./usr/bin/sum					base-util-bin
+./usr/bin/sys_info				base-util-bin
 ./usr/bin/sysstat				base-util-bin
 ./usr/bin/systat				base-util-bin
 ./usr/bin/tabs					base-util-bin
@@ -921,6 +966,7 @@
 ./usr/bin/tty					base-util-bin
 ./usr/bin/ul					base-util-bin
 ./usr/bin/uname					base-util-bin
+./usr/bin/unbound-host				base-netutil-bin	unbound
 ./usr/bin/uncompress				base-util-bin
 ./usr/bin/unexpand				base-util-bin
 ./usr/bin/uniq					base-util-bin
@@ -999,7 +1045,9 @@
 ./usr/include/cdk				base-obsolete		obsolete
 ./usr/include/clang-3.4				base-obsolete		obsolete
 ./usr/include/clang-3.5				base-obsolete		obsolete
-./usr/include/clang-3.6				base-c-usr
+./usr/include/clang-3.6				base-obsolete		obsolete
+./usr/include/clang-3.8				base-obsolete		obsolete
+./usr/include/clang-4.0				base-c-usr
 ./usr/include/compat				base-obsolete		obsolete
 ./usr/include/crypto				base-c-usr
 ./usr/include/dev				base-c-usr
@@ -1011,6 +1059,8 @@
 ./usr/include/dev/dtv				base-c-usr
 ./usr/include/dev/eisa				base-obsolete		obsolete
 ./usr/include/dev/filemon			base-c-usr
+./usr/include/dev/hdaudio			base-c-usr
+./usr/include/dev/hdmicec			base-c-usr
 ./usr/include/dev/hpc				base-c-usr
 ./usr/include/dev/i2c				base-c-usr
 ./usr/include/dev/i2o				base-c-usr
@@ -1027,7 +1077,7 @@
 ./usr/include/dev/ofisa				base-obsolete		obsolete
 ./usr/include/dev/ofw				base-c-usr
 ./usr/include/dev/pci				base-c-usr
-./usr/include/dev/pci/hdaudio			base-c-usr
+./usr/include/dev/pci/hdaudio			base-obsolete		obsolete
 ./usr/include/dev/pckbc				base-c-usr
 ./usr/include/dev/pcmcia			base-c-usr
 ./usr/include/dev/pud				base-c-usr
@@ -1095,12 +1145,10 @@
 ./usr/include/g++/tr1				base-cxx-usr
 ./usr/include/g++/tr1_impl			base-cxx-usr
 ./usr/include/g++/tr2				base-cxx-usr
-./usr/include/gcc-4.1				base-c-usr		gcc=4
-./usr/include/gcc-4.1				base-obsolete		!gcc,obsolete
-./usr/include/gcc-4.1				base-obsolete		gcc=45,obsolete
-./usr/include/gcc-4.1				base-obsolete		gcc=48,obsolete
-./usr/include/gcc-4.5				base-c-usr
+./usr/include/gcc-4.1				base-obsolete		obsolete
+./usr/include/gcc-4.5				base-obsolete		obsolete
 ./usr/include/gcc-4.8				base-c-usr
+./usr/include/gcc-5				base-c-usr
 ./usr/include/gssapi				base-c-usr
 ./usr/include/gssapi/rpc			base-obsolete		obsolete
 ./usr/include/isofs				base-c-usr
@@ -1123,7 +1171,7 @@
 ./usr/include/miscfs/procfs			base-c-usr
 ./usr/include/miscfs/ptyfs			base-obsolete		obsolete
 ./usr/include/miscfs/specfs			base-c-usr
-./usr/include/miscfs/syncfs			base-c-usr
+./usr/include/miscfs/syncfs			base-obsolete		obsolete
 ./usr/include/miscfs/umapfs			base-c-usr
 ./usr/include/miscfs/union			base-c-usr
 ./usr/include/msdosfs				base-c-usr
@@ -1132,6 +1180,7 @@
 ./usr/include/net80211				base-c-usr
 ./usr/include/netatalk				base-c-usr
 ./usr/include/netbt				base-c-usr
+./usr/include/netcan				base-c-usr
 ./usr/include/netccitt				base-obsolete		obsolete
 ./usr/include/netinet				base-c-usr
 ./usr/include/netinet6				base-c-usr
@@ -1172,16 +1221,22 @@
 ./usr/include/ufs/ufs				base-c-usr
 ./usr/include/uvm				base-c-usr
 ./usr/include/vm				base-obsolete		obsolete
-./usr/lib					base-sys-usr
-./usr/lib/i18n					base-i18n-root
+./usr/lib					base-sys-usr		compatdir
+./usr/lib/dtrace				base-sys-usr		dtrace
+./usr/lib/dtrace/errno.d			base-sys-usr		dtrace
+./usr/lib/dtrace/psinfo.d			base-sys-usr		dtrace
+./usr/lib/dtrace/signal.d			base-sys-usr		dtrace
+./usr/lib/dtrace/unistd.d			base-sys-usr		dtrace
+./usr/lib/i18n					base-i18n-root		compatfile
 ./usr/lib/libntp.so				base-obsolete		obsolete
 ./usr/lib/libssp.so				base-obsolete		obsolete
 ./usr/lib/libusb.a				base-obsolete		obsolete
 ./usr/lib/libusb.so				base-obsolete		obsolete
-./usr/lib/lua					base-sys-usr
+./usr/lib/lua					base-sys-usr		compatfile
 ./usr/lib/lua/5.1				base-obsolete		obsolete
-./usr/lib/lua/5.3				base-sys-usr
+./usr/lib/lua/5.3				base-sys-usr		compatfile
 ./usr/lib/npf					base-obsolete		obsolete
+./usr/lib/postfix				base-postfix-usr
 ./usr/lib/runemodule				base-obsolete		obsolete
 ./usr/lib/runemodule/libBIG5.a			base-obsolete		obsolete
 ./usr/lib/runemodule/libBIG5.so			base-obsolete		obsolete
@@ -1211,19 +1266,19 @@
 ./usr/lib/runemodule/libUTF8.so			base-obsolete		obsolete
 ./usr/lib/runemodule/libUTF8.so.3		base-obsolete		obsolete
 ./usr/lib/runemodule/libUTF8.so.3.0		base-obsolete		obsolete
-./usr/lib/security				base-sys-usr
+./usr/lib/security				base-sys-usr		compatfile
 ./usr/libdata					base-sys-usr
 ./usr/libdata/debug				base-sys-usr
 ./usr/libdata/debug/bin				base-sys-usr
-./usr/libdata/debug/lib				base-sys-usr
-./usr/libdata/debug/lib/npf			base-sys-usr
+./usr/libdata/debug/lib				base-sys-usr		compatdir
+./usr/libdata/debug/lib/npf			base-sys-usr		compatfile
 ./usr/libdata/debug/libexec			base-sys-usr
 ./usr/libdata/debug/sbin			base-sys-usr
 ./usr/libdata/debug/usr				base-sys-usr
 ./usr/libdata/debug/usr/bin			base-sys-usr
 ./usr/libdata/debug/usr/games			base-sys-usr
-./usr/libdata/debug/usr/lib			base-sys-usr
-./usr/libdata/debug/usr/lib/i18n		base-i18n-root
+./usr/libdata/debug/usr/lib			base-sys-usr		compatdir
+./usr/libdata/debug/usr/lib/i18n		base-i18n-root		compatfile
 ./usr/libdata/debug/usr/lib/npf			base-obsolete		obsolete
 ./usr/libdata/debug/usr/libexec			base-sys-usr
 ./usr/libdata/debug/usr/libexec/ching		base-sys-usr
@@ -1233,167 +1288,167 @@
 ./usr/libdata/debug/usr/mdec			base-sys-usr
 ./usr/libdata/debug/usr/sbin			base-sys-usr
 ./usr/libdata/firmware				base-firmware-usr
-./usr/libdata/firmware/radeon			base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/ARUBA_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/ARUBA_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/ARUBA_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BARTS_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BARTS_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BARTS_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BARTS_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_ce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_mc2.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_mec.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_sdma.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_uvd.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BONAIRE_vce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/BTC_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CAICOS_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CAICOS_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CAICOS_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CAICOS_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CAYMAN_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CAYMAN_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CAYMAN_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CAYMAN_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CAYMAN_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CEDAR_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CEDAR_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CEDAR_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CEDAR_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CYPRESS_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CYPRESS_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CYPRESS_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CYPRESS_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/CYPRESS_uvd.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAINAN_ce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAINAN_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAINAN_mc2.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAINAN_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAINAN_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAINAN_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAINAN_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAWAII_ce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAWAII_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAWAII_mc2.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAWAII_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAWAII_mec.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAWAII_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAWAII_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAWAII_sdma.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/HAWAII_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/JUNIPER_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/JUNIPER_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/JUNIPER_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/JUNIPER_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KABINI_ce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KABINI_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KABINI_mec.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KABINI_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KABINI_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KABINI_sdma.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KAVERI_ce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KAVERI_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KAVERI_mec.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KAVERI_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KAVERI_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/KAVERI_sdma.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/MULLINS_ce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/MULLINS_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/MULLINS_mec.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/MULLINS_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/MULLINS_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/MULLINS_sdma.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/OLAND_ce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/OLAND_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/OLAND_mc2.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/OLAND_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/OLAND_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/OLAND_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/OLAND_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/PALM_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/PALM_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/PITCAIRN_ce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/PITCAIRN_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/PITCAIRN_mc2.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/PITCAIRN_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/PITCAIRN_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/PITCAIRN_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/PITCAIRN_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/R100_cp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/R200_cp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/R300_cp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/R420_cp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/R520_cp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/R600_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/R600_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/R600_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/R700_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/REDWOOD_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/REDWOOD_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/REDWOOD_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/REDWOOD_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RS600_cp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RS690_cp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RS780_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RS780_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV610_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV610_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV620_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV620_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV630_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV630_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV635_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV635_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV670_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV670_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV710_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV710_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV710_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV710_uvd.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV730_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV730_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV730_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV740_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV770_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV770_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/RV770_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/SUMO2_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/SUMO2_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/SUMO_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/SUMO_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/SUMO_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/SUMO_uvd.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TAHITI_ce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TAHITI_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TAHITI_mc2.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TAHITI_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TAHITI_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TAHITI_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TAHITI_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TAHITI_uvd.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TURKS_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TURKS_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TURKS_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/TURKS_smc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/VERDE_ce.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/VERDE_mc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/VERDE_mc2.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/VERDE_me.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/VERDE_pfp.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/VERDE_rlc.bin	base-firmware-usr	obsolete
-./usr/libdata/firmware/radeon/VERDE_smc.bin	base-firmware-usr	obsolete
+./usr/libdata/firmware/radeon			base-obsolete	obsolete
+./usr/libdata/firmware/radeon/ARUBA_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/ARUBA_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/ARUBA_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BARTS_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BARTS_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BARTS_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BARTS_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_ce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_mc2.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_mec.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_sdma.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_uvd.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BONAIRE_vce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/BTC_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CAICOS_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CAICOS_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CAICOS_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CAICOS_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CAYMAN_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CAYMAN_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CAYMAN_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CAYMAN_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CAYMAN_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CEDAR_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CEDAR_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CEDAR_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CEDAR_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CYPRESS_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CYPRESS_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CYPRESS_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CYPRESS_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/CYPRESS_uvd.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAINAN_ce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAINAN_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAINAN_mc2.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAINAN_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAINAN_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAINAN_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAINAN_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAWAII_ce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAWAII_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAWAII_mc2.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAWAII_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAWAII_mec.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAWAII_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAWAII_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAWAII_sdma.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/HAWAII_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/JUNIPER_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/JUNIPER_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/JUNIPER_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/JUNIPER_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KABINI_ce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KABINI_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KABINI_mec.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KABINI_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KABINI_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KABINI_sdma.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KAVERI_ce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KAVERI_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KAVERI_mec.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KAVERI_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KAVERI_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/KAVERI_sdma.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/MULLINS_ce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/MULLINS_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/MULLINS_mec.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/MULLINS_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/MULLINS_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/MULLINS_sdma.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/OLAND_ce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/OLAND_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/OLAND_mc2.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/OLAND_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/OLAND_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/OLAND_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/OLAND_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/PALM_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/PALM_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/PITCAIRN_ce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/PITCAIRN_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/PITCAIRN_mc2.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/PITCAIRN_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/PITCAIRN_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/PITCAIRN_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/PITCAIRN_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/R100_cp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/R200_cp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/R300_cp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/R420_cp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/R520_cp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/R600_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/R600_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/R600_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/R700_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/REDWOOD_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/REDWOOD_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/REDWOOD_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/REDWOOD_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RS600_cp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RS690_cp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RS780_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RS780_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV610_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV610_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV620_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV620_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV630_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV630_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV635_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV635_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV670_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV670_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV710_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV710_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV710_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV710_uvd.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV730_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV730_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV730_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV740_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV770_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV770_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/RV770_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/SUMO2_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/SUMO2_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/SUMO_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/SUMO_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/SUMO_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/SUMO_uvd.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TAHITI_ce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TAHITI_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TAHITI_mc2.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TAHITI_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TAHITI_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TAHITI_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TAHITI_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TAHITI_uvd.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TURKS_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TURKS_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TURKS_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/TURKS_smc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/VERDE_ce.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/VERDE_mc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/VERDE_mc2.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/VERDE_me.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/VERDE_pfp.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/VERDE_rlc.bin	base-obsolete	obsolete
+./usr/libdata/firmware/radeon/VERDE_smc.bin	base-obsolete	obsolete
 ./usr/libdata/ldscripts				base-c-usr
 ./usr/libdata/lint				base-c-usr
 ./usr/libexec					base-sys-usr
 ./usr/libexec/atf-check				base-atf-bin		atf
 ./usr/libexec/atf-cleanup			base-obsolete		obsolete
-./usr/libexec/atf-exec				base-atf-bin		obsolete
+./usr/libexec/atf-exec				base-obsolete		obsolete
 ./usr/libexec/atf-format			base-obsolete		obsolete
 ./usr/libexec/atf-killpg			base-obsolete		obsolete
 ./usr/libexec/atrun				base-cron-bin
@@ -1455,7 +1510,7 @@
 ./usr/libexec/postfix/postfix-script		base-postfix-bin	postfix
 ./usr/libexec/postfix/postfix-wrapper		base-postfix-bin	postfix
 ./usr/libexec/postfix/postmulti-script		base-postfix-bin	postfix
-./usr/libexec/postfix/postscreen		base-postfix-bin	postfix,crypto
+./usr/libexec/postfix/postscreen		base-postfix-bin	postfix
 ./usr/libexec/postfix/proxymap			base-postfix-bin	postfix
 ./usr/libexec/postfix/qmgr			base-postfix-bin	postfix
 ./usr/libexec/postfix/qmqpd			base-obsolete		obsolete
@@ -1465,8 +1520,8 @@
 ./usr/libexec/postfix/smtp			base-postfix-bin	postfix
 ./usr/libexec/postfix/smtpd			base-postfix-bin	postfix
 ./usr/libexec/postfix/spawn			base-postfix-bin	postfix
-./usr/libexec/postfix/tlsmgr			base-postfix-bin	postfix,crypto
-./usr/libexec/postfix/tlsproxy			base-postfix-bin	postfix,crypto
+./usr/libexec/postfix/tlsmgr			base-postfix-bin	postfix
+./usr/libexec/postfix/tlsproxy			base-postfix-bin	postfix
 ./usr/libexec/postfix/trivial-rewrite		base-postfix-bin	postfix
 ./usr/libexec/postfix/verify			base-postfix-bin	postfix
 ./usr/libexec/postfix/virtual			base-postfix-bin	postfix
@@ -1481,15 +1536,15 @@
 ./usr/libexec/rshd				base-netutil-bin
 ./usr/libexec/sendmail				base-obsolete		obsolete
 ./usr/libexec/sendmail/sendmail			base-obsolete		obsolete
-./usr/libexec/sftp-server			base-secsh-bin		crypto
+./usr/libexec/sftp-server			base-secsh-bin
 ./usr/libexec/sm.bin				base-obsolete		obsolete
 ./usr/libexec/smrsh				base-obsolete		obsolete
 ./usr/libexec/spamd				base-obsolete		obsolete
 ./usr/libexec/spamd-setup			base-obsolete		obsolete
 ./usr/libexec/spamlogd				base-obsolete		obsolete
 ./usr/libexec/spellprog				base-util-bin
-./usr/libexec/ssh-keysign			base-secsh-bin		crypto
-./usr/libexec/ssh-pkcs11-helper			base-secsh-bin		crypto
+./usr/libexec/ssh-keysign			base-secsh-bin
+./usr/libexec/ssh-pkcs11-helper			base-secsh-bin
 ./usr/libexec/telnetd				base-netutil-bin
 ./usr/libexec/tftp-proxy			base-pf-bin		pf
 ./usr/libexec/tftpd				base-netutil-bin
@@ -1544,13 +1599,14 @@
 ./usr/sbin/amd					base-amd-bin
 ./usr/sbin/amq					base-amd-bin
 ./usr/sbin/arp					base-netutil-bin
-./usr/sbin/audit-packages			base-pkgutil-bin	crypto
+./usr/sbin/audit-packages			base-pkgutil-bin
 ./usr/sbin/authpf				base-pf-bin		pf
 ./usr/sbin/bootpd				base-bootserver-bin
 ./usr/sbin/bootpef				base-bootserver-bin
 ./usr/sbin/bootpgw				base-bootserver-bin
 ./usr/sbin/bootptest				base-bootserver-bin
-./usr/sbin/bpm					base-pkgutil-bin	crypto
+./usr/sbin/bpm					base-obsolete		obsolete
+./usr/sbin/bta2dpd				base-sysutil-bin
 ./usr/sbin/btattach				base-sysutil-bin
 ./usr/sbin/btconfig				base-sysutil-bin
 ./usr/sbin/btcontrol				base-obsolete		obsolete
@@ -1586,9 +1642,10 @@
 ./usr/sbin/dnssec-signkey			base-obsolete		obsolete
 ./usr/sbin/dnssec-signzone			base-bind-bin
 ./usr/sbin/dnssec-verify			base-bind-bin
-./usr/sbin/download-vulnerability-list		base-pkgutil-bin	crypto
+./usr/sbin/download-vulnerability-list		base-pkgutil-bin
 ./usr/sbin/dtmfdecode				base-isdn-bin
 ./usr/sbin/dtrace				base-debug-bin		dtrace
+./usr/sbin/dtruss				base-debug-bin		dtrace
 ./usr/sbin/dumpfs				base-sysutil-bin
 ./usr/sbin/dumplfs				base-sysutil-bin
 ./usr/sbin/eaytest				base-obsolete		obsolete
@@ -1598,6 +1655,7 @@
 ./usr/sbin/eshconfig				base-sysutil-bin
 ./usr/sbin/etcupdate				base-sysutil-bin
 ./usr/sbin/extattrctl				base-sysutil-bin
+./usr/sbin/execsnoop				base-debug-bin		dtrace
 ./usr/sbin/faithd				base-router-bin		inet6
 ./usr/sbin/fixmount				base-nfsclient-bin
 ./usr/sbin/flashctl				base-sysutil-bin
@@ -1630,8 +1688,10 @@
 ./usr/sbin/ifwatchd				base-netutil-bin
 ./usr/sbin/inetd				base-netutil-bin
 ./usr/sbin/installboot				base-sysutil-bin
+./usr/sbin/intrctl				base-sysutil-bin
 ./usr/sbin/iopctl				base-sysutil-bin
 ./usr/sbin/iostat				base-sysutil-bin
+./usr/sbin/ip6addrctl				base-netutil-bin	inet6
 ./usr/sbin/ipfs					base-ipf-bin		ipfilter
 ./usr/sbin/ipfstat				base-ipf-bin		ipfilter
 ./usr/sbin/ipftest				base-ipf-bin		ipfilter
@@ -1696,10 +1756,10 @@
 ./usr/sbin/mopd					base-bootserver-bin
 ./usr/sbin/mopprobe				base-bootserver-bin
 ./usr/sbin/moptrace				base-bootserver-bin
-./usr/sbin/mount_9p				base-puffs-bin		rump
-./usr/sbin/mount_psshfs				base-puffs-bin		rump
+./usr/sbin/mount_9p				base-puffs-bin
+./usr/sbin/mount_psshfs				base-puffs-bin
 ./usr/sbin/mount_puffsportal			base-obsolete		obsolete
-./usr/sbin/mount_sysctlfs			base-puffs-bin		rump
+./usr/sbin/mount_sysctlfs			base-puffs-bin
 ./usr/sbin/mountd				base-nfsserver-bin
 ./usr/sbin/moused				base-sysutil-bin
 ./usr/sbin/mrinfo				base-router-bin
@@ -1723,13 +1783,19 @@
 ./usr/sbin/netgroup_mkdb			base-nis-bin
 ./usr/sbin/nfsd					base-nfsserver-bin
 ./usr/sbin/nfsiod				base-obsolete		obsolete
+./usr/sbin/npfd					base-npf-bin		npf
 ./usr/sbin/npfctl				base-obsolete		obsolete
 ./usr/sbin/npftest				base-npf-bin		npf,rump,pic
+./usr/sbin/nsd					base-nsd-bin		nsd
+./usr/sbin/nsd-checkconf			base-nsd-bin		nsd
+./usr/sbin/nsd-checkzone			base-nsd-bin		nsd
+./usr/sbin/nsd-control-setup			base-nsd-bin		nsd
+./usr/sbin/nsd-control				base-nsd-bin		nsd
 ./usr/sbin/nsec3hash				base-bind-bin
 ./usr/sbin/nslookup				base-obsolete		obsolete
 ./usr/sbin/nsquery				base-obsolete		obsolete
 ./usr/sbin/nstest				base-obsolete		obsolete
-./usr/sbin/ntp-keygen				base-ntp-bin		crypto
+./usr/sbin/ntp-keygen				base-ntp-bin
 ./usr/sbin/ntpd					base-ntp-bin
 ./usr/sbin/ntpdate				base-ntp-bin
 ./usr/sbin/ntpdc				base-ntp-bin
@@ -1738,6 +1804,7 @@
 ./usr/sbin/ntptimeset				base-obsolete		obsolete
 ./usr/sbin/ntptrace				base-ntp-bin
 ./usr/sbin/omshell				base-dhcpd-bin
+./usr/sbin/opensnoop				base-debug-bin		dtrace
 ./usr/sbin/pac					base-sysutil-bin
 ./usr/sbin/paxctl				base-sysutil-bin
 ./usr/sbin/pcictl				base-sysutil-bin
@@ -1746,11 +1813,11 @@
 ./usr/sbin/pim6dd				base-obsolete		obsolete
 ./usr/sbin/pim6sd				base-obsolete		obsolete
 ./usr/sbin/pim6stat				base-obsolete		obsolete
-./usr/sbin/pkg_add				base-pkgutil-bin	crypto
-./usr/sbin/pkg_admin				base-pkgutil-bin	crypto
-./usr/sbin/pkg_create				base-pkgutil-bin	crypto
-./usr/sbin/pkg_delete				base-pkgutil-bin	crypto
-./usr/sbin/pkg_info				base-pkgutil-bin	crypto
+./usr/sbin/pkg_add				base-pkgutil-bin
+./usr/sbin/pkg_admin				base-pkgutil-bin
+./usr/sbin/pkg_create				base-pkgutil-bin
+./usr/sbin/pkg_delete				base-pkgutil-bin
+./usr/sbin/pkg_info				base-pkgutil-bin
 ./usr/sbin/pkg_view				base-obsolete		obsolete
 ./usr/sbin/portmap				base-obsolete		obsolete
 ./usr/sbin/postalias				base-postfix-bin	postfix
@@ -1773,6 +1840,7 @@
 ./usr/sbin/pppoectl				base-obsolete		obsolete
 ./usr/sbin/pppstats				base-ppp-bin
 ./usr/sbin/praliases				base-obsolete		obsolete
+./usr/sbin/procsystime				base-debug-bin		dtrace
 ./usr/sbin/psrset				base-sysutil-bin
 ./usr/sbin/pstat				base-sysutil-bin
 ./usr/sbin/pvcsif				base-netutil-bin
@@ -1785,8 +1853,8 @@
 ./usr/sbin/quotaoff				base-sysutil-bin
 ./usr/sbin/quotaon				base-sysutil-bin
 ./usr/sbin/quotarestore				base-sysutil-bin
-./usr/sbin/racoon				base-netutil-bin	crypto
-./usr/sbin/racoonctl				base-netutil-bin	crypto
+./usr/sbin/racoon				base-netutil-bin
+./usr/sbin/racoonctl				base-netutil-bin
 ./usr/sbin/rarpd				base-bootserver-bin
 ./usr/sbin/rbootd				base-bootserver-bin
 ./usr/sbin/rdate				base-netutil-bin
@@ -1806,9 +1874,13 @@
 ./usr/sbin/rpcbind				base-rpcbind-bin
 ./usr/sbin/rtadvd				base-router-bin		use_inet6
 ./usr/sbin/rtquery				base-netutil-bin
-./usr/sbin/rtsold				base-netutil-bin	inet6
+./usr/sbin/rtsold				base-obsolete		obsolete
+./usr/sbin/rump.arp				base-netutil-bin	rump
 ./usr/sbin/rump.envstat				base-sysutil-bin	rump
+./usr/sbin/rump.fssconfig			base-sysutil-root	rump
+./usr/sbin/rump.ndp				base-netutil-bin	inet6,rump
 ./usr/sbin/rump.powerd				base-sysutil-bin	rump
+./usr/sbin/rump.rtadvd				base-router-bin		use_inet6,rump
 ./usr/sbin/rump.traceroute			base-netutil-bin	rump
 ./usr/sbin/rump_cd9660				base-puffs-bin	rump
 ./usr/sbin/rump_efs				base-puffs-bin	rump
@@ -1819,7 +1891,7 @@
 ./usr/sbin/rump_msdos				base-puffs-bin	rump
 ./usr/sbin/rump_nfs				base-puffs-bin	rump
 ./usr/sbin/rump_ntfs				base-puffs-bin	rump
-./usr/sbin/rump_smbfs				base-puffs-bin	crypto,rump
+./usr/sbin/rump_smbfs				base-puffs-bin	rump
 ./usr/sbin/rump_syspuffs			base-puffs-bin	rump
 ./usr/sbin/rump_sysvbfs				base-puffs-bin	rump
 ./usr/sbin/rump_tmpfs				base-puffs-bin	rump
@@ -1846,7 +1918,7 @@
 ./usr/sbin/spawn				base-obsolete		obsolete
 ./usr/sbin/spray				base-rpcutil-bin
 ./usr/sbin/srtconfig				base-netutil-bin
-./usr/sbin/sshd					base-secsh-bin		crypto
+./usr/sbin/sshd					base-secsh-bin
 ./usr/sbin/statmsg				base-obsolete		obsolete
 ./usr/sbin/stdethers				base-nis-bin		yp
 ./usr/sbin/stdhosts				base-nis-bin		yp
@@ -1857,8 +1929,8 @@
 ./usr/sbin/supscan				base-sup-bin
 ./usr/sbin/sushi				base-obsolete		obsolete
 ./usr/sbin/sysconfd				base-obsolete		obsolete
-./usr/sbin/sysinst				base-sysutil-bin
 ./usr/sbin/sysctl				base-obsolete		obsolete
+./usr/sbin/sysinst				base-sysutil-bin
 ./usr/sbin/syslogd				base-sysutil-bin
 ./usr/sbin/tbrconfig				base-obsolete		obsolete
 ./usr/sbin/tcpdchk				base-netutil-bin
@@ -1894,6 +1966,11 @@
 ./usr/sbin/traceroute6				base-netutil-bin	use_inet6
 ./usr/sbin/trpt					base-netutil-bin
 ./usr/sbin/trsp					base-obsolete		obsolete
+./usr/sbin/unbound				base-netutil-bin	unbound
+./usr/sbin/unbound-anchor			base-netutil-bin	unbound
+./usr/sbin/unbound-checkconf			base-netutil-bin	unbound
+./usr/sbin/unbound-control			base-netutil-bin	unbound
+./usr/sbin/unbound-control-setup		base-netutil-bin	unbound
 ./usr/sbin/unlink				base-sysutil-bin
 ./usr/sbin/update				base-obsolete		obsolete
 ./usr/sbin/usbdevs				base-sysutil-bin
@@ -2000,10 +2077,10 @@
 ./usr/share/doc/reference/ref1/mail		base-usd-share
 ./usr/share/doc/reference/ref1/make		base-psd-share
 ./usr/share/doc/reference/ref1/roff		base-usd-share
-./usr/share/doc/reference/ref1/roff/msmacros	base-usd-share
-./usr/share/doc/reference/ref1/roff/msdiffs	base-usd-share
 ./usr/share/doc/reference/ref1/roff/memacros	base-usd-share
 ./usr/share/doc/reference/ref1/roff/meref	base-usd-share
+./usr/share/doc/reference/ref1/roff/msdiffs	base-usd-share
+./usr/share/doc/reference/ref1/roff/msmacros	base-usd-share
 ./usr/share/doc/reference/ref1/sh		base-usd-share
 ./usr/share/doc/reference/ref1/vi		base-usd-share
 ./usr/share/doc/reference/ref2			base-sys-share
@@ -2098,6 +2175,8 @@
 ./usr/share/examples/blacklist/blacklistd.conf	base-sys-examples
 ./usr/share/examples/blacklist/npf.conf		base-sys-examples
 ./usr/share/examples/dhcp			base-dhcpd-examples
+./usr/share/examples/dhcpcd			base-dhcpcd-examples
+./usr/share/examples/dhcpcd/hooks		base-dhcpcd-examples
 ./usr/share/examples/disktab			base-sys-examples
 ./usr/share/examples/emul			base-sys-examples
 ./usr/share/examples/emul/linux			base-sys-examples
@@ -2125,6 +2204,7 @@
 ./usr/share/examples/npf/l2tp_gw-npf.conf	base-netutil-examples   share
 ./usr/share/examples/npf/soho_gw-npf.conf	base-netutil-examples   share
 ./usr/share/examples/npf/treetablefile		base-netutil-examples   share
+./usr/share/examples/nsd			base-netutil-examples   share
 ./usr/share/examples/openssl			base-crypto-examples
 ./usr/share/examples/pf				base-netutil-examples
 ./usr/share/examples/postfix			base-postfix-examples
@@ -2148,6 +2228,7 @@
 ./usr/share/examples/wpa_supplicant/wpa_supplicant.conf		base-netutil-examples	share
 ./usr/share/examples/wsmoused			base-sysutil-examples
 ./usr/share/examples/wsmoused/wsmoused.conf	base-sysutil-examples	share
+./usr/share/examples/unbound			base-netutil-examples   share
 ./usr/share/games				base-games-share
 ./usr/share/games/atc				base-games-share
 ./usr/share/games/boggle			base-games-share
@@ -2995,7 +3076,7 @@
 ./usr/share/locale/af_ZA.ISO8859-15/LC_TIME	base-locale-af		nls
 ./usr/share/locale/af_ZA.UTF-8			base-locale-af
 ./usr/share/locale/af_ZA.UTF-8/LC_CTYPE		base-locale-af		nls
-./usr/share/locale/af_ZA.UTF-8/LC_MESSAGES	base-locale-af		nls
+./usr/share/locale/af_ZA.UTF-8/LC_MESSAGES	base-locale-af
 ./usr/share/locale/af_ZA.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-af		nls
 ./usr/share/locale/af_ZA.UTF-8/LC_MONETARY	base-locale-af		nls
 ./usr/share/locale/af_ZA.UTF-8/LC_NUMERIC	base-locale-af		nls
@@ -3018,7 +3099,7 @@
 ./usr/share/locale/be_BY.ISO8859-5/LC_TIME	base-locale-be		nls
 ./usr/share/locale/be_BY.UTF-8			base-locale-be
 ./usr/share/locale/be_BY.UTF-8/LC_CTYPE		base-locale-be		nls
-./usr/share/locale/be_BY.UTF-8/LC_MESSAGES	base-locale-be		nls
+./usr/share/locale/be_BY.UTF-8/LC_MESSAGES	base-locale-be
 ./usr/share/locale/be_BY.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-be		nls
 ./usr/share/locale/be_BY.UTF-8/LC_MONETARY	base-locale-be		nls
 ./usr/share/locale/be_BY.UTF-8/LC_NUMERIC	base-locale-be		nls
@@ -3032,7 +3113,7 @@
 ./usr/share/locale/bg_BG.CP1251/LC_TIME		base-locale-bg		nls
 ./usr/share/locale/bg_BG.UTF-8			base-locale-bg
 ./usr/share/locale/bg_BG.UTF-8/LC_CTYPE		base-locale-bg		nls
-./usr/share/locale/bg_BG.UTF-8/LC_MESSAGES	base-locale-bg		nls
+./usr/share/locale/bg_BG.UTF-8/LC_MESSAGES	base-locale-bg
 ./usr/share/locale/bg_BG.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-bg		nls
 ./usr/share/locale/bg_BG.UTF-8/LC_MONETARY	base-locale-bg		nls
 ./usr/share/locale/bg_BG.UTF-8/LC_NUMERIC	base-locale-bg		nls
@@ -3055,7 +3136,7 @@
 ./usr/share/locale/ca_ES.ISO8859-15/LC_TIME	base-locale-ca		nls
 ./usr/share/locale/ca_ES.UTF-8			base-locale-ca
 ./usr/share/locale/ca_ES.UTF-8/LC_CTYPE		base-locale-ca		nls
-./usr/share/locale/ca_ES.UTF-8/LC_MESSAGES	base-locale-ca		nls
+./usr/share/locale/ca_ES.UTF-8/LC_MESSAGES	base-locale-ca
 ./usr/share/locale/ca_ES.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-ca		nls
 ./usr/share/locale/ca_ES.UTF-8/LC_MONETARY	base-locale-ca		nls
 ./usr/share/locale/ca_ES.UTF-8/LC_NUMERIC	base-locale-ca		nls
@@ -3075,7 +3156,7 @@
 ./usr/share/locale/cs_CZ.ISO8859-2/LC_TIME	base-locale-cs		nls
 ./usr/share/locale/cs_CZ.UTF-8			base-locale-cs
 ./usr/share/locale/cs_CZ.UTF-8/LC_CTYPE		base-locale-cs		nls
-./usr/share/locale/cs_CZ.UTF-8/LC_MESSAGES	base-locale-cs		nls
+./usr/share/locale/cs_CZ.UTF-8/LC_MESSAGES	base-locale-cs
 ./usr/share/locale/cs_CZ.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-cs		nls
 ./usr/share/locale/cs_CZ.UTF-8/LC_MONETARY	base-locale-cs		nls
 ./usr/share/locale/cs_CZ.UTF-8/LC_NUMERIC	base-locale-cs		nls
@@ -3100,7 +3181,7 @@
 ./usr/share/locale/da_DK.ISO8859-15/LC_TIME	base-locale-da		nls
 ./usr/share/locale/da_DK.UTF-8			base-locale-da
 ./usr/share/locale/da_DK.UTF-8/LC_CTYPE		base-locale-da		nls
-./usr/share/locale/da_DK.UTF-8/LC_MESSAGES	base-locale-da		nls
+./usr/share/locale/da_DK.UTF-8/LC_MESSAGES	base-locale-da
 ./usr/share/locale/da_DK.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-da		nls
 ./usr/share/locale/da_DK.UTF-8/LC_MONETARY	base-locale-da		nls
 ./usr/share/locale/da_DK.UTF-8/LC_NUMERIC	base-locale-da		nls
@@ -3128,7 +3209,7 @@
 ./usr/share/locale/de_AT.ISO8859-15/LC_TIME	base-locale-de		nls
 ./usr/share/locale/de_AT.UTF-8			base-locale-de
 ./usr/share/locale/de_AT.UTF-8/LC_CTYPE		base-locale-de		nls
-./usr/share/locale/de_AT.UTF-8/LC_MESSAGES	base-locale-de		nls
+./usr/share/locale/de_AT.UTF-8/LC_MESSAGES	base-locale-de
 ./usr/share/locale/de_AT.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-de		nls
 ./usr/share/locale/de_AT.UTF-8/LC_MONETARY	base-locale-de		nls
 ./usr/share/locale/de_AT.UTF-8/LC_NUMERIC	base-locale-de		nls
@@ -3151,7 +3232,7 @@
 ./usr/share/locale/de_CH.ISO8859-15/LC_TIME	base-locale-de		nls
 ./usr/share/locale/de_CH.UTF-8			base-locale-de
 ./usr/share/locale/de_CH.UTF-8/LC_CTYPE		base-locale-de		nls
-./usr/share/locale/de_CH.UTF-8/LC_MESSAGES	base-locale-de		nls
+./usr/share/locale/de_CH.UTF-8/LC_MESSAGES	base-locale-de
 ./usr/share/locale/de_CH.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-de		nls
 ./usr/share/locale/de_CH.UTF-8/LC_MONETARY	base-locale-de		nls
 ./usr/share/locale/de_CH.UTF-8/LC_NUMERIC	base-locale-de		nls
@@ -3172,7 +3253,7 @@
 ./usr/share/locale/de_DE.ISO8859-15/LC_TIME	base-locale-de		nls
 ./usr/share/locale/de_DE.UTF-8			base-locale-de
 ./usr/share/locale/de_DE.UTF-8/LC_CTYPE		base-locale-de		nls
-./usr/share/locale/de_DE.UTF-8/LC_MESSAGES	base-locale-de		nls
+./usr/share/locale/de_DE.UTF-8/LC_MESSAGES	base-locale-de
 ./usr/share/locale/de_DE.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-de		nls
 ./usr/share/locale/de_DE.UTF-8/LC_MONETARY	base-locale-de		nls
 ./usr/share/locale/de_DE.UTF-8/LC_NUMERIC	base-locale-de		nls
@@ -3189,7 +3270,7 @@
 ./usr/share/locale/el_GR.ISO8859-7/LC_TIME	base-locale-el		nls
 ./usr/share/locale/el_GR.UTF-8			base-locale-el
 ./usr/share/locale/el_GR.UTF-8/LC_CTYPE		base-locale-el		nls
-./usr/share/locale/el_GR.UTF-8/LC_MESSAGES	base-locale-el		nls
+./usr/share/locale/el_GR.UTF-8/LC_MESSAGES	base-locale-el
 ./usr/share/locale/el_GR.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-el		nls
 ./usr/share/locale/el_GR.UTF-8/LC_MONETARY	base-locale-el		nls
 ./usr/share/locale/el_GR.UTF-8/LC_NUMERIC	base-locale-el		nls
@@ -3214,7 +3295,7 @@
 ./usr/share/locale/en_AU.ISO8859-15/LC_TIME	base-locale-en		nls
 ./usr/share/locale/en_AU.UTF-8			base-locale-en
 ./usr/share/locale/en_AU.UTF-8/LC_CTYPE		base-locale-en		nls
-./usr/share/locale/en_AU.UTF-8/LC_MESSAGES	base-locale-en		nls
+./usr/share/locale/en_AU.UTF-8/LC_MESSAGES	base-locale-en
 ./usr/share/locale/en_AU.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-en		nls
 ./usr/share/locale/en_AU.UTF-8/LC_MONETARY	base-locale-en		nls
 ./usr/share/locale/en_AU.UTF-8/LC_NUMERIC	base-locale-en		nls
@@ -3235,7 +3316,7 @@
 ./usr/share/locale/en_CA.ISO8859-15/LC_TIME	base-locale-en		nls
 ./usr/share/locale/en_CA.UTF-8			base-locale-en
 ./usr/share/locale/en_CA.UTF-8/LC_CTYPE		base-locale-en		nls
-./usr/share/locale/en_CA.UTF-8/LC_MESSAGES	base-locale-en		nls
+./usr/share/locale/en_CA.UTF-8/LC_MESSAGES	base-locale-en
 ./usr/share/locale/en_CA.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-en		nls
 ./usr/share/locale/en_CA.UTF-8/LC_MONETARY	base-locale-en		nls
 ./usr/share/locale/en_CA.UTF-8/LC_NUMERIC	base-locale-en		nls
@@ -3256,7 +3337,7 @@
 ./usr/share/locale/en_GB.ISO8859-15/LC_TIME	base-locale-en		nls
 ./usr/share/locale/en_GB.UTF-8			base-locale-en
 ./usr/share/locale/en_GB.UTF-8/LC_CTYPE		base-locale-en		nls
-./usr/share/locale/en_GB.UTF-8/LC_MESSAGES	base-locale-en		nls
+./usr/share/locale/en_GB.UTF-8/LC_MESSAGES	base-locale-en
 ./usr/share/locale/en_GB.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-en		nls
 ./usr/share/locale/en_GB.UTF-8/LC_MONETARY	base-locale-en		nls
 ./usr/share/locale/en_GB.UTF-8/LC_NUMERIC	base-locale-en		nls
@@ -3277,7 +3358,7 @@
 ./usr/share/locale/en_NZ.ISO8859-15/LC_TIME	base-locale-en		nls
 ./usr/share/locale/en_NZ.UTF-8			base-locale-en
 ./usr/share/locale/en_NZ.UTF-8/LC_CTYPE		base-locale-en		nls
-./usr/share/locale/en_NZ.UTF-8/LC_MESSAGES	base-locale-en		nls
+./usr/share/locale/en_NZ.UTF-8/LC_MESSAGES	base-locale-en
 ./usr/share/locale/en_NZ.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-en		nls
 ./usr/share/locale/en_NZ.UTF-8/LC_MONETARY	base-locale-en		nls
 ./usr/share/locale/en_NZ.UTF-8/LC_NUMERIC	base-locale-en		nls
@@ -3336,7 +3417,7 @@
 ./usr/share/locale/es_ES.ISO8859-15/LC_TIME	base-locale-es		nls
 ./usr/share/locale/es_ES.UTF-8			base-locale-es
 ./usr/share/locale/es_ES.UTF-8/LC_CTYPE		base-locale-es		nls
-./usr/share/locale/es_ES.UTF-8/LC_MESSAGES	base-locale-es		nls
+./usr/share/locale/es_ES.UTF-8/LC_MESSAGES	base-locale-es
 ./usr/share/locale/es_ES.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-es		nls
 ./usr/share/locale/es_ES.UTF-8/LC_MONETARY	base-locale-es		nls
 ./usr/share/locale/es_ES.UTF-8/LC_NUMERIC	base-locale-es		nls
@@ -3354,7 +3435,7 @@
 ./usr/share/locale/et_EE.ISO8859-15/LC_TIME	base-locale-et		nls
 ./usr/share/locale/et_EE.UTF-8			base-locale-ee
 ./usr/share/locale/et_EE.UTF-8/LC_CTYPE		base-locale-ee		nls
-./usr/share/locale/et_EE.UTF-8/LC_MESSAGES	base-locale-ee		nls
+./usr/share/locale/et_EE.UTF-8/LC_MESSAGES	base-locale-ee
 ./usr/share/locale/et_EE.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-ee		nls
 ./usr/share/locale/et_EE.UTF-8/LC_MONETARY	base-locale-ee		nls
 ./usr/share/locale/et_EE.UTF-8/LC_NUMERIC	base-locale-ee		nls
@@ -3375,7 +3456,7 @@
 ./usr/share/locale/eu_ES.ISO8859-15/LC_TIME	base-locale-eu		nls
 ./usr/share/locale/eu_ES.UTF-8			base-locale-eu
 ./usr/share/locale/eu_ES.UTF-8/LC_CTYPE		base-locale-eu		nls
-./usr/share/locale/eu_ES.UTF-8/LC_MESSAGES	base-locale-eu		nls
+./usr/share/locale/eu_ES.UTF-8/LC_MESSAGES	base-locale-eu
 ./usr/share/locale/eu_ES.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-eu		nls
 ./usr/share/locale/eu_ES.UTF-8/LC_MONETARY	base-locale-eu		nls
 ./usr/share/locale/eu_ES.UTF-8/LC_NUMERIC	base-locale-eu		nls
@@ -3398,7 +3479,7 @@
 ./usr/share/locale/fi_FI.ISO8859-15/LC_TIME	base-locale-fi		nls
 ./usr/share/locale/fi_FI.UTF-8			base-locale-fi
 ./usr/share/locale/fi_FI.UTF-8/LC_CTYPE		base-locale-fi		nls
-./usr/share/locale/fi_FI.UTF-8/LC_MESSAGES	base-locale-fi		nls
+./usr/share/locale/fi_FI.UTF-8/LC_MESSAGES	base-locale-fi
 ./usr/share/locale/fi_FI.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-fi		nls
 ./usr/share/locale/fi_FI.UTF-8/LC_MONETARY	base-locale-fi		nls
 ./usr/share/locale/fi_FI.UTF-8/LC_NUMERIC	base-locale-fi		nls
@@ -3511,7 +3592,7 @@
 ./usr/share/locale/hr_HR.ISO8859-2/LC_TIME	base-locale-hr		nls
 ./usr/share/locale/hr_HR.UTF-8			base-locale-hr
 ./usr/share/locale/hr_HR.UTF-8/LC_CTYPE		base-locale-hr		nls
-./usr/share/locale/hr_HR.UTF-8/LC_MESSAGES	base-locale-hr		nls
+./usr/share/locale/hr_HR.UTF-8/LC_MESSAGES	base-locale-hr
 ./usr/share/locale/hr_HR.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-hr		nls
 ./usr/share/locale/hr_HR.UTF-8/LC_MONETARY	base-locale-hr		nls
 ./usr/share/locale/hr_HR.UTF-8/LC_NUMERIC	base-locale-hr		nls
@@ -3525,7 +3606,7 @@
 ./usr/share/locale/hu_HU.ISO8859-2/LC_TIME	base-locale-hu		nls
 ./usr/share/locale/hu_HU.UTF-8			base-locale-hu
 ./usr/share/locale/hu_HU.UTF-8/LC_CTYPE		base-locale-hu		nls
-./usr/share/locale/hu_HU.UTF-8/LC_MESSAGES	base-locale-hu		nls
+./usr/share/locale/hu_HU.UTF-8/LC_MESSAGES	base-locale-hu
 ./usr/share/locale/hu_HU.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-hu		nls
 ./usr/share/locale/hu_HU.UTF-8/LC_MONETARY	base-locale-hu		nls
 ./usr/share/locale/hu_HU.UTF-8/LC_NUMERIC	base-locale-hu		nls
@@ -3539,7 +3620,7 @@
 ./usr/share/locale/hy_AM.ARMSCII-8/LC_TIME	base-locale-hy		nls
 ./usr/share/locale/hy_AM.UTF-8			base-locale-hy
 ./usr/share/locale/hy_AM.UTF-8/LC_CTYPE		base-locale-hy		nls
-./usr/share/locale/hy_AM.UTF-8/LC_MESSAGES	base-locale-hy		nls
+./usr/share/locale/hy_AM.UTF-8/LC_MESSAGES	base-locale-hy
 ./usr/share/locale/hy_AM.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-hy		nls
 ./usr/share/locale/hy_AM.UTF-8/LC_MONETARY	base-locale-hy		nls
 ./usr/share/locale/hy_AM.UTF-8/LC_NUMERIC	base-locale-hy		nls
@@ -3564,7 +3645,7 @@
 ./usr/share/locale/is_IS.ISO8859-15/LC_TIME	base-locale-is		nls
 ./usr/share/locale/is_IS.UTF-8			base-locale-is
 ./usr/share/locale/is_IS.UTF-8/LC_CTYPE		base-locale-is		nls
-./usr/share/locale/is_IS.UTF-8/LC_MESSAGES	base-locale-is		nls
+./usr/share/locale/is_IS.UTF-8/LC_MESSAGES	base-locale-is
 ./usr/share/locale/is_IS.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-is		nls
 ./usr/share/locale/is_IS.UTF-8/LC_MONETARY	base-locale-is		nls
 ./usr/share/locale/is_IS.UTF-8/LC_NUMERIC	base-locale-is		nls
@@ -3590,7 +3671,7 @@
 ./usr/share/locale/it_CH.ISO8859-15/LC_TIME	base-locale-it		nls
 ./usr/share/locale/it_CH.UTF-8			base-locale-it
 ./usr/share/locale/it_CH.UTF-8/LC_CTYPE		base-locale-it		nls
-./usr/share/locale/it_CH.UTF-8/LC_MESSAGES	base-locale-it		nls
+./usr/share/locale/it_CH.UTF-8/LC_MESSAGES	base-locale-it
 ./usr/share/locale/it_CH.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-it		nls
 ./usr/share/locale/it_CH.UTF-8/LC_MONETARY	base-locale-it		nls
 ./usr/share/locale/it_CH.UTF-8/LC_NUMERIC	base-locale-it		nls
@@ -3611,7 +3692,7 @@
 ./usr/share/locale/it_IT.ISO8859-15/LC_TIME	base-locale-it		nls
 ./usr/share/locale/it_IT.UTF-8			base-locale-it
 ./usr/share/locale/it_IT.UTF-8/LC_CTYPE		base-locale-it		nls
-./usr/share/locale/it_IT.UTF-8/LC_MESSAGES	base-locale-it		nls
+./usr/share/locale/it_IT.UTF-8/LC_MESSAGES	base-locale-it
 ./usr/share/locale/it_IT.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-it		nls
 ./usr/share/locale/it_IT.UTF-8/LC_MONETARY	base-locale-it		nls
 ./usr/share/locale/it_IT.UTF-8/LC_NUMERIC	base-locale-it		nls
@@ -3648,7 +3729,7 @@
 ./usr/share/locale/ja_JP.SJIS/LC_TIME		base-locale-ja		nls
 ./usr/share/locale/ja_JP.UTF-8			base-locale-ja
 ./usr/share/locale/ja_JP.UTF-8/LC_CTYPE		base-locale-ja		nls
-./usr/share/locale/ja_JP.UTF-8/LC_MESSAGES	base-locale-ja		nls
+./usr/share/locale/ja_JP.UTF-8/LC_MESSAGES	base-locale-ja
 ./usr/share/locale/ja_JP.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-ja		nls
 ./usr/share/locale/ja_JP.UTF-8/LC_MONETARY	base-locale-ja		nls
 ./usr/share/locale/ja_JP.UTF-8/LC_NUMERIC	base-locale-ja		nls
@@ -3676,7 +3757,7 @@
 ./usr/share/locale/kk_KZ.PT154/LC_TIME		base-locale-kk		nls
 ./usr/share/locale/kk_KZ.UTF-8			base-locale-kk
 ./usr/share/locale/kk_KZ.UTF-8/LC_CTYPE		base-locale-kk		nls
-./usr/share/locale/kk_KZ.UTF-8/LC_MESSAGES	base-locale-kk		nls
+./usr/share/locale/kk_KZ.UTF-8/LC_MESSAGES	base-locale-kk
 ./usr/share/locale/kk_KZ.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-kk		nls
 ./usr/share/locale/kk_KZ.UTF-8/LC_MONETARY	base-locale-kk		nls
 ./usr/share/locale/kk_KZ.UTF-8/LC_NUMERIC	base-locale-kk		nls
@@ -3685,9 +3766,9 @@
 ./usr/share/locale/ko/LC_MESSAGES		base-locale-ko
 ./usr/share/locale/ko/LC_MESSAGES/grep.mo	base-locale-ko		nls,!bsdgrep
 ./usr/share/locale/ko/LC_MESSAGES/tar.mo	base-obsolete		obsolete
-./usr/share/locale/ko_KR.UTF-8			base-locale-ko		nls
+./usr/share/locale/ko_KR.UTF-8			base-locale-ko
 ./usr/share/locale/ko_KR.UTF-8/LC_CTYPE		base-locale-ko		nls
-./usr/share/locale/ko_KR.UTF-8/LC_MESSAGES	base-locale-ko		nls
+./usr/share/locale/ko_KR.UTF-8/LC_MESSAGES	base-locale-ko
 ./usr/share/locale/ko_KR.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-ko		nls
 ./usr/share/locale/ko_KR.UTF-8/LC_MONETARY	base-locale-ko		nls
 ./usr/share/locale/ko_KR.UTF-8/LC_NUMERIC	base-locale-ko		nls
@@ -3716,7 +3797,7 @@
 ./usr/share/locale/lt_LT.ISO8859-4/LC_TIME	base-locale-lt		nls
 ./usr/share/locale/lt_LT.UTF-8			base-locale-lt
 ./usr/share/locale/lt_LT.UTF-8/LC_CTYPE		base-locale-lt		nls
-./usr/share/locale/lt_LT.UTF-8/LC_MESSAGES	base-locale-lt		nls
+./usr/share/locale/lt_LT.UTF-8/LC_MESSAGES	base-locale-lt
 ./usr/share/locale/lt_LT.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-lt		nls
 ./usr/share/locale/lt_LT.UTF-8/LC_MONETARY	base-locale-lt		nls
 ./usr/share/locale/lt_LT.UTF-8/LC_NUMERIC	base-locale-lt		nls
@@ -3726,21 +3807,21 @@
 ./usr/share/locale/nb/LC_MESSAGES/texinfo.mo	base-texinfo_locale-nb	nls
 ./usr/share/locale/nb_NO.ISO8859-1		base-locale-nb
 ./usr/share/locale/nb_NO.ISO8859-1/LC_CTYPE	base-locale-nb		nls
-./usr/share/locale/nb_NO.ISO8859-1/LC_MESSAGES	base-locale-nb		nls
+./usr/share/locale/nb_NO.ISO8859-1/LC_MESSAGES	base-locale-nb
 ./usr/share/locale/nb_NO.ISO8859-1/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-nb		nls
 ./usr/share/locale/nb_NO.ISO8859-1/LC_MONETARY	base-locale-nb		nls
 ./usr/share/locale/nb_NO.ISO8859-1/LC_NUMERIC	base-locale-nb		nls
 ./usr/share/locale/nb_NO.ISO8859-1/LC_TIME	base-locale-nb		nls
 ./usr/share/locale/nb_NO.ISO8859-15		base-locale-nb
 ./usr/share/locale/nb_NO.ISO8859-15/LC_CTYPE	base-locale-nb		nls
-./usr/share/locale/nb_NO.ISO8859-15/LC_MESSAGES	base-locale-nb		nls
+./usr/share/locale/nb_NO.ISO8859-15/LC_MESSAGES	base-locale-nb
 ./usr/share/locale/nb_NO.ISO8859-15/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-nb		nls
 ./usr/share/locale/nb_NO.ISO8859-15/LC_MONETARY	base-locale-nb		nls
 ./usr/share/locale/nb_NO.ISO8859-15/LC_NUMERIC	base-locale-nb		nls
 ./usr/share/locale/nb_NO.ISO8859-15/LC_TIME	base-locale-nb		nls
 ./usr/share/locale/nb_NO.UTF-8			base-locale-nb
 ./usr/share/locale/nb_NO.UTF-8/LC_CTYPE		base-locale-nb		nls
-./usr/share/locale/nb_NO.UTF-8/LC_MESSAGES	base-locale-nb		nls
+./usr/share/locale/nb_NO.UTF-8/LC_MESSAGES	base-locale-nb
 ./usr/share/locale/nb_NO.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-nb		nls
 ./usr/share/locale/nb_NO.UTF-8/LC_MONETARY	base-locale-nb		nls
 ./usr/share/locale/nb_NO.UTF-8/LC_NUMERIC	base-locale-nb		nls
@@ -3766,7 +3847,7 @@
 ./usr/share/locale/nl_BE.ISO8859-15/LC_TIME	base-locale-nl		nls
 ./usr/share/locale/nl_BE.UTF-8			base-locale-nl
 ./usr/share/locale/nl_BE.UTF-8/LC_CTYPE		base-locale-nl		nls
-./usr/share/locale/nl_BE.UTF-8/LC_MESSAGES	base-locale-nl		nls
+./usr/share/locale/nl_BE.UTF-8/LC_MESSAGES	base-locale-nl
 ./usr/share/locale/nl_BE.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-nl		nls
 ./usr/share/locale/nl_BE.UTF-8/LC_MONETARY	base-locale-nl		nls
 ./usr/share/locale/nl_BE.UTF-8/LC_NUMERIC	base-locale-nl		nls
@@ -3787,7 +3868,7 @@
 ./usr/share/locale/nl_NL.ISO8859-15/LC_TIME	base-locale-nl		nls
 ./usr/share/locale/nl_NL.UTF-8			base-locale-nl
 ./usr/share/locale/nl_NL.UTF-8/LC_CTYPE		base-locale-nl		nls
-./usr/share/locale/nl_NL.UTF-8/LC_MESSAGES	base-locale-nl		nls
+./usr/share/locale/nl_NL.UTF-8/LC_MESSAGES	base-locale-nl
 ./usr/share/locale/nl_NL.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-nl		nls
 ./usr/share/locale/nl_NL.UTF-8/LC_MONETARY	base-locale-nl		nls
 ./usr/share/locale/nl_NL.UTF-8/LC_NUMERIC	base-locale-nl		nls
@@ -3810,7 +3891,7 @@
 ./usr/share/locale/nn_NO.ISO8859-15/LC_TIME	base-locale-nn		nls
 ./usr/share/locale/nn_NO.UTF-8			base-locale-nn
 ./usr/share/locale/nn_NO.UTF-8/LC_CTYPE		base-locale-nn		nls
-./usr/share/locale/nn_NO.UTF-8/LC_MESSAGES	base-locale-nn		nls
+./usr/share/locale/nn_NO.UTF-8/LC_MESSAGES	base-locale-nn
 ./usr/share/locale/nn_NO.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-nn		nls
 ./usr/share/locale/nn_NO.UTF-8/LC_MONETARY	base-locale-nn		nls
 ./usr/share/locale/nn_NO.UTF-8/LC_NUMERIC	base-locale-nn		nls
@@ -3850,7 +3931,7 @@
 ./usr/share/locale/pl_PL.ISO8859-2/LC_TIME	base-locale-pl		nls
 ./usr/share/locale/pl_PL.UTF-8			base-locale-pl
 ./usr/share/locale/pl_PL.UTF-8/LC_CTYPE		base-locale-pl		nls
-./usr/share/locale/pl_PL.UTF-8/LC_MESSAGES	base-locale-pl		nls
+./usr/share/locale/pl_PL.UTF-8/LC_MESSAGES	base-locale-pl
 ./usr/share/locale/pl_PL.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-pl		nls
 ./usr/share/locale/pl_PL.UTF-8/LC_MONETARY	base-locale-pl		nls
 ./usr/share/locale/pl_PL.UTF-8/LC_NUMERIC	base-locale-pl		nls
@@ -3868,7 +3949,7 @@
 ./usr/share/locale/pt_BR.ISO8859-1/LC_TIME	base-locale-pt		nls
 ./usr/share/locale/pt_BR.UTF-8			base-locale-pt
 ./usr/share/locale/pt_BR.UTF-8/LC_CTYPE		base-locale-pt		nls
-./usr/share/locale/pt_BR.UTF-8/LC_MESSAGES	base-locale-pt		nls
+./usr/share/locale/pt_BR.UTF-8/LC_MESSAGES	base-locale-pt
 ./usr/share/locale/pt_BR.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-pt		nls
 ./usr/share/locale/pt_BR.UTF-8/LC_MONETARY	base-locale-pt		nls
 ./usr/share/locale/pt_BR.UTF-8/LC_NUMERIC	base-locale-pt		nls
@@ -3892,7 +3973,7 @@
 ./usr/share/locale/pt_PT.ISO8859-15/LC_TIME	base-locale-pt		nls
 ./usr/share/locale/pt_PT.UTF-8			base-locale-pt
 ./usr/share/locale/pt_PT.UTF-8/LC_CTYPE		base-locale-pt		nls
-./usr/share/locale/pt_PT.UTF-8/LC_MESSAGES	base-locale-pt		nls
+./usr/share/locale/pt_PT.UTF-8/LC_MESSAGES	base-locale-pt
 ./usr/share/locale/pt_PT.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-pt		nls
 ./usr/share/locale/pt_PT.UTF-8/LC_MONETARY	base-locale-pt		nls
 ./usr/share/locale/pt_PT.UTF-8/LC_NUMERIC	base-locale-pt		nls
@@ -3909,7 +3990,7 @@
 ./usr/share/locale/ro_RO.ISO8859-2/LC_TIME	base-locale-ro		nls
 ./usr/share/locale/ro_RO.UTF-8			base-locale-ro
 ./usr/share/locale/ro_RO.UTF-8/LC_CTYPE		base-locale-ro		nls
-./usr/share/locale/ro_RO.UTF-8/LC_MESSAGES	base-locale-ro		nls
+./usr/share/locale/ro_RO.UTF-8/LC_MESSAGES	base-locale-ro
 ./usr/share/locale/ro_RO.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-ro		nls
 ./usr/share/locale/ro_RO.UTF-8/LC_MONETARY	base-locale-ro		nls
 ./usr/share/locale/ro_RO.UTF-8/LC_NUMERIC	base-locale-ro		nls
@@ -3928,7 +4009,7 @@
 ./usr/share/locale/ru_BY.CP1251/LC_TIME		base-locale-ru		nls
 ./usr/share/locale/ru_BY.UTF-8			base-locale-ru
 ./usr/share/locale/ru_BY.UTF-8/LC_CTYPE		base-locale-ru		nls
-./usr/share/locale/ru_BY.UTF-8/LC_MESSAGES	base-locale-ru		nls
+./usr/share/locale/ru_BY.UTF-8/LC_MESSAGES	base-locale-ru
 ./usr/share/locale/ru_BY.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-ru		nls
 ./usr/share/locale/ru_BY.UTF-8/LC_MONETARY	base-locale-ru		nls
 ./usr/share/locale/ru_BY.UTF-8/LC_NUMERIC	base-locale-ru		nls
@@ -3963,7 +4044,7 @@
 ./usr/share/locale/ru_RU.KOI8-R/LC_TIME		base-locale-ru		nls
 ./usr/share/locale/ru_RU.UTF-8			base-locale-ru
 ./usr/share/locale/ru_RU.UTF-8/LC_CTYPE		base-locale-ru		nls
-./usr/share/locale/ru_RU.UTF-8/LC_MESSAGES	base-locale-ru		nls
+./usr/share/locale/ru_RU.UTF-8/LC_MESSAGES	base-locale-ru
 ./usr/share/locale/ru_RU.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-ru		nls
 ./usr/share/locale/ru_RU.UTF-8/LC_MONETARY	base-locale-ru		nls
 ./usr/share/locale/ru_RU.UTF-8/LC_NUMERIC	base-locale-ru		nls
@@ -3985,7 +4066,7 @@
 ./usr/share/locale/sk_SK.ISO8859-2/LC_TIME	base-locale-sk		nls
 ./usr/share/locale/sk_SK.UTF-8			base-locale-sk
 ./usr/share/locale/sk_SK.UTF-8/LC_CTYPE		base-locale-sk		nls
-./usr/share/locale/sk_SK.UTF-8/LC_MESSAGES	base-locale-sk		nls
+./usr/share/locale/sk_SK.UTF-8/LC_MESSAGES	base-locale-sk
 ./usr/share/locale/sk_SK.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-sk		nls
 ./usr/share/locale/sk_SK.UTF-8/LC_MONETARY	base-locale-sk		nls
 ./usr/share/locale/sk_SK.UTF-8/LC_NUMERIC	base-locale-sk		nls
@@ -4003,7 +4084,7 @@
 ./usr/share/locale/sl_SI.ISO8859-2/LC_TIME	base-locale-sl		nls
 ./usr/share/locale/sl_SI.UTF-8			base-locale-sl
 ./usr/share/locale/sl_SI.UTF-8/LC_CTYPE		base-locale-sl		nls
-./usr/share/locale/sl_SI.UTF-8/LC_MESSAGES	base-locale-sl		nls
+./usr/share/locale/sl_SI.UTF-8/LC_MESSAGES	base-locale-sl
 ./usr/share/locale/sl_SI.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-sl		nls
 ./usr/share/locale/sl_SI.UTF-8/LC_MONETARY	base-locale-sl		nls
 ./usr/share/locale/sl_SI.UTF-8/LC_NUMERIC	base-locale-sl		nls
@@ -4019,7 +4100,7 @@
 ./usr/share/locale/sr_Cyrl_ME.ISO8859-5/LC_TIME	base-locale-sr		nls
 ./usr/share/locale/sr_Cyrl_ME.UTF-8			base-locale-sr
 ./usr/share/locale/sr_Cyrl_ME.UTF-8/LC_CTYPE		base-locale-sr		nls
-./usr/share/locale/sr_Cyrl_ME.UTF-8/LC_MESSAGES	base-locale-sr		nls
+./usr/share/locale/sr_Cyrl_ME.UTF-8/LC_MESSAGES	base-locale-sr
 ./usr/share/locale/sr_Cyrl_ME.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-sr		nls
 ./usr/share/locale/sr_Cyrl_ME.UTF-8/LC_MONETARY	base-locale-sr		nls
 ./usr/share/locale/sr_Cyrl_ME.UTF-8/LC_NUMERIC	base-locale-sr		nls
@@ -4033,7 +4114,7 @@
 ./usr/share/locale/sr_Cyrl_RS.ISO8859-5/LC_TIME	base-locale-sr		nls
 ./usr/share/locale/sr_Cyrl_RS.UTF-8			base-locale-sr
 ./usr/share/locale/sr_Cyrl_RS.UTF-8/LC_CTYPE		base-locale-sr		nls
-./usr/share/locale/sr_Cyrl_RS.UTF-8/LC_MESSAGES	base-locale-sr		nls
+./usr/share/locale/sr_Cyrl_RS.UTF-8/LC_MESSAGES	base-locale-sr
 ./usr/share/locale/sr_Cyrl_RS.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-sr		nls
 ./usr/share/locale/sr_Cyrl_RS.UTF-8/LC_MONETARY	base-locale-sr		nls
 ./usr/share/locale/sr_Cyrl_RS.UTF-8/LC_NUMERIC	base-locale-sr		nls
@@ -4047,7 +4128,7 @@
 ./usr/share/locale/sr_Latn_ME.ISO8859-2/LC_TIME	base-locale-sr		nls
 ./usr/share/locale/sr_Latn_ME.UTF-8			base-locale-sr
 ./usr/share/locale/sr_Latn_ME.UTF-8/LC_CTYPE		base-locale-sr		nls
-./usr/share/locale/sr_Latn_ME.UTF-8/LC_MESSAGES	base-locale-sr		nls
+./usr/share/locale/sr_Latn_ME.UTF-8/LC_MESSAGES	base-locale-sr
 ./usr/share/locale/sr_Latn_ME.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-sr		nls
 ./usr/share/locale/sr_Latn_ME.UTF-8/LC_MONETARY	base-locale-sr		nls
 ./usr/share/locale/sr_Latn_ME.UTF-8/LC_NUMERIC	base-locale-sr		nls
@@ -4061,7 +4142,7 @@
 ./usr/share/locale/sr_Latn_RS.ISO8859-2/LC_TIME	base-locale-sr		nls
 ./usr/share/locale/sr_Latn_RS.UTF-8			base-locale-sr
 ./usr/share/locale/sr_Latn_RS.UTF-8/LC_CTYPE		base-locale-sr		nls
-./usr/share/locale/sr_Latn_RS.UTF-8/LC_MESSAGES	base-locale-sr		nls
+./usr/share/locale/sr_Latn_RS.UTF-8/LC_MESSAGES	base-locale-sr
 ./usr/share/locale/sr_Latn_RS.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-sr		nls
 ./usr/share/locale/sr_Latn_RS.UTF-8/LC_MONETARY	base-locale-sr		nls
 ./usr/share/locale/sr_Latn_RS.UTF-8/LC_NUMERIC	base-locale-sr		nls
@@ -4119,7 +4200,7 @@
 ./usr/share/locale/sv_SE.ISO8859-15/LC_TIME	base-locale-sv		nls
 ./usr/share/locale/sv_SE.UTF-8			base-locale-sv
 ./usr/share/locale/sv_SE.UTF-8/LC_CTYPE		base-locale-sv		nls
-./usr/share/locale/sv_SE.UTF-8/LC_MESSAGES	base-locale-sv		nls
+./usr/share/locale/sv_SE.UTF-8/LC_MESSAGES	base-locale-sv
 ./usr/share/locale/sv_SE.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-sv		nls
 ./usr/share/locale/sv_SE.UTF-8/LC_MONETARY	base-locale-sv		nls
 ./usr/share/locale/sv_SE.UTF-8/LC_NUMERIC	base-locale-sv		nls
@@ -4137,7 +4218,7 @@
 ./usr/share/locale/tr_TR.ISO8859-9/LC_TIME	base-locale-tr		nls
 ./usr/share/locale/tr_TR.UTF-8			base-locale-tr
 ./usr/share/locale/tr_TR.UTF-8/LC_CTYPE		base-locale-tr		nls
-./usr/share/locale/tr_TR.UTF-8/LC_MESSAGES	base-locale-tr		nls
+./usr/share/locale/tr_TR.UTF-8/LC_MESSAGES	base-locale-tr
 ./usr/share/locale/tr_TR.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-tr		nls
 ./usr/share/locale/tr_TR.UTF-8/LC_MONETARY	base-locale-tr		nls
 ./usr/share/locale/tr_TR.UTF-8/LC_NUMERIC	base-locale-tr		nls
@@ -4167,7 +4248,7 @@
 ./usr/share/locale/uk_UA.KOI8-U/LC_TIME		base-locale-uk		nls
 ./usr/share/locale/uk_UA.UTF-8			base-locale-uk
 ./usr/share/locale/uk_UA.UTF-8/LC_CTYPE		base-locale-uk		nls
-./usr/share/locale/uk_UA.UTF-8/LC_MESSAGES	base-locale-uk		nls
+./usr/share/locale/uk_UA.UTF-8/LC_MESSAGES	base-locale-uk
 ./usr/share/locale/uk_UA.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-uk		nls
 ./usr/share/locale/uk_UA.UTF-8/LC_MONETARY	base-locale-uk		nls
 ./usr/share/locale/uk_UA.UTF-8/LC_NUMERIC	base-locale-uk		nls
@@ -4182,7 +4263,7 @@
 ./usr/share/locale/zh_CN.GB18030/LC_TIME	base-locale-zh		nls
 ./usr/share/locale/zh_CN.UTF-8			base-locale-zh
 ./usr/share/locale/zh_CN.UTF-8/LC_CTYPE		base-locale-zh		nls
-./usr/share/locale/zh_CN.UTF-8/LC_MESSAGES	base-locale-zh		nls
+./usr/share/locale/zh_CN.UTF-8/LC_MESSAGES	base-locale-zh
 ./usr/share/locale/zh_CN.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-zh		nls
 ./usr/share/locale/zh_CN.UTF-8/LC_MONETARY	base-locale-zh		nls
 ./usr/share/locale/zh_CN.UTF-8/LC_NUMERIC	base-locale-zh		nls
@@ -4207,7 +4288,7 @@
 ./usr/share/locale/zh_HK.Big5hkscs/LC_TIME	base-locale-zh		nls
 ./usr/share/locale/zh_HK.UTF-8			base-locale-zh
 ./usr/share/locale/zh_HK.UTF-8/LC_CTYPE		base-locale-zh		nls
-./usr/share/locale/zh_HK.UTF-8/LC_MESSAGES	base-locale-zh		nls
+./usr/share/locale/zh_HK.UTF-8/LC_MESSAGES	base-locale-zh
 ./usr/share/locale/zh_HK.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES		base-locale-zh		nls
 ./usr/share/locale/zh_HK.UTF-8/LC_MONETARY	base-locale-zh		nls
 ./usr/share/locale/zh_HK.UTF-8/LC_NUMERIC	base-locale-zh		nls
@@ -4224,7 +4305,7 @@
 ./usr/share/locale/zh_TW.Big5/LC_TIME		base-locale-zh		nls
 ./usr/share/locale/zh_TW.UTF-8			base-locale-zh
 ./usr/share/locale/zh_TW.UTF-8/LC_CTYPE		base-locale-zh		nls
-./usr/share/locale/zh_TW.UTF-8/LC_MESSAGES	base-locale-zh		nls
+./usr/share/locale/zh_TW.UTF-8/LC_MESSAGES	base-locale-zh
 ./usr/share/locale/zh_TW.UTF-8/LC_MESSAGES/SYS_LC_MESSAGES	base-locale-zh	nls
 ./usr/share/locale/zh_TW.UTF-8/LC_MONETARY	base-locale-zh		nls
 ./usr/share/locale/zh_TW.UTF-8/LC_NUMERIC	base-locale-zh		nls
@@ -4639,6 +4720,7 @@
 ./usr/share/me					base-groff-share
 ./usr/share/misc				base-terminfo-share
 ./usr/share/misc/acronyms			base-reference-share	share
+./usr/share/misc/acronyms-o			base-reference-share	share
 ./usr/share/misc/acronyms.comp			base-reference-share	share
 ./usr/share/misc/ascii				base-reference-share	share
 ./usr/share/misc/bsd-family-tree		base-reference-share	share
@@ -5073,11 +5155,11 @@
 ./usr/share/sushi/util/scripting/func		base-obsolete	obsolete
 ./usr/share/sysinst				base-util-share
 ./usr/share/sysinst/catalog			base-util-share
-./usr/share/sysinst/catalog/sysinstmsgs.de	base-util-share		obsolete
-./usr/share/sysinst/catalog/sysinstmsgs.es	base-util-share		obsolete
-./usr/share/sysinst/catalog/sysinstmsgs.fr	base-util-share		obsolete
-./usr/share/sysinst/catalog/sysinstmsgs.pl	base-util-share		obsolete
-./usr/share/tabset				base-util-share		share
+./usr/share/sysinst/catalog/sysinstmsgs.de	base-obsolete		obsolete
+./usr/share/sysinst/catalog/sysinstmsgs.es	base-obsolete		obsolete
+./usr/share/sysinst/catalog/sysinstmsgs.fr	base-obsolete		obsolete
+./usr/share/sysinst/catalog/sysinstmsgs.pl	base-obsolete		obsolete
+./usr/share/tabset				base-util-share
 ./usr/share/tabset/3101				base-util-share		share
 ./usr/share/tabset/9837				base-util-share		share
 ./usr/share/tabset/aa				base-util-share		share
@@ -5859,8 +5941,15 @@
 ./var/chroot/named/var/run/lwresd		base-bind-root
 ./var/chroot/named/var/run/named		base-bind-root
 ./var/chroot/named/var/tmp			base-bind-root
+./var/chroot/nsd				base-sys-root
+./var/chroot/nsd/etc				base-sys-root
+./var/chroot/nsd/etc/nsd			base-sys-root
+./var/chroot/nsd/var				base-sys-root
+./var/chroot/nsd/var/db				base-sys-root
+./var/chroot/nsd/var/db/nsd			base-sys-root
 ./var/chroot/ntpd				base-ntp-root
 ./var/chroot/ntpd/dev				base-ntp-root
+./var/chroot/ntpd/etc				base-ntp-root
 ./var/chroot/ntpd/var				base-ntp-root
 ./var/chroot/ntpd/var/db			base-ntp-root
 ./var/chroot/ntpd/var/run			base-ntp-root
@@ -5876,6 +5965,9 @@
 ./var/chroot/tcpdump/etc			base-obsolete		obsolete
 ./var/chroot/tcpdump/etc/protocols		base-obsolete		obsolete
 ./var/chroot/tftp-proxy				base-sys-root
+./var/chroot/unbound				base-sys-root
+./var/chroot/unbound/etc			base-sys-root
+./var/chroot/unbound/etc/unbound		base-sys-root
 ./var/crash					base-sys-root
 ./var/cron					base-cron-root
 ./var/cron/tabs					base-cron-root
@@ -5883,14 +5975,6 @@
 ./var/db/ns					base-sys-root
 ./var/db/obsolete				base-sys-root
 ./var/db/obsolete/base				base-sys-root
-./var/db/obsolete/comp				base-sys-root
-./var/db/obsolete/debug				base-sys-root		debug
-./var/db/obsolete/etc				base-sys-root
-./var/db/obsolete/games				base-sys-root
-./var/db/obsolete/man				base-sys-root
-./var/db/obsolete/misc				base-sys-root
-./var/db/obsolete/tests				base-sys-root		atf
-./var/db/obsolete/text				base-sys-root
 ./var/db/postfix				base-postfix-root
 ./var/db/xdm					base-sys-root
 ./var/db/xkb					base-sys-root
@@ -5903,8 +5987,8 @@
 ./var/games/sail				base-games-root
 ./var/games/save				base-obsolete		obsolete
 ./var/heimdal					base-krb5-root
-./var/lock					base-sys-root		obsolete
-./var/lock/lvm					base-sys-root		obsolete
+./var/lock					base-obsolete		obsolete
+./var/lock/lvm					base-obsolete		obsolete
 ./var/log					base-sys-root
 ./var/log/rdist					base-netutil-root
 ./var/mail					base-mail-root

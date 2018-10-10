@@ -1,4 +1,4 @@
-# $NetBSD: mi,v 1.44 2014/07/05 19:25:58 dholland Exp $
+# $NetBSD: mi,v 1.46 2015/12/18 19:00:45 christos Exp $
 #
 # Note: don't delete entries from here - mark them as "obsolete" instead.
 #
@@ -32,6 +32,7 @@
 ./usr/bin/psroff				text-obsolete		obsolete
 ./usr/bin/refer					text-groff-bin		groff
 ./usr/bin/soelim				text-groff-bin	
+./usr/bin/sortinfo				text-texinfo-bin
 ./usr/bin/tbl					text-groff-bin		groff
 ./usr/bin/texi2dvi				text-texinfo-bin
 ./usr/bin/texindex				text-texinfo-bin
@@ -747,3 +748,4 @@
 ./usr/share/tmac/unicode.tmac			text-groff-share	share,groff
 ./usr/share/tmac/vgrind.tmac			text-groff-share	share
 ./usr/share/tmac/www.tmac			text-groff-share	share,groff
+./var/db/obsolete/text				base-sys-root

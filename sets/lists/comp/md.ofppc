@@ -1,4 +1,4 @@
-# $NetBSD: md.ofppc,v 1.16 2014/07/23 18:19:43 alnsn Exp $
+# $NetBSD: md.ofppc,v 1.18 2015/12/20 16:22:39 christos Exp $
 ./usr/include/ieeefp.h				comp-c-include
 ./usr/include/ofppc				comp-c-include
 ./usr/include/ofppc/_G_config.h			comp-obsolete		obsolete
@@ -15,6 +15,7 @@
 ./usr/include/ofppc/elf_machdep.h		comp-c-include
 ./usr/include/ofppc/endian.h			comp-c-include
 ./usr/include/ofppc/endian_machdep.h		comp-c-include
+./usr/include/ofppc/fenv.h			comp-c-include
 ./usr/include/ofppc/float.h			comp-c-include
 ./usr/include/ofppc/fpu.h			comp-c-include
 ./usr/include/ofppc/frame.h			comp-c-include
@@ -47,8 +48,8 @@
 ./usr/include/ofppc/rwlock.h			comp-c-include
 ./usr/include/ofppc/setjmp.h			comp-c-include
 ./usr/include/ofppc/signal.h			comp-c-include
-./usr/include/ofppc/sljitarch.h			comp-obsolete		obsolete
 ./usr/include/ofppc/sljit_machdep.h		comp-c-include
+./usr/include/ofppc/sljitarch.h			comp-obsolete		obsolete
 ./usr/include/ofppc/spr.h			comp-obsolete		obsolete
 ./usr/include/ofppc/stdarg.h			comp-obsolete		obsolete
 ./usr/include/ofppc/trap.h			comp-c-include

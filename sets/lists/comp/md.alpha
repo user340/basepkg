@@ -1,4 +1,4 @@
-# $NetBSD: md.alpha,v 1.66 2014/01/02 12:54:36 tho Exp $
+# $NetBSD: md.alpha,v 1.71 2017/01/05 13:45:51 wiz Exp $
 ./usr/include/alpha				comp-c-include
 ./usr/include/alpha/_G_config.h			comp-obsolete		obsolete
 ./usr/include/alpha/alpha_cpu.h			comp-c-include
@@ -8,7 +8,7 @@
 ./usr/include/alpha/atomic.h			comp-obsolete		obsolete
 ./usr/include/alpha/autoconf.h			comp-c-include
 ./usr/include/alpha/bswap.h			comp-c-include
-./usr/include/alpha/bus.h			comp-c-include		obsolete
+./usr/include/alpha/bus.h			comp-obsolete		obsolete
 ./usr/include/alpha/bus_user.h			comp-c-include
 ./usr/include/alpha/bwx.h			comp-c-include
 ./usr/include/alpha/cdefs.h			comp-c-include
@@ -23,6 +23,7 @@
 ./usr/include/alpha/endian.h			comp-c-include
 ./usr/include/alpha/endian_machdep.h		comp-c-include
 ./usr/include/alpha/fbio.h			comp-obsolete		obsolete
+./usr/include/alpha/fenv.h			comp-c-include
 ./usr/include/alpha/float.h			comp-c-include
 ./usr/include/alpha/fpu.h			comp-c-include
 ./usr/include/alpha/frame.h			comp-c-include
@@ -69,8 +70,9 @@
 ./usr/include/alpha/wchar_limits.h		comp-c-include
 ./usr/include/alpha/wsconsio.h			comp-obsolete		obsolete
 ./usr/include/alpha/z8530var.h			comp-c-include
-./usr/include/gcc-4.5/tgmath.h			comp-c-include		gcccmds,gcc=45
+./usr/include/gcc-4.5/tgmath.h			comp-obsolete		obsolete
 ./usr/include/gcc-4.8/tgmath.h			comp-c-include		gcccmds,gcc=48
+./usr/include/gcc-5/tgmath.h			comp-c-include		gcccmds,gcc=53
 ./usr/include/ieeefp.h				comp-c-include
 ./usr/lib/crtfm.o				comp-c-lib
 ./usr/lib/libalpha.a				comp-c-lib

@@ -1,4 +1,4 @@
-# $NetBSD: md.hpcmips,v 1.32 2014/07/23 18:19:43 alnsn Exp $
+# $NetBSD: md.hpcmips,v 1.34 2015/12/21 16:49:37 christos Exp $
 ./usr/include/dev/hpc/hpcfbio.h			comp-c-include
 ./usr/include/hpcmips				comp-c-include
 ./usr/include/hpcmips/_G_config.h		comp-obsolete		obsolete
@@ -20,6 +20,7 @@
 ./usr/include/hpcmips/elf_machdep.h		comp-c-include
 ./usr/include/hpcmips/endian.h			comp-c-include
 ./usr/include/hpcmips/endian_machdep.h		comp-c-include
+./usr/include/hpcmips/fenv.h			comp-c-include
 ./usr/include/hpcmips/float.h			comp-c-include
 ./usr/include/hpcmips/ieee.h			comp-c-include
 ./usr/include/hpcmips/ieeefp.h			comp-c-include
@@ -54,8 +55,8 @@
 ./usr/include/hpcmips/rwlock.h			comp-c-include
 ./usr/include/hpcmips/setjmp.h			comp-c-include
 ./usr/include/hpcmips/signal.h			comp-c-include
-./usr/include/hpcmips/sljitarch.h		comp-obsolete		obsolete
 ./usr/include/hpcmips/sljit_machdep.h		comp-c-include
+./usr/include/hpcmips/sljitarch.h		comp-obsolete		obsolete
 ./usr/include/hpcmips/stdarg.h			comp-obsolete		obsolete
 ./usr/include/hpcmips/sysconf.h			comp-c-include
 ./usr/include/hpcmips/trap.h			comp-c-include

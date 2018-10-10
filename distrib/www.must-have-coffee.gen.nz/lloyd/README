@@ -1,0 +1,41 @@
+NetBSD Problem Report #46937
+
+From www@NetBSD.org  Mon Sep 10 22:21:07 2012
+Return-Path: <www@NetBSD.org>
+Received: from mail.netbsd.org (mail.netbsd.org [149.20.53.66])
+    by www.NetBSD.org (Postfix) with ESMTP id 06AFA63DC4E
+    for <gnats-bugs@gnats.NetBSD.org>; Mon, 10 Sep 2012 22:21:07 +0000 (UTC)
+Message-Id: <20120910222106.4E5B263B9BC@www.NetBSD.org>
+Date: Mon, 10 Sep 2012 22:21:06 +0000 (UTC)
+From: lloyd@must-have-coffee.gen.nz
+Reply-To: lloyd@must-have-coffee.gen.nz
+To: gnats-bugs@NetBSD.org
+Subject: Lots of broken syspkgs
+X-Send-Pr-Version: www-1.0
+
+>Number:         46937
+>Category:       misc
+>Synopsis:       Lots of broken syspkgs
+>Confidential:   no
+>Severity:       non-critical
+>Priority:       low
+>Responsible:    misc-bug-people
+>State:          open
+>Class:          sw-bug
+>Submitter-Id:   net
+>Arrival-Date:   Mon Sep 10 22:25:00 +0000 2012
+>Originator:     Lloyd Parkes
+>Release:        6.0_POST_RC1
+>Organization:
+Must Have Coffee
+>Environment:
+NetBSD thallid.must-have-coffee.gen.nz 6.0_POST_RC1 NetBSD 6.0_POST_RC1 (XEN3PAE_DOMU) #1: Wed Sep  5 09:10:48 NZST 2012  lloyd@castigate.must-have-coffee.gen.nz:/Users/lloyd/scratch/build6/obj.i386/sys/arch/i386/compile/XEN3PAE_DOMU i386
+>Description:
+All sorts of files, especially all of the kernel modules, are listed in syspkgs that they can't be built into. The syspkgs system has a requirement that the package a file is in must be a part of the set that the file is in. e.g. /bin/ls is in base.tgz and base-util-root. 
+
+I seem to be the only person who uses syspkgs, so set the priority of this PR accordingly.
+>How-To-Repeat:
+Run "build.sh syspkgs" and then try and find your kernel modules.
+
+>Fix:
+I have a patch at http://www.must-have-coffee.gen.nz/lloyd/syspkg-fixes-6.diff that fixes up all of the syspkg lists that I have found so far and adds a check to the listpkgs script that will halt the build if any broken lists are found.

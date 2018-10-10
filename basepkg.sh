@@ -1,5 +1,6 @@
 #!/bin/sh
 #
+# Copyright (c) 2001-2018 The NetBSD Foundation, Inc.
 # Copyright (c) 2016, 2017, 2018 Yuuki Enomoto
 # All rights reserved. 
 #  
@@ -25,36 +26,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
 #
-# Copyright (c) 2001-2011 The NetBSD Foundation, Inc.
-# All rights reserved.
-#
-# This code is derived from software contributed to The NetBSD Foundation
-# by Todd Vierling and Luke Mewburn.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-# 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution.
-#
-# THIS SOFTWARE IS PROVIDED BY THE NETBSD FOUNDATION, INC. AND CONTRIBUTORS
-# ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS
-# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
-#
 
 #
-# basepkg.sh -- Main program in basepkg framework.
+# basepkg.sh --  Kernel program of basepkg.
 #
 # It does the following works.
 #     - Make packages of base in reference to /usr/obj (default).
@@ -67,10 +41,13 @@
 #     - pkg_create(1) -- a utility for creating software package distributions.
 #
 # Please use ShellCheck (https://koalaman/shellcheck) for your code. 
-# After checked your code, please pull request to it's repository
-# (https://github.com/user340/basepkg).
 #
 
+###
+# Global variables
+#
+
+# define new line and tab 
 nl='
 '
 tab='		'
@@ -207,6 +184,10 @@ obj="/usr/obj"
 packages="$PWD/packages"
 category="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
 pkgdb="/var/db/basepkg"
+
+###
+# Functions
+#
 
 #
 # Output the error message with date.
@@ -992,9 +973,9 @@ _usage()
     cat <<_usage_
 
 Usage: $progname [--obj obj_dir] [--category category] [--machine machine] 
-                 operation
+                 command
 
- Operation:
+ Command:
     pkg                 Create packages.
     kern                Create kernel package.
     clean               Clean working directories.
@@ -1042,7 +1023,7 @@ _end_msg()
     rm -f $results
 }
 
-#
+###
 # Begin main process.
 #
 machine="$(uname -m)" # Firstly, set machine hardware name for _getarch().
@@ -1172,7 +1153,5 @@ cleanpkg)
     ;;
 esac
 
-#
 # Success.
-#
 exit 0
