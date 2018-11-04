@@ -1,0 +1,18 @@
+--- /usr/src/distrib/sets/lists/xserver/ad.x86_64	2018-07-22 19:47:29.995629546 +0900
++++ ad.x86_64	2018-10-14 11:46:27.218321313 +0900
+@@ -1,8 +1,8 @@
+ # $NetBSD: ad.x86_64,v 1.7 2016/08/19 22:37:04 mrg Exp $
+-./usr/X11R7/bin/inb					-unknown-	obsolete
+-./usr/X11R7/bin/inl					-unknown-	obsolete
+-./usr/X11R7/bin/inw					-unknown-	obsolete
+-./usr/X11R7/bin/ioport					-unknown-	obsolete
+-./usr/X11R7/bin/outb					-unknown-	obsolete
+-./usr/X11R7/bin/outl					-unknown-	obsolete
+-./usr/X11R7/bin/outw					-unknown-	obsolete
++./usr/X11R7/bin/inb					xserver-obsolete	obsolete
++./usr/X11R7/bin/inl					xserver-obsolete	obsolete
++./usr/X11R7/bin/inw					xserver-obsolete	obsolete
++./usr/X11R7/bin/ioport					xserver-obsolete	obsolete
++./usr/X11R7/bin/outb					xserver-obsolete	obsolete
++./usr/X11R7/bin/outl					xserver-obsolete	obsolete
++./usr/X11R7/bin/outw					xserver-obsolete	obsolete
