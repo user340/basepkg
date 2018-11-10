@@ -1,0 +1,6 @@
+# $NetBSD: md.evbarm,v 1.7 2016/01/31 18:40:23 christos Exp $
+./usr/X11R7/lib/libdrm_nouveau.a			xcomp-libdrm_nouveau-lib	xorg
+./usr/X11R7/lib/libdrm_nouveau_p.a			xcomp-libdrm_nouveau-lib	profile,xorg
+./usr/X11R7/lib/libdrm_nouveau_pic.a			xcomp-libdrm_nouveau-lib	xorg,picinstall
+./usr/X11R7/lib/pkgconfig/libdrm_nouveau.pc		xcomp-libdrm_nouveau-lib	xorg
+./usr/libdata/lint/llib-ldrm_nouveau.ln			xcomp-drm_nouveau-lib	lint,xorg

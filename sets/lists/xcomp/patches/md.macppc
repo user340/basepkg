@@ -1,0 +1,14 @@
+--- /usr/src/distrib/sets/lists/xcomp/md.macppc	2018-07-22 19:47:27.766315776 +0900
++++ md.macppc	2018-11-10 18:08:40.498723684 +0900
+@@ -1,6 +1,6 @@
+ # $NetBSD: md.macppc,v 1.21 2016/08/19 22:37:03 mrg Exp $
+-./usr/X11R7/include/X11/extensions/xf86dga.h		-unknown-	xorg
+-./usr/X11R7/include/X11/extensions/xf86dga1.h		-unknown-	xorg
+-./usr/X11R7/include/X11/extensions/xf86dga1str.h	-unknown-	xorg
+-./usr/X11R7/include/X11/extensions/xf86dgastr.h		-unknown-	xorg
+-./usr/X11R7/lib/libXxf86dga.a				-unknown-	xorg
++./usr/X11R7/include/X11/extensions/xf86dga.h		xcomp-xf86dga-include	xorg
++./usr/X11R7/include/X11/extensions/xf86dga1.h		xcomp-xf86dga-include	xorg
++./usr/X11R7/include/X11/extensions/xf86dga1str.h	xcomp-xf86dga-include	xorg
++./usr/X11R7/include/X11/extensions/xf86dgastr.h		xcomp-xf86dga-include	xorg
++./usr/X11R7/lib/libXxf86dga.a				xcomp-xf86dga-lib	xorg
