@@ -1,7 +1,5 @@
-diff --git a/sets/lists/comp/ad.arm b/sets/lists/comp/ad.arm
-index b07d2edd..898de85b 100644
---- a/sets/lists/comp/ad.arm
-+++ b/sets/lists/comp/ad.arm
+--- /usr/src/distrib/sets/lists/comp/ad.arm	2018-09-12 13:24:48.496846200 +0900
++++ ad.arm	2018-09-20 21:10:10.841687083 +0900
 @@ -675,99 +675,99 @@
  ./usr/lib/oabi/libc_vfp.a			comp-c-lib		compat
  ./usr/lib/oabi/libc_vfp.so			base-sys-shlib		compat,pic
