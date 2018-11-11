@@ -1,8 +1,8 @@
-./usr/X11R7/bin/X					-unknown-	xorg
-./usr/X11R7/bin/Xorg					-unknown-	xorg
-./usr/X11R7/bin/cvt					-unknown-	xorg
-./usr/X11R7/bin/gtf					-unknown-	xorg
-./usr/X11R7/lib/X11/doc/README.modes			-unknown-	xorg
+./usr/X11R7/bin/X					xserver-x11-bin	xorg
+./usr/X11R7/bin/Xorg					xserver-x11-bin	xorg
+./usr/X11R7/bin/cvt					xserver-x11-bin	xorg
+./usr/X11R7/bin/gtf					xserver-x11-bin	xorg
+./usr/X11R7/lib/X11/doc/README.modes			xserver-x11-doc	xorg
 ./usr/X11R7/lib/modules/drivers/kbd_drv.so		-unknown-	xorg
 ./usr/X11R7/lib/modules/drivers/kbd_drv.so.1		-unknown-	xorg
 ./usr/X11R7/lib/modules/drivers/mouse_drv.so		-unknown-	xorg
@@ -79,7 +79,7 @@
 ./usr/X11R7/lib/modules/libxaa.so.0			-unknown-	xorg,xorg_server_ver=110
 ./usr/X11R7/lib/modules/libxaa.so.0			xserver-obsolete	xorg,xorg_server_ver=118,obsolete
 ./usr/X11R7/lib/modules/libxaa_pic.a			xserver-obsolete	xorg,picinstall,obsolete
-./usr/X11R7/lib/xorg/protocol.txt			-unknown-	xorg
+./usr/X11R7/lib/xorg/protocol.txt			xserver-x11-lib	xorg
 ./usr/X11R7/man/cat1/Xorg.0				xserver-x11-catman	.cat,xorg
 ./usr/X11R7/man/cat1/cvt.0				xserver-x11-catman	.cat,xorg
 ./usr/X11R7/man/cat1/gtf.0				xserver-x11-catman	.cat,xorg
@@ -116,4 +116,4 @@
 ./usr/X11R7/man/man4/ws.4				xserver-x11-man	.man,xorg
 ./usr/X11R7/man/man4/wsfb.4				xserver-x11-man	.man,xorg
 ./usr/X11R7/man/man5/xorg.conf.5			xserver-x11-man	.man,xorg
-./usr/X11R7/share/aclocal/xorg-server.m4		-unknown-	xorg
+./usr/X11R7/share/aclocal/xorg-server.m4		xserver-x11-share	xorg
