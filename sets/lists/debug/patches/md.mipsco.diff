@@ -1,7 +1,5 @@
-diff --git a/sets/lists/debug/md.mipsco b/sets/lists/debug/md.mipsco
-index 49ac0f69..391053a8 100644
---- a/sets/lists/debug/md.mipsco
-+++ b/sets/lists/debug/md.mipsco
+--- /usr/src/distrib/sets/lists/debug/md.mipsco	2013-01-17 01:01:07.000000000 +0900
++++ md.mipsco	2018-09-20 21:27:49.205218155 +0900
 @@ -1,2 +1,2 @@
  # $NetBSD: md.mipsco,v 1.1 2013/01/16 16:01:07 christos Exp $
 -./usr/libdata/debug/usr/mdec/installboot.debug	-unknown-		debug
