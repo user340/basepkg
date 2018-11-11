@@ -1,7 +1,5 @@
-diff --git a/sets/lists/xbase/md.evbarm b/sets/lists/xbase/md.evbarm
-index fd9cfcd6..e148f4a8 100644
---- a/sets/lists/xbase/md.evbarm
-+++ b/sets/lists/xbase/md.evbarm
+--- /usr/src/distrib/sets/lists/xbase/md.evbarm	2016-08-19 04:27:33.000000000 +0900
++++ md.evbarm	2018-09-21 11:37:15.001862635 +0900
 @@ -1,4 +1,4 @@
  # $NetBSD: md.evbarm,v 1.2 2016/08/18 19:27:33 skrll Exp $
 -./usr/X11R7/lib/libdrm_nouveau.so		-unknown-		xorg
