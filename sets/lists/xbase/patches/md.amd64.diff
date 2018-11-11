@@ -1,7 +1,5 @@
-diff --git a/sets/lists/xbase/md.amd64 b/sets/lists/xbase/md.amd64
-index 0ea31541..faf76cf6 100644
---- a/sets/lists/xbase/md.amd64
-+++ b/sets/lists/xbase/md.amd64
+--- /usr/src/distrib/sets/lists/xbase/md.amd64	2018-07-22 19:47:26.670917387 +0900
++++ md.amd64	2018-09-21 11:35:35.143406419 +0900
 @@ -1,23 +1,23 @@
  # $NetBSD: md.amd64,v 1.16 2016/08/17 03:10:22 mrg Exp $
 -./usr/X11R7/lib/libI810XvMC.so			-unknown-		xorg,compatx11file
