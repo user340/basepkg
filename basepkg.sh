@@ -1029,6 +1029,10 @@ _end_msg()
 machine="$(uname -m)" # Firstly, set machine hardware name for _getarch().
 commandline="$0 $*"
 
+# extension modules 
+nbpkg_build_enable=0;
+nbpkg_build_config=""
+
 #
 # Parsing long option process. In this process, not used getopt(1) and 
 # getopts for the following reasons.
@@ -1080,6 +1084,17 @@ while [ $# -gt 0 ]; do
         machine="$2"
         shift
         ;;
+    --enable-nbpkg-build)
+	nbpkg_build_enable=1;
+        ;;
+    --with-nbpkg-build-config=*)
+        nbpkg_build_config=$(_getopt "$1")
+        ;;
+    --with-nbpkg-build-config)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        nbpkg_build_config="$2"
+        shift
+        ;;
     -|--)
         break
         ;;
@@ -1108,6 +1123,13 @@ workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
 kernobj="$obj/sys/arch/$machine/compile"
 start=$(date)
+
+# quirks: overwritten for "nbpkg-build" system
+if [ "X$nbpkg_build_config" != "X" -a -f $nbpkg_build_config ];then
+   . $nbpkg_build_config
+   release=$nbpkg_build_id 	# e.g. 8.0.20181029
+fi	
+
 
 #
 # least assertions
