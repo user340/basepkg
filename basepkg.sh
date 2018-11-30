@@ -825,8 +825,8 @@ _do_pkg_create()
 
 _mk_checksum()
 {
-    echo ./*.tgz | xargs -I % cksum -a md5 % > MD5
-    echo ./*.tgz | xargs -I % cksum -a sha512 % > SHA512
+    find ./*.tgz | xargs -I % cksum -a md5 % > MD5
+    find ./*.tgz | xargs -I % cksum -a sha512 % > SHA512
 }
 
 #
