@@ -862,8 +862,17 @@ _mk_pkg()
             _DEINSTALL "$pkg"
     done
 
-    find "$workdir" -type d -name '*-*-*' \
-        | sed "s|$workdir/||g" \
+    # XXX EXTENSION: build least packages specified by nbpgk-build
+    if [ "X$nbpkg_build_config" != "X" ];then
+	if [ "X$nbpkg_build_target" = "Xdaily" ];then
+	   find "$workdir" -type d -name '*-*-*' 	|
+	   egrep -f $nbpkg_build_list_filter
+	else
+	   find "$workdir" -type d -name '*-*-*'
+	fi
+    else
+	find "$workdir" -type d -name '*-*-*'
+    fi  | sed "s|$workdir/||g" \
         | while read -r pkg; do
             _SIZE_ALL "$pkg"
             _do_pkg_create "$pkg"
