@@ -1,5 +1,7 @@
---- /usr/src/distrib/sets/lists/xbase/md.i386	2018-07-22 19:47:26.673405431 +0900
-+++ md.i386	2018-09-21 11:41:50.010615573 +0900
+diff --git a/sets/lists/xbase/md.i386 b/sets/lists/xbase/md.i386
+index 5c306b96..36223c41 100644
+--- a/sets/lists/xbase/md.i386
++++ b/sets/lists/xbase/md.i386
 @@ -1,23 +1,23 @@
  # $NetBSD: md.i386,v 1.30 2016/08/17 03:10:22 mrg Exp $
 -./usr/X11R7/lib/libI810XvMC.so			-unknown-		xorg
