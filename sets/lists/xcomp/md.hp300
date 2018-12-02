@@ -1,14 +1,1 @@
-# $NetBSD: md.hp300,v 1.5 2015/12/29 16:55:39 christos Exp $
-./usr/libdata/lint/llib-ldbe.ln		xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-ldri.ln		xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-ldri2.ln	xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-lexa.ln		xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-lextmod.ln	xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-lfb.ln		xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-lglx.ln		xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-lrecord.ln	xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-lshadow.ln	xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-lshadowfb.ln	xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-lvbe.ln		xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-lvgahw.ln	xcomp-x11-libdata	lint,xorg
-./usr/libdata/lint/llib-lxaa.ln		xcomp-x11-libdata	lint,xorg
+# $NetBSD: md.hp300,v 1.4 2013/01/16 16:01:08 christos Exp $
