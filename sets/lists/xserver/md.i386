@@ -1,8 +1,8 @@
 # $NetBSD: md.i386,v 1.117 2017/01/05 02:22:19 christos Exp $
-./usr/X11R7/bin/X					xserver-x11-bin	xorg
-./usr/X11R7/bin/Xorg					xserver-x11-bin	xorg
-./usr/X11R7/bin/cvt					xserver-x11-bin	xorg
-./usr/X11R7/bin/gtf					xserver-x11-bin	xorg
+./usr/X11R7/bin/X					-unknown-	xorg
+./usr/X11R7/bin/Xorg					-unknown-	xorg
+./usr/X11R7/bin/cvt					-unknown-	xorg
+./usr/X11R7/bin/gtf					-unknown-	xorg
 ./usr/X11R7/bin/inb					xserver-obsolete	obsolete
 ./usr/X11R7/bin/inl					xserver-obsolete	obsolete
 ./usr/X11R7/bin/inw					xserver-obsolete	obsolete
@@ -16,7 +16,7 @@
 ./usr/X11R7/lib/X11/Cards				xserver-obsolete	obsolete
 ./usr/X11R7/lib/X11/doc/README.DRI			xserver-obsolete	obsolete
 ./usr/X11R7/lib/X11/doc/README.fonts			xserver-obsolete	obsolete
-./usr/X11R7/lib/X11/doc/README.modes			xserver-x11-doc	xorg
+./usr/X11R7/lib/X11/doc/README.modes			-unknown-	xorg
 ./usr/X11R7/lib/X11/doc/README.rapidaccess		xserver-obsolete	obsolete
 ./usr/X11R7/lib/modules/dri/i810_dri.so			xserver-obsolete	obsolete
 ./usr/X11R7/lib/modules/dri/i810_dri.so.0		xserver-obsolete	obsolete
@@ -334,7 +334,7 @@
 ./usr/X11R7/man/cat4/intel_old.0			xserver-x11-catman	.cat,xorg,xorg_server_ver=110
 ./usr/X11R7/man/cat4/intel_old.0			xserver-obsolete	.cat,xorg,xorg_server_ver=118,obsolete
 ./usr/X11R7/man/cat4/kbd.0				xserver-x11-catman	.cat,xorg
-./usr/X11R7/man/cat4/mga.0				xserver-x11-catman	.cat
+./usr/X11R7/man/cat4/mga.0				-unknown-	.cat
 ./usr/X11R7/man/cat4/modesetting.0			xserver-x11-catman	.cat,xorg
 ./usr/X11R7/man/cat4/mousedrv.0				xserver-x11-catman	.cat,xorg
 ./usr/X11R7/man/cat4/neomagic.0				xserver-x11-catman	.cat,xorg
@@ -475,4 +475,4 @@
 ./usr/X11R7/man/man4/xgi.4				xserver-x11-man	.man,xorg,xorg_server_ver=110
 ./usr/X11R7/man/man4/xgi.4				xserver-obsolete	.man,xorg,xorg_server_ver=118,obsolete
 ./usr/X11R7/man/man5/xorg.conf.5			xserver-x11-man	.man,xorg
-./usr/X11R7/share/aclocal/xorg-server.m4		xserver-x11-share	xorg
+./usr/X11R7/share/aclocal/xorg-server.m4		-unknown-	xorg

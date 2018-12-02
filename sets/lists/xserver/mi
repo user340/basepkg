@@ -3,8 +3,8 @@
 # Note: don't delete entries from here - mark them as "obsolete" instead.
 #
 ./etc/mtree/set.xserver					xserver-sys-root	xorg
-./usr/X11R7/bin/Xnest					xserver-x11-bin	xorg
-./usr/X11R7/bin/Xvfb					xserver-x11-bin	xorg
+./usr/X11R7/bin/Xnest					-unknown-	xorg
+./usr/X11R7/bin/Xvfb					-unknown-	xorg
 ./usr/X11R7/lib/modules/dri/gallium_dri.so		-unknown-	xorg
 ./usr/X11R7/lib/modules/dri/gallium_dri.so.0		-unknown-	xorg
 ./usr/X11R7/lib/modules/dri/kms_swrast_dri.so		-unknown-	xorg

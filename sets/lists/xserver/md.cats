@@ -1,15 +1,15 @@
 # $NetBSD: md.cats,v 1.56 2017/01/05 02:22:19 christos Exp $
-./usr/X11R7/bin/X					xserver-x11-bin	xorg
-./usr/X11R7/bin/Xorg					xserver-x11-bin	xorg
-./usr/X11R7/bin/cvt					xserver-x11-bin	xorg
-./usr/X11R7/bin/gtf					xserver-x11-bin	xorg
+./usr/X11R7/bin/X					-unknown-	xorg
+./usr/X11R7/bin/Xorg					-unknown-	xorg
+./usr/X11R7/bin/cvt					-unknown-	xorg
+./usr/X11R7/bin/gtf					-unknown-	xorg
 ./usr/X11R7/bin/pcitweak				xserver-obsolete	obsolete
 ./usr/X11R7/bin/scanpci					xserver-obsolete	obsolete
 ./usr/X11R7/bin/xorgconfig				xserver-obsolete	obsolete
 ./usr/X11R7/lib/X11/Cards				xserver-obsolete	obsolete
 ./usr/X11R7/lib/X11/doc/README.DRI			xserver-obsolete	obsolete
 ./usr/X11R7/lib/X11/doc/README.fonts			xserver-obsolete	obsolete
-./usr/X11R7/lib/X11/doc/README.modes			xserver-x11-doc	xorg
+./usr/X11R7/lib/X11/doc/README.modes			-unknown-	xorg
 ./usr/X11R7/lib/X11/doc/README.rapidaccess		xserver-obsolete	obsolete
 ./usr/X11R7/lib/modules/drivers/apm_drv.so		-unknown-	xorg,xorg_server_ver=110
 ./usr/X11R7/lib/modules/drivers/apm_drv.so		xserver-obsolete	xorg,xorg_server_ver=118,obsolete
@@ -325,4 +325,4 @@
 ./usr/X11R7/man/man4/ws.4				xserver-x11-man	.man,xorg
 ./usr/X11R7/man/man4/wsfb.4				xserver-x11-man	.man,xorg
 ./usr/X11R7/man/man5/xorg.conf.5			xserver-x11-man	.man,xorg
-./usr/X11R7/share/aclocal/xorg-server.m4		xserver-x11-share	xorg
+./usr/X11R7/share/aclocal/xorg-server.m4		-unknown-	xorg
