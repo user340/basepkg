@@ -1,4 +1,4 @@
-# $NetBSD: ad.x86_64,v 1.7 2016/08/19 22:37:04 mrg Exp $
+# $NetBSD: ad.x86_64,v 1.6 2009/06/12 01:55:59 mrg Exp $
 ./usr/X11R7/bin/inb					xserver-obsolete	obsolete
 ./usr/X11R7/bin/inl					xserver-obsolete	obsolete
 ./usr/X11R7/bin/inw					xserver-obsolete	obsolete
