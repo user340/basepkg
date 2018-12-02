@@ -1,5 +1,7 @@
---- /usr/src/distrib/sets/lists/comp/ad.aarch64	2018-09-12 13:24:48.181702349 +0900
-+++ ad.aarch64	2018-09-20 21:11:00.804371457 +0900
+diff --git a/sets/lists/comp/ad.aarch64 b/sets/lists/comp/ad.aarch64
+index f2cd261a..f1f46678 100644
+--- a/sets/lists/comp/ad.aarch64
++++ b/sets/lists/comp/ad.aarch64
 @@ -141,153 +141,153 @@
  ./usr/lib/oabi/libc_vfp.so			base-sys-shlib		compat,pic
  ./usr/lib/oabi/libc_vfp_p.a			comp-c-proflib		compat,profile

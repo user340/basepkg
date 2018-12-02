@@ -1,5 +1,7 @@
---- /usr/src/distrib/sets/lists/comp/ad.mips	2018-09-12 13:24:48.185170175 +0900
-+++ ad.mips	2018-09-20 21:07:09.873041166 +0900
+diff --git a/sets/lists/comp/ad.mips b/sets/lists/comp/ad.mips
+index 2fa0a50f..ed74f514 100644
+--- a/sets/lists/comp/ad.mips
++++ b/sets/lists/comp/ad.mips
 @@ -91,9 +91,9 @@
  ./usr/libdata/ldscripts/elf32btsmip.x		comp-util-bin		binutils,arch64
  ./usr/libdata/ldscripts/elf32btsmip.xbn		comp-util-bin		binutils,arch64
