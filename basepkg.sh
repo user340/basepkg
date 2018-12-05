@@ -193,7 +193,9 @@ pkgdb="/var/db/basepkg"
 #
 
 #
-# Output the error message with date.
+# _err -- Output the error message with date.
+#
+# This function is used for ignorable error.
 #
 _err()
 {
@@ -201,8 +203,10 @@ _err()
 }
 
 #
-# Output abbort message to standard error.
-# Then, kill the process and exit.
+# _bomb -- Output abbort message to standard error.
+# Then, kill basepkg.sh's process and exit.
+#
+# This function is used for unignorable error.
 #
 _bomb()
 {
@@ -213,79 +217,96 @@ _bomb()
 }
 
 #
-# The MACHINE_ARCH variable use $MACHINE value as a reference. This function 
-# takes MACHINE and MACHINE_ARCH pair from $valid_MACHINE_ARCH variable, then 
-# return to standard output.
+# *** This function was copied from build.sh of NetBSD source tree. ***
+#
+# _getarch -- find the default MACHINE_ARCH for a MACHINE,
+# or convert an alias to a MACHINE/MACHINE_ARCH pair.
+#
+# Saves the original value of MACHINE in makewrappermachine before
+# alias processing.
+#
+# Sets MACHINE and MACHINE_ARCH if the input MACHINE value is
+# recognised as an alias, or recognised as a machine that has a default
+# MACHINE_ARCH (or that has only one possible MACHINE_ARCH).
+#
+# Leaves MACHINE and MACHINE_ARCH unchanged if MACHINE is recognised
+# as being associated with multiple MACHINE_ARCH values with no default.
+#
+# Bombs if MACHINE is not recognised.
 #
 _getarch()
 {
  (
-    found=""
-    
-    IFS="$nl"
-    for line in $valid_MACHINE_ARCH; do
-        line="${line%%#*}"
-        # shellcheck disable=SC2086
-        line="$( IFS=" $tab" ; echo $line )" # normalise white space
-        case "$line " in
+    local found=""
+
+    IFS="${nl}"
+    makewrappermachine="${MACHINE}"
+    for line in ${valid_MACHINE_ARCH}; do
+        line="${line%%#*}" # ignore comments
+        line="$( IFS=" ${tab}" ; echo $line )" # normalise white space
+        case "${line} " in
         " ")
             # skip blank lines or comment lines
             continue
             ;;
-        *" ALIAS=$machine "*)
+        *" ALIAS=${MACHINE} "*)
             # Found a line with a matching ALIAS=<alias>.
             found="$line"
             break
             ;;
-        "MACHINE=$machine "*" NO_DEFAULT"*)
+        "MACHINE=${MACHINE} "*" NO_DEFAULT"*)
             # Found an explicit "NO_DEFAULT" for this MACHINE.
             found="$line"
             break
             ;;
-        "MACHINE=$machine "*" DEFAULT"*)
+        "MACHINE=${MACHINE} "*" DEFAULT"*)
             # Found an explicit "DEFAULT" for this MACHINE.
             found="$line"
             break
             ;;
-        "MACHINE=$machine "*)
+        "MACHINE=${MACHINE} "*)
             # Found a line for this MACHINE.  If it's the
             # first such line, then tentatively accept it.
             # If it's not the first matching line, then
             # remember that there was more than one match.
             case "$found" in
-            '')  found="$line" ;;
-            *)  found="MULTIPLE_MATCHES" ;;
+            '')    found="$line" ;;
+            *)    found="MULTIPLE_MATCHES" ;;
             esac
             ;;
         esac
-      done
+    done
 
-      case "$found" in
-      *NO_DEFAULT*|*MULTIPLE_MATCHES*)
-          # MACHINE is OK, but MACHINE_ARCH is still unknown
-          return
-          ;;
-      "MACHINE="*" MACHINE_ARCH="*)
-          # Obey the MACHINE= and MACHINE_ARCH= parts of the line.
-          IFS=" "
-          for frag in $found; do
-              case "$frag" in
-              MACHINE=*|MACHINE_ARCH=*)
-                  echo "$frag"
-                  ;;
-              esac
-          done
-          ;;
-      *)
-          _bomb "Unknown target MACHINE: $machine"
-          ;;
-      esac
+    case "$found" in
+    *NO_DEFAULT*|*MULTIPLE_MATCHES*)
+        # MACHINE is OK, but MACHINE_ARCH is still unknown
+        return
+        ;;
+    "MACHINE="*" MACHINE_ARCH="*)
+        # Obey the MACHINE= and MACHINE_ARCH= parts of the line.
+        IFS=" "
+        for frag in ${found}; do
+            case "$frag" in
+            MACHINE=*|MACHINE_ARCH=*)
+                eval "$frag"
+                ;;
+            esac
+        done
+        ;;
+    *)
+        bomb "Unknown target MACHINE: ${MACHINE}"
+        ;;
+    esac
  )
 }
 
 #
-# Abort if MACHINE and MACHINE_ARCH pair is not supported by NetBSD.
-# The valid_MACHINE_ARCH value is used in build.sh of NetBSD.
+# *** This function was copied from build.sh of NetBSD source tree. ***
+# *** Orifinal function name is "validatearch".                     ***
+#
+# _validate_arch() -- check that the MACHINE/MACHINE_ARCH pair is supported.
+#
+# Bombs if the pair is not supported.
 #
 _validate_arch()
 {
