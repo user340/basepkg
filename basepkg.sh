@@ -239,39 +239,39 @@ _getarch()
  (
     local found=""
 
-    IFS="${nl}"
-    makewrappermachine="${MACHINE}"
-    for line in ${valid_MACHINE_ARCH}; do
+    IFS="$nl"
+    makewrappermachine="$machine"
+    for line in $valid_MACHINE_ARCH; do
         line="${line%%#*}" # ignore comments
-        line="$( IFS=" ${tab}" ; echo $line )" # normalise white space
-        case "${line} " in
+        line="$( IFS=" $tab" ; echo $line )" # normalise white space
+        case "$line " in
         " ")
             # skip blank lines or comment lines
             continue
             ;;
-        *" ALIAS=${MACHINE} "*)
+        *" ALIAS=$machine "*)
             # Found a line with a matching ALIAS=<alias>.
             found="$line"
             break
             ;;
-        "MACHINE=${MACHINE} "*" NO_DEFAULT"*)
+        "MACHINE=$machine "*" NO_DEFAULT"*)
             # Found an explicit "NO_DEFAULT" for this MACHINE.
             found="$line"
             break
             ;;
-        "MACHINE=${MACHINE} "*" DEFAULT"*)
+        "MACHINE=$machine "*" DEFAULT"*)
             # Found an explicit "DEFAULT" for this MACHINE.
             found="$line"
             break
             ;;
-        "MACHINE=${MACHINE} "*)
+        "MACHINE=$machine "*)
             # Found a line for this MACHINE.  If it's the
             # first such line, then tentatively accept it.
             # If it's not the first matching line, then
             # remember that there was more than one match.
             case "$found" in
-            '')    found="$line" ;;
-            *)    found="MULTIPLE_MATCHES" ;;
+            '') found="$line" ;;
+            *)  found="MULTIPLE_MATCHES" ;;
             esac
             ;;
         esac
@@ -285,10 +285,14 @@ _getarch()
     "MACHINE="*" MACHINE_ARCH="*)
         # Obey the MACHINE= and MACHINE_ARCH= parts of the line.
         IFS=" "
-        for frag in ${found}; do
+        for frag in $found; do
             case "$frag" in
             MACHINE=*|MACHINE_ARCH=*)
-                eval "$frag"
+                # Here is difference point from original.
+                # Original source code calls "eval" but we decided to call
+                # "echo" because we want to print "frag" value to
+                # standard output.
+                echo "$frag"
                 ;;
             esac
         done
@@ -1203,7 +1207,6 @@ if [ "X$nbpkg_build_config" != "X" -a -f $nbpkg_build_config ];then
    . $nbpkg_build_config
    release=$nbpkg_build_id 	# e.g. 8.0.20181029
 fi	
-
 
 #
 # least assertions
