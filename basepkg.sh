@@ -28,7 +28,7 @@
 #
 
 #
-# basepkg.sh --  Kernel program of basepkg.
+# basepkg.sh --  Kernel program of NetBSD system package.
 #
 # It does the following works.
 #     - Make packages of base in reference to /usr/obj (default).
@@ -364,9 +364,10 @@ _validate_arch()
 
 
 #
-# Output number of version of NetBSD. In default, version number is drawn 
-# from "/usr/obj/usr/include/sys/param.h". This function not require NetBSD 
-# source tree (/usr/src).
+# _osrelease -- Output version number of NetBSD.
+#
+# In default, version number is coded in "/usr/obj/usr/include/sys/param.h".
+# This function is not requires NetBSD source tree (/usr/src).
 #
 _osrelease()
 {
@@ -413,7 +414,7 @@ _osrelease()
 }
 
 #
-# Make category directory and organized files named "FILES".
+# _split_category -- Make category directory and organized files named "FILES".
 #
 _split_category()
 {
@@ -478,7 +479,7 @@ _split_category()
 }
 
 #
-# Make package tree referring to "FILES".
+# _mk_pkgtree -- Make package tree referring to "FILES".
 #
 _mk_pkgtree()
 {
@@ -493,7 +494,8 @@ _mk_pkgtree()
 }
 
 #
-# List each package's contents and write into "category/package/package.FILE".
+# _mk_plist -- List each package's contents and write into
+# "category/package/package.FILE".
 #
 _mk_plist()
 {
@@ -530,7 +532,7 @@ _mk_plist()
 }
 
 #
-# Make "+BUILD_INFO" file.
+# _BUILD_INFO -- Make "+BUILD_INFO" file.
 #
 _BUILD_INFO()
 {
@@ -546,7 +548,7 @@ _BUILD_INFO_
 }
 
 #
-# Calculate package's dependency.
+# _mk_depend -- Calculate package's dependency.
 #
 _mk_depend()
 {
@@ -579,7 +581,7 @@ _mk_depend()
 }
 
 #
-# Make "+CONTENTS" file.
+# _CONTENTS -- Make "+CONTENTS" file.
 #
 _CONTENTS()
 {
@@ -617,7 +619,7 @@ _CONTENTS()
 }
 
 #
-# Make "+SIZE_PKG" file.
+# _SIZE_PKG -- Make "+SIZE_PKG" file.
 #
 _SIZE_PKG()
 {
@@ -640,7 +642,7 @@ _SIZE_PKG()
 }
 
 #
-# Make "+SIZE_PKG" file.
+# _SIZE_ALL -- Make "+SIZE_PKG" file.
 #
 _SIZE_ALL()
 {
@@ -660,7 +662,7 @@ _SIZE_ALL()
 }
 
 #
-# Make "+DESC" and "+COMMENT" file.
+# _DESC_and_COMMENT -- Make "+DESC" and "+COMMENT" file.
 #
 _DESC_and_COMMENT()
 {
@@ -690,8 +692,11 @@ _DESC_and_COMMENT()
 }
 
 #
-# For +INSTALL and +DEINSTALL
-# basepkg is only for NetBSD. For this reason, file path is almost hard coded.
+# _replace_cmdstr -- Replace temporary strings to absolute path of command in
+# +INSTALL and +DEINSTALL.
+
+# Packages made by basepkg are only for NetBSD.  For this reason, file path is
+# almost hard coded.
 #
 _replace_cmdstr()
 {
@@ -754,8 +759,8 @@ _replace_cmdstr()
 }
 
 #
-# Make "+INSTALL" file. The role of "+INSTALL" is defining absolute path of 
-# file, permission, owner and group.
+# _INSTALL -- Make "+INSTALL" file. The role of "+INSTALL" is defining
+# absolute path of file, permission, owner and group.
 #
 _INSTALL()
 {
@@ -788,7 +793,7 @@ _INSTALL()
 }
 
 #
-# Make deinstall script for each packages.
+# _DEINSTALL -- Make deinstall script for each packages.
 #
 _DEINSTALL()
 {
@@ -796,7 +801,7 @@ _DEINSTALL()
 }
 
 #
-# Make preserve-file.
+# _PRESERVE -- Make preserve-file.
 #
 _PRESERVE()
 {
@@ -813,7 +818,8 @@ _PRESERVE()
 }
 
 #
-# Change directory name depending on same $MACHINE and $MACHINE_ARCH or not.
+# _put_basedir -- Change directory name depending on
+# same $MACHINE and $MACHINE_ARCH or not.
 #
 _put_basedir() 
 {
@@ -825,7 +831,9 @@ _put_basedir()
 }
 
 #
-# "pkg_create" command wrapper. Package moved to ${packages}/All directory.
+# _do_pkg_create -- "pkg_create" command wrapper.
+#
+# Package moved to ${packages}/All directory.
 #
 _do_pkg_create()
 {
@@ -869,7 +877,7 @@ _mk_checksum()
 }
 
 #
-# Execute any functions and make MD5 and SHA512.
+# _mk_pkg -- Execute any functions and make MD5 and SHA512.
 #
 _mk_pkg()
 {
@@ -908,10 +916,12 @@ _mk_pkg()
 }
 
 #
-# Make kernel package. Now, information of meta-data is not write to another 
-# files such as ./sets/comments. Because the packaged file is only kernel 
-# binary named "netbsd". If add the kernel package's information to files that 
-# under the ./sets directory, This function will be deleted.
+# _mk_kpkg -- Make kernel package.
+#
+# Now, information of meta-data is not write to another files such as
+# ./sets/comments. Because the packaged file is only kernel binary named
+# "netbsd". If add the kernel package's information to files that under the
+# ./sets directory, This function will be deleted.
 #
 _mk_kpkg()
 {
@@ -980,7 +990,8 @@ _CONTENTS_
 }
 
 #
-# Packaging all compiled kernels.
+# _mk_all_kpkg -- Packaging all compiled kernels.
+#
 # XXX: A number of kernel packages can install to the system.
 #
 _mk_all_kpkg()
@@ -996,7 +1007,7 @@ _mk_all_kpkg()
 }
 
 #
-# Clean working directories.
+# _clean_work -- Clean working directories.
 #
 _clean_work()
 {
@@ -1005,7 +1016,7 @@ _clean_work()
 }
 
 #
-# Clean packages.
+# _clean_pkg -- Clean packages.
 #
 _clean_pkg()
 {
@@ -1014,7 +1025,7 @@ _clean_pkg()
 }
 
 #
-# Show usage to standard output.
+# _usage -- Show usage to standard output.
 #
 _usage()
 {
@@ -1042,9 +1053,13 @@ _usage_
 }
 
 #
-# --obj=/usr/obj
-#       ^^^^^^^^^
-#        take it
+# _getopt -- Parsing options.
+#
+# Example:
+#   --obj=/usr/obj
+#         ^^^^^^^^^
+#          take it
+#
 # In this example, it will return "/usr/obj".
 #
 _getopt()
@@ -1052,6 +1067,11 @@ _getopt()
     expr "x$1" : "x[^=]*=\\(.*\\)"
 }
 
+#
+# _begin_msg -- Print log messages to standard output and log file.
+#
+# This function is called when beginning basepkg.sh's process.
+#
 _begin_msg()
 {
     printf "===> basepkg.sh command: %s\\n" "$1" | tee -a $results
@@ -1062,6 +1082,11 @@ _begin_msg()
     printf "===> Build platform:     %s %s %s\\n" "$opsys" "$osversion" "$(uname -m)" | tee -a $results
 }
 
+#
+# _end_msg -- Print log messages to standard output and log file.
+#
+# This function is called when ending basepkg.sh's process.
+#
 _end_msg()
 {
     printf "===> basepkg.sh ended:   %s\\n" "$1" | tee -a $results
@@ -1074,6 +1099,7 @@ _end_msg()
 ###
 # Begin main process.
 #
+
 machine="$(uname -m)" # Firstly, set machine hardware name for _getarch().
 commandline="$0 $*"
 
