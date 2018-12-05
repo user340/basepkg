@@ -319,7 +319,7 @@ _validate_arch()
 
     # MACHINE_ARCH may not be assigned, but catch at "case ... in"
     # shellcheck disable=SC2153
-    case "$MACHINE_ARCH" in
+    case "$machine_arch" in
     "")
         _bomb "No MACHINE_ARCH provided"
         ;;
@@ -823,14 +823,14 @@ _PRESERVE()
 
 #
 # _put_basedir -- Change directory name depending on
-# same $MACHINE and $MACHINE_ARCH or not.
+# same $machine and $machine_arch or not.
 #
 _put_basedir() 
 {
-   if [ "X$MACHINE_ARCH" != "X$MACHINE" ]; then
-     echo "$packages/$release/$MACHINE-$MACHINE_ARCH"
+   if [ "X$machine_arch" != "X$machine" ]; then
+     echo "$packages/$release/$machine-$machine_arch"
    else
-     echo "$packages/$release/$MACHINE"
+     echo "$packages/$release/$machine"
    fi
 }
 
@@ -1035,23 +1035,34 @@ _usage()
 {
     cat <<_usage_
 
-Usage: $progname [--obj obj_dir] [--category category] [--machine machine] 
-                 command
+Usage: $progname [--arch architecture] [--category category]
+                 [--destdir destdir] [--machine machine] [--obj obj_dir]
+                 [--releasedir releasedir] [--with-nbpkg-build-config config]
+                 [--enable-nbpkg-build]
+                 operation
 
- Command:
-    pkg                 Create packages.
-    kern                Create kernel package.
-    clean               Clean working directories.
-    cleanpkg            Clean package directories.
+ Operations:
+    pkg                         Create packages.
+    kern                        Create kernel package.
+    clean                       Clean working directories.
+    cleanpkg                    Clean package directories.
 
  Options:
-    --help              Show this message and exit.
-    --obj               Set obj to NetBSD binaries.
-                        [Default: $obj]
-    --category          Set category.
-                        [Default: "base comp etc games man misc text"]
-    --machine           Set machine type for MACHINE_ARCH.
-                        [Default: $machine]
+    --arch                      Set machine_arch to architecture.
+                                [Default: deduced from "machine"]
+    --category                  Set category.
+                                [Default: "base comp etc games man misc text"]
+    --destdir                   Set destdir.
+                                [Default: $obj/destdir.$machine]
+    --machine                   Set machine type for MACHINE_ARCH.
+                                [Default: result of \`uname -m\`]
+    --obj                       Set obj to NetBSD binaries.
+                                [Default: /usr/obj]
+    --releasedir                Set releasedir.
+    --with-nbpkg-buld-config    WIP (Don't use it unless you are developer.)
+    --enable-nbpkg-build        WIP (Don't use it unless you are developer.)
+    -h | --help                 Show this message and exit.
+
 _usage_
     exit 1
 }
@@ -1105,6 +1116,7 @@ _end_msg()
 #
 
 machine="$(uname -m)" # Firstly, set machine hardware name for _getarch().
+machine_arch=""
 commandline="$0 $*"
 
 # extension modules 
@@ -1112,39 +1124,20 @@ nbpkg_build_enable=0;
 nbpkg_build_config=""
 
 #
-# Parsing long option process. In this process, not used getopt(1) and 
+# Parsing long option process. In this process, we don't use getopt(1) and 
 # getopts for the following reasons.
-#     - One character option is difficult to understand.
+#     - One character option (-a, -m, ...) is difficult to understand.
 #     - The getopt(1) have difference between GNU and BSD.
 #
 while [ $# -gt 0 ]; do
     case $1 in
-    -h|--help)
-        _usage
+    --arch=*)
+        machine_arch=$(_getopt "$1")
         ;;
-    --obj)
+    --arch)
         test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
-        obj="$2"
+        machine_arch="$2"
         shift
-        ;;
-    --obj=*)
-        obj=$(_getopt "$1")
-        ;;
-    --releasedir)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
-        releasedir="$2"
-        shift
-        ;;
-    --releasedir=*)
-        releasedir=$(_getopt "$1")
-        ;;
-    --destdir)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
-        destdir="$2"
-        shift
-        ;;
-    --destdir=*)
-        destdir=$(_getopt "$1")
         ;;
     --category=*)
         category=$(_getopt "$1")
@@ -1152,6 +1145,14 @@ while [ $# -gt 0 ]; do
     --category)
         test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
         category="$2"
+        shift
+        ;;
+    --destdir=*)
+        destdir=$(_getopt "$1")
+        ;;
+    --destdir)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        destdir="$2"
         shift
         ;;
     --machine=*)
@@ -1162,8 +1163,21 @@ while [ $# -gt 0 ]; do
         machine="$2"
         shift
         ;;
-    --enable-nbpkg-build)
-	nbpkg_build_enable=1;
+    --obj=*)
+        obj=$(_getopt "$1")
+        ;;
+    --obj)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        obj="$2"
+        shift
+        ;;
+    --releasedir=*)
+        releasedir=$(_getopt "$1")
+        ;;
+    --releasedir)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        releasedir="$2"
+        shift
         ;;
     --with-nbpkg-build-config=*)
         nbpkg_build_config=$(_getopt "$1")
@@ -1172,6 +1186,12 @@ while [ $# -gt 0 ]; do
         test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
         nbpkg_build_config="$2"
         shift
+        ;;
+    --enable-nbpkg-build)
+	    nbpkg_build_enable=1;
+        ;;
+    -h|--help)
+        _usage
         ;;
     -|--)
         break
@@ -1190,13 +1210,15 @@ set -u
 umask 0022
 export LC_ALL=C LANG=C
 
-eval "$(_getarch)"
-_validate_arch
-destdir=${destdir:-"$obj/destdir.$MACHINE"}
+if [ -z "$machine_arch" ]; then
+    eval "$(_getarch)"
+    _validate_arch
+    machine_arch=$MACHINE_ARCH
+fi
+destdir=${destdir:-"$obj/destdir.$machine"}
 releasedir=${releasedir:-.}
 release="$(_osrelease -a)"
 release_k="$(_osrelease -k)"
-machine_arch=$MACHINE_ARCH
 workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
 kernobj="$obj/sys/arch/$machine/compile"
