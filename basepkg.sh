@@ -567,7 +567,6 @@ _mk_depend()
     # XXX $nbpkg_build_list_all knows changes based on ident comparison
     # XXX where the format is such as "base-sys-root 8.0.20181101".
     if [ "X$nbpkg_build_config" != "X" ];then
-        local _sep _release
         _sep="[[:space:]]"
         _release=$(grep "^${depend}$_sep" $nbpkg_build_list_all    |
                    awk '{print $2}'                                |
@@ -784,11 +783,11 @@ _INSTALL()
                                     | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
                                     | tr '\n' ' '
                                 )
-                mode=$(echo "$user_group_mode" | cut -d " " -f 3)
-                user=$(echo "$user_group_mode" | cut -d " " -f 1)
-                group=$(echo "$user_group_mode" | cut -d " " -f 2)
+                _mode=$(echo "$user_group_mode" | cut -d " " -f 3)
+                _user=$(echo "$user_group_mode" | cut -d " " -f 1)
+                _group=$(echo "$user_group_mode" | cut -d " " -f 2)
             fi
-            echo "# FILE: /$file c $file $mode $user $group" \
+            echo "# FILE: /$file c $file $_mode $_user $_group" \
                 >> "$workdir/$1/+INSTALL"
         fi
     done
@@ -875,8 +874,8 @@ _do_pkg_create()
 
 _mk_checksum()
 {
-    find ./*.tgz | xargs -I % cksum -a md5 % > MD5
-    find ./*.tgz | xargs -I % cksum -a sha512 % > SHA512
+    find ./*.tgz -exec cksum -a md5 {} \; > MD5
+    find ./*.tgz -exec cksum -a sha512 {} \; > SHA512
 }
 
 #
