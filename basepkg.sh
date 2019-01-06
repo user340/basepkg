@@ -28,7 +28,7 @@
 #
 
 #
-# basepkg.sh --  Kernel program of basepkg.
+# basepkg.sh --  Kernel program of NetBSD system package.
 #
 # It does the following works.
 #     - Make packages of base in reference to /usr/obj (default).
@@ -92,7 +92,7 @@ MACHINE=evbarm		MACHINE_ARCH=earmv7	ALIAS=evbearmv7-el
 MACHINE=evbarm		MACHINE_ARCH=earmv7eb	ALIAS=evbearmv7-eb
 MACHINE=evbarm		MACHINE_ARCH=earmv7hf	ALIAS=evbearmv7hf-el
 MACHINE=evbarm		MACHINE_ARCH=earmv7hfeb	ALIAS=evbearmv7hf-eb
-MACHINE=evbarm64	MACHINE_ARCH=aarch64	ALIAS=evbarm64-el
+MACHINE=evbarm64	MACHINE_ARCH=aarch64	ALIAS=evbarm64-el DEFAULT
 MACHINE=evbarm64	MACHINE_ARCH=aarch64eb	ALIAS=evbarm64-eb
 MACHINE=evbcf		MACHINE_ARCH=coldfire
 MACHINE=evbmips		MACHINE_ARCH=		NO_DEFAULT
@@ -133,10 +133,13 @@ MACHINE=newsmips	MACHINE_ARCH=mipseb
 MACHINE=next68k		MACHINE_ARCH=m68k
 MACHINE=ofppc		MACHINE_ARCH=powerpc	DEFAULT
 MACHINE=ofppc		MACHINE_ARCH=powerpc64	ALIAS=ofppc64
+MACHINE=or1k		MACHINE_ARCH=or1k
 MACHINE=playstation2	MACHINE_ARCH=mipsel
 MACHINE=pmax		MACHINE_ARCH=mips64el	ALIAS=pmax64
 MACHINE=pmax		MACHINE_ARCH=mipsel	DEFAULT
 MACHINE=prep		MACHINE_ARCH=powerpc
+MACHINE=riscv		MACHINE_ARCH=riscv64	ALIAS=riscv64 DEFAULT
+MACHINE=riscv		MACHINE_ARCH=riscv32	ALIAS=riscv32
 MACHINE=rs6000		MACHINE_ARCH=powerpc
 MACHINE=sandpoint	MACHINE_ARCH=powerpc
 MACHINE=sbmips		MACHINE_ARCH=		NO_DEFAULT
@@ -190,7 +193,9 @@ pkgdb="/var/db/basepkg"
 #
 
 #
-# Output the error message with date.
+# _err -- Output the error message with date.
+#
+# This function is used for ignorable error.
 #
 _err()
 {
@@ -198,8 +203,10 @@ _err()
 }
 
 #
-# Output abbort message to standard error.
-# Then, kill the process and exit.
+# _bomb -- Output abbort message to standard error.
+# Then, kill basepkg.sh's process and exit.
+#
+# This function is used for unignorable error.
 #
 _bomb()
 {
@@ -210,20 +217,32 @@ _bomb()
 }
 
 #
-# The MACHINE_ARCH variable use $MACHINE value as a reference. This function 
-# takes MACHINE and MACHINE_ARCH pair from $valid_MACHINE_ARCH variable, then 
-# return to standard output.
+# *** This function was copied from build.sh of NetBSD source tree. ***
+#
+# _getarch -- find the default MACHINE_ARCH for a MACHINE,
+# or convert an alias to a MACHINE/MACHINE_ARCH pair.
+#
+# Saves the original value of MACHINE in makewrappermachine before
+# alias processing.
+#
+# Sets MACHINE and MACHINE_ARCH if the input MACHINE value is
+# recognised as an alias, or recognised as a machine that has a default
+# MACHINE_ARCH (or that has only one possible MACHINE_ARCH).
+#
+# Leaves MACHINE and MACHINE_ARCH unchanged if MACHINE is recognised
+# as being associated with multiple MACHINE_ARCH values with no default.
+#
+# Bombs if MACHINE is not recognised.
 #
 _getarch()
 {
  (
     found=""
-    
+
     IFS="$nl"
     for line in $valid_MACHINE_ARCH; do
-        line="${line%%#*}"
-        # shellcheck disable=SC2086
-        line="$( IFS=" $tab" ; echo $line )" # normalise white space
+        line="${line%%#*}" # ignore comments
+        line="$( IFS=" $tab" ; echo "$line" )" # normalise white space
         case "$line " in
         " ")
             # skip blank lines or comment lines
@@ -250,39 +269,47 @@ _getarch()
             # If it's not the first matching line, then
             # remember that there was more than one match.
             case "$found" in
-            '')  found="$line" ;;
+            '') found="$line" ;;
             *)  found="MULTIPLE_MATCHES" ;;
             esac
             ;;
         esac
-      done
+    done
 
-      case "$found" in
-      *NO_DEFAULT*|*MULTIPLE_MATCHES*)
-          # MACHINE is OK, but MACHINE_ARCH is still unknown
-          return
-          ;;
-      "MACHINE="*" MACHINE_ARCH="*)
-          # Obey the MACHINE= and MACHINE_ARCH= parts of the line.
-          IFS=" "
-          for frag in $found; do
-              case "$frag" in
-              MACHINE=*|MACHINE_ARCH=*)
-                  echo "$frag"
-                  ;;
-              esac
-          done
-          ;;
-      *)
-          _bomb "Unknown target MACHINE: $machine"
-          ;;
-      esac
+    case "$found" in
+    *NO_DEFAULT*|*MULTIPLE_MATCHES*)
+        # MACHINE is OK, but MACHINE_ARCH is still unknown
+        return
+        ;;
+    "MACHINE="*" MACHINE_ARCH="*)
+        # Obey the MACHINE= and MACHINE_ARCH= parts of the line.
+        IFS=" "
+        for frag in $found; do
+            case "$frag" in
+            MACHINE=*|MACHINE_ARCH=*)
+                # Here is difference point from original.
+                # Original source code calls "eval" but we decided to call
+                # "echo" because we want to print "frag" value to
+                # standard output.
+                echo "$frag"
+                ;;
+            esac
+        done
+        ;;
+    *)
+        bomb "Unknown target MACHINE: $machine"
+        ;;
+    esac
  )
 }
 
 #
-# Abort if MACHINE and MACHINE_ARCH pair is not supported by NetBSD.
-# The valid_MACHINE_ARCH value is used in build.sh of NetBSD.
+# *** This function was copied from build.sh of NetBSD source tree. ***
+# *** Orifinal function name is "validatearch".                     ***
+#
+# _validate_arch() -- check that the MACHINE/MACHINE_ARCH pair is supported.
+#
+# Bombs if the pair is not supported.
 #
 _validate_arch()
 {
@@ -291,7 +318,7 @@ _validate_arch()
 
     # MACHINE_ARCH may not be assigned, but catch at "case ... in"
     # shellcheck disable=SC2153
-    case "$MACHINE_ARCH" in
+    case "$machine_arch" in
     "")
         _bomb "No MACHINE_ARCH provided"
         ;;
@@ -340,9 +367,10 @@ _validate_arch()
 
 
 #
-# Output number of version of NetBSD. In default, version number is drawn 
-# from "/usr/obj/usr/include/sys/param.h". This function not require NetBSD 
-# source tree (/usr/src).
+# _osrelease -- Output version number of NetBSD.
+#
+# In default, version number is coded in "/usr/obj/usr/include/sys/param.h".
+# This function is not requires NetBSD source tree (/usr/src).
 #
 _osrelease()
 {
@@ -389,7 +417,7 @@ _osrelease()
 }
 
 #
-# Make category directory and organized files named "FILES".
+# _split_category -- Make category directory and organized files named "FILES".
 #
 _split_category()
 {
@@ -454,7 +482,7 @@ _split_category()
 }
 
 #
-# Make package tree referring to "FILES".
+# _mk_pkgtree -- Make package tree referring to "FILES".
 #
 _mk_pkgtree()
 {
@@ -469,7 +497,8 @@ _mk_pkgtree()
 }
 
 #
-# List each package's contents and write into "category/package/package.FILE".
+# _mk_plist -- List each package's contents and write into
+# "category/package/package.FILE".
 #
 _mk_plist()
 {
@@ -506,7 +535,7 @@ _mk_plist()
 }
 
 #
-# Make "+BUILD_INFO" file.
+# _BUILD_INFO -- Make "+BUILD_INFO" file.
 #
 _BUILD_INFO()
 {
@@ -522,7 +551,7 @@ _BUILD_INFO_
 }
 
 #
-# Calculate package's dependency.
+# _mk_depend -- Calculate package's dependency.
 #
 _mk_depend()
 {
@@ -533,14 +562,28 @@ _mk_depend()
     fi
     awk '/^'"$1"'/{print $2}' "$deps" | while read -r depend; do
         test ! "$depend" && return 1
-        echo "@pkgdep $depend>=$release" >> "$tmp_deps"
+
+    # XXX EXTENSION: check dependency generated by nbpkg-build.
+    # XXX $nbpkg_build_list_all knows changes based on ident comparison
+    # XXX where the format is such as "base-sys-root 8.0.20181101".
+    if [ "X$nbpkg_build_config" != "X" ];then
+        _sep="[[:space:]]"
+        _release=$(grep "^${depend}$_sep" $nbpkg_build_list_all    |
+                   awk '{print $2}'                                |
+                   tail -1                                         )
+        if [ "X$_release" != "X" ];then
+            echo "@pkgdep $depend>=$_release"
+        fi
+    else
+        echo "@pkgdep $depend>=$release"
+    fi  >> "$tmp_deps"
         test "$depend" = "base-sys-root" && return 0
         _mk_depend "$depend" # Recursion.
     done
 }
 
 #
-# Make "+CONTENTS" file.
+# _CONTENTS -- Make "+CONTENTS" file.
 #
 _CONTENTS()
 {
@@ -578,7 +621,7 @@ _CONTENTS()
 }
 
 #
-# Make "+SIZE_PKG" file.
+# _SIZE_PKG -- Make "+SIZE_PKG" file.
 #
 _SIZE_PKG()
 {
@@ -601,7 +644,7 @@ _SIZE_PKG()
 }
 
 #
-# Make "+SIZE_PKG" file.
+# _SIZE_ALL -- Make "+SIZE_PKG" file.
 #
 _SIZE_ALL()
 {
@@ -621,7 +664,7 @@ _SIZE_ALL()
 }
 
 #
-# Make "+DESC" and "+COMMENT" file.
+# _DESC_and_COMMENT -- Make "+DESC" and "+COMMENT" file.
 #
 _DESC_and_COMMENT()
 {
@@ -651,8 +694,11 @@ _DESC_and_COMMENT()
 }
 
 #
-# For +INSTALL and +DEINSTALL
-# basepkg is only for NetBSD. For this reason, file path is almost hard coded.
+# _replace_cmdstr -- Replace temporary strings to absolute path of command in
+# +INSTALL and +DEINSTALL.
+
+# Packages made by basepkg are only for NetBSD.  For this reason, file path is
+# almost hard coded.
 #
 _replace_cmdstr()
 {
@@ -715,8 +761,8 @@ _replace_cmdstr()
 }
 
 #
-# Make "+INSTALL" file. The role of "+INSTALL" is defining absolute path of 
-# file, permission, owner and group.
+# _INSTALL -- Make "+INSTALL" file. The role of "+INSTALL" is defining
+# absolute path of file, permission, owner and group.
 #
 _INSTALL()
 {
@@ -737,11 +783,11 @@ _INSTALL()
                                     | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
                                     | tr '\n' ' '
                                 )
-                mode=$(echo "$user_group_mode" | cut -d " " -f 3)
-                user=$(echo "$user_group_mode" | cut -d " " -f 1)
-                group=$(echo "$user_group_mode" | cut -d " " -f 2)
+                _mode=$(echo "$user_group_mode" | cut -d " " -f 3)
+                _user=$(echo "$user_group_mode" | cut -d " " -f 1)
+                _group=$(echo "$user_group_mode" | cut -d " " -f 2)
             fi
-            echo "# FILE: /$file c $file $mode $user $group" \
+            echo "# FILE: /$file c $file $_mode $_user $_group" \
                 >> "$workdir/$1/+INSTALL"
         fi
     done
@@ -749,7 +795,7 @@ _INSTALL()
 }
 
 #
-# Make deinstall script for each packages.
+# _DEINSTALL -- Make deinstall script for each packages.
 #
 _DEINSTALL()
 {
@@ -757,7 +803,7 @@ _DEINSTALL()
 }
 
 #
-# Make preserve-file.
+# _PRESERVE -- Make preserve-file.
 #
 _PRESERVE()
 {
@@ -774,19 +820,22 @@ _PRESERVE()
 }
 
 #
-# Change directory name depending on same $MACHINE and $MACHINE_ARCH or not.
+# _put_basedir -- Change directory name depending on
+# same $machine and $machine_arch or not.
 #
 _put_basedir() 
 {
-   if [ "X$MACHINE_ARCH" != "X$MACHINE" ]; then
-     echo "$packages/$release/$MACHINE-$MACHINE_ARCH"
+   if [ "X$machine_arch" != "X$machine" ]; then
+     echo "$packages/$release/$machine-$machine_arch"
    else
-     echo "$packages/$release/$MACHINE"
+     echo "$packages/$release/$machine"
    fi
 }
 
 #
-# "pkg_create" command wrapper. Package moved to ${packages}/All directory.
+# _do_pkg_create -- "pkg_create" command wrapper.
+#
+# Package moved to ${packages}/All directory.
 #
 _do_pkg_create()
 {
@@ -825,12 +874,12 @@ _do_pkg_create()
 
 _mk_checksum()
 {
-    echo ./*.tgz | xargs -I % cksum -a md5 % > MD5
-    echo ./*.tgz | xargs -I % cksum -a sha512 % > SHA512
+    find ./*.tgz -exec cksum -a md5 {} \; > MD5
+    find ./*.tgz -exec cksum -a sha512 {} \; > SHA512
 }
 
 #
-# Execute any functions and make MD5 and SHA512.
+# _mk_pkg -- Execute any functions and make MD5 and SHA512.
 #
 _mk_pkg()
 {
@@ -847,8 +896,17 @@ _mk_pkg()
             _DEINSTALL "$pkg"
     done
 
-    find "$workdir" -type d -name '*-*-*' \
-        | sed "s|$workdir/||g" \
+    # XXX EXTENSION: build least packages specified by nbpgk-build
+    if [ "X$nbpkg_build_config" != "X" ];then
+    if [ "X$nbpkg_build_target" = "Xdaily" ];then
+       find "$workdir" -type d -name '*-*-*'     |
+       egrep -f $nbpkg_build_list_filter
+    else
+       find "$workdir" -type d -name '*-*-*'
+    fi
+    else
+    find "$workdir" -type d -name '*-*-*'
+    fi  | sed "s|$workdir/||g" \
         | while read -r pkg; do
             _SIZE_ALL "$pkg"
             _do_pkg_create "$pkg"
@@ -860,10 +918,12 @@ _mk_pkg()
 }
 
 #
-# Make kernel package. Now, information of meta-data is not write to another 
-# files such as ./sets/comments. Because the packaged file is only kernel 
-# binary named "netbsd". If add the kernel package's information to files that 
-# under the ./sets directory, This function will be deleted.
+# _mk_kpkg -- Make kernel package.
+#
+# Now, information of meta-data is not write to another files such as
+# ./sets/comments. Because the packaged file is only kernel binary named
+# "netbsd". If add the kernel package's information to files that under the
+# ./sets directory, This function will be deleted.
 #
 _mk_kpkg()
 {
@@ -932,7 +992,8 @@ _CONTENTS_
 }
 
 #
-# Packaging all compiled kernels.
+# _mk_all_kpkg -- Packaging all compiled kernels.
+#
 # XXX: A number of kernel packages can install to the system.
 #
 _mk_all_kpkg()
@@ -948,7 +1009,7 @@ _mk_all_kpkg()
 }
 
 #
-# Clean working directories.
+# _clean_work -- Clean working directories.
 #
 _clean_work()
 {
@@ -957,7 +1018,7 @@ _clean_work()
 }
 
 #
-# Clean packages.
+# _clean_pkg -- Clean packages.
 #
 _clean_pkg()
 {
@@ -966,37 +1027,52 @@ _clean_pkg()
 }
 
 #
-# Show usage to standard output.
+# _usage -- Show usage to standard output.
 #
 _usage()
 {
     cat <<_usage_
 
-Usage: $progname [--obj obj_dir] [--category category] [--machine machine] 
-                 command
+Usage: $progname [--arch architecture] [--category category]
+                 [--destdir destdir] [--machine machine] [--obj obj_dir]
+                 [--releasedir releasedir] [--with-nbpkg-build-config config]
+                 [--enable-nbpkg-build]
+                 operation
 
- Command:
-    pkg                 Create packages.
-    kern                Create kernel package.
-    clean               Clean working directories.
-    cleanpkg            Clean package directories.
+ Operations:
+    pkg                         Create packages.
+    kern                        Create kernel package.
+    clean                       Clean working directories.
+    cleanpkg                    Clean package directories.
 
  Options:
-    --help              Show this message and exit.
-    --obj               Set obj to NetBSD binaries.
-                        [Default: $obj]
-    --category          Set category.
-                        [Default: "base comp etc games man misc text"]
-    --machine           Set machine type for MACHINE_ARCH.
-                        [Default: $machine]
+    --arch                      Set machine_arch to architecture.
+                                [Default: deduced from "machine"]
+    --category                  Set category.
+                                [Default: "base comp etc games man misc text"]
+    --destdir                   Set destdir.
+                                [Default: $obj/destdir.$machine]
+    --machine                   Set machine type for MACHINE_ARCH.
+                                [Default: result of \`uname -m\`]
+    --obj                       Set obj to NetBSD binaries.
+                                [Default: /usr/obj]
+    --releasedir                Set releasedir.
+    --with-nbpkg-buld-config    WIP (Don't use it unless you are developer.)
+    --enable-nbpkg-build        WIP (Don't use it unless you are developer.)
+    -h | --help                 Show this message and exit.
+
 _usage_
     exit 1
 }
 
 #
-# --obj=/usr/obj
-#       ^^^^^^^^^
-#        take it
+# _getopt -- Parsing options.
+#
+# Example:
+#   --obj=/usr/obj
+#         ^^^^^^^^^
+#          take it
+#
 # In this example, it will return "/usr/obj".
 #
 _getopt()
@@ -1004,6 +1080,11 @@ _getopt()
     expr "x$1" : "x[^=]*=\\(.*\\)"
 }
 
+#
+# _begin_msg -- Print log messages to standard output and log file.
+#
+# This function is called when beginning basepkg.sh's process.
+#
 _begin_msg()
 {
     printf "===> basepkg.sh command: %s\\n" "$1" | tee -a $results
@@ -1014,6 +1095,11 @@ _begin_msg()
     printf "===> Build platform:     %s %s %s\\n" "$opsys" "$osversion" "$(uname -m)" | tee -a $results
 }
 
+#
+# _end_msg -- Print log messages to standard output and log file.
+#
+# This function is called when ending basepkg.sh's process.
+#
 _end_msg()
 {
     printf "===> basepkg.sh ended:   %s\\n" "$1" | tee -a $results
@@ -1026,43 +1112,30 @@ _end_msg()
 ###
 # Begin main process.
 #
+
 machine="$(uname -m)" # Firstly, set machine hardware name for _getarch().
+machine_arch=""
 commandline="$0 $*"
 
+# extension modules 
+nbpkg_build_enable=0;
+nbpkg_build_config=""
+
 #
-# Parsing long option process. In this process, not used getopt(1) and 
+# Parsing long option process. In this process, we don't use getopt(1) and 
 # getopts for the following reasons.
-#     - One character option is difficult to understand.
+#     - One character option (-a, -m, ...) is difficult to understand.
 #     - The getopt(1) have difference between GNU and BSD.
 #
 while [ $# -gt 0 ]; do
     case $1 in
-    -h|--help)
-        _usage
+    --arch=*)
+        machine_arch=$(_getopt "$1")
         ;;
-    --obj)
+    --arch)
         test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
-        obj="$2"
+        machine_arch="$2"
         shift
-        ;;
-    --obj=*)
-        obj=$(_getopt "$1")
-        ;;
-    --releasedir)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
-        releasedir="$2"
-        shift
-        ;;
-    --releasedir=*)
-        releasedir=$(_getopt "$1")
-        ;;
-    --destdir)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
-        destdir="$2"
-        shift
-        ;;
-    --destdir=*)
-        destdir=$(_getopt "$1")
         ;;
     --category=*)
         category=$(_getopt "$1")
@@ -1072,6 +1145,14 @@ while [ $# -gt 0 ]; do
         category="$2"
         shift
         ;;
+    --destdir=*)
+        destdir=$(_getopt "$1")
+        ;;
+    --destdir)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        destdir="$2"
+        shift
+        ;;
     --machine=*)
         machine=$(_getopt "$1")
         ;;
@@ -1079,6 +1160,36 @@ while [ $# -gt 0 ]; do
         test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
         machine="$2"
         shift
+        ;;
+    --obj=*)
+        obj=$(_getopt "$1")
+        ;;
+    --obj)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        obj="$2"
+        shift
+        ;;
+    --releasedir=*)
+        releasedir=$(_getopt "$1")
+        ;;
+    --releasedir)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        releasedir="$2"
+        shift
+        ;;
+    --with-nbpkg-build-config=*)
+        nbpkg_build_config=$(_getopt "$1")
+        ;;
+    --with-nbpkg-build-config)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        nbpkg_build_config="$2"
+        shift
+        ;;
+    --enable-nbpkg-build)
+        nbpkg_build_enable=1;
+        ;;
+    -h|--help)
+        _usage
         ;;
     -|--)
         break
@@ -1097,17 +1208,25 @@ set -u
 umask 0022
 export LC_ALL=C LANG=C
 
-eval "$(_getarch)"
-_validate_arch
-destdir=${destdir:-"$obj/destdir.$MACHINE"}
+if [ -z "$machine_arch" ]; then
+    eval "$(_getarch)"
+    _validate_arch
+    machine_arch=$MACHINE_ARCH
+fi
+destdir=${destdir:-"$obj/destdir.$machine"}
 releasedir=${releasedir:-.}
 release="$(_osrelease -a)"
 release_k="$(_osrelease -k)"
-machine_arch=$MACHINE_ARCH
 workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
 kernobj="$obj/sys/arch/$machine/compile"
 start=$(date)
+
+# quirks: overwritten for "nbpkg-build" system
+if [ "X$nbpkg_build_config" != "X" ] && [ -f "$nbpkg_build_config" ]; then
+   . "$nbpkg_build_config"
+   release="$nbpkg_build_id" # e.g. 8.0.20181029
+fi
 
 #
 # least assertions
