@@ -52,10 +52,28 @@ nl='
 '
 tab='		'
 
-# From build.sh
+###
+# Imported from build.sh
+#
+# valid_MACHINE_ARCH -- A multi-line string, listing all valid
+# MACHINE/MACHINE_ARCH pairs.
+#
+# Each line contains a MACHINE and MACHINE_ARCH value, an optional ALIAS
+# which may be used to refer to the MACHINE/MACHINE_ARCH pair, and an
+# optional DEFAULT or NO_DEFAULT keyword.
+#
+# When a MACHINE corresponds to multiple possible values of
+# MACHINE_ARCH, then this table should list all allowed combinations.
+# If the MACHINE is associated with a default MACHINE_ARCH (to be
+# used when the user specifies the MACHINE but fails to specify the
+# MACHINE_ARCH), then one of the lines should have the "DEFAULT"
+# keyword.  If there is no default MACHINE_ARCH for a particular
+# MACHINE, then there should be a line with the "NO_DEFAULT" keyword,
+# and with a blank MACHINE_ARCH.
+#
 valid_MACHINE_ARCH='
-MACHINE=acorn26		MACHINE_ARCH=arm
 MACHINE=acorn32		MACHINE_ARCH=arm
+MACHINE=acorn32		MACHINE_ARCH=earmv4	ALIAS=eacorn32 DEFAULT
 MACHINE=algor		MACHINE_ARCH=mips64el	ALIAS=algor64
 MACHINE=algor		MACHINE_ARCH=mipsel	DEFAULT
 MACHINE=alpha		MACHINE_ARCH=alpha
@@ -74,26 +92,27 @@ MACHINE=cobalt		MACHINE_ARCH=mipsel	DEFAULT
 MACHINE=dreamcast	MACHINE_ARCH=sh3el
 MACHINE=emips		MACHINE_ARCH=mipseb
 MACHINE=epoc32		MACHINE_ARCH=arm
+MACHINE=epoc32		MACHINE_ARCH=earmv4	ALIAS=eepoc32 DEFAULT
 MACHINE=evbarm		MACHINE_ARCH=arm	ALIAS=evboarm-el
 MACHINE=evbarm		MACHINE_ARCH=armeb	ALIAS=evboarm-eb
-MACHINE=evbarm		MACHINE_ARCH=earm	ALIAS=evbearm-el DEFAULT
-MACHINE=evbarm		MACHINE_ARCH=earmeb	ALIAS=evbearm-eb
-MACHINE=evbarm		MACHINE_ARCH=earmhf	ALIAS=evbearmhf-el
-MACHINE=evbarm		MACHINE_ARCH=earmhfeb	ALIAS=evbearmhf-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv4	ALIAS=evbearmv4-el
-MACHINE=evbarm		MACHINE_ARCH=earmv4eb	ALIAS=evbearmv4-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv5	ALIAS=evbearmv5-el
-MACHINE=evbarm		MACHINE_ARCH=earmv5eb	ALIAS=evbearmv5-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv6	ALIAS=evbearmv6-el
-MACHINE=evbarm		MACHINE_ARCH=earmv6hf	ALIAS=evbearmv6hf-el
-MACHINE=evbarm		MACHINE_ARCH=earmv6eb	ALIAS=evbearmv6-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv6hfeb	ALIAS=evbearmv6hf-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv7	ALIAS=evbearmv7-el
-MACHINE=evbarm		MACHINE_ARCH=earmv7eb	ALIAS=evbearmv7-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv7hf	ALIAS=evbearmv7hf-el
-MACHINE=evbarm		MACHINE_ARCH=earmv7hfeb	ALIAS=evbearmv7hf-eb
-MACHINE=evbarm64	MACHINE_ARCH=aarch64	ALIAS=evbarm64-el DEFAULT
-MACHINE=evbarm64	MACHINE_ARCH=aarch64eb	ALIAS=evbarm64-eb
+MACHINE=evbarm		MACHINE_ARCH=earm	ALIAS=evbearm-el	ALIAS=evbarm-el DEFAULT
+MACHINE=evbarm		MACHINE_ARCH=earmeb	ALIAS=evbearm-eb	ALIAS=evbarm-eb
+MACHINE=evbarm		MACHINE_ARCH=earmhf	ALIAS=evbearmhf-el	ALIAS=evbarmhf-el
+MACHINE=evbarm		MACHINE_ARCH=earmhfeb	ALIAS=evbearmhf-eb	ALIAS=evbarmhf-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv4	ALIAS=evbearmv4-el	ALIAS=evbarmv4-el
+MACHINE=evbarm		MACHINE_ARCH=earmv4eb	ALIAS=evbearmv4-eb	ALIAS=evbarmv4-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv5	ALIAS=evbearmv5-el	ALIAS=evbarmv5-el
+MACHINE=evbarm		MACHINE_ARCH=earmv5eb	ALIAS=evbearmv5-eb	ALIAS=evbarmv5-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv6	ALIAS=evbearmv6-el	ALIAS=evbarmv6-el
+MACHINE=evbarm		MACHINE_ARCH=earmv6hf	ALIAS=evbearmv6hf-el	ALIAS=evbarmv6hf-el
+MACHINE=evbarm		MACHINE_ARCH=earmv6eb	ALIAS=evbearmv6-eb	ALIAS=evbarmv6-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv6hfeb	ALIAS=evbearmv6hf-eb	ALIAS=evbarmv6hf-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv7	ALIAS=evbearmv7-el	ALIAS=evbarmv7-el
+MACHINE=evbarm		MACHINE_ARCH=earmv7eb	ALIAS=evbearmv7-eb	ALIAS=evbarmv7-eb
+MACHINE=evbarm		MACHINE_ARCH=earmv7hf	ALIAS=evbearmv7hf-el	ALIAS=evbarmv7hf-el
+MACHINE=evbarm		MACHINE_ARCH=earmv7hfeb	ALIAS=evbearmv7hf-eb	ALIAS=evbarmv7hf-eb
+MACHINE=evbarm		MACHINE_ARCH=aarch64	ALIAS=evbarm64-el	ALIAS=evbarm64 DEFAULT
+MACHINE=evbarm		MACHINE_ARCH=aarch64eb	ALIAS=evbarm64-eb
 MACHINE=evbcf		MACHINE_ARCH=coldfire
 MACHINE=evbmips		MACHINE_ARCH=		NO_DEFAULT
 MACHINE=evbmips		MACHINE_ARCH=mips64eb	ALIAS=evbmips64-eb
