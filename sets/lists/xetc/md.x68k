@@ -1,3 +1,2 @@
 # $NetBSD: md.x68k,v 1.4 2014/03/01 19:46:43 tsutsui Exp $
-./etc/X11/X68kConfig					xetc-sys-etc	x11
 ./etc/X11/X68kConfig					xetc-sys-etc	xorg
