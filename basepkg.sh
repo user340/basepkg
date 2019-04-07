@@ -50,7 +50,7 @@
 # define new line and tab 
 nl='
 '
-tab='		'
+tab='	'
 
 ###
 # Imported from build.sh
@@ -189,13 +189,6 @@ pkgtoolversion="$(pkg_create -V)"
 utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
 param="usr/include/sys/param.h"
-lists="$PWD/sets/lists"
-comments="$PWD/sets/comments"
-descrs="$PWD/sets/descrs"
-deps="$PWD/sets/deps"
-install_script="$PWD/sets/install"
-deinstall_script="$PWD/sets/deinstall"
-est="$PWD/sets/essentials"
 tmp_deps="/tmp/culldeps"
 homepage="https://github.com/user340/basepkg"
 mail_address="uki@e-yuuki.org"
@@ -261,7 +254,8 @@ _getarch()
     IFS="$nl"
     for line in $valid_MACHINE_ARCH; do
         line="${line%%#*}" # ignore comments
-        line="$( IFS=" $tab" ; echo "$line" )" # normalise white space
+        # Don't quote this $line
+        line="$( IFS=" $tab" ; echo $line )" # normalise white space
         case "$line " in
         " ")
             # skip blank lines or comment lines
@@ -316,7 +310,7 @@ _getarch()
         done
         ;;
     *)
-        bomb "Unknown target MACHINE: $machine"
+        _bomb "Unknown target MACHINE: $machine"
         ;;
     esac
  )
@@ -1053,10 +1047,10 @@ _usage()
     cat <<_usage_
 
 Usage: $progname [--arch architecture] [--category category]
-                 [--destdir destdir] [--machine machine] [--obj obj_dir]
-                 [--releasedir releasedir] [--with-nbpkg-build-config config]
-                 [--enable-nbpkg-build]
-                 operation
+                  [--destdir destdir] [--machine machine] [--obj obj_dir]
+                  [--releasedir releasedir] [--setsdir setsdir]
+                  [--with-nbpkg-build-config config] [--enable-nbpkg-build]
+                  operation
 
  Operations:
     pkg                         Create packages.
@@ -1076,6 +1070,7 @@ Usage: $progname [--arch architecture] [--category category]
     --obj                       Set obj to NetBSD binaries.
                                 [Default: /usr/obj]
     --releasedir                Set releasedir.
+    --setsdir                   Set setsdir that contains meta informations.
     --with-nbpkg-buld-config    WIP (Don't use it unless you are developer.)
     --enable-nbpkg-build        WIP (Don't use it unless you are developer.)
     -h | --help                 Show this message and exit.
@@ -1131,6 +1126,8 @@ _end_msg()
 ###
 # Begin main process.
 #
+
+[ $# = 0 ] && _usage
 
 machine="$(uname -m)" # Firstly, set machine hardware name for _getarch().
 machine_arch=""
@@ -1196,6 +1193,14 @@ while [ $# -gt 0 ]; do
         releasedir="$2"
         shift
         ;;
+    --setsdir=*)
+        setsdir=$(_getopt "$1")
+        ;;
+    --setsdir)
+        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        setsdir="$2"
+        shift
+        ;;
     --with-nbpkg-build-config=*)
         nbpkg_build_config=$(_getopt "$1")
         ;;
@@ -1229,13 +1234,21 @@ export LC_ALL=C LANG=C
 
 if [ -z "$machine_arch" ]; then
     eval "$(_getarch)"
-    _validate_arch
     machine_arch=$MACHINE_ARCH
+    _validate_arch
 fi
 destdir=${destdir:-"$obj/destdir.$machine"}
 releasedir=${releasedir:-.}
 release="$(_osrelease -a)"
 release_k="$(_osrelease -k)"
+setsdir="$PWD/sets"
+lists="$setsdir/lists"
+comments="$setsdir/comments"
+descrs="$setsdir/descrs"
+deps="$setsdir/deps"
+install_script="$setsdir/install"
+deinstall_script="$setsdir/deinstall"
+est="$setsdir/essentials"
 workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
 kernobj="$obj/sys/arch/$machine/compile"
