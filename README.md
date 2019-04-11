@@ -2,29 +2,43 @@
 
 basepkg is developing in GitHub (https://github.com/user340/basepkg).
 
+This software is unstable. It may destroy your system. We recommend that use chroot environment or virtual machine for testing generated packages.
+
 Please contact to Yuuki Enomoto <uki@e-yuuki.org> for bug-report, question, discussion, donation of patches and others. Or you can use GitHub issues and pull-requests for these things.
 
-1. [Usage](#usage)
-    1. [Build the NetBSD distribution](#build-the-netbsd-distribution)
-    2. [Install pkgtools/pkg\_install](#install-pkgtools/pkg_install)
-    3. [Run basepkg.sh](#run-basepkg.sh)
-    4. [How to install package](#how-to-install-pakcage)
-    5. [pkgsrc-wip](#pkgsrc-wip)
-2. [Background](#background)
-    1. [syspkgs](#syspkgs)
-    2. [Goal](#goal)
-    3. [Presentations](#presentations)
-3. [TODO](#todo)
-4. [Contributors](#contributors)
-5. [References](#references)
+<!-- vim-markdown-toc GFM -->
+
+* [1. Usage](#1-usage)
+    * [1.1. Build the NetBSD distribution](#11-build-the-netbsd-distribution)
+    * [1.2. Install pkgtools/pkg\_install](#12-install-pkgtoolspkg_install)
+    * [1.3. Run basepkg.sh](#13-run-basepkgsh)
+    * [1.4. How to install package](#14-how-to-install-package)
+    * [1.5. pkgsrc-wip](#15-pkgsrc-wip)
+* [2. Background](#2-background)
+    * [2.1. syspkgs](#21-syspkgs)
+    * [2.2. Goal](#22-goal)
+    * [2.3. Presentations](#23-presentations)
+* [3. TODO](#3-todo)
+* [4. Contributors](#4-contributors)
+    * [4.1. How to contribute](#41-how-to-contribute)
+
+<!-- vim-markdown-toc -->
 
 ## 1. Usage
 
 ### 1.1. Build the NetBSD distribution
 
-In this procedure, NetBSD source tree is in /usr/src, NetBSD build-tools is in /usr/tools, NetBSD compiled objects is in /usr/obj, NetBSD version is 7.1.2, machine is amd64, and machine archtecture is x86\_64.
+|Version|Architecture|Machine Architecture|
+|:--|:--|:--|
+|8.0|amd64|x86\_64|
 
-This is description how to build NetBSD source tree. You can skip until section 1.2 if you understand it or done.
+|Directory|Description|
+|:--|:--|
+|/usr/src|NetBSD source tree|
+|/usr/tools|Build tools|
+|/usr/obj|Sets of compiled objects|
+
+This is description how to build NetBSD source tree. You can skip until section [1.2. Install pkgtools/pkg\_install](#12-install-pkgtoolspkg_install) if you understand it or done.
 
 Firstly, download NetBSD source sets from FTP server. Then extract it into /usr/src directory.
 
@@ -49,7 +63,7 @@ Build it using `build.sh`.
 
 ### 1.2. Install pkgtools/pkg\_install
 
-basepkg is tested by latest pkgtools/pkg\_install package[1]. We recommend that install it from pkgsrc for `basepkg.sh`.
+basepkg is tested by latest [pkgtools/pkg\_install](http://pkgsrc.se/pkgtools/pkg_install) package. We recommend that install it from pkgsrc for `basepkg.sh`.
 
 This is way of get pkgsrc. Skip the section if you understand or done it.
 
@@ -66,7 +80,7 @@ Run `make install clean clean-depends`.
 # make install clean clean-depends
 ```
 
-Or you can use `pkgin` instead of pkgsrc. `pkgin` is a binary package manager for pkgsrc[2].
+Or you can use `pkgin` instead of pkgsrc. [pkgin](http://pkgin.net) is a binary package manager for pkgsrc.
 
 ### 1.3. Run basepkg.sh
 
@@ -81,7 +95,7 @@ Packages are created under the packages/<release-version>/<machine>-<machine_arc
 
 ### 1.4. How to install package
 
-Running `pkg\_add`. If you want to use other database than pkgsrc, you can use `-K /var/db/basepkg` option for separate database from pkgsrc.
+Running `pkg_add`. If you want to use other database than pkgsrc, you can use `-K /var/db/basepkg` option for separate database from pkgsrc.
 
 ```
 # pkg\_add -K /var/db/basepkg games-games-bin-7.1.tgz
@@ -95,7 +109,7 @@ But "etc" categorized packages are exception. They are installed to /var/tmp/bas
 
 ### 1.5. pkgsrc-wip
 
-basepkg is imported to pkgsrc-wip[3]. You can install basepkg to your system using pkgsrc-wip. But it supporting only latest version package.
+basepkg is imported to [pkgsrc-wip](https://pkgsrc.org/wip). You can install basepkg to your system using pkgsrc-wip. But it supporting only latest version package.
 
 ```
 # cd /usr/pkgsrc/wip/basepkg
@@ -108,7 +122,7 @@ basepkg is imported to pkgsrc-wip[3]. You can install basepkg to your system usi
 
 ### 2.1. syspkgs
 
-NetBSD Wiki described, "syspkgs is the concept of using pkgsrc's pkg\_\* tools to maintain the base system. ... There has been a lot of work in this area already, but it has not yet been finalized."[4]
+NetBSD Wiki described, "syspkgs is the concept of using pkgsrc's pkg\_\* tools to maintain the base system. ... There has been a lot of work in this area already, but it has not yet been finalized." in https://wiki.netbsd.org/projects/project/syspkgs
 
 basepkg is intend to become a successor to syspkg. But basepkg is third-party software less like syspkg. It is an unofficial project of NetBSD.
 
@@ -124,9 +138,8 @@ So we decided to use "package" for NetBSD base system. It is difficult as the ex
 
 The presentations about basepkg are here.
 
-[AsiaBSDCon 2018](http://www.netbsd.org/gallery/presentations/yuuki/2018_AsiaBSDCon/AsiaBSDCon2018-basepkg-paper.pdf )
-
-[AsiaBSDCon 2017](http://www.netbsd.org/gallery/presentations/yuuki/2017_AsiaBSDCon/basepkg.pdf)
+* [AsiaBSDCon 2018](http://www.netbsd.org/gallery/presentations/yuuki/2018_AsiaBSDCon/AsiaBSDCon2018-basepkg-paper.pdf )
+* [AsiaBSDCon 2017](http://www.netbsd.org/gallery/presentations/yuuki/2017_AsiaBSDCon/basepkg.pdf)
 
 ## 3. TODO
 
@@ -144,9 +157,11 @@ The presentations about basepkg are here.
 * Ken'ichi Fukamachi (www.fml.org)
 * Cybertrust Japan Co., Ltd. (www.cybertrust.co.jp, www.miraclelinux.com)
 
-## 5. References
+### 4.1. How to contribute
 
-[1] http://pkgsrc.se/pkgtools/pkg\_install 
-[2] http://pkgin.net
-[3] https://pkgsrc.org/wip
-[4] https://wiki.netbsd.org/projects/project/syspkgs
+* __Be user of basepkg__
+* Create issues on GitHub. Please make use of labels.
+* Send bug-report/comments/request/... by e-mail.
+* Fork the repository; hack it.
+* Send pull-request to __current__ branch if you want it.
+* and more!
