@@ -2,28 +2,28 @@
 #
 # Copyright (c) 2001-2018 The NetBSD Foundation, Inc.
 # Copyright (c) 2016-2019 Yuuki Enomoto
-# All rights reserved. 
-#  
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met: 
-#  
-# * Redistributions of source code must retain the above copyright notice, 
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice,
 #   this list of conditions and the following disclaimer.
-#  
-# * Redistributions in binary form must reproduce the above copyright notice, 
-#   this list of conditions and the following disclaimer in the documentation 
-#   and/or other materials provided with the distribution. 
-#  
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
@@ -32,7 +32,7 @@
 #
 # It does the following works.
 #     - Make packages of base in reference to /usr/obj (default).
-#     - Make kernel packages in reference to 
+#     - Make kernel packages in reference to
 #       /usr/obj/sys/<MACHINE>/compile (default).
 #
 # These are POSIX undefined command.
@@ -40,21 +40,20 @@
 #     - mktemp(1) -- make temporary file name.
 #     - pkg_create(1) -- a utility for creating software package distributions.
 #
-# Please use ShellCheck (https://koalaman/shellcheck) for your code. 
+# Please use ShellCheck (https://koalaman/shellcheck) for your code.
 #
 
 ###
 # Global variables
 #
 
-# define new line and tab 
+# define new line and tab
 nl='
 '
 tab='	'
 
 ###
 # Imported from build.sh
-#
 # valid_MACHINE_ARCH -- A multi-line string, listing all valid
 # MACHINE/MACHINE_ARCH pairs.
 #
@@ -518,7 +517,7 @@ _mk_plist()
  (
     printf "===> _mk_plist()\\n" | tee -a $results
     for i in $category; do
-        awk ' 
+        awk '
         # $1 - file name
         # $2 - package name
         {
@@ -836,7 +835,7 @@ _PRESERVE()
 # _put_basedir -- Change directory name depending on
 # same $machine and $machine_arch or not.
 #
-_put_basedir() 
+_put_basedir()
 {
    if [ "X$machine_arch" != "X$machine" ]; then
      echo "$packages/$release/$machine-$machine_arch"
@@ -856,7 +855,7 @@ _do_pkg_create()
     setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
     pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
 
-    option="-v -l -U 
+    option="-v -l -U
     -B $workdir/$1/+BUILD_INFO
     -i $workdir/$1/+INSTALL
     -K $pkgdb
@@ -924,7 +923,7 @@ _mk_pkg()
             _SIZE_ALL "$pkg"
             _do_pkg_create "$pkg"
     done
-    
+
     _basedir=$(_put_basedir)
     cd "$_basedir" && _mk_checksum
  )
@@ -975,7 +974,7 @@ _DESC_
     cat > "$workdir/$category/$pkgname/+CONTENTS" << _CONTENTS_
 @name $pkgname-$release
 @comment Packaged at $utcdate UTC by $user@$host
-@cwd / 
+@cwd /
 netbsd
 _CONTENTS_
 
@@ -1133,12 +1132,12 @@ machine="$(uname -m)" # Firstly, set machine hardware name for _getarch().
 machine_arch=""
 commandline="$0 $*"
 
-# extension modules 
+# extension modules
 nbpkg_build_enable=0;
 nbpkg_build_config=""
 
 #
-# Parsing long option process. In this process, we don't use getopt(1) and 
+# Parsing long option process. In this process, we don't use getopt(1) and
 # getopts for the following reasons.
 #     - One character option (-a, -m, ...) is difficult to understand.
 #     - The getopt(1) have difference between GNU and BSD.
@@ -1282,22 +1281,22 @@ pkg)
     _mk_plist
     _PRESERVE
     _mk_pkg
-    _end_msg "$(date)" 
+    _end_msg "$(date)"
     ;;
 kern)
     _begin_msg "$commandline" "$start"
     _mk_all_kpkg
-    _end_msg "$(date)" 
+    _end_msg "$(date)"
     ;;
 clean)
     _begin_msg "$commandline" "$start"
     _clean_work
-    _end_msg "$(date)" 
+    _end_msg "$(date)"
     ;;
 cleanpkg)
     _begin_msg "$commandline" "$start"
     _clean_pkg
-    _end_msg "$(date)" 
+    _end_msg "$(date)"
     ;;
 *)
     _usage
