@@ -16,6 +16,23 @@ class TakeValidMachineArch():
         append_mode = False
         with open(path, mode='r', encoding='utf-8') as f:
             for line in f.readlines():
+                """
+                Taking RCS id and copyright notice zone.
+                """
+                if line.startswith('#\t$NetBSD: build.sh,'):
+                    valid_MACHINE_ARCH.append(line + '#\n')
+                    continue
+                if line.startswith('# Copyright (c) 2001-'):
+                    append_mode = True
+                    valid_MACHINE_ARCH.append(line)
+                    continue
+                if line.startswith('# POSSIBILITY OF SUCH DAMAGE.'):
+                    append_mode = False
+                    valid_MACHINE_ARCH.append(line + '#\n')
+                    continue
+                """
+                Taking valid_MACHINE_ARCH zone.
+                """
                 if line.startswith('valid_MACHINE_ARCH=\''):
                     append_mode = True
                     valid_MACHINE_ARCH.append(line)
