@@ -61,7 +61,7 @@
 ./usr/X11R7/bin/ssh-askpass				xbase-x11-bin	xorg
 ./usr/X11R7/bin/startx					xbase-x11-bin	xorg
 ./usr/X11R7/bin/sxpm					xbase-x11-bin	xorg
-./usr/X11R7/bin/twm					xbase-x11-bin	xorg
+./usr/X11R7/bin/twm					xbase-twm	xorg
 ./usr/X11R7/bin/ucs2any					xbase-x11-bin	xorg
 ./usr/X11R7/bin/uxterm					xbase-x11-bin	xorg
 ./usr/X11R7/bin/viewres					xbase-x11-bin	xorg
@@ -1591,7 +1591,7 @@
 ./usr/X11R7/man/man1/ssh-askpass.1			xbase-x11-man	.man,xorg
 ./usr/X11R7/man/man1/startx.1				xbase-x11-man	.man,xorg
 ./usr/X11R7/man/man1/sxpm.1				xbase-x11-man	.man,xorg
-./usr/X11R7/man/man1/twm.1				xbase-x11-man	.man,xorg
+./usr/X11R7/man/man1/twm.1				xbase-twm	.man,xorg
 ./usr/X11R7/man/man1/ucs2any.1				xbase-x11-man	.man,xorg
 ./usr/X11R7/man/man1/viewres.1				xbase-x11-man	.man,xorg
 ./usr/X11R7/man/man1/x11perf.1				xbase-x11-man	.man,xorg
