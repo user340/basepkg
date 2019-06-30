@@ -2,28 +2,28 @@
 #
 # Copyright (c) 2001-2018 The NetBSD Foundation, Inc.
 # Copyright (c) 2016-2019 Yuuki Enomoto
-# All rights reserved. 
-#  
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met: 
-#  
-# * Redistributions of source code must retain the above copyright notice, 
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# * Redistributions of source code must retain the above copyright notice,
 #   this list of conditions and the following disclaimer.
-#  
-# * Redistributions in binary form must reproduce the above copyright notice, 
-#   this list of conditions and the following disclaimer in the documentation 
-#   and/or other materials provided with the distribution. 
-#  
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+# 
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
@@ -32,7 +32,7 @@
 #
 # It does the following works.
 #     - Make packages of base in reference to /usr/obj (default).
-#     - Make kernel packages in reference to 
+#     - Make kernel packages in reference to
 #       /usr/obj/sys/<MACHINE>/compile (default).
 #
 # These are POSIX undefined command.
@@ -40,21 +40,20 @@
 #     - mktemp(1) -- make temporary file name.
 #     - pkg_create(1) -- a utility for creating software package distributions.
 #
-# Please use ShellCheck (https://koalaman/shellcheck) for your code. 
+# Please use ShellCheck (https://koalaman/shellcheck) for your code.
 #
 
 ###
 # Global variables
 #
 
-# define new line and tab 
+# define new line and tab
 nl='
 '
 tab='	'
 
 ###
 # Imported from build.sh
-#
 # valid_MACHINE_ARCH -- A multi-line string, listing all valid
 # MACHINE/MACHINE_ARCH pairs.
 #
@@ -71,114 +70,10 @@ tab='	'
 # MACHINE, then there should be a line with the "NO_DEFAULT" keyword,
 # and with a blank MACHINE_ARCH.
 #
-valid_MACHINE_ARCH='
-MACHINE=acorn32		MACHINE_ARCH=arm
-MACHINE=acorn32		MACHINE_ARCH=earmv4	ALIAS=eacorn32 DEFAULT
-MACHINE=algor		MACHINE_ARCH=mips64el	ALIAS=algor64
-MACHINE=algor		MACHINE_ARCH=mipsel	DEFAULT
-MACHINE=alpha		MACHINE_ARCH=alpha
-MACHINE=amd64		MACHINE_ARCH=x86_64
-MACHINE=amiga		MACHINE_ARCH=m68k
-MACHINE=amigappc	MACHINE_ARCH=powerpc
-MACHINE=arc		MACHINE_ARCH=mips64el	ALIAS=arc64
-MACHINE=arc		MACHINE_ARCH=mipsel	DEFAULT
-MACHINE=atari		MACHINE_ARCH=m68k
-MACHINE=bebox		MACHINE_ARCH=powerpc
-MACHINE=cats		MACHINE_ARCH=arm	ALIAS=ocats
-MACHINE=cats		MACHINE_ARCH=earmv4	ALIAS=ecats DEFAULT
-MACHINE=cesfic		MACHINE_ARCH=m68k
-MACHINE=cobalt		MACHINE_ARCH=mips64el	ALIAS=cobalt64
-MACHINE=cobalt		MACHINE_ARCH=mipsel	DEFAULT
-MACHINE=dreamcast	MACHINE_ARCH=sh3el
-MACHINE=emips		MACHINE_ARCH=mipseb
-MACHINE=epoc32		MACHINE_ARCH=arm
-MACHINE=epoc32		MACHINE_ARCH=earmv4	ALIAS=eepoc32 DEFAULT
-MACHINE=evbarm		MACHINE_ARCH=arm	ALIAS=evboarm-el
-MACHINE=evbarm		MACHINE_ARCH=armeb	ALIAS=evboarm-eb
-MACHINE=evbarm		MACHINE_ARCH=earm	ALIAS=evbearm-el	ALIAS=evbarm-el DEFAULT
-MACHINE=evbarm		MACHINE_ARCH=earmeb	ALIAS=evbearm-eb	ALIAS=evbarm-eb
-MACHINE=evbarm		MACHINE_ARCH=earmhf	ALIAS=evbearmhf-el	ALIAS=evbarmhf-el
-MACHINE=evbarm		MACHINE_ARCH=earmhfeb	ALIAS=evbearmhf-eb	ALIAS=evbarmhf-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv4	ALIAS=evbearmv4-el	ALIAS=evbarmv4-el
-MACHINE=evbarm		MACHINE_ARCH=earmv4eb	ALIAS=evbearmv4-eb	ALIAS=evbarmv4-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv5	ALIAS=evbearmv5-el	ALIAS=evbarmv5-el
-MACHINE=evbarm		MACHINE_ARCH=earmv5eb	ALIAS=evbearmv5-eb	ALIAS=evbarmv5-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv6	ALIAS=evbearmv6-el	ALIAS=evbarmv6-el
-MACHINE=evbarm		MACHINE_ARCH=earmv6hf	ALIAS=evbearmv6hf-el	ALIAS=evbarmv6hf-el
-MACHINE=evbarm		MACHINE_ARCH=earmv6eb	ALIAS=evbearmv6-eb	ALIAS=evbarmv6-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv6hfeb	ALIAS=evbearmv6hf-eb	ALIAS=evbarmv6hf-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv7	ALIAS=evbearmv7-el	ALIAS=evbarmv7-el
-MACHINE=evbarm		MACHINE_ARCH=earmv7eb	ALIAS=evbearmv7-eb	ALIAS=evbarmv7-eb
-MACHINE=evbarm		MACHINE_ARCH=earmv7hf	ALIAS=evbearmv7hf-el	ALIAS=evbarmv7hf-el
-MACHINE=evbarm		MACHINE_ARCH=earmv7hfeb	ALIAS=evbearmv7hf-eb	ALIAS=evbarmv7hf-eb
-MACHINE=evbarm		MACHINE_ARCH=aarch64	ALIAS=evbarm64-el	ALIAS=evbarm64 DEFAULT
-MACHINE=evbarm		MACHINE_ARCH=aarch64eb	ALIAS=evbarm64-eb
-MACHINE=evbcf		MACHINE_ARCH=coldfire
-MACHINE=evbmips		MACHINE_ARCH=		NO_DEFAULT
-MACHINE=evbmips		MACHINE_ARCH=mips64eb	ALIAS=evbmips64-eb
-MACHINE=evbmips		MACHINE_ARCH=mips64el	ALIAS=evbmips64-el
-MACHINE=evbmips		MACHINE_ARCH=mipseb	ALIAS=evbmips-eb
-MACHINE=evbmips		MACHINE_ARCH=mipsel	ALIAS=evbmips-el
-MACHINE=evbppc		MACHINE_ARCH=powerpc	DEFAULT
-MACHINE=evbppc		MACHINE_ARCH=powerpc64	ALIAS=evbppc64
-MACHINE=evbsh3		MACHINE_ARCH=		NO_DEFAULT
-MACHINE=evbsh3		MACHINE_ARCH=sh3eb	ALIAS=evbsh3-eb
-MACHINE=evbsh3		MACHINE_ARCH=sh3el	ALIAS=evbsh3-el
-MACHINE=ews4800mips	MACHINE_ARCH=mipseb
-MACHINE=hp300		MACHINE_ARCH=m68k
-MACHINE=hppa		MACHINE_ARCH=hppa
-MACHINE=hpcarm		MACHINE_ARCH=arm	ALIAS=hpcoarm
-MACHINE=hpcarm		MACHINE_ARCH=earmv4	ALIAS=hpcearm DEFAULT
-MACHINE=hpcmips		MACHINE_ARCH=mipsel
-MACHINE=hpcsh		MACHINE_ARCH=sh3el
-MACHINE=i386		MACHINE_ARCH=i386
-MACHINE=ia64		MACHINE_ARCH=ia64
-MACHINE=ibmnws		MACHINE_ARCH=powerpc
-MACHINE=iyonix		MACHINE_ARCH=arm	ALIAS=oiyonix
-MACHINE=iyonix		MACHINE_ARCH=earm	ALIAS=eiyonix DEFAULT
-MACHINE=landisk		MACHINE_ARCH=sh3el
-MACHINE=luna68k		MACHINE_ARCH=m68k
-MACHINE=mac68k		MACHINE_ARCH=m68k
-MACHINE=macppc		MACHINE_ARCH=powerpc	DEFAULT
-MACHINE=macppc		MACHINE_ARCH=powerpc64	ALIAS=macppc64
-MACHINE=mipsco		MACHINE_ARCH=mipseb
-MACHINE=mmeye		MACHINE_ARCH=sh3eb
-MACHINE=mvme68k		MACHINE_ARCH=m68k
-MACHINE=mvmeppc		MACHINE_ARCH=powerpc
-MACHINE=netwinder	MACHINE_ARCH=arm	ALIAS=onetwinder
-MACHINE=netwinder	MACHINE_ARCH=earmv4	ALIAS=enetwinder DEFAULT
-MACHINE=news68k		MACHINE_ARCH=m68k
-MACHINE=newsmips	MACHINE_ARCH=mipseb
-MACHINE=next68k		MACHINE_ARCH=m68k
-MACHINE=ofppc		MACHINE_ARCH=powerpc	DEFAULT
-MACHINE=ofppc		MACHINE_ARCH=powerpc64	ALIAS=ofppc64
-MACHINE=or1k		MACHINE_ARCH=or1k
-MACHINE=playstation2	MACHINE_ARCH=mipsel
-MACHINE=pmax		MACHINE_ARCH=mips64el	ALIAS=pmax64
-MACHINE=pmax		MACHINE_ARCH=mipsel	DEFAULT
-MACHINE=prep		MACHINE_ARCH=powerpc
-MACHINE=riscv		MACHINE_ARCH=riscv64	ALIAS=riscv64 DEFAULT
-MACHINE=riscv		MACHINE_ARCH=riscv32	ALIAS=riscv32
-MACHINE=rs6000		MACHINE_ARCH=powerpc
-MACHINE=sandpoint	MACHINE_ARCH=powerpc
-MACHINE=sbmips		MACHINE_ARCH=		NO_DEFAULT
-MACHINE=sbmips		MACHINE_ARCH=mips64eb	ALIAS=sbmips64-eb
-MACHINE=sbmips		MACHINE_ARCH=mips64el	ALIAS=sbmips64-el
-MACHINE=sbmips		MACHINE_ARCH=mipseb	ALIAS=sbmips-eb
-MACHINE=sbmips		MACHINE_ARCH=mipsel	ALIAS=sbmips-el
-MACHINE=sgimips		MACHINE_ARCH=mips64eb	ALIAS=sgimips64
-MACHINE=sgimips		MACHINE_ARCH=mipseb	DEFAULT
-MACHINE=shark		MACHINE_ARCH=arm	ALIAS=oshark
-MACHINE=shark		MACHINE_ARCH=earmv4	ALIAS=eshark DEFAULT
-MACHINE=sparc		MACHINE_ARCH=sparc
-MACHINE=sparc64		MACHINE_ARCH=sparc64
-MACHINE=sun2		MACHINE_ARCH=m68000
-MACHINE=sun3		MACHINE_ARCH=m68k
-MACHINE=vax		MACHINE_ARCH=vax
-MACHINE=x68k		MACHINE_ARCH=m68k
-MACHINE=zaurus		MACHINE_ARCH=arm	ALIAS=ozaurus
-MACHINE=zaurus		MACHINE_ARCH=earm	ALIAS=ezaurus DEFAULT
-'
+path_to_valid_MACHINE_ARCH="./lib/valid_MACHINE_ARCH"
+test -f "$path_to_valid_MACHINE_ARCH" \
+  || _bomb "$path_to_valid_MACHINE_ARCH: not found"
+. "$path_to_valid_MACHINE_ARCH" # we can refer $valid_MACHINE_ARCH
 
 PWD="$(pwd)"
 progname=${0##*/}
@@ -518,7 +413,7 @@ _mk_plist()
  (
     printf "===> _mk_plist()\\n" | tee -a $results
     for i in $category; do
-        awk ' 
+        awk '
         # $1 - file name
         # $2 - package name
         {
@@ -836,7 +731,7 @@ _PRESERVE()
 # _put_basedir -- Change directory name depending on
 # same $machine and $machine_arch or not.
 #
-_put_basedir() 
+_put_basedir()
 {
    if [ "X$machine_arch" != "X$machine" ]; then
      echo "$packages/$release/$machine-$machine_arch"
@@ -856,7 +751,7 @@ _do_pkg_create()
     setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
     pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
 
-    option="-v -l -U 
+    option="-v -l -U
     -B $workdir/$1/+BUILD_INFO
     -i $workdir/$1/+INSTALL
     -K $pkgdb
@@ -924,7 +819,7 @@ _mk_pkg()
             _SIZE_ALL "$pkg"
             _do_pkg_create "$pkg"
     done
-    
+
     _basedir=$(_put_basedir)
     cd "$_basedir" && _mk_checksum
  )
@@ -975,7 +870,7 @@ _DESC_
     cat > "$workdir/$category/$pkgname/+CONTENTS" << _CONTENTS_
 @name $pkgname-$release
 @comment Packaged at $utcdate UTC by $user@$host
-@cwd / 
+@cwd /
 netbsd
 _CONTENTS_
 
@@ -1133,12 +1028,12 @@ machine="$(uname -m)" # Firstly, set machine hardware name for _getarch().
 machine_arch=""
 commandline="$0 $*"
 
-# extension modules 
+# extension modules
 nbpkg_build_enable=0;
 nbpkg_build_config=""
 
 #
-# Parsing long option process. In this process, we don't use getopt(1) and 
+# Parsing long option process. In this process, we don't use getopt(1) and
 # getopts for the following reasons.
 #     - One character option (-a, -m, ...) is difficult to understand.
 #     - The getopt(1) have difference between GNU and BSD.
@@ -1282,22 +1177,22 @@ pkg)
     _mk_plist
     _PRESERVE
     _mk_pkg
-    _end_msg "$(date)" 
+    _end_msg "$(date)"
     ;;
 kern)
     _begin_msg "$commandline" "$start"
     _mk_all_kpkg
-    _end_msg "$(date)" 
+    _end_msg "$(date)"
     ;;
 clean)
     _begin_msg "$commandline" "$start"
     _clean_work
-    _end_msg "$(date)" 
+    _end_msg "$(date)"
     ;;
 cleanpkg)
     _begin_msg "$commandline" "$start"
     _clean_pkg
-    _end_msg "$(date)" 
+    _end_msg "$(date)"
     ;;
 *)
     _usage

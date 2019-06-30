@@ -1,0 +1,19 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    FS="\t"
+}
+$0 ~ /^#/ {
+    next
+}
+$0 ~ /obsolete/ {
+    next
+}
+{
+    gsub(/\t+/, "\t");
+    list[NR] = $2
+}
+END {
+    for (i in list)
+        print list[i] | "sort -u"
+}

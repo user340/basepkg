@@ -1,5 +1,6 @@
-Copyright (c) 2001-2019 The NetBSD Foundation, Inc.
-Copyright (c) 2016-2019 Yuuki Enomoto
+#!/usr/bin/env python
+"""
+Copyright (c) 2019 Yuuki Enomoto
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -23,3 +24,32 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
+"""
+
+import argparse
+import os
+from lib import taker
+
+
+def getargs() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description='Sync valid_MACHINE_ARCH list for basepkg.sh'
+    )
+    parser.add_argument(
+        'path',
+        type=str,
+        help='Specify path to build.sh of NetBSD source tree'
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = getargs()
+    if not os.path.exists(args.path):
+        raise FileNotFoundError
+    for line in taker.TakeValidMachineArch().taker(args.path):
+        print(line, end='')
+
+
+if __name__ == '__main__':
+    main()

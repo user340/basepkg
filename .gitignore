@@ -1,0 +1,7 @@
+.tags
+devtools/sync_valid_MACHINE_ARCH/build/
+devtools/sync_valid_MACHINE_ARCH/src/lib/__pycache__/
+devtools/sync_valid_MACHINE_ARCH/src/tests/__pycache__/
+obj/
+packages/
+work/
