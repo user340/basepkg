@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2001-2018 The NetBSD Foundation, Inc.
+# Copyright (c) 2001-2019 The NetBSD Foundation, Inc.
 # Copyright (c) 2016-2019 Yuuki Enomoto
 # All rights reserved.
 # 
@@ -1029,7 +1029,7 @@ machine_arch=""
 commandline="$0 $*"
 
 # extension modules
-nbpkg_build_enable=0;
+nbpkg_build_enable=0
 nbpkg_build_config=""
 
 #
