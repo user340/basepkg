@@ -54,6 +54,8 @@
 #
 # These code were imported from NetBSD's build.sh.
 #
+###############################################################################
+
 errmsg=''		# error message, if not empty
 shelltest=false		# if true, exit after testing the shell
 re_exec_allowed=true	# if true, we may exec under another shell
@@ -268,21 +270,24 @@ EOF
     exit 1
 fi
 
+###############################################################################
 #
 # }}} End shell feature tests.
 #
 ###############################################################################
 
-###
+###############################################################################
+#
 # Global variables
 #
+###############################################################################
 
 # define new line and tab
 nl='
 '
 tab='	'
 
-###
+#
 # Imported from build.sh
 # valid_MACHINE_ARCH -- A multi-line string, listing all valid
 # MACHINE/MACHINE_ARCH pairs.
@@ -325,9 +330,11 @@ packages="$PWD/packages"
 category="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
 pkgdb="/var/db/basepkg"
 
-###
+###############################################################################
+#
 # Functions
 #
+###############################################################################
 
 #
 # _err -- Output the error message with date.
@@ -1247,9 +1254,11 @@ _end_msg()
     rm -f $results
 }
 
-###
+###############################################################################
+#
 # Begin main process.
 #
+###############################################################################
 
 [ $# = 0 ] && _usage
 
