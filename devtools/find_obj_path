@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# find_obj_path -- compare obj
+
+_bomb()
+{
+    printf " s\\n" "$@"
+    exit 1
+}
+
+[ $# = 0 ] && cat << EOF
+$0 <list_filename>
+EOF
+
+[ -f "$1" ] || _bomb "$1 not found"
+
+OBJDIR="/zpool/obj"
+
+while read -r line; do
+    if printf "%s" "$line" | grep -q '^#'; then
+        printf "\\n"
+        continue
+    elif printf "%s" "$line" | grep -q 'obsolete'; then
+        printf "\\n"
+        continue
+    fi
+    obj="$(printf "%s" "$line" | cut -f 1)"
+    find "$OBJDIR" -type d -name 'destdir.amd64' -prune -o -name "${obj##*/}" -print
+done < "$1" | paste "$1" -
