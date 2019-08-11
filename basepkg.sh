@@ -855,7 +855,7 @@ _replace_cmdstr()
         -e "s%@CAT@%/bin/cat%" \
         -e "s%@CHGRP@%/bin/chgrp%" \
         -e "s%@CHMOD@%/bin/chmod%" \
-        -e "s%@CHOWN@%/bin/chown%" \
+        -e "s%@CHOWN@%/sbin/chown%" \
         -e "s%@CMP@%/usr/bin/cmp%" \
         -e "s%@CP@%/bin/cp%" \
         -e "s%@DIRNAME@%/usr/bin/dirname%" \
