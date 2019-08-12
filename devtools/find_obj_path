@@ -4,13 +4,11 @@
 
 _bomb()
 {
-    printf " s\\n" "$@"
+    printf "%s\\n" "$@"
     exit 1
 }
 
-[ $# = 0 ] && cat << EOF
-$0 <list_filename>
-EOF
+[ $# = 0 ] && _bomb "$0 <list_filename>"
 
 [ -f "$1" ] || _bomb "$1 not found"
 
