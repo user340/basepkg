@@ -15,13 +15,11 @@ _bomb()
 OBJDIR="/zpool/obj"
 
 while read -r line; do
-    if printf "%s" "$line" | grep -q '^#'; then
-        printf "\\n"
-        continue
-    elif printf "%s" "$line" | grep -q 'obsolete'; then
-        printf "\\n"
-        continue
+    if printf "%s" "$line" | grep -q 'unknown'; then
+        obj="$(printf "%s" "$line" | cut -f 1)"
+        #find "$OBJDIR" -type d -name 'destdir.amd64' -prune -o -name "${obj##*/}" -type f -print -exit 1 && printf "---\\n"
+        find "$OBJDIR" -type f -name "${obj##*/}" -print -exit 1 && printf "---\\n"
+    else
+        printf "---\\n"
     fi
-    obj="$(printf "%s" "$line" | cut -f 1)"
-    find "$OBJDIR" -type d -name 'destdir.amd64' -prune -o -name "${obj##*/}" -print
 done < "$1" | paste "$1" -
