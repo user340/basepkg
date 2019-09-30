@@ -587,7 +587,8 @@ _split_category()
             test -f "$j/stl.mi" && stl="$j/stl.mi"
             moduledir="stand/$machine/$release_k/modules"
             # shellcheck disable=SC2086
-            cat $ad $mi $md $module $rescue $rescue_ad \
+            cat \
+                $ad $mi $md $module $rescue $rescue_ad \
                 $rescue_machine $shl $stl \
             | awk '
                 ! /^\#/ {
@@ -636,7 +637,6 @@ _mk_pkgtree()
 #
 _mk_plist()
 {
-    local i=""
     printf "===> _mk_plist()\\n" | tee -a $results
     for i in $category; do
         awk '
@@ -1375,9 +1375,9 @@ test -f "$install_script"  || _bomb "require $install_script"
 test "X$release" != "X" || _bomb "cannot resolve \$release"
 
 test $# -eq 0 && _usage
-for cmd in "hostname" "mktemp" "pkg_create"; do
-    command -v "$cmd" > /dev/null 2>&1 || _bomb "$cmd not found."
-done
+command -v hostname > /dev/null 2>&1 || _bomb "hostname(1) not found."
+command -v mktemp > /dev/null 2>&1 || _bomb "mktemp(1) not found."
+command -v pkg_create > /dev/null 2>&1 || _bomb "pkg_create(1) not found."
 
 #
 # operation
