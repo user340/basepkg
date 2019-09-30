@@ -380,7 +380,8 @@ _bomb()
 #
 _getarch()
 {
-    local found=""
+ (
+    found=""
 
     IFS="$nl"
     for line in $valid_MACHINE_ARCH; do
@@ -444,6 +445,7 @@ _getarch()
         _bomb "Unknown target MACHINE: $machine"
         ;;
     esac
+ )
 }
 
 #
@@ -456,7 +458,8 @@ _getarch()
 #
 _validate_arch()
 {
-    local foundpair=false foundmachine=false foundarch=false
+ (
+    foundpair=false foundmachine=false foundarch=false
 
     # MACHINE_ARCH may not be assigned, but catch at "case ... in"
     # shellcheck disable=SC2153
@@ -504,6 +507,7 @@ _validate_arch()
         _bomb "MACHINE_ARCH '$MACHINE_ARCH' does not support MACHINE '$MACHINE'"
         ;;
     esac
+ )
 }
 
 
@@ -515,7 +519,8 @@ _validate_arch()
 #
 _osrelease()
 {
-    local option="$1"
+ (
+    option="$1"
     exec < "$destdir/$param"
 
     # In this function, "comment_start" and "NetBSD" are unreferenced variables.
@@ -553,6 +558,7 @@ _osrelease()
         echo "$*"
         ;;
     esac
+ )
 }
 
 #
@@ -560,7 +566,7 @@ _osrelease()
 #
 _split_category()
 {
-    local ad="" mi="" md="" module="" rescue="" rescue_ad="" rescue_machine="" shl="" stl=""
+ (
     printf "===> _split_category()\\n" | tee -a $results
     for i in $category; do
         test -d "$workdir/$i" || mkdir -p "$workdir/$i"
@@ -617,6 +623,7 @@ _split_category()
                 }' >> "$workdir/$i/FILES"
       done
     done
+ )
 }
 
 #
@@ -624,11 +631,13 @@ _split_category()
 #
 _mk_pkgtree()
 {
+ (
     printf "===> _mk_pkgtree()\\n" | tee -a $results
     for i in $category; do
         awk '{print $2}' "$workdir/$i/FILES" | sort | uniq \
         | xargs -n 1 -I % sh -c "test -d $workdir/$i/% || mkdir $workdir/$i/%"
     done
+ )
 }
 
 #
@@ -637,6 +646,7 @@ _mk_pkgtree()
 #
 _mk_plist()
 {
+ (
     printf "===> _mk_plist()\\n" | tee -a $results
     for i in $category; do
         awk '
@@ -665,6 +675,7 @@ _mk_plist()
             }' "$workdir/$i/CATEGORIZED" > "$j/PLIST"
         done
     done
+ )
 }
 
 #
@@ -720,10 +731,11 @@ _mk_depend()
 #
 _CONTENTS()
 {
-    local TMPFILE=$(mktemp -q || _bomb "$TMPFILE")
-    local setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
-    local pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
-    local prefix="/"
+ (
+    TMPFILE=$(mktemp -q || _bomb "$TMPFILE")
+    setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
+    pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
+    prefix="/"
     test "$setname" = "etc" && prefix="/var/tmp/basepkg"
 
     echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
@@ -749,6 +761,7 @@ _CONTENTS()
 
     sort "$TMPFILE" >> "$workdir/$1/+CONTENTS"
     rm -f "$TMPFILE"
+ )
 }
 
 #
@@ -799,7 +812,8 @@ _SIZE_ALL()
 #
 _DESC_and_COMMENT()
 {
-    local pkgname="${1#*/}"
+ (
+    pkgname="${1#*/}"
 
     awk '
     /^'"$pkgname"'/ {
@@ -820,6 +834,7 @@ _DESC_and_COMMENT()
                 printf $i" "
         }
     }' "$comments" > "$workdir/$1/+COMMENT" || _bomb "awk +COMMENT"
+ )
 }
 
 #
@@ -895,7 +910,8 @@ _replace_cmdstr()
 #
 _INSTALL()
 {
-    local user_group_mode=""
+ (
+    user_group_mode=""
 
     test -f "$workdir/$1/+INSTALL" && rm -f "$workdir/$1/+INSTALL"
     _replace_cmdstr "$install_script" > "$workdir/$1/+INSTALL"
@@ -919,6 +935,7 @@ _INSTALL()
                 >> "$workdir/$1/+INSTALL"
         fi
     done
+ )
 }
 
 #
@@ -934,6 +951,7 @@ _DEINSTALL()
 #
 _PRESERVE()
 {
+ (
     while read -r e_pkg; do
         e_path=$(find "$workdir" -name "$e_pkg" -type d)
 
@@ -942,6 +960,7 @@ _PRESERVE()
 
         test "$e_path" && printf "%s-%s" "$e_pkg" "$release" > "$e_path/+PRESERVE"
     done < "$est"
+ )
 }
 
 #
@@ -964,10 +983,11 @@ _put_basedir()
 #
 _do_pkg_create()
 {
-    local setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
-    local pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
+ (
+    setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
+    pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
 
-    local option="-v -l -U
+    option="-v -l -U
     -B $workdir/$1/+BUILD_INFO
     -i $workdir/$1/+INSTALL
     -K $pkgdb
@@ -993,6 +1013,7 @@ _do_pkg_create()
     _basedir=$(_put_basedir)
     test -d "$_basedir" || mkdir -p "$_basedir"
     mv "./$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
+ )
 }
 
 _mk_checksum()
@@ -1006,8 +1027,7 @@ _mk_checksum()
 #
 _mk_pkg()
 {
-    local pkg=""
-
+ (
     printf "===> _mk_pkg()\\n" | tee -a $results
     find "$workdir" -type d -name '*-*-*' \
         | sed "s|$workdir/||g" \
@@ -1038,6 +1058,7 @@ _mk_pkg()
 
     _basedir=$(_put_basedir)
     cd "$_basedir" && _mk_checksum
+ )
 }
 
 #
@@ -1050,8 +1071,9 @@ _mk_pkg()
 #
 _mk_kpkg()
 {
-    local category="base"
-    local pkgname="base-kernel-$1"
+ (
+    category="base"
+    pkgname="base-kernel-$1"
 
     if [ ! -f "$obj/sys/arch/$machine/compile/$1/netbsd" ]; then
         _err "$1/netbsd not found."
@@ -1110,6 +1132,7 @@ _CONTENTS_
     _basedir=$(_put_basedir)
     test -d "$_basedir" || mkdir -p "$_basedir"
     mv "$PWD/$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
+ )
 }
 
 #
@@ -1119,12 +1142,14 @@ _CONTENTS_
 #
 _mk_all_kpkg()
 {
+ (
     printf "===> _mk_all_kpkg()\\n" | tee -a $results
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
     ls $kernobj | while read -r kname; do
         _mk_kpkg "$kname"
     done
+ )
 }
 
 #
