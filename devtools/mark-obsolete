@@ -1,21 +1,38 @@
 #!/usr/bin/env python
 
 import argparse
-from os import path
+import re
+from pathlib import Path
+
+netbsd_sets = frozenset(
+    [
+        'base', 'comp', 'debug', 'etc', 'games', 'man',
+        'misc', 'modules', 'rescue', 'tests', 'text',
+        'xbase', 'xcomp', 'xdebug', 'xetc', 'xfont', 'xserver'
+    ]
+)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('set', type=str)
 parser.add_argument('file', type=str)
 args = parser.parse_args()
 
-if not path.exists(args.file):
-    raise FileNotFoundError(f'{args.file}: no such file or directory')
+original = Path(args.file)
+tempfile = Path(original.as_posix() + '.tmp')
 
-with open(args.file, mode='r', encoding='utf-8') as f:
-    for line in f:
-        if '\tobsolete' in line:
-            print(line.replace('-unknown-', f'{args.set}-obsolete'), end='')
-        else:
-            print(line, end='')
+if args.set not in netbsd_sets:
+    raise ValueError(f'{args.set} is not NetBSD binary sets')
+if not original.exists():
+    raise FileNotFoundError
+if tempfile.exists():
+    tempfile.unlink()
 
-exit(0)
+with tempfile.open(mode='w', encoding='utf-8') as tmp:
+    with original.open(mode='r', encoding='utf-8') as f:
+        for line in f:
+            if re.search(r'[\t,]obsolete', line):
+                tmp.write(line.replace('-unknown-', f'{args.set}-obsolete'))
+            else:
+                tmp.write(line)
+
+tempfile.replace(original)
