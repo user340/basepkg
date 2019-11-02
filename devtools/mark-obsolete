@@ -3,14 +3,7 @@
 import argparse
 import re
 from pathlib import Path
-
-netbsd_sets = frozenset(
-    [
-        'base', 'comp', 'debug', 'etc', 'games', 'man',
-        'misc', 'modules', 'rescue', 'tests', 'text',
-        'xbase', 'xcomp', 'xdebug', 'xetc', 'xfont', 'xserver'
-    ]
-)
+from lib import common
 
 parser = argparse.ArgumentParser()
 parser.add_argument('set', type=str)
@@ -20,7 +13,7 @@ args = parser.parse_args()
 original = Path(args.file)
 tempfile = Path(original.as_posix() + '.tmp')
 
-if args.set not in netbsd_sets:
+if args.set not in common.NetBSD_sets:
     raise ValueError(f'{args.set} is not NetBSD binary sets')
 if not original.exists():
     raise FileNotFoundError
