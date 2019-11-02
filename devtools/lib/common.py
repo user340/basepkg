@@ -2,6 +2,7 @@
 
 NetBSD_src_dir = "~/src/cvs.NetBSD.org/src"
 NetBSD_xsrc_dir = "~/src/cvs.NetBSD.org/xsrc"
+NetBSD_obj_dir = "/zpool/obj"
 NetBSD_sets = frozenset(
     [
         'base',
