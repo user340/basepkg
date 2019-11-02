@@ -50,6 +50,8 @@ def sync_pkgname(pair: Pair, dest: PosixPath) -> None:
         raise FileNotFoundError
 
     tempfile = Path(dest.as_posix() + '.tmp')
+    if tempfile.exists():
+        tempfile.unlink()
 
     with tempfile.open(mode='w', encoding='utf-8') as tmp:
         with dest.open(mode='r', encoding='utf-8') as f:
