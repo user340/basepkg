@@ -12,11 +12,23 @@ args = parser.parse_args()
 
 original = Path(args.file)
 tempfile = Path(original.as_posix() + '.tmp')
+del args.file
 
 if args.set not in common.NetBSD_sets:
     raise ValueError(f'{args.set} is not NetBSD binary sets')
 if not original.exists():
-    raise FileNotFoundError
+    # Retry
+    failed = original
+    original = Path(common.NetBSD_src_dir).expanduser() / 'distrib' \
+                                                        / 'sets' \
+                                                        / 'lists' \
+                                                        / args.set \
+                                                        / original.as_posix()
+    if not original.exists():
+        raise FileNotFoundError(
+            f'I tried search {failed} and {original} but not found them.'
+        )
+    del failed
 if tempfile.exists():
     tempfile.unlink()
 
