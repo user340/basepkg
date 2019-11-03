@@ -163,5 +163,5 @@ The presentations about basepkg are here.
 * Create issues on GitHub. Please make use of labels.
 * Send bug-report/comments/request/... by e-mail.
 * Fork the repository; hack it.
-* Send pull-request to __current__ branch if you want it.
+* Send pull-request.
 * and more!
