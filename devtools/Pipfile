@@ -13,4 +13,5 @@ flake8-mypy = "*"
 python_version = "3.8"
 
 [scripts]
-mark-obsolete = "python mark-obsolete"
+mark_obsolete = "python mark_obsolete.py"
+give_debug_package_names = "python give_debug_package_names.py"

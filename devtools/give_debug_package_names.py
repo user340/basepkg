@@ -152,6 +152,8 @@ def give_package_names(path: PosixPath, file_and_pkg: dict) -> None:
 
                 tmp.write(line.replace('-unknown-', debug_package_name))
 
+    tempfile.replace(path)
+
 
 def main():
     args = getargs()
