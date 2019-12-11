@@ -306,8 +306,7 @@ tab='	'
 # and with a blank MACHINE_ARCH.
 #
 path_to_valid_MACHINE_ARCH="./lib/valid_MACHINE_ARCH"
-test -f "$path_to_valid_MACHINE_ARCH" \
-  || _bomb "$path_to_valid_MACHINE_ARCH: not found"
+_bomb_if_not_found "$path_to_valid_MACHINE_ARCH"
 . "$path_to_valid_MACHINE_ARCH" # we can refer $valid_MACHINE_ARCH
 
 PWD="$(pwd)"
@@ -355,9 +354,34 @@ _err()
 _bomb()
 {
     printf "ERROR: %s\\n *** PACKAGING ABORTED ***\\n" "$@"
-    test -f "$results" && rm -f "$results"
+    _remove_if_exists "$results"
     kill $toppid
     exit 1
+}
+
+_bomb_if_command_not_found()
+{
+    command -v "$1" > /dev/null 2>&1 || _bomb "$1 not found."
+}
+
+_bomb_if_not_found()
+{
+    test -f "$1" || _bomb "$1 not found"
+}
+
+_mkdir_if_not_exists()
+{
+    test -d "$1" || mkdir -p "$1"
+}
+
+_remove_if_exists()
+{
+    test -f "$1" && rm -f "$1"
+}
+
+_remove_directory_if_exists_and_writable()
+{
+    test -w "$1" && rm -fr "$1"
 }
 
 #
@@ -569,8 +593,8 @@ _split_category()
  (
     printf "===> _split_category()\\n" | tee -a $results
     for i in $category; do
-        test -d "$workdir/$i" || mkdir -p "$workdir/$i"
-        test -f "$workdir/$i/FILES" && rm -f "$workdir/$i/FILES"
+        _mkdir_if_not_exists "$workdir/$i"
+        _remove_if_exists "$workdir/$i/FILES"
         for j in "$lists"/* ; do
             ad=""
             mi=""
@@ -631,13 +655,11 @@ _split_category()
 #
 _mk_pkgtree()
 {
- (
     printf "===> _mk_pkgtree()\\n" | tee -a $results
     for i in $category; do
-        awk '{print $2}' "$workdir/$i/FILES" | sort | uniq \
+        awk '{print $2}' "$workdir/$i/FILES" | sort -u \
         | xargs -n 1 -I % sh -c "test -d $workdir/$i/% || mkdir $workdir/$i/%"
     done
- )
 }
 
 #
@@ -741,9 +763,9 @@ _CONTENTS()
     echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
     echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
 
-    test -f "$tmp_deps" && rm -f "$tmp_deps"
+    _remove_if_exists "$tmp_deps"
     _mk_depend "$pkgname"
-    test -f "$tmp_deps" && sort "$tmp_deps" | uniq >> "$workdir/$1/+CONTENTS"
+    test -f "$tmp_deps" && sort -u "$tmp_deps" >> "$workdir/$1/+CONTENTS"
 
     echo "@cwd $prefix" >> "$workdir/$1/+CONTENTS"
     while read -r i; do
@@ -812,8 +834,7 @@ _SIZE_ALL()
 #
 _DESC_and_COMMENT()
 {
- (
-    pkgname="${1#*/}"
+    local pkgname="${1#*/}"
 
     awk '
     /^'"$pkgname"'/ {
@@ -834,7 +855,6 @@ _DESC_and_COMMENT()
                 printf $i" "
         }
     }' "$comments" > "$workdir/$1/+COMMENT" || _bomb "awk +COMMENT"
- )
 }
 
 #
@@ -910,13 +930,15 @@ _replace_cmdstr()
 #
 _INSTALL()
 {
- (
-    user_group_mode=""
+    local user_group_mode=""
+    local _mode=""
+    local _user=""
+    local _group=""
 
-    test -f "$workdir/$1/+INSTALL" && rm -f "$workdir/$1/+INSTALL"
+    _remove_if_exists "$workdir/$1/+INSTALL"
     _replace_cmdstr "$install_script" > "$workdir/$1/+INSTALL"
+    _bomb_if_not_found "$workdir/$1/+CONTENTS"
 
-    test -f "$workdir/$1/+CONTENTS" || _bomb "+CONTENTS not found."
     # For +FILES routine which is conained in sets/install script.
     grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
         test "$(file "$obj/$file" | cut -d " " -f 2)" = "symbolic" && continue
@@ -935,7 +957,6 @@ _INSTALL()
                 >> "$workdir/$1/+INSTALL"
         fi
     done
- )
 }
 
 #
@@ -951,16 +972,12 @@ _DEINSTALL()
 #
 _PRESERVE()
 {
- (
-    while read -r e_pkg; do
-        e_path=$(find "$workdir" -name "$e_pkg" -type d)
+    local essential_path=""
 
-        # For debug.
-        #printf "%s-%s -> %s\n" "$e_pkg" "$release" "$e_path/+PRESERVE"
-
-        test "$e_path" && printf "%s-%s" "$e_pkg" "$release" > "$e_path/+PRESERVE"
-    done < "$est"
- )
+    while read -r essential_pkg; do
+        essential_path=$(find "$workdir" -name "$essential_pkg" -type d)
+        printf "%s-%s" "$essential_pkg" "$release" > "$essential_path/+PRESERVE"
+    done < "$essential"
 }
 
 #
@@ -983,11 +1000,9 @@ _put_basedir()
 #
 _do_pkg_create()
 {
- (
-    setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
-    pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
-
-    option="-v -l -U
+    local setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
+    local pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
+    local option="-v -l -U
     -B $workdir/$1/+BUILD_INFO
     -i $workdir/$1/+INSTALL
     -K $pkgdb
@@ -1010,10 +1025,9 @@ _do_pkg_create()
     # shellcheck disable=SC2086
     pkg_create $option "$pkgname" || _bomb "$1: pkg_create"
 
-    _basedir=$(_put_basedir)
-    test -d "$_basedir" || mkdir -p "$_basedir"
+    local _basedir=$(_put_basedir)
+    _mkdir_if_not_exists "$_basedir"
     mv "./$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
- )
 }
 
 _mk_checksum()
@@ -1022,66 +1036,64 @@ _mk_checksum()
     find ./*.tgz -exec cksum -a sha512 {} \; > SHA512
 }
 
+_find_package_directory()
+{
+    find "$workdir" -type d -name '*-*-*' | sed "s|$workdir/||g"
+}
+
+_is_nbpkg_daily_build()
+{
+    [ "X$nbpkg_build_config" != "X" ] && [ "X$nbpkg_build_target" = "Xdaily" ]
+}
+
 #
 # _mk_pkg -- Execute any functions and make MD5 and SHA512.
 #
 _mk_pkg()
 {
- (
     printf "===> _mk_pkg()\\n" | tee -a $results
-    find "$workdir" -type d -name '*-*-*' \
-        | sed "s|$workdir/||g" \
-        | while read -r pkg; do
-            _BUILD_INFO "$pkg"
-            _CONTENTS "$pkg"
-            _SIZE_PKG "$pkg"
-            _DESC_and_COMMENT "$pkg"
-            _INSTALL "$pkg"
-            _DEINSTALL "$pkg"
+    _find_package_directory | while read -r pkg; do
+        _BUILD_INFO "$pkg"
+        _CONTENTS "$pkg"
+        _SIZE_PKG "$pkg"
+        _DESC_and_COMMENT "$pkg"
+        _INSTALL "$pkg"
+        _DEINSTALL "$pkg"
     done
 
-    # XXX EXTENSION: build least packages specified by nbpgk-build
-    if [ "X$nbpkg_build_config" != "X" ];then
-    if [ "X$nbpkg_build_target" = "Xdaily" ];then
-       find "$workdir" -type d -name '*-*-*'     |
-       egrep -f $nbpkg_build_list_filter
+    # XXX EXTENSION: build least packages specified by nbpkg-build
+    if _is_nbpkg_daily_build; then
+        _find_package_directory | egrep -f $nbpkg_build_list_filter
     else
-       find "$workdir" -type d -name '*-*-*'
-    fi
-    else
-    find "$workdir" -type d -name '*-*-*'
-    fi  | sed "s|$workdir/||g" \
-        | while read -r pkg; do
-            _SIZE_ALL "$pkg"
-            _do_pkg_create "$pkg"
+        _find_package_directory
+    fi | while read -r pkg; do
+           _SIZE_ALL "$pkg"
+           _do_pkg_create "$pkg"
     done
 
-    _basedir=$(_put_basedir)
+    local _basedir=$(_put_basedir)
     cd "$_basedir" && _mk_checksum
- )
 }
 
 #
-# _mk_kpkg -- Make kernel package.
+# _mk_kernel_package -- Make kernel package.
 #
 # Now, information of meta-data is not write to another files such as
 # ./sets/comments. Because the packaged file is only kernel binary named
 # "netbsd". If add the kernel package's information to files that under the
 # ./sets directory, This function will be deleted.
 #
-_mk_kpkg()
+_mk_kernel_package()
 {
- (
-    category="base"
-    pkgname="base-kernel-$1"
+    local category="base"
+    local pkgname="base-kernel-$1"
 
     if [ ! -f "$obj/sys/arch/$machine/compile/$1/netbsd" ]; then
         _err "$1/netbsd not found."
         return 1
     fi
 
-    test -d "$workdir/$category/.$pkgname" || \
-        mkdir -p "$workdir/$category/$pkgname"
+    _mkdir_if_not_exists "$workdir/$category/$pkgname"
 
     # Information of build environment.
     cat > "$workdir/$category/$pkgname/+BUILD_INFO" << _BUILD_INFO_
@@ -1130,9 +1142,8 @@ _CONTENTS_
     -K "$pkgdb" "$pkgname" || _bomb "kernel: pkg_create"
 
     _basedir=$(_put_basedir)
-    test -d "$_basedir" || mkdir -p "$_basedir"
+    _mkdir_if_not_exists "$_basedir"
     mv "$PWD/$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
- )
 }
 
 #
@@ -1142,23 +1153,21 @@ _CONTENTS_
 #
 _mk_all_kpkg()
 {
- (
     printf "===> _mk_all_kpkg()\\n" | tee -a $results
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
     ls $kernobj | while read -r kname; do
-        _mk_kpkg "$kname"
+        _mk_kernel_package "$kname"
     done
- )
 }
 
 #
-# _clean_work -- Clean working directories.
+# _clean_workdir -- Clean working directories.
 #
-_clean_work()
+_clean_workdir()
 {
     printf "_clean_workdir()\\n"
-    test -w "$workdir" && rm -fr "$workdir"
+    _remove_directory_if_exists_and_writable "$workdir"
 }
 
 #
@@ -1167,7 +1176,7 @@ _clean_work()
 _clean_pkg()
 {
     printf "_clean_pkg()\\n"
-    test -w "$packages" && rm -fr "$packages"
+    _remove_directory_if_exists_and_writable "$packages"
 }
 
 #
@@ -1381,7 +1390,7 @@ descrs="$setsdir/descrs"
 deps="$setsdir/deps"
 install_script="$setsdir/install"
 deinstall_script="$setsdir/deinstall"
-est="$setsdir/essentials"
+essential="$setsdir/essentials"
 workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
 kernobj="$obj/sys/arch/$machine/compile"
@@ -1396,13 +1405,13 @@ fi
 #
 # least assertions
 #
-test -f "$install_script"  || _bomb "require $install_script"
+_bomb_if_not_found "$install_script"
 test "X$release" != "X" || _bomb "cannot resolve \$release"
 
 test $# -eq 0 && _usage
-command -v hostname > /dev/null 2>&1 || _bomb "hostname(1) not found."
-command -v mktemp > /dev/null 2>&1 || _bomb "mktemp(1) not found."
-command -v pkg_create > /dev/null 2>&1 || _bomb "pkg_create(1) not found."
+for cmd in hostname mktemp pkg_create; do
+    _bomb_if_command_not_found "$cmd"
+done
 
 #
 # operation
@@ -1424,7 +1433,7 @@ kern)
     ;;
 clean)
     _begin_msg "$commandline" "$start"
-    _clean_work
+    _clean_workdir
     _end_msg "$(date)"
     ;;
 cleanpkg)
@@ -1436,6 +1445,3 @@ cleanpkg)
     _usage
     ;;
 esac
-
-# Success.
-exit 0
