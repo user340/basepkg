@@ -1067,8 +1067,8 @@ _mk_pkg()
     else
         _find_package_directory
     fi | while read -r pkg; do
-           _SIZE_ALL "$pkg"
-           _do_pkg_create "$pkg"
+        _SIZE_ALL "$pkg"
+        _do_pkg_create "$pkg"
     done
 
     local _basedir=$(_put_basedir)
@@ -1156,8 +1156,8 @@ _mk_all_kpkg()
     printf "===> _mk_all_kpkg()\\n" | tee -a $results
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
-    ls $kernobj | while read -r kname; do
-        _mk_kernel_package "$kname"
+    ls $kernobj | while read -r kernel_name; do
+        _mk_kernel_package "$kernel_name"
     done
 }
 
