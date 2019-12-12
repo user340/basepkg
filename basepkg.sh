@@ -278,59 +278,6 @@ fi
 
 ###############################################################################
 #
-# Global variables
-#
-###############################################################################
-
-# define new line and tab
-nl='
-'
-tab='	'
-
-#
-# Imported from build.sh
-# valid_MACHINE_ARCH -- A multi-line string, listing all valid
-# MACHINE/MACHINE_ARCH pairs.
-#
-# Each line contains a MACHINE and MACHINE_ARCH value, an optional ALIAS
-# which may be used to refer to the MACHINE/MACHINE_ARCH pair, and an
-# optional DEFAULT or NO_DEFAULT keyword.
-#
-# When a MACHINE corresponds to multiple possible values of
-# MACHINE_ARCH, then this table should list all allowed combinations.
-# If the MACHINE is associated with a default MACHINE_ARCH (to be
-# used when the user specifies the MACHINE but fails to specify the
-# MACHINE_ARCH), then one of the lines should have the "DEFAULT"
-# keyword.  If there is no default MACHINE_ARCH for a particular
-# MACHINE, then there should be a line with the "NO_DEFAULT" keyword,
-# and with a blank MACHINE_ARCH.
-#
-path_to_valid_MACHINE_ARCH="./lib/valid_MACHINE_ARCH"
-_bomb_if_not_found "$path_to_valid_MACHINE_ARCH"
-. "$path_to_valid_MACHINE_ARCH" # we can refer $valid_MACHINE_ARCH
-
-PWD="$(pwd)"
-progname=${0##*/}
-host="$(hostname)"
-opsys="$(uname)"
-osversion="$(uname -r)"
-pkgtoolversion="$(pkg_create -V)"
-utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
-user="${USER:-root}"
-param="usr/include/sys/param.h"
-tmp_deps="/tmp/culldeps"
-homepage="https://github.com/user340/basepkg"
-mail_address="uki@e-yuuki.org"
-toppid=$$
-results=".basepkg.log"
-
-obj="/usr/obj"
-packages="$PWD/packages"
-category="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
-pkgdb="/var/db/basepkg"
-
-###############################################################################
-#
 # Functions
 #
 ###############################################################################
@@ -354,7 +301,7 @@ _err()
 _bomb()
 {
     printf "ERROR: %s\\n *** PACKAGING ABORTED ***\\n" "$@"
-    _remove_if_exists "$results"
+    _remove_if_exists "$log"
     kill $toppid
     exit 1
 }
@@ -382,6 +329,11 @@ _remove_if_exists()
 _remove_directory_if_exists_and_writable()
 {
     test -w "$1" && rm -fr "$1"
+}
+
+_logging()
+{
+    printf "%s\\n" "$@" | tee -a "$log"
 }
 
 #
@@ -543,8 +495,8 @@ _validate_arch()
 #
 _osrelease()
 {
- (
-    option="$1"
+    local option="$1"
+
     exec < "$destdir/$param"
 
     # In this function, "comment_start" and "NetBSD" are unreferenced variables.
@@ -555,14 +507,14 @@ _osrelease()
         [ "$ver_tag" = "__NetBSD_Version__" ] || continue
         break
     done
-    rel_num=${rel_num%??}
-    rel_MMmm=${rel_num%????}
-    rel_MM=${rel_MMmm%??}
-    rel_mm=${rel_MMmm#$rel_MM}
-    IFS=.
+    local rel_num=${rel_num%??}
+    local rel_MMmm=${rel_num%????}
+    local rel_MM=${rel_MMmm%??}
+    local rel_mm=${rel_MMmm#$rel_MM}
+    local IFS=.
     # shellcheck disable=SC2086
     set -- - $rel_text
-    beta=${3#[0-9]}
+    local beta=${3#[0-9]}
     beta=${beta#[0-9]}
     shift 3
     IFS=' '
@@ -582,7 +534,11 @@ _osrelease()
         echo "$*"
         ;;
     esac
- )
+}
+
+_print_if_file_exists()
+{
+    test -f "$1" && printf "%s" "$1"
 }
 
 #
@@ -591,61 +547,55 @@ _osrelease()
 _split_category()
 {
  (
-    printf "===> _split_category()\\n" | tee -a $results
+    _logging "===> _split_category()"
+
+    local moduledir="stand/$machine/$release_k/modules"
+
     for i in $category; do
+        local category_dir="$lists/$i"
+
         _mkdir_if_not_exists "$workdir/$i"
         _remove_if_exists "$workdir/$i/FILES"
-        for j in "$lists"/* ; do
-            ad=""
-            mi=""
-            md=""
-            module=""
-            rescue=""
-            rescue_ad=""
-            rescue_machine=""
-            shl=""
-            stl=""
-            test -f "$j/ad.$machine" && ad="$j/ad.$machine"
-            test -f "$j/mi" && mi="$j/mi"
-            test -f "$j/md.$machine" && md="$j/md.$machine"
-            test -f "$j/module.mi" && module="$j/module.mi"
-            test -f "$j/rescue.mi" && rescue="$j/rescue.mi"
-            test -f "$j/rescue.ad.$machine" && rescue_ad="$j/rescue.ad.$machine"
-            test -f "$j/rescue.$machine" \
-                && rescue_machine="$j/rescue.$machine"
-            test -f "$j/shl.mi" && shl="$j/shl.mi"
-            test -f "$j/stl.mi" && stl="$j/stl.mi"
-            moduledir="stand/$machine/$release_k/modules"
-            # shellcheck disable=SC2086
-            cat \
-                $ad $mi $md $module $rescue $rescue_ad \
-                $rescue_machine $shl $stl \
-            | awk '
-                ! /^\#/ {
+
+        ad="$(_print_if_file_exists "$category_dir/ad.$machine")"
+        mi="$(_print_if_file_exists "$category_dir/mi")"
+        md="$(_print_if_file_exists "$category_dir/md.$machine")"
+        module="$(_print_if_file_exists "$category_dir/module.mi")"
+        rescue="$(_print_if_file_exists "$category_dir/rescue.mi")"
+        rescue_ad="$(_print_if_file_exists "$category_dir/rescue.ad.$machine")"
+        rescue_machine="$(_print_if_file_exists "$category_dir/rescue.$machine")"
+        shl="$(_print_if_file_exists "$category_dir/shl.mi")"
+        stl="$(_print_if_file_exists "$category_dir/stl.mi")"
+
+        # shellcheck disable=SC2086
+        cat \
+            $ad $mi $md $module $rescue $rescue_ad \
+            $rescue_machine $shl $stl \
+        | awk '
+            ! /^\#/ {
+                #
+                # Ignore obsolete packages.
+                #
+                if ($2 == "'"$i-obsolete"'")
+                    next
+                #
+                # Ignore package with obsolete tags.
+                #
+                if ($3 ~ "obsolete")
+                    next
+                if ($2 ~ "^'"$i"'") {
                     #
-                    # Ignore obsolete packages.
+                    # Remove "./" characters.
                     #
-                    if ($2 == "'"$i-obsolete"'")
-                        next
-                    #
-                    # Ignore pacakge with obsolete tags.
-                    #
-                    if ($3 ~ "obsolete")
-                        next
-                    if ($2 ~ "^'"$i"'") {
-                        #
-                        # Remove "./" characters.
-                        #
-                        $1 = substr($1, 3);
-                        if ($1 != "") {
-                            gsub(/@MODULEDIR@/, "'"$moduledir"'");
-                            gsub(/@MACHINE@/, "'"$machine"'");
-                            gsub(/@OSRELEASE@/, "'"$release_k"'");
-                            print
-                        }
+                    $1 = substr($1, 3);
+                    if ($1 != "") {
+                        gsub(/@MODULEDIR@/, "'"$moduledir"'");
+                        gsub(/@MACHINE@/, "'"$machine"'");
+                        gsub(/@OSRELEASE@/, "'"$release_k"'");
+                        print
                     }
-                }' >> "$workdir/$i/FILES"
-      done
+                }
+            }' >> "$workdir/$i/FILES"
     done
  )
 }
@@ -655,7 +605,7 @@ _split_category()
 #
 _mk_pkgtree()
 {
-    printf "===> _mk_pkgtree()\\n" | tee -a $results
+    _logging "===> _mk_pkgtree()"
     for i in $category; do
         awk '{print $2}' "$workdir/$i/FILES" | sort -u \
         | xargs -n 1 -I % sh -c "test -d $workdir/$i/% || mkdir $workdir/$i/%"
@@ -668,8 +618,7 @@ _mk_pkgtree()
 #
 _mk_plist()
 {
- (
-    printf "===> _mk_plist()\\n" | tee -a $results
+    _logging "===> _mk_plist()"
     for i in $category; do
         awk '
         # $1 - file name
@@ -697,7 +646,6 @@ _mk_plist()
             }' "$workdir/$i/CATEGORIZED" > "$j/PLIST"
         done
     done
- )
 }
 
 #
@@ -705,7 +653,9 @@ _mk_plist()
 #
 _BUILD_INFO()
 {
-    cat > "$workdir/$1/+BUILD_INFO" << _BUILD_INFO_
+    local package="$workdir/$1"
+
+    cat > "$package/+BUILD_INFO" << _BUILD_INFO_
 OPSYS=$opsys
 OS_VERSION=$osversion
 OBJECT_FMT=ELF
@@ -753,21 +703,23 @@ _mk_depend()
 #
 _CONTENTS()
 {
- (
-    TMPFILE=$(mktemp -q || _bomb "$TMPFILE")
-    setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
-    pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
-    prefix="/"
-    test "$setname" = "etc" && prefix="/var/tmp/basepkg"
+    local TMPFILE=$(mktemp -q || _bomb "$TMPFILE")
+    local setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
+    local pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
+    local prefix="/"
+    if [ "$setname" = "etc" ]; then
+        prefix="/var/tmp/basepkg"
+    fi
+    local package="$workdir/$1"
 
-    echo "@name $pkgname-$release" > "$workdir/$1/+CONTENTS"
-    echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$workdir/$1/+CONTENTS"
+    echo "@name $pkgname-$release" > "$package/+CONTENTS"
+    echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$package/+CONTENTS"
 
     _remove_if_exists "$tmp_deps"
     _mk_depend "$pkgname"
-    test -f "$tmp_deps" && sort -u "$tmp_deps" >> "$workdir/$1/+CONTENTS"
+    test -f "$tmp_deps" && sort -u "$tmp_deps" >> "$package/+CONTENTS"
 
-    echo "@cwd $prefix" >> "$workdir/$1/+CONTENTS"
+    echo "@cwd $prefix" >> "$package/+CONTENTS"
     while read -r i; do
         if [ -d "$destdir/$i" ]; then
             filename=$(echo "$i" | sed 's%\/%\\\/%g')
@@ -779,11 +731,10 @@ _CONTENTS()
             } ' >> "$TMPFILE"
         fi
         test -f "$destdir/$i" && echo "$i" >> "$TMPFILE"
-    done < "$workdir/$1/PLIST"
+    done < "$package/PLIST"
 
-    sort "$TMPFILE" >> "$workdir/$1/+CONTENTS"
+    sort "$TMPFILE" >> "$package/+CONTENTS"
     rm -f "$TMPFILE"
- )
 }
 
 #
@@ -791,22 +742,24 @@ _CONTENTS()
 #
 _SIZE_PKG()
 {
+    local package="$workdir/$1"
+
     # Sum of file size.
-    grep -v '^@' < "$workdir/$1/+CONTENTS" \
+    grep -v '^@' < "$package/+CONTENTS" \
         | xargs -I % ls -l "$destdir/"% \
         | awk '{sum+=$5} END{print sum}' \
-        > "$workdir/$1/+SIZE_PKG.tmp"
+        > "$package/+SIZE_PKG.tmp"
 
     # Sum of directory size.
-    grep -c '^@exec install -d -o root -g wheel -m' < "$workdir/$1/+CONTENTS" \
+    grep -c '^@exec install -d -o root -g wheel -m' < "$package/+CONTENTS" \
         | xargs -I % expr % \* 512 \
-        >> "$workdir/$1/+SIZE_PKG.tmp"
+        >> "$package/+SIZE_PKG.tmp"
 
     # Sum of file and directory size.
-    awk '{sum+=$1} END{print sum}' < "$workdir/$1/+SIZE_PKG.tmp" \
-        > "$workdir/$1/+SIZE_PKG"
+    awk '{sum+=$1} END{print sum}' < "$package/+SIZE_PKG.tmp" \
+        > "$package/+SIZE_PKG"
 
-    rm -f "$workdir/$1/+SIZE_PKG.tmp"
+    rm -f "$package/+SIZE_PKG.tmp"
 }
 
 #
@@ -814,19 +767,21 @@ _SIZE_PKG()
 #
 _SIZE_ALL()
 {
-    grep '^@pkgdep' "$workdir/$1/+CONTENTS" \
+    local package="$workdir/$1"
+
+    grep '^@pkgdep' "$package/+CONTENTS" \
         | cut -d " " -f 2 \
         | cut -d ">=" -f 1 \
         | xargs -I % find "$workdir" -type d -name % \
         | xargs -I % cat %/+SIZE_PKG \
         | awk '{sum+=$1} END{print sum}' \
-        > "$workdir/$1/+SIZE_ALL.tmp"
+        > "$package/+SIZE_ALL.tmp"
 
-    cat "$workdir/$1/+SIZE_PKG" "$workdir/$1/+SIZE_ALL.tmp" \
+    cat "$package/+SIZE_PKG" "$package/+SIZE_ALL.tmp" \
         | awk '{sum+=$1}END{print sum}' \
-        > "$workdir/$1/+SIZE_ALL"
+        > "$package/+SIZE_ALL"
 
-    rm -f "$workdir/$1/+SIZE_ALL.tmp"
+    rm -f "$package/+SIZE_ALL.tmp"
 }
 
 #
@@ -835,6 +790,7 @@ _SIZE_ALL()
 _DESC_and_COMMENT()
 {
     local pkgname="${1#*/}"
+    local package="$workdir/$1"
 
     awk '
     /^'"$pkgname"'/ {
@@ -844,7 +800,7 @@ _DESC_and_COMMENT()
             else
                 printf $i" "
         }
-    }' "$descrs" > "$workdir/$1/+DESC" || _bomb "awk +DESC"
+    }' "$descrs" > "$package/+DESC" || _bomb "awk +DESC"
 
     awk '
     /^'"$pkgname"'/ {
@@ -854,7 +810,7 @@ _DESC_and_COMMENT()
             else
                 printf $i" "
         }
-    }' "$comments" > "$workdir/$1/+COMMENT" || _bomb "awk +COMMENT"
+    }' "$comments" > "$package/+COMMENT" || _bomb "awk +COMMENT"
 }
 
 #
@@ -930,17 +886,18 @@ _replace_cmdstr()
 #
 _INSTALL()
 {
+    local package="$workdir/$1"
     local user_group_mode=""
     local _mode=""
     local _user=""
     local _group=""
 
-    _remove_if_exists "$workdir/$1/+INSTALL"
-    _replace_cmdstr "$install_script" > "$workdir/$1/+INSTALL"
-    _bomb_if_not_found "$workdir/$1/+CONTENTS"
+    _remove_if_exists "$package/+INSTALL"
+    _replace_cmdstr "$install_script" > "$package/+INSTALL"
+    _bomb_if_not_found "$package/+CONTENTS"
 
     # For +FILES routine which is conained in sets/install script.
-    grep -v -e "^@" "$workdir/$1/+CONTENTS" | while read -r file; do
+    grep -v -e "^@" "$package/+CONTENTS" | while read -r file; do
         test "$(file "$obj/$file" | cut -d " " -f 2)" = "symbolic" && continue
         if [ "${file%%/*}" = "etc" ]; then
             if [ -f "$destdir/$file" ]; then
@@ -954,7 +911,7 @@ _INSTALL()
                 _group=$(echo "$user_group_mode" | cut -d " " -f 2)
             fi
             echo "# FILE: /$file c $file $_mode $_user $_group" \
-                >> "$workdir/$1/+INSTALL"
+                >> "$package/+INSTALL"
         fi
     done
 }
@@ -1013,8 +970,9 @@ _do_pkg_create()
     -f $workdir/$1/+CONTENTS
     -s $workdir/$1/+SIZE_PKG
     -S $workdir/$1/+SIZE_ALL"
+    local package="$workdir/$1"
 
-    test -f "$workdir/$1/+PRESERVE" && option="$option -n $workdir/$1/+PRESERVE"
+    test -f "$package/+PRESERVE" && option="$option -n $package/+PRESERVE"
 
     if [ "$setname" = "etc" ]; then
         option="$option -I /var/tmp/basepkg"
@@ -1051,7 +1009,7 @@ _is_nbpkg_daily_build()
 #
 _mk_pkg()
 {
-    printf "===> _mk_pkg()\\n" | tee -a $results
+    _logging "===> _mk_pkg()"
     _find_package_directory | while read -r pkg; do
         _BUILD_INFO "$pkg"
         _CONTENTS "$pkg"
@@ -1153,7 +1111,7 @@ _CONTENTS_
 #
 _mk_all_kpkg()
 {
-    printf "===> _mk_all_kpkg()\\n" | tee -a $results
+    _logging "===> _mk_all_kpkg()"
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
     ls $kernobj | while read -r kernel_name; do
@@ -1241,12 +1199,12 @@ _getopt()
 #
 _begin_msg()
 {
-    printf "===> basepkg.sh command: %s\\n" "$1" | tee -a $results
-    printf "===> basepkg.sh started: %s\\n" "$2" | tee -a $results
-    printf "===> NetBSD version:     %s\\n" "$release" | tee -a $results
-    printf "===> MACHINE:            %s\\n" "$machine" | tee -a $results
-    printf "===> MACHINE_ARCH:       %s\\n" "$machine_arch" | tee -a $results
-    printf "===> Build platform:     %s %s %s\\n" "$opsys" "$osversion" "$(uname -m)" | tee -a $results
+    _logging "===> basepkg.sh command: $commandline"
+    _logging "===> basepkg.sh started: $(date)"
+    _logging "===> NetBSD version:     $release"
+    _logging "===> MACHINE:            $machine"
+    _logging "===> MACHINE_ARCH:       $machine_arch"
+    _logging "===> Build platform:     $opsys $osversion $(uname -m)"
 }
 
 #
@@ -1256,12 +1214,64 @@ _begin_msg()
 #
 _end_msg()
 {
-    printf "===> basepkg.sh ended:   %s\\n" "$1" | tee -a $results
-    printf "===> Summary of results:\\n"
-    sed -e 's/^===>/    /g' $results
+    _logging "===> basepkg.sh ended:   $(date)"
+    printf "===> Summary of log:\\n"
+    sed -e "s/^===>/    /g" "$log"
     printf "===> .\\n"
-    rm -f $results
+    rm -f "$log"
 }
+
+###############################################################################
+#
+# Global variables
+#
+###############################################################################
+
+# define new line and tab
+nl='
+'
+tab='	'
+
+#
+# Imported from build.sh
+# valid_MACHINE_ARCH -- A multi-line string, listing all valid
+# MACHINE/MACHINE_ARCH pairs.
+#
+# Each line contains a MACHINE and MACHINE_ARCH value, an optional ALIAS
+# which may be used to refer to the MACHINE/MACHINE_ARCH pair, and an
+# optional DEFAULT or NO_DEFAULT keyword.
+#
+# When a MACHINE corresponds to multiple possible values of
+# MACHINE_ARCH, then this table should list all allowed combinations.
+# If the MACHINE is associated with a default MACHINE_ARCH (to be
+# used when the user specifies the MACHINE but fails to specify the
+# MACHINE_ARCH), then one of the lines should have the "DEFAULT"
+# keyword.  If there is no default MACHINE_ARCH for a particular
+# MACHINE, then there should be a line with the "NO_DEFAULT" keyword,
+# and with a blank MACHINE_ARCH.
+#
+path_to_valid_MACHINE_ARCH="./lib/valid_MACHINE_ARCH"
+_bomb_if_not_found "$path_to_valid_MACHINE_ARCH"
+. "$path_to_valid_MACHINE_ARCH" # we can refer $valid_MACHINE_ARCH
+
+PWD="$(pwd)"
+progname=${0##*/}
+host="$(hostname)"
+opsys="$(uname)"
+osversion="$(uname -r)"
+pkgtoolversion="$(pkg_create -V)"
+utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
+user="${USER:-root}"
+param="usr/include/sys/param.h"
+tmp_deps="/tmp/culldeps"
+homepage="https://github.com/user340/basepkg"
+mail_address="uki@e-yuuki.org"
+toppid=$$
+log="$PWD/.basepkg.log"
+obj="/usr/obj"
+packages="$PWD/packages"
+category="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
+pkgdb="/var/db/basepkg"
 
 ###############################################################################
 #
@@ -1418,28 +1428,28 @@ done
 #
 case $1 in
 pkg)
-    _begin_msg "$commandline" "$start"
+    _begin_msg
     _split_category
     _mk_pkgtree
     _mk_plist
     _PRESERVE
     _mk_pkg
-    _end_msg "$(date)"
+    _end_msg
     ;;
 kern)
-    _begin_msg "$commandline" "$start"
+    _begin_msg
     _mk_all_kpkg
-    _end_msg "$(date)"
+    _end_msg
     ;;
 clean)
-    _begin_msg "$commandline" "$start"
+    _begin_msg
     _clean_workdir
-    _end_msg "$(date)"
+    _end_msg
     ;;
 cleanpkg)
-    _begin_msg "$commandline" "$start"
+    _begin_msg
     _clean_pkg
-    _end_msg "$(date)"
+    _end_msg
     ;;
 *)
     _usage
