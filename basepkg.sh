@@ -600,25 +600,18 @@ _split_category()
  )
 }
 
-#
-# _mk_pkgtree -- Make package tree referring to "FILES".
-#
-_mk_pkgtree()
+_make_package_directories()
 {
-    _logging "===> _mk_pkgtree()"
+    _logging "===> _make_package_directories()"
     for i in $category; do
         awk '{print $2}' "$workdir/$i/FILES" | sort -u \
         | xargs -n 1 -I % sh -c "test -d $workdir/$i/% || mkdir $workdir/$i/%"
     done
 }
 
-#
-# _mk_plist -- List each package's contents and write into
-# "category/package/package.FILE".
-#
-_mk_plist()
+_generate_PLIST()
 {
-    _logging "===> _mk_plist()"
+    _logging "===> _generate_PLIST()"
     for i in $category; do
         awk '
         # $1 - file name
@@ -648,10 +641,7 @@ _mk_plist()
     done
 }
 
-#
-# _BUILD_INFO -- Make "+BUILD_INFO" file.
-#
-_BUILD_INFO()
+_generate_BUILD_INFO()
 {
     local package="$workdir/$1"
 
@@ -698,10 +688,7 @@ _mk_depend()
     done
 }
 
-#
-# _CONTENTS -- Make "+CONTENTS" file.
-#
-_CONTENTS()
+_generate_CONTENTS()
 {
     local TMPFILE=$(mktemp -q || _bomb "$TMPFILE")
     local setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
@@ -737,10 +724,7 @@ _CONTENTS()
     rm -f "$TMPFILE"
 }
 
-#
-# _SIZE_PKG -- Make "+SIZE_PKG" file.
-#
-_SIZE_PKG()
+_generate_SIZE_PKG()
 {
     local package="$workdir/$1"
 
@@ -762,10 +746,7 @@ _SIZE_PKG()
     rm -f "$package/+SIZE_PKG.tmp"
 }
 
-#
-# _SIZE_ALL -- Make "+SIZE_PKG" file.
-#
-_SIZE_ALL()
+_generate_SIZE_ALL()
 {
     local package="$workdir/$1"
 
@@ -784,10 +765,7 @@ _SIZE_ALL()
     rm -f "$package/+SIZE_ALL.tmp"
 }
 
-#
-# _DESC_and_COMMENT -- Make "+DESC" and "+COMMENT" file.
-#
-_DESC_and_COMMENT()
+_generate_DESC_and_COMMENT()
 {
     local pkgname="${1#*/}"
     local package="$workdir/$1"
@@ -880,11 +858,7 @@ _replace_cmdstr()
         -e "s%@PERL5@%$(command -v perl)%" "$1" || _bomb "failed sed"
 }
 
-#
-# _INSTALL -- Make "+INSTALL" file. The role of "+INSTALL" is defining
-# absolute path of file, permission, owner and group.
-#
-_INSTALL()
+_generate_INSTALL()
 {
     local package="$workdir/$1"
     local user_group_mode=""
@@ -916,18 +890,12 @@ _INSTALL()
     done
 }
 
-#
-# _DEINSTALL -- Make deinstall script for each packages.
-#
-_DEINSTALL()
+_generate_DEINSTALL()
 {
     _replace_cmdstr "$deinstall_script" > "$workdir/$1/+DEINSTALL"
 }
 
-#
-# _PRESERVE -- Make preserve-file.
-#
-_PRESERVE()
+_generate_PRESERVE()
 {
     local essential_path=""
 
@@ -1004,19 +972,16 @@ _is_nbpkg_daily_build()
     [ "X$nbpkg_build_config" != "X" ] && [ "X$nbpkg_build_target" = "Xdaily" ]
 }
 
-#
-# _mk_pkg -- Execute any functions and make MD5 and SHA512.
-#
-_mk_pkg()
+_make_all_packages()
 {
-    _logging "===> _mk_pkg()"
+    _logging "===> _make_all_packages()"
     _find_package_directory | while read -r pkg; do
-        _BUILD_INFO "$pkg"
-        _CONTENTS "$pkg"
-        _SIZE_PKG "$pkg"
-        _DESC_and_COMMENT "$pkg"
-        _INSTALL "$pkg"
-        _DEINSTALL "$pkg"
+        _generate_BUILD_INFO "$pkg"
+        _generate_CONTENTS "$pkg"
+        _generate_SIZE_PKG "$pkg"
+        _generate_DESC_and_COMMENT "$pkg"
+        _generate_INSTALL "$pkg"
+        _generate_DEINSTALL "$pkg"
     done
 
     # XXX EXTENSION: build least packages specified by nbpkg-build
@@ -1025,7 +990,7 @@ _mk_pkg()
     else
         _find_package_directory
     fi | while read -r pkg; do
-        _SIZE_ALL "$pkg"
+        _generate_SIZE_ALL "$pkg"
         _do_pkg_create "$pkg"
     done
 
@@ -1104,14 +1069,10 @@ _CONTENTS_
     mv "$PWD/$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
 }
 
-#
-# _mk_all_kpkg -- Packaging all compiled kernels.
-#
-# XXX: A number of kernel packages can install to the system.
-#
-_mk_all_kpkg()
+_make_all_kernel_packages()
 {
-    _logging "===> _mk_all_kpkg()"
+    # XXX: A number of kernel packages can install to the system.
+    _logging "===> _make_all_kernel_packages()"
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
     ls $kernobj | while read -r kernel_name; do
@@ -1193,11 +1154,11 @@ _getopt()
 }
 
 #
-# _begin_msg -- Print log messages to standard output and log file.
+# _begin_logging -- Print log messages to standard output and log file.
 #
 # This function is called when beginning basepkg.sh's process.
 #
-_begin_msg()
+_begin_logging()
 {
     _logging "===> basepkg.sh command: $commandline"
     _logging "===> basepkg.sh started: $(date)"
@@ -1208,11 +1169,11 @@ _begin_msg()
 }
 
 #
-# _end_msg -- Print log messages to standard output and log file.
+# _end_logging -- Print log messages to standard output and log file.
 #
 # This function is called when ending basepkg.sh's process.
 #
-_end_msg()
+_end_logging()
 {
     _logging "===> basepkg.sh ended:   $(date)"
     printf "===> Summary of log:\\n"
@@ -1428,28 +1389,28 @@ done
 #
 case $1 in
 pkg)
-    _begin_msg
+    _begin_logging
     _split_category
-    _mk_pkgtree
-    _mk_plist
-    _PRESERVE
-    _mk_pkg
-    _end_msg
+    _make_package_directories
+    _generate_PLIST
+    _generate_PRESERVE
+    _make_all_packages
+    _end_logging
     ;;
 kern)
-    _begin_msg
-    _mk_all_kpkg
-    _end_msg
+    _begin_logging
+    _make_all_kernel_packages
+    _end_logging
     ;;
 clean)
-    _begin_msg
+    _begin_logging
     _clean_workdir
-    _end_msg
+    _end_logging
     ;;
 cleanpkg)
-    _begin_msg
+    _begin_logging
     _clean_pkg
-    _end_msg
+    _end_logging
     ;;
 *)
     _usage
