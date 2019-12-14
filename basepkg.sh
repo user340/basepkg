@@ -546,7 +546,6 @@ _print_if_file_exists()
 #
 _split_category()
 {
- (
     _logging "===> _split_category()"
 
     local moduledir="stand/$machine/$release_k/modules"
@@ -597,7 +596,6 @@ _split_category()
                 }
             }' >> "$workdir/$i/FILES"
     done
- )
 }
 
 _make_package_directories()
@@ -1010,16 +1008,17 @@ _mk_kernel_package()
 {
     local category="base"
     local pkgname="base-kernel-$1"
+    local package="$workdir/$category/$pkgname"
 
     if [ ! -f "$obj/sys/arch/$machine/compile/$1/netbsd" ]; then
         _err "$1/netbsd not found."
         return 1
     fi
 
-    _mkdir_if_not_exists "$workdir/$category/$pkgname"
+    _mkdir_if_not_exists "$package"
 
     # Information of build environment.
-    cat > "$workdir/$category/$pkgname/+BUILD_INFO" << _BUILD_INFO_
+    cat > "$package/+BUILD_INFO" << _BUILD_INFO_
 OPSYS=$opsys
 OS_VERSION=$osversion
 OBJECT_FMT=ELF
@@ -1028,17 +1027,17 @@ PKGTOOLS_VERSION=$pkgtoolversion
 _BUILD_INFO_
 
     # Short description of package.
-    cat > "$workdir/$category/$pkgname/+COMMENT" << _COMMENT_
+    cat > "$package/+COMMENT" << _COMMENT_
 NetBSD $1 Kernel
 _COMMENT_
 
     # Description of package.
-    cat > "$workdir/$category/$pkgname/+DESC" << _DESC_
+    cat > "$package/+DESC" << _DESC_
 NetBSD $1 Kernel
 _DESC_
 
     # Package contents.
-    cat > "$workdir/$category/$pkgname/+CONTENTS" << _CONTENTS_
+    cat > "$package/+CONTENTS" << _CONTENTS_
 @name $pkgname-$release
 @comment Packaged at $utcdate UTC by $user@$host
 @cwd /
@@ -1048,20 +1047,20 @@ _CONTENTS_
     # Size of kernel.
     du "$obj/sys/arch/$machine/compile/$1/netbsd" \
         | cut -f 1 \
-        > "$workdir/$category/$pkgname/+SIZE_PKG"
+        > "$package/+SIZE_PKG"
 
     # XXX: Size all.
-    cp "$workdir/$category/$pkgname/+SIZE_PKG" "$workdir/$category/$pkgname/+SIZE_ALL"
+    cp "$package/+SIZE_PKG" "$package/+SIZE_ALL"
 
     pkg_create -v -l -U \
-    -B "$workdir/$category/$pkgname/+BUILD_INFO" \
+    -B "$package/+BUILD_INFO" \
     -I "/" \
-    -c "$workdir/$category/$pkgname/+COMMENT" \
-    -d "$workdir/$category/$pkgname/+DESC" \
-    -f "$workdir/$category/$pkgname/+CONTENTS" \
+    -c "$package/+COMMENT" \
+    -d "$package/+DESC" \
+    -f "$package/+CONTENTS" \
     -p "$obj/sys/arch/$machine/compile/$1" \
-    -s "$workdir/$category/$pkgname/+SIZE_PKG" \
-    -S "$workdir/$category/$pkgname/+SIZE_ALL" \
+    -s "$package/+SIZE_PKG" \
+    -S "$package/+SIZE_ALL" \
     -K "$pkgdb" "$pkgname" || _bomb "kernel: pkg_create"
 
     _basedir=$(_put_basedir)
@@ -1085,7 +1084,7 @@ _make_all_kernel_packages()
 #
 _clean_workdir()
 {
-    printf "_clean_workdir()\\n"
+    _logging "===> _clean_workdir()"
     _remove_directory_if_exists_and_writable "$workdir"
 }
 
@@ -1094,7 +1093,7 @@ _clean_workdir()
 #
 _clean_pkg()
 {
-    printf "_clean_pkg()\\n"
+    _logging "_clean_pkg()"
     _remove_directory_if_exists_and_writable "$packages"
 }
 
@@ -1230,7 +1229,6 @@ mail_address="uki@e-yuuki.org"
 toppid=$$
 log="$PWD/.basepkg.log"
 obj="/usr/obj"
-packages="$PWD/packages"
 category="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
 pkgdb="/var/db/basepkg"
 
