@@ -1,0 +1,58 @@
+#!/bin/sh
+
+toppid=$$
+
+_error()
+{
+    echo "[$(date +'%Y-%m-%dT%H:%M:%S')] $*"
+}
+
+_bomb()
+{
+    printf "ERROR: %s\\n *** PACKAGING ABORTED ***\\n" "$@"
+    _remove_if_exists "$log"
+    kill $toppid
+    exit 1
+}
+
+_bomb_if_command_not_found()
+{
+    command -v "$1" > /dev/null 2>&1 || _bomb "$1 not found."
+}
+
+_bomb_if_not_found()
+{
+    test -f "$1" || _bomb "$1 not found"
+}
+
+_mkdir_if_not_exists()
+{
+    test -d "$1" || mkdir -p "$1"
+}
+
+_remove_if_exists()
+{
+    test -f "$1" && rm -f "$1"
+}
+
+_remove_directory_if_exists_and_writable()
+{
+    test -w "$1" && rm -fr "$1"
+}
+
+_print_if_file_exists()
+{
+    test -f "$1" && printf "%s" "$1"
+}
+
+_clean_workdir()
+{
+    _logging "===> _clean_workdir()"
+    _remove_directory_if_exists_and_writable "$workdir"
+}
+
+_clean_packages()
+{
+    _logging "_clean_packages()"
+    _remove_directory_if_exists_and_writable "$packages"
+}

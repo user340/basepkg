@@ -1,0 +1,167 @@
+#!/bin/sh
+# These functions are imporeted from NetBSD's build.sh
+
+_getarch()
+{
+    local found=""
+    local IFS="$nl"
+
+    for line in $valid_MACHINE_ARCH; do
+        line="${line%%#*}" # ignore comments
+        # Don't quote this $line
+        line="$( IFS=" $tab" ; echo $line )" # normalise white space
+        case "$line " in
+        " ")
+            # skip blank lines or comment lines
+            continue
+            ;;
+        *" ALIAS=$machine "*)
+            # Found a line with a matching ALIAS=<alias>.
+            found="$line"
+            break
+            ;;
+        "MACHINE=$machine "*" NO_DEFAULT"*)
+            # Found an explicit "NO_DEFAULT" for this MACHINE.
+            found="$line"
+            break
+            ;;
+        "MACHINE=$machine "*" DEFAULT"*)
+            # Found an explicit "DEFAULT" for this MACHINE.
+            found="$line"
+            break
+            ;;
+        "MACHINE=$machine "*)
+            # Found a line for this MACHINE.  If it's the
+            # first such line, then tentatively accept it.
+            # If it's not the first matching line, then
+            # remember that there was more than one match.
+            case "$found" in
+            '') found="$line" ;;
+            *)  found="MULTIPLE_MATCHES" ;;
+            esac
+            ;;
+        esac
+    done
+
+    case "$found" in
+    *NO_DEFAULT*|*MULTIPLE_MATCHES*)
+        # MACHINE is OK, but MACHINE_ARCH is still unknown
+        return
+        ;;
+    "MACHINE="*" MACHINE_ARCH="*)
+        # Obey the MACHINE= and MACHINE_ARCH= parts of the line.
+        IFS=" "
+        for frag in $found; do
+            case "$frag" in
+            MACHINE=*|MACHINE_ARCH=*)
+                # Here is difference point from original.
+                # Original source code calls "eval" but we decided to call
+                # "echo" because we want to print "frag" value to
+                # standard output.
+                echo "$frag"
+                ;;
+            esac
+        done
+        ;;
+    *)
+        _bomb "Unknown target MACHINE: $machine"
+        ;;
+    esac
+}
+
+_validate_arch()
+{
+    local foundpair=false
+    local foundmachine=false
+    local foundarch=false
+    local IFS="$nl"
+
+    # MACHINE_ARCH may not be assigned, but catch at "case ... in"
+    # shellcheck disable=SC2153
+    case "$machine_arch" in
+    "")
+        _bomb "No MACHINE_ARCH provided"
+        ;;
+    esac
+
+    for line in $valid_MACHINE_ARCH; do
+        line="${line%%#*}" # ignore comments
+        # shellcheck disable=SC2086
+        line="$( IFS=" $tab" ; echo $line )" # normalise white space
+        # $MACHINE may not be assigned, but catch at "case ... in".
+        # shellcheck disable=SC2153
+        case "$line " in
+        " ")
+            # skip blank lines or comment lines
+            continue
+            ;;
+        "MACHINE=$MACHINE MACHINE_ARCH=$MACHINE_ARCH "*)
+            foundpair=true
+            ;;
+        "MACHINE=$MACHINE "*)
+            foundmachine=true
+            ;;
+        *"MACHINE_ARCH=$MACHINE_ARCH "*)
+            foundarch=true
+            ;;
+        esac
+    done
+
+    case "$foundpair:$foundmachine:$foundarch" in
+    true:*)
+        : OK
+        ;;
+    *:false:*)
+        _bomb "Unknown target MACHINE: $MACHINE"
+        ;;
+    *:*:false)
+        _bomb "Unknown target MACHINE_ARCH: $MACHINE_ARCH"
+        ;;
+    *)
+        _bomb "MACHINE_ARCH '$MACHINE_ARCH' does not support MACHINE '$MACHINE'"
+        ;;
+    esac
+}
+
+_osrelease()
+{
+    local option="$1"
+
+    exec < "$destdir/$param"
+
+    # In this function, "comment_start" and "NetBSD" are unreferenced variables.
+    while
+        # shellcheck disable=SC2034
+        read -r define ver_tag rel_num comment_start NetBSD rel_text rest; do
+        [ "$define" = "#define" ] || continue;
+        [ "$ver_tag" = "__NetBSD_Version__" ] || continue
+        break
+    done
+    local rel_num=${rel_num%??}
+    local rel_MMmm=${rel_num%????}
+    local rel_MM=${rel_MMmm%??}
+    local rel_mm=${rel_MMmm#$rel_MM}
+    local IFS=.
+    # shellcheck disable=SC2086
+    set -- - $rel_text
+    local beta=${3#[0-9]}
+    beta=${beta#[0-9]}
+    shift 3
+    IFS=' '
+    # shellcheck disable=SC2086
+    set -- $rel_MM ${rel_mm#0}$beta "$@"
+    case "$option" in
+    -k)
+        if [ "${rel_mm#0}" = 99 ]; then
+            IFS=.
+            echo "$*"
+        else
+            echo "${rel_MM}.${rel_mm#0}"
+        fi
+        ;;
+    *)
+        IFS=.
+        echo "$*"
+        ;;
+    esac
+}
