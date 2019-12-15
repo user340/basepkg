@@ -356,10 +356,9 @@ _logging()
 #
 _getarch()
 {
- (
-    found=""
+    local found=""
+    local IFS="$nl"
 
-    IFS="$nl"
     for line in $valid_MACHINE_ARCH; do
         line="${line%%#*}" # ignore comments
         # Don't quote this $line
@@ -421,7 +420,6 @@ _getarch()
         _bomb "Unknown target MACHINE: $machine"
         ;;
     esac
- )
 }
 
 #
