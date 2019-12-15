@@ -27,22 +27,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-#
-# basepkg.sh --  Create NetBSD system packages.
-#
-# It works for the followings.
-#     - Create base system packages in reference to /usr/obj (default).
-#     - Create kernel packages in reference to
-#       /usr/obj/sys/<MACHINE>/compile (default).
-#
-# These are POSIX undefined command.
-#     - hostname(1) -- set or print name of current host system.
-#     - mktemp(1) -- make temporary file name.
-#     - pkg_create(1) -- a utility for creating software package distributions.
-#
-# Please use ShellCheck (https://koalaman/shellcheck) for your code.
-#
-
 ###############################################################################
 #
 # {{{ Begin shell feature tests.
@@ -276,14 +260,9 @@ fi
 #
 ###############################################################################
 
-###############################################################################
-#
-# Functions
-#
-###############################################################################
-
 libbasepkg="./lib"
 
+. "$libbasepkg/valid_MACHINE_ARCH"
 . "$libbasepkg/Common"
 . "$libbasepkg/Logging"
 . "$libbasepkg/NetBSD"
@@ -326,53 +305,21 @@ _usage_
     exit 1
 }
 
-#
-# _getopt -- Parsing options.
-#
-# Example:
-#   --obj=/usr/obj
-#         ^^^^^^^^^
-#          take it
-#
-# In this example, it will return "/usr/obj".
-#
 _getopt()
 {
+    # Example:
+    #   --obj=/usr/obj
+    #         ^^^^^^^^^
+    #          take it
+    #
+    # In this example, returned "/usr/obj"
     expr "x$1" : "x[^=]*=\\(.*\\)"
 }
-
-###############################################################################
-#
-# Global variables
-#
-###############################################################################
 
 # define new line and tab
 nl='
 '
 tab='	'
-
-#
-# Imported from build.sh
-# valid_MACHINE_ARCH -- A multi-line string, listing all valid
-# MACHINE/MACHINE_ARCH pairs.
-#
-# Each line contains a MACHINE and MACHINE_ARCH value, an optional ALIAS
-# which may be used to refer to the MACHINE/MACHINE_ARCH pair, and an
-# optional DEFAULT or NO_DEFAULT keyword.
-#
-# When a MACHINE corresponds to multiple possible values of
-# MACHINE_ARCH, then this table should list all allowed combinations.
-# If the MACHINE is associated with a default MACHINE_ARCH (to be
-# used when the user specifies the MACHINE but fails to specify the
-# MACHINE_ARCH), then one of the lines should have the "DEFAULT"
-# keyword.  If there is no default MACHINE_ARCH for a particular
-# MACHINE, then there should be a line with the "NO_DEFAULT" keyword,
-# and with a blank MACHINE_ARCH.
-#
-path_to_valid_MACHINE_ARCH="./lib/valid_MACHINE_ARCH"
-_bomb_if_not_found "$path_to_valid_MACHINE_ARCH"
-. "$path_to_valid_MACHINE_ARCH" # we can refer $valid_MACHINE_ARCH
 
 PWD="$(pwd)"
 progname=${0##*/}
@@ -390,12 +337,6 @@ log="$PWD/.basepkg.log"
 obj="/usr/obj"
 category="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
 pkgdb="/var/db/basepkg"
-
-###############################################################################
-#
-# Begin main process.
-#
-###############################################################################
 
 [ $# = 0 ] && _usage
 
@@ -495,9 +436,6 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-#
-# Initialization
-#
 set -u
 umask 0022
 export LC_ALL=C LANG=C
@@ -507,6 +445,7 @@ if [ -z "$machine_arch" ]; then
     machine_arch=$MACHINE_ARCH
     _validate_arch
 fi
+
 destdir=${destdir:-"$obj/destdir.$machine"}
 releasedir=${releasedir:-.}
 release="$(_osrelease -a)"
@@ -530,20 +469,13 @@ if [ "X$nbpkg_build_config" != "X" ] && [ -f "$nbpkg_build_config" ]; then
    release="$nbpkg_build_id" # e.g. 8.0.20181029
 fi
 
-#
-# least assertions
-#
 _bomb_if_not_found "$install_script"
 test "X$release" != "X" || _bomb "cannot resolve \$release"
-
 test $# -eq 0 && _usage
 for cmd in hostname mktemp pkg_create; do
     _bomb_if_command_not_found "$cmd"
 done
 
-#
-# operation
-#
 case $1 in
 pkg)
     _begin_logging
