@@ -434,8 +434,10 @@ _getarch()
 #
 _validate_arch()
 {
- (
-    foundpair=false foundmachine=false foundarch=false
+    local foundpair=false
+    local foundmachine=false
+    local foundarch=false
+    local IFS="$nl"
 
     # MACHINE_ARCH may not be assigned, but catch at "case ... in"
     # shellcheck disable=SC2153
@@ -445,7 +447,6 @@ _validate_arch()
         ;;
     esac
 
-    IFS="$nl"
     for line in $valid_MACHINE_ARCH; do
         line="${line%%#*}" # ignore comments
         # shellcheck disable=SC2086
@@ -483,7 +484,6 @@ _validate_arch()
         _bomb "MACHINE_ARCH '$MACHINE_ARCH' does not support MACHINE '$MACHINE'"
         ;;
     esac
- )
 }
 
 
