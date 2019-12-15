@@ -283,11 +283,11 @@ fi
 ###############################################################################
 
 #
-# _err -- Output the error message with date.
+# _error -- Output the error message with date.
 #
 # This function is used for ignorable error.
 #
-_err()
+_error()
 {
     echo "[$(date +'%Y-%m-%dT%H:%M:%S')] $*"
 }
@@ -659,7 +659,7 @@ _mk_depend()
 {
     grep "^$1" "$deps" > /dev/null 2>&1
     if [ $? -eq 1 ]; then
-        _err "$1 Unknown package dependency."
+        _error "$1 Unknown package dependency."
         return 1
     fi
     awk '/^'"$1"'/{print $2}' "$deps" | while read -r depend; do
@@ -1009,7 +1009,7 @@ _mk_kernel_package()
     local package="$workdir/$category/$pkgname"
 
     if [ ! -f "$obj/sys/arch/$machine/compile/$1/netbsd" ]; then
-        _err "$1/netbsd not found."
+        _error "$1/netbsd not found."
         return 1
     fi
 
@@ -1258,7 +1258,7 @@ while [ $# -gt 0 ]; do
         machine_arch=$(_getopt "$1")
         ;;
     --arch)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
         machine_arch="$2"
         shift
         ;;
@@ -1266,7 +1266,7 @@ while [ $# -gt 0 ]; do
         category=$(_getopt "$1")
         ;;
     --category)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
         category="$2"
         shift
         ;;
@@ -1274,7 +1274,7 @@ while [ $# -gt 0 ]; do
         destdir=$(_getopt "$1")
         ;;
     --destdir)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
         destdir="$2"
         shift
         ;;
@@ -1282,7 +1282,7 @@ while [ $# -gt 0 ]; do
         machine=$(_getopt "$1")
         ;;
     --machine)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
         machine="$2"
         shift
         ;;
@@ -1290,7 +1290,7 @@ while [ $# -gt 0 ]; do
         obj=$(_getopt "$1")
         ;;
     --obj)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
         obj="$2"
         shift
         ;;
@@ -1298,7 +1298,7 @@ while [ $# -gt 0 ]; do
         releasedir=$(_getopt "$1")
         ;;
     --releasedir)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
         releasedir="$2"
         shift
         ;;
@@ -1306,7 +1306,7 @@ while [ $# -gt 0 ]; do
         setsdir=$(_getopt "$1")
         ;;
     --setsdir)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
         setsdir="$2"
         shift
         ;;
@@ -1314,7 +1314,7 @@ while [ $# -gt 0 ]; do
         nbpkg_build_config=$(_getopt "$1")
         ;;
     --with-nbpkg-build-config)
-        test -z "$2" && (_err "What is $1 parameter?" ; exit 1)
+        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
         nbpkg_build_config="$2"
         shift
         ;;
