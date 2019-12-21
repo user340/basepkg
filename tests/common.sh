@@ -9,4 +9,5 @@ nl='
 _bomb()
 {
     printf "%s\\n" "$@"
+    exit 1
 }
