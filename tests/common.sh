@@ -11,3 +11,8 @@ _bomb()
     printf "%s\\n" "$@"
     exit 1
 }
+
+_teardown_remove_given_file()
+{
+    rm -f "$1"
+}

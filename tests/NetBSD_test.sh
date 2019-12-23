@@ -92,11 +92,6 @@ _setup_param()
     echo "$tmp"
 }
 
-_teardown_param()
-{
-    rm -f "$1"
-}
-
 test_osrelease_to_current()
 {
     local destdir="/"
@@ -105,7 +100,7 @@ test_osrelease_to_current()
 
     assertEquals "9.99.25" "$result"
 
-    _teardown_param "$param"
+    _teardown_remove_given_file "$param"
 }
 
 test_osrelease_with_k_to_current()
@@ -116,7 +111,7 @@ test_osrelease_with_k_to_current()
 
     assertEquals "9.99.25" "$result"
 
-    _teardown_param "$param"
+    _teardown_remove_given_file "$param"
 }
 
 test_osrelease_to_stable()
@@ -127,7 +122,7 @@ test_osrelease_to_stable()
 
     assertEquals "8.1_STABLE" "$result"
 
-    _teardown_param "$param"
+    _teardown_remove_given_file "$param"
 }
 
 test_osrelease_with_k_to_stable()
@@ -138,7 +133,7 @@ test_osrelease_with_k_to_stable()
 
     assertEquals "8.1" "$result"
 
-    _teardown_param "$param"
+    _teardown_remove_given_file "$param"
 }
 
 . ./common.sh
