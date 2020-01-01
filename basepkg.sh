@@ -26,19 +26,11 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
+# shellcheck disable=SC1090
+# shellcheck disable=SC1091
+# shellcheck disable=SC2039
 
-###############################################################################
-#
-# {{{ Begin shell feature tests.
-#
-# We try to determine whether or not this script is being run under
-# a shell that supports the features that we use.  If not, we try to
-# re-exec the script under another shell.  If we can't find another
-# suitable shell, then we print a message and exit.
-#
-# These code were imported from NetBSD's build.sh.
-#
-###############################################################################
+# shell test code imported from NetBSD build.sh
 
 errmsg=''		# error message, if not empty
 shelltest=false		# if true, exit after testing the shell
@@ -254,15 +246,10 @@ EOF
     exit 1
 fi
 
-###############################################################################
-#
-# }}} End shell feature tests.
-#
-###############################################################################
-
 libbasepkg="./lib"
 
 . "$libbasepkg/valid_MACHINE_ARCH"
+. "$libbasepkg/Command"
 . "$libbasepkg/Common"
 . "$libbasepkg/Logging"
 . "$libbasepkg/NetBSD"
@@ -273,8 +260,8 @@ _usage()
     cat <<_usage_
 
 Usage: $progname [--arch architecture] [--category category]
-                  [--destdir destdir] [--machine machine] [--obj obj_dir]
-                  [--releasedir releasedir] [--setsdir setsdir]
+                  [--destdir destdir] [--machine machine] [--obj objdir]
+                  [--releasedir releasedir] [--src srcdir]
                   [--with-nbpkg-build-config config] [--enable-nbpkg-build]
                   operation
 
@@ -296,7 +283,8 @@ Usage: $progname [--arch architecture] [--category category]
     --obj                       Set obj to NetBSD binaries.
                                 [Default: /usr/obj]
     --releasedir                Set releasedir.
-    --setsdir                   Set setsdir that contains meta informations.
+    --src                       Set NetBSD source directory.
+                                [Default: /usr/src]
     --with-nbpkg-buld-config    WIP (Don't use it unless you are developer.)
     --enable-nbpkg-build        WIP (Don't use it unless you are developer.)
     -h | --help                 Show this message and exit.
@@ -335,12 +323,13 @@ homepage="https://github.com/user340/basepkg"
 mail_address="uki@e-yuuki.org"
 log="$PWD/.basepkg.log"
 obj="/usr/obj"
+src="/usr/src"
 category="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
 pkgdb="/var/db/basepkg"
 
 [ $# = 0 ] && _usage
 
-machine="$(uname -m)" # Firstly, set machine hardware name for _getarch().
+machine="$(uname -m)"
 machine_arch=""
 commandline="$0 $*"
 
@@ -348,12 +337,6 @@ commandline="$0 $*"
 nbpkg_build_enable=0
 nbpkg_build_config=""
 
-#
-# Parsing long option process. In this process, we don't use getopt(1) and
-# getopts for the following reasons.
-#     - One character option (-a, -m, ...) is difficult to understand.
-#     - The getopt(1) have difference between GNU and BSD.
-#
 while [ $# -gt 0 ]; do
     case $1 in
     --arch=*)
@@ -404,12 +387,12 @@ while [ $# -gt 0 ]; do
         releasedir="$2"
         shift
         ;;
-    --setsdir=*)
-        setsdir=$(_getopt "$1")
+    --src=*)
+        src=$(_getopt "$1")
         ;;
-    --setsdir)
+    --src)
         test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        setsdir="$2"
+        src="$2"
         shift
         ;;
     --with-nbpkg-build-config=*)
@@ -450,14 +433,13 @@ destdir=${destdir:-"$obj/destdir.$machine"}
 releasedir=${releasedir:-.}
 release="$(_osrelease -a)"
 release_k="$(_osrelease -k)"
-setsdir="$PWD/sets"
-lists="$setsdir/lists"
-comments="$setsdir/comments"
-descrs="$setsdir/descrs"
-deps="$setsdir/deps"
-install_script="$setsdir/install"
-deinstall_script="$setsdir/deinstall"
-essential="$setsdir/essentials"
+lists="$src/distrib/sets/lists"
+comments="$src/distrib/sets/comments"
+descrs="$src/distrib/sets/descrs"
+deps="$src/distrib/sets/deps"
+install_script="$PWD/sets/install"
+deinstall_script="$PWD/sets/deinstall"
+essential="$PWD/sets/essentials"
 workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
 kernobj="$obj/sys/arch/$machine/compile"
@@ -470,8 +452,11 @@ if [ "X$nbpkg_build_config" != "X" ] && [ -f "$nbpkg_build_config" ]; then
 fi
 
 _bomb_if_not_found "$install_script"
+
 test "X$release" != "X" || _bomb "cannot resolve \$release"
+
 test $# -eq 0 && _usage
+
 for cmd in hostname mktemp pkg_create; do
     _bomb_if_command_not_found "$cmd"
 done
