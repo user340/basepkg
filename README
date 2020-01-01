@@ -3,15 +3,15 @@
 BASEPKG – NETBSD SYSTEM PACKAGES
 
 
-basepkg is developing in GitHub (https://github.com/user340/basepkg).
+The basepkg is unofficial experimental stage of NetBSD syspkg project.
 
 This software is unstable. It may destroy your system. We recommend that
 use chroot environment or virtual machine for testing generated
 packages.
 
 Please contact to Yuuki Enomoto uki@e-yuuki.org for bug-report,
-question, discussion, donation of patches and others. Or you can use
-GitHub issues and pull-requests for these things.
+question, discussion, patche donation and others. Or you can use GitHub
+issues and pull-requests for these things.
 
 -   1. Usage
     -   1.1. Build the NetBSD distribution
@@ -32,13 +32,14 @@ GitHub issues and pull-requests for these things.
 
 1.1. Build the NetBSD distribution
 
-  Version   Architecture   Machine Architecture
-  --------- -------------- ----------------------
-  8.0       amd64          x86_64
+  Version   Machine Architecture   Architecture
+  --------- ---------------------- --------------
+  current   amd64                  x86_64
 
   Directory    Description
   ------------ --------------------------
   /usr/src     NetBSD source tree
+  /usr/xsrc    NetBSD X11 source tree
   /usr/tools   Build tools
   /usr/obj     Sets of compiled objects
 
@@ -128,7 +129,7 @@ tools to maintain the base system. … There has been a lot of work in
 this area already, but it has not yet been finalized.” in
 https://wiki.netbsd.org/projects/project/syspkgs
 
-basepkg is intend to become a successor to syspkg. But basepkg is
+The basepkg is intend to become a successor to syspkg. But basepkg is
 third-party software less like syspkg. It is an unofficial project of
 NetBSD.
 
@@ -172,6 +173,7 @@ The presentations about basepkg are here.
 -   Improve documentation (including online manual, guidebook for
     develop, about basepkg architecture, …).
 -   Import to pkgsrc from pkgsrc-wip.
+-   See GitHub Issue
 
 
 4. Contributors

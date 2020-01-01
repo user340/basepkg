@@ -1,10 +1,10 @@
 # basepkg -- NetBSD system packages
 
-basepkg is developing in GitHub (https://github.com/user340/basepkg).
+The basepkg is unofficial experimental stage of [NetBSD syspkg project](https://wiki.netbsd.org/projects/project/syspkgs/).
 
 This software is unstable. It may destroy your system. We recommend that use chroot environment or virtual machine for testing generated packages.
 
-Please contact to Yuuki Enomoto <uki@e-yuuki.org> for bug-report, question, discussion, donation of patches and others. Or you can use GitHub issues and pull-requests for these things.
+Please contact to Yuuki Enomoto <uki@e-yuuki.org> for bug-report, question, discussion, patche donation and others. Or you can use GitHub issues and pull-requests for these things.
 
 <!-- vim-markdown-toc GFM -->
 
@@ -28,15 +28,16 @@ Please contact to Yuuki Enomoto <uki@e-yuuki.org> for bug-report, question, disc
 
 ### 1.1. Build the NetBSD distribution
 
-|Version|Architecture|Machine Architecture|
-|:--|:--|:--|
-|8.0|amd64|x86\_64|
+| Version | Machine Architecture | Architecture |
+| :--     | :--                  | :--          |
+| current | amd64                | x86\_64      |
 
-|Directory|Description|
-|:--|:--|
-|/usr/src|NetBSD source tree|
-|/usr/tools|Build tools|
-|/usr/obj|Sets of compiled objects|
+| Directory  | Description              |
+| :--        | :--                      |
+| /usr/src   | NetBSD source tree       |
+| /usr/xsrc  | NetBSD X11 source tree   |
+| /usr/tools | Build tools              |
+| /usr/obj   | Sets of compiled objects |
 
 This is description how to build NetBSD source tree. You can skip until section [1.2. Install pkgtools/pkg\_install](#12-install-pkgtoolspkg_install) if you understand it or done.
 
@@ -124,7 +125,7 @@ basepkg is imported to [pkgsrc-wip](https://pkgsrc.org/wip). You can install bas
 
 NetBSD Wiki described, "syspkgs is the concept of using pkgsrc's pkg\_\* tools to maintain the base system. ... There has been a lot of work in this area already, but it has not yet been finalized." in https://wiki.netbsd.org/projects/project/syspkgs
 
-basepkg is intend to become a successor to syspkg. But basepkg is third-party software less like syspkg. It is an unofficial project of NetBSD.
+The basepkg is intend to become a successor to syspkg. But basepkg is third-party software less like syspkg. It is an unofficial project of NetBSD.
 
 ### 2.2. Goal
 
@@ -151,6 +152,7 @@ The presentations about basepkg are here.
 * Research "package" background from a viewpoint of Unix community, internet, and others.
 * Improve documentation (including online manual, guidebook for develop, about basepkg architecture, ...).
 * Import to pkgsrc from pkgsrc-wip.
+* See GitHub Issue
 
 ## 4. Contributors
 
