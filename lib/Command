@@ -1,0 +1,31 @@
+#!/bin/sh
+
+_set_md5_sum()
+{
+    case $(uname) in
+    NetBSD)
+        echo "cksum -a md5"
+        ;;
+    FreeBSD)
+        echo "md5"
+        ;;
+    *)
+        echo "cksum -a md5"
+        ;;
+    esac
+}
+
+_set_sha512_sum()
+{
+    case $(uname) in
+    NetBSD)
+        echo "cksum -a sha512"
+        ;;
+    FreeBSD)
+        echo "sha512"
+        ;;
+    *)
+        echo "cksum -a sha512"
+        ;;
+    esac
+}

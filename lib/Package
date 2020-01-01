@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2039
 
 _split_category()
 {
@@ -203,7 +204,7 @@ _generate_SIZE_ALL()
 
     grep '^@pkgdep' "$package/+CONTENTS" \
         | cut -d " " -f 2 \
-        | cut -d ">=" -f 1 \
+        | awk 'FS=">=" {print $1}' \
         | xargs -I % find "$workdir" -type d -name % \
         | xargs -I % cat %/+SIZE_PKG \
         | awk '{sum+=$1} END{print sum}' \
@@ -384,7 +385,7 @@ _do_pkg_create()
     fi
 
     # shellcheck disable=SC2086
-    pkg_create $option "$pkgname" || _bomb "$1: pkg_create"
+    /usr/pkg/sbin/pkg_create $option "$pkgname" || _bomb "$1: pkg_create"
 
     local _basedir=$(_put_basedir)
     _mkdir_if_not_exists "$_basedir"
@@ -393,8 +394,14 @@ _do_pkg_create()
 
 _mk_checksum()
 {
-    find ./*.tgz -exec cksum -a md5 {} \; > MD5
-    find ./*.tgz -exec cksum -a sha512 {} \; > SHA512
+    local MD5_CMD
+    local SHA512_CMD
+
+    MD5_CMD=$(_set_md5_sum)
+    SHA512_CMD=$(_set_sha512_sum)
+
+    find ./*.tgz -exec $MD5_CMD {} \; > MD5
+    find ./*.tgz -exec $SHA512_CMD {} \; > SHA512
 }
 
 _find_package_directory()
@@ -481,7 +488,7 @@ _CONTENTS_
     # XXX: Size all.
     cp "$package/+SIZE_PKG" "$package/+SIZE_ALL"
 
-    pkg_create -v -l -U \
+    /usr/pkg/sbin/pkg_create -v -l -U \
     -B "$package/+BUILD_INFO" \
     -I "/" \
     -c "$package/+COMMENT" \
