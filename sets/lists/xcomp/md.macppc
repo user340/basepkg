@@ -1,6 +1,0 @@
-# $NetBSD: md.macppc,v 1.21 2016/08/19 22:37:03 mrg Exp $
-./usr/X11R7/include/X11/extensions/xf86dga.h		xcomp-xf86dga-include	xorg
-./usr/X11R7/include/X11/extensions/xf86dga1.h		xcomp-xf86dga-include	xorg
-./usr/X11R7/include/X11/extensions/xf86dga1str.h	xcomp-xf86dga-include	xorg
-./usr/X11R7/include/X11/extensions/xf86dgastr.h		xcomp-xf86dga-include	xorg
-./usr/X11R7/lib/libXxf86dga.a				xcomp-xf86dga-lib	xorg
