@@ -1,4 +1,7 @@
 #!/bin/sh
+# shellcheck disable=SC1090
+# shellcheck disable=SC1091
+# shellcheck disable=SC2039
 
 _setup_logging()
 {
