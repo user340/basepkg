@@ -7,6 +7,7 @@ unittest:
 	./NetBSD_test.sh
 	./Logging_test.sh
 	./Command_test.sh
+	./output_file_and_package_pair_lists_test.sh
 
 coverage:
 	kcov \
