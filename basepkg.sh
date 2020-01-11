@@ -1,7 +1,7 @@
 #!/bin/sh
 #
-# Copyright (c) 2001-2019 The NetBSD Foundation, Inc.
-# Copyright (c) 2016-2019 Yuuki Enomoto
+# Copyright (c) 2001-2020 The NetBSD Foundation, Inc.
+# Copyright (c) 2016-2020 Yuuki Enomoto
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without

@@ -1,6 +1,6 @@
 # basepkg -- NetBSD system packages
 
-The basepkg is unofficial experimental stage of [NetBSD syspkg project](https://wiki.netbsd.org/projects/project/syspkgs/).
+The basepkg project is unofficial experimental stage of [NetBSD syspkg project](https://wiki.netbsd.org/projects/project/syspkgs/).
 
 This software is unstable. It may destroy your system. We recommend that use chroot environment or virtual machine for testing generated packages.
 
