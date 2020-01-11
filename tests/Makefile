@@ -1,24 +1,20 @@
-EXCLUDE_PATTERN="valid_MACHINE_ARCH"
-INCLUDE_PATTERN="lib/"
+KCOV=	kcov
+KCOV_OPT=	--include-pattern=lib/
+KCOV_OPT+=	--exclude-pattern=valid_MACHINE_ARCH
+KCOV_OPT+=	--debug-force-bash-stderr
+KCOV_OPT+=	/tmp/kcov
 
-all: unittest coverage
+UNITTEST=	Command_test.sh
+UNITTEST+=	Logging_test.sh
+UNITTEST+=	NetBSD_test.sh
+UNITTEST+=	obsolete_filter_test.sh
 
 unittest:
-	./NetBSD_test.sh
-	./Logging_test.sh
-	./Command_test.sh
-	./output_file_and_package_pair_lists_test.sh
+.for test in ${UNITTEST}
+	/bin/sh ${test}
+.endfor
 
 coverage:
-	kcov \
-		--include-pattern=${INCLUDE_PATTERN} \
-		--exclude-pattern=${EXCLUDE_PATTERN} \
-		/tmp/kcov ./NetBSD_test.sh
-	kcov \
-		--include-pattern=${INCLUDE_PATTERN} \
-		--exclude-pattern=${EXCLUDE_PATTERN} \
-		/tmp/kcov ./Logging_test.sh
-	kcov \
-		--include-pattern=${INCLUDE_PATTERN} \
-		--exclude-pattern=${EXCLUDE_PATTERN} \
-		/tmp/kcov ./Command_test.sh
+.for test in ${UNITTEST}
+	${KCOV} ${KCOV_OPT} ${test}
+.endfor
