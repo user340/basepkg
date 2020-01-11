@@ -2,9 +2,9 @@
 
 The basepkg project is unofficial experimental stage of [NetBSD syspkg project](https://wiki.netbsd.org/projects/project/syspkgs/).
 
-This software is unstable. It may destroy your system. We recommend that use chroot environment or virtual machine for testing generated packages.
+This software is unstable. It may destroy your system. And we may make a large changes to the repository without previous notice. We recommend that use chroot environment or virtual machine for testing generated packages.
 
-Please contact to Yuuki Enomoto <uki@e-yuuki.org> for bug-report, question, discussion, patche donation and others. Or you can use GitHub issues and pull-requests for these things.
+Please contact to Yuuki Enomoto <uki@e-yuuki.org> to bug-report, question, discussion, patche donation and others. Or you can use GitHub issues and pull-requests for these things.
 
 <!-- vim-markdown-toc GFM -->
 
@@ -64,7 +64,7 @@ Build it using `build.sh`.
 
 ### 1.2. Install pkgtools/pkg\_install
 
-basepkg is tested by latest [pkgtools/pkg\_install](http://pkgsrc.se/pkgtools/pkg_install) package. We recommend that install it from pkgsrc for `basepkg.sh`.
+basepkg requires [pkgtools/pkg\_install](http://pkgsrc.se/pkgtools/pkg_install) package. We recommend that install the package from pkgsrc to run `basepkg.sh`.
 
 This is way of get pkgsrc. Skip the section if you understand or done it.
 
@@ -110,7 +110,7 @@ But "etc" categorized packages are exception. They are installed to /var/tmp/bas
 
 ### 1.5. pkgsrc-wip
 
-basepkg is imported to [pkgsrc-wip](https://pkgsrc.org/wip). You can install basepkg to your system using pkgsrc-wip. But it supporting only latest version package.
+basepkg was imported to [pkgsrc-wip](https://pkgsrc.org/wip). You can install basepkg to your system using pkgsrc-wip.
 
 ```
 # cd /usr/pkgsrc/wip/basepkg
