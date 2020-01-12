@@ -7,51 +7,34 @@ _split_category()
 
     local moduledir="stand/$machine/$release_k/modules"
 
+    local category_dir="$lists/$1"
+
+    _mkdir_if_not_exists "$workdir/$1"
+    _remove_if_exists "$workdir/$1/FILES"
+
+    ad="$(_print_if_file_exists "$category_dir/ad.$machine")"
+    mi="$(_print_if_file_exists "$category_dir/mi")"
+    md="$(_print_if_file_exists "$category_dir/md.$machine")"
+    module="$(_print_if_file_exists "$category_dir/module.mi")"
+    rescue="$(_print_if_file_exists "$category_dir/rescue.mi")"
+    rescue_ad="$(_print_if_file_exists "$category_dir/rescue.ad.$machine")"
+    rescue_machine="$(_print_if_file_exists "$category_dir/rescue.$machine")"
+    shl="$(_print_if_file_exists "$category_dir/shl.mi")"
+    stl="$(_print_if_file_exists "$category_dir/stl.mi")"
+
+    awk -v category="$i" \
+        -v moduledir="$moduledir" \
+        -v machine="$machine" \
+        -v release_k="$release_k" \
+        -f "$libbasepkg/awk/obsolete_filter.awk" \
+        "$ad" "$mi" "$md" "$module" "$rescue" "$rescue_ad" \
+        "$rescue_machine" "$shl" "$stl"
+}
+
+_split_categories()
+{
     for i in $category; do
-        local category_dir="$lists/$i"
-
-        _mkdir_if_not_exists "$workdir/$i"
-        _remove_if_exists "$workdir/$i/FILES"
-
-        ad="$(_print_if_file_exists "$category_dir/ad.$machine")"
-        mi="$(_print_if_file_exists "$category_dir/mi")"
-        md="$(_print_if_file_exists "$category_dir/md.$machine")"
-        module="$(_print_if_file_exists "$category_dir/module.mi")"
-        rescue="$(_print_if_file_exists "$category_dir/rescue.mi")"
-        rescue_ad="$(_print_if_file_exists "$category_dir/rescue.ad.$machine")"
-        rescue_machine="$(_print_if_file_exists "$category_dir/rescue.$machine")"
-        shl="$(_print_if_file_exists "$category_dir/shl.mi")"
-        stl="$(_print_if_file_exists "$category_dir/stl.mi")"
-
-        # shellcheck disable=SC2086
-        cat \
-            $ad $mi $md $module $rescue $rescue_ad \
-            $rescue_machine $shl $stl \
-        | awk '
-            ! /^\#/ {
-                #
-                # Ignore obsolete packages.
-                #
-                if ($2 == "'"$i-obsolete"'")
-                    next
-                #
-                # Ignore package with obsolete tags.
-                #
-                if ($3 ~ "obsolete")
-                    next
-                if ($2 ~ "^'"$i"'") {
-                    #
-                    # Remove "./" characters.
-                    #
-                    $1 = substr($1, 3);
-                    if ($1 != "") {
-                        gsub(/@MODULEDIR@/, "'"$moduledir"'");
-                        gsub(/@MACHINE@/, "'"$machine"'");
-                        gsub(/@OSRELEASE@/, "'"$release_k"'");
-                        print
-                    }
-                }
-            }' >> "$workdir/$i/FILES"
+        _split_category "$i" >> "$workdir/$i/FILES"
     done
 }
 

@@ -7,6 +7,7 @@ KCOV_OPT+=	/tmp/kcov
 UNITTEST=	Command_test.sh
 UNITTEST+=	Logging_test.sh
 UNITTEST+=	NetBSD_test.sh
+UNITTEST+=	Package_test.sh
 UNITTEST+=	obsolete_filter_test.sh
 
 unittest:

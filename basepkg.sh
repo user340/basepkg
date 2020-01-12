@@ -464,7 +464,7 @@ done
 case $1 in
 pkg)
     _begin_logging
-    _split_category
+    _split_categories
     _make_package_directories
     _generate_PLIST
     _generate_PRESERVE
