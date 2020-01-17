@@ -25,12 +25,13 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-#
-# shellcheck disable=SC1090
-# shellcheck disable=SC1091
-# shellcheck disable=SC2039
 
-# shell test code imported from NetBSD build.sh
+# Shell feature test code that imported from NetBSD build.sh.
+# We doesn't test the following features:
+#   * testing the shell support $(...) command substitution with unbalanced
+#     parentheses. Because the test is ignorering in original code.
+#   * testing getopts and getopt feature because basepkg.sh doesn't call these
+#     command.
 
 errmsg=''		# error message, if not empty
 shelltest=false		# if true, exit after testing the shell
@@ -146,34 +147,6 @@ if test -z "$errmsg"; then
     fi
 fi
 
-# Does the shell support $(...) command substitution with
-# unbalanced parentheses?
-#
-# Some shells known to fail this test are:  NetBSD /bin/ksh (as of 2009-12),
-# bash-3.1, pdksh-5.2.14, zsh-4.2.7 in "emulate sh" mode.
-#
-if test -z "$errmsg"; then
-    if ! (
-	eval 'var=$(case x in x) echo abc;; esac); test x"$var" = x"abc"'
-	) >/dev/null 2>&1
-    then
-	# XXX: This test is ignored because so many shells fail it; instead,
-	#      the NetBSD build avoids using the problematic construct.
-	: ignore 'Shell does not support "$(...)" with unbalanced ")".'
-    fi
-fi
-
-# Does the shell support getopts or getopt?
-#
-if test -z "$errmsg"; then
-    if ! (
-	eval 'type getopts || type getopt'
-	) >/dev/null 2>&1
-    then
-	errmsg='Shell does not support getopts or getopt.'
-    fi
-fi
-
 #
 # If shelltest is true, exit now, reporting whether or not the shell is good.
 #
@@ -212,7 +185,7 @@ $0: Retrying under $othershell
 EOF
 		HOST_SH="$othershell"
 		export HOST_SH
-		exec $othershell "$0" --no-re-exec "$@" # avoid ${1+"$@"}
+		exec "$othershell" "$0" --no-re-exec "$@" # avoid ${1+"$@"}
 	    fi
 	    # If HOST_SH was set, but failed the test above,
 	    # then give up without trying any other shells.
@@ -258,7 +231,6 @@ libbasepkg="./lib"
 _usage()
 {
     cat <<_usage_
-
 Usage: $progname [--arch architecture] [--category category]
                   [--destdir destdir] [--machine machine] [--obj objdir]
                   [--releasedir releasedir] [--src srcdir]
@@ -288,7 +260,6 @@ Usage: $progname [--arch architecture] [--category category]
     --with-nbpkg-buld-config    WIP (Don't use it unless you are developer.)
     --enable-nbpkg-build        WIP (Don't use it unless you are developer.)
     -h | --help                 Show this message and exit.
-
 _usage_
     exit 1
 }
