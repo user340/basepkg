@@ -48,11 +48,13 @@ _print_if_file_exists()
 _clean_workdir()
 {
     _logging "===> _clean_workdir()"
+
     _remove_directory_if_exists_and_writable "$workdir"
 }
 
 _clean_packages()
 {
     _logging "_clean_packages()"
+
     _remove_directory_if_exists_and_writable "$packages"
 }
