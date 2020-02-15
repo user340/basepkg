@@ -325,12 +325,12 @@ _generate_DEINSTALL()
 
 _generate_PRESERVE()
 {
-    local essential_path=""
+    local attrs_path=""
 
-    while read -r essential_pkg; do
-        essential_path=$(find "$workdir" -name "$essential_pkg" -type d)
-        printf "%s-%s" "$essential_pkg" "$release" > "$essential_path/+PRESERVE"
-    done < "$essential"
+    while read -r attrs_pkg; do
+        attrs_path=$(find "$workdir" -name "$attrs_pkg" -type d)
+        printf "%s-%s" "$attrs_pkg" "$release" > "$attrs_path/+PRESERVE"
+    done < "$attrs"
 }
 
 _put_basedir()
