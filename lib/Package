@@ -3,12 +3,10 @@
 
 _split_category()
 {
-    _logging "===> _split_category()"
-
+    local ad mi md module rescue rescue_ad rescue_machine shl stl
     local moduledir="stand/$machine/$release_k/modules"
     local category_dir="$lists/$1"
 
-    _mkdir_if_not_exists "$workdir/$1"
     _remove_if_exists "$workdir/$1/FILES"
 
     ad="$(_print_if_file_exists "$category_dir/ad.$machine")"
@@ -21,7 +19,7 @@ _split_category()
     shl="$(_print_if_file_exists "$category_dir/shl.mi")"
     stl="$(_print_if_file_exists "$category_dir/stl.mi")"
 
-    awk -v category="$i" \
+    awk -v category="$1" \
         -v moduledir="$moduledir" \
         -v machine="$machine" \
         -v release_k="$release_k" \
@@ -32,15 +30,30 @@ _split_category()
 
 _split_categories()
 {
+    local working_place
+
     for i in $category; do
-        _split_category "$i" >> "$workdir/$i/FILES"
+        working_place="$workdir/$i"
+
+        _mkdir_if_not_exists "$working_place"
+
+        _logging "===> _split_category() $i"
+
+        # Why 
+        #    _split_category "$i" >> "$working_place/FILES"
+        # not working? I don't understand.
+        _split_category "$i" | tee "$working_place/FILES" > /dev/null 2>&1
+
+        _bomb_if_not_found "$working_place/FILES"
     done
 }
 
 _make_package_directories_of()
 {
-    awk '{print $2}' "$workdir/$1/FILES" | sort -u | while read -r pkgname; do
-        _mkdir_if_not_exists "$workdir/$1/$pkgname"
+    local working_place="$workdir/$1"
+
+    awk '{print $2}' "$working_place/FILES" | sort -u | while read -r pkgname; do
+        _mkdir_if_not_exists "$working_place/$pkgname"
     done
 }
 
@@ -75,9 +88,7 @@ _generate_PLIST()
 
 _generate_BUILD_INFO()
 {
-    local package="$workdir/$1"
-
-    cat > "$package/+BUILD_INFO" << _BUILD_INFO_
+    cat << _BUILD_INFO_
 OPSYS=$opsys
 OS_VERSION=$osversion
 OBJECT_FMT=ELF
@@ -107,8 +118,7 @@ _ext_give_release_number_to()
 
 _check_package_dependency_of()
 {
-    grep "^$1" "$deps" > /dev/null 2>&1
-    if [ $? -eq 1 ]; then
+    if ! grep -q -E "^$1" "$deps"; then
         _error "$1 Unknown package dependency."
         return 1
     fi
@@ -122,7 +132,7 @@ _check_package_dependency_of()
             _ext_give_release_number_to "$depend"
         else
             echo "@pkgdep $depend>=$release"
-        fi  >> "$tmp_deps"
+        fi
 
         if [ "$depend" = "base-sys-root" ]; then
             return 0
@@ -134,60 +144,63 @@ _check_package_dependency_of()
 
 _generate_CONTENTS()
 {
-    local TMPFILE=$(mktemp -q || _bomb "$TMPFILE")
     local setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
     local pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
     local prefix="/"
+    local package="$workdir/$1"
+
     if [ "$setname" = "etc" ]; then
         prefix="/var/tmp/basepkg"
     fi
-    local package="$workdir/$1"
 
-    echo "@name $pkgname-$release" > "$package/+CONTENTS"
-    echo "@comment Packaged at $utcdate UTC by $user@$host" >> "$package/+CONTENTS"
+    echo "@name $pkgname-$release"
+    echo "@comment Packaged at $utcdate UTC by $user@$host"
 
-    _remove_if_exists "$tmp_deps"
-    _check_package_dependency_of "$pkgname"
-    test -f "$tmp_deps" && sort -u "$tmp_deps" >> "$package/+CONTENTS"
+    _check_package_dependency_of "$pkgname" | sort -u
 
-    echo "@cwd $prefix" >> "$package/+CONTENTS"
-    while read -r i; do
-        if [ -d "$destdir/$i" ]; then
-            filename=$(echo "$i" | sed 's%\/%\\\/%g')
-            awk '$1 ~ /^\.\/'"$filename"'$/{print $0}' "$destdir/etc/mtree/set.$setname" \
+    echo "@cwd $prefix"
+    while read -r object; do
+        if [ -d "$destdir/$object" ]; then
+            filename=$(echo "$object" | sed 's%\/%\\\/%g')
+            awk '
+            $1 ~ /^\.\/'"$filename"'$/{
+                print $0
+            }' "$destdir/etc/mtree/set.$setname" \
             | sed 's%^\.\/%%' \
             | awk '
             {
                 print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
-            } ' >> "$TMPFILE"
+            } '
         fi
-        test -f "$destdir/$i" && echo "$i" >> "$TMPFILE"
-    done < "$package/PLIST"
+        if [ -f "$destdir/$object" ]; then
+            echo "$object"
+        fi
+    done < "$package/PLIST" | sort 
+}
 
-    sort "$TMPFILE" >> "$package/+CONTENTS"
-    rm -f "$TMPFILE"
+_show_each_file_size_in_CONTENTS_of()
+{
+    # Sum of file size.
+    grep -v '^@' < "$1/+CONTENTS" \
+        | xargs -I % ls -l "$destdir/"% \
+        | awk '{sum+=$5} END{print sum}'
+
+    # Sum of directory size.
+    grep -c '^@exec install -d -o root -g wheel -m' < "$1/+CONTENTS" \
+        | xargs -I % expr % \* 512
+}
+
+_calculate_sum_of_file_size()
+{
+    _show_each_file_size_in_CONTENTS_of "$1" | awk '{sum+=$1} END{print sum}'
 }
 
 _generate_SIZE_PKG()
 {
     local package="$workdir/$1"
 
-    # Sum of file size.
-    grep -v '^@' < "$package/+CONTENTS" \
-        | xargs -I % ls -l "$destdir/"% \
-        | awk '{sum+=$5} END{print sum}' \
-        > "$package/+SIZE_PKG.tmp"
-
-    # Sum of directory size.
-    grep -c '^@exec install -d -o root -g wheel -m' < "$package/+CONTENTS" \
-        | xargs -I % expr % \* 512 \
-        >> "$package/+SIZE_PKG.tmp"
-
     # Sum of file and directory size.
-    awk '{sum+=$1} END{print sum}' < "$package/+SIZE_PKG.tmp" \
-        > "$package/+SIZE_PKG"
-
-    rm -f "$package/+SIZE_PKG.tmp"
+    _calculate_sum_of_file_size "$package" > "$package/+SIZE_PKG"
 }
 
 _generate_SIZE_ALL()
@@ -209,30 +222,39 @@ _generate_SIZE_ALL()
     rm -f "$package/+SIZE_ALL.tmp"
 }
 
+_print_description()
+{
+    awk '
+    /^"'$1'"/ {
+        for (i = 2; i <= NF; i++) {
+            if (i == NF)
+                printf $i"\n"
+            else
+                printf $i" "
+        }
+    }' "$2"
+}
+
+_print_description()
+{
+    awk '
+    /^'"$1"'/ {
+        for (i = 2; i <= NF; i++) {
+            if (i == NF)
+                printf $i"\n"
+            else
+                printf $i" "
+        }
+    }' "$2"
+}
+
 _generate_DESC_and_COMMENT()
 {
     local pkgname="${1#*/}"
     local package="$workdir/$1"
 
-    awk '
-    /^'"$pkgname"'/ {
-        for (i = 2; i <= NF; i++) {
-            if (i == NF)
-                printf $i"\n"
-            else
-                printf $i" "
-        }
-    }' "$descrs" > "$package/+DESC" || _bomb "awk +DESC"
-
-    awk '
-    /^'"$pkgname"'/ {
-        for (i = 2; i <= NF; i++) {
-            if (i == NF)
-                printf $i"\n"
-            else
-                printf $i" "
-        }
-    }' "$comments" > "$package/+COMMENT" || _bomb "awk +COMMENT"
+    _print_description "$pkgname" "$descrs"   > "$package/+DESC"
+    _print_description "$pkgname" "$comments" > "$package/+COMMENT"
 }
 
 _replace_cmdstr()
@@ -292,7 +314,7 @@ _replace_cmdstr()
         -e "s%@PKG_RCD_SCRIPTS@%NO%" \
         -e "s%@PKG_USER_HOME@%%" \
         -e "s%@PKG_USER_SHELL@%%" \
-        -e "s%@PERL5@%$(command -v perl)%" "$1" || _bomb "failed sed"
+        -e "s%@PERL5@%$(command -v perl)%" "$1"
 }
 
 _generate_INSTALL()
@@ -336,10 +358,10 @@ _generate_PRESERVE()
 {
     local attrs_path=""
 
-    while read -r attrs_pkg; do
+    cut -f 1 "$attrs" | while read -r attrs_pkg; do
         attrs_path=$(find "$workdir" -name "$attrs_pkg" -type d)
         printf "%s-%s" "$attrs_pkg" "$release" > "$attrs_path/+PRESERVE"
-    done < "$attrs"
+    done
 }
 
 _put_basedir()
@@ -367,14 +389,18 @@ _do_pkg_create()
     -s $workdir/$1/+SIZE_PKG
     -S $workdir/$1/+SIZE_ALL"
     local package="$workdir/$1"
+    local prefix
 
-    test -f "$package/+PRESERVE" && option="$option -n $package/+PRESERVE"
+    if [ -f "$package/+PRESERVE" ]; then
+        option="$option -n $package/+PRESERVE"
+    fi
 
     if [ "$setname" = "etc" ]; then
-        option="$option -I /var/tmp/basepkg"
+        prefix="/var/tmp/basepkg"
     else
-        option="$option -I /"
+        prefix="/"
     fi
+    option="$option -I $prefix"
 
     # shellcheck disable=SC2086
     /usr/pkg/sbin/pkg_create $option "$pkgname" || _bomb "$1: pkg_create"
@@ -411,8 +437,10 @@ _make_all_packages()
     _logging "===> _make_all_packages()"
 
     _find_package_directory | while read -r pkg; do
-        _generate_BUILD_INFO "$pkg"
-        _generate_CONTENTS "$pkg"
+        local package="$workdir/$pkg"
+
+        _generate_BUILD_INFO > "$package/+BUILD_INFO"
+        _generate_CONTENTS "$pkg" > "$package/+CONTENTS"
         _generate_SIZE_PKG "$pkg"
         _generate_DESC_and_COMMENT "$pkg"
         _generate_INSTALL "$pkg"

@@ -8,6 +8,7 @@ UNITTEST=	Command_test.sh
 UNITTEST+=	Logging_test.sh
 UNITTEST+=	NetBSD_test.sh
 UNITTEST+=	Package_test.sh
+UNITTEST+=	categorizing_files_into_package_test.sh
 UNITTEST+=	obsolete_filter_test.sh
 
 unittest:

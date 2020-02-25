@@ -1,3 +1,4 @@
 ./bin/example	test-package-example	test
+./sbin/example	test-package-example	test
 ./bin/obsolete	test-obsolete	test,obsolete
 ./etc/test	test-base-example	test

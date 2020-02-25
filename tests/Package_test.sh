@@ -13,16 +13,77 @@ test_make_package_directory_of()
     {
         :
     }
+    # shellcheck disable=SC2034
     local workdir="."
+    # shellcheck disable=SC2034
     local category="."
-    local expect="././test-base-example
+    local expected="././test-base-example
 ././test-obsolete
 ././test-package-example"
     local result
 
     result="$(_make_package_directories_of ".")"
 
-    assertEquals "$expect" "$result"
+    assertEquals "$expected" "$result"
+}
+
+test_make_package_directories()
+{
+    _logging()
+    {
+        echo "$@"
+    }
+
+    _make_package_directories_of()
+    {
+        echo "$@"
+    }
+
+    local category="base etc"
+    local expected="===> _make_package_directories()
+base
+etc"
+    local result
+
+    result="$(_make_package_directories)"
+
+    assertEquals "$expected" "$result"
+}
+
+test_generate_BUILD_INFO()
+{
+    local opsys="NetBSD"
+    local osversion="9.99.43"
+    local machine_arch="x86_64"
+    local pkgtoolversion="20200101"
+    local homepage="https://github.com/user340/basepkg"
+    local mail_address="uki@127.0.0.1"
+
+    local expected="OPSYS=$opsys
+OS_VERSION=$osversion
+OBJECT_FMT=ELF
+MACHINE_ARCH=$machine_arch
+PKGTOOLS_VERSION=$pkgtoolversion
+HOMEPAGE=$homepage
+MAINTAINER=$mail_address"
+    local result
+
+    result="$(_generate_BUILD_INFO)"
+
+    assertEquals "$expected" "$result"
+}
+
+test_check_package_dependency_of()
+{
+    local deps="/home/uki/src/cvs.NetBSD.org/src/distrib/sets/deps"
+    local release="9.99.48"
+    local expected="@pkgdep base-sys-usr>=$release
+@pkgdep base-sys-root>=$release"
+    local result
+
+    result="$(_check_package_dependency_of "base-c-bin")"
+
+    assertEquals "$expected" "$result"
 }
 
 . ./common.sh
