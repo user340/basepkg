@@ -3,7 +3,7 @@
 # shellcheck disable=SC1091
 # shellcheck disable=SC2039
 
-FILES="./FILES"
+FILES="./testdata/FILES"
 
 run_awk()
 {
