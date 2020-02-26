@@ -3,6 +3,23 @@
 # shellcheck disable=SC1091
 # shellcheck disable=SC2039
 
+test_split_category()
+{
+    local machine="amd64"
+    local release_k="9.99.48"
+    local lists="./testdata"
+    local workdir="./testdata"
+    local LIBBASEPKG="../lib"
+    local expected="bin/rcp base-netutil-root
+bin/rm base-util-root
+bin/rmdir base-util-root"
+    local result
+
+    result="$(_split_category "base")"
+
+    assertEquals "$expected" "$result"
+}
+
 test_make_package_directory_of()
 {
     _mkdir_if_not_exists()
@@ -99,6 +116,17 @@ test_check_package_dependency_of_package_which_has_no_dependency()
     local result
 
     result="$(_check_package_dependency_of "test-package-bin")"
+
+    assertEquals "$expected" "$result"
+}
+
+test_ext_get_ident_number()
+{
+    local nbpkg_build_list_all="./testdata/nbpkg_build_list_all"
+    local expected="8.0.20181101"
+    local result
+
+    result="$(_ext_get_ident_number "base-sys-root")"
 
     assertEquals "$expected" "$result"
 }
@@ -231,6 +259,59 @@ $(command -v perl)"
     assertEquals "$expected" "$result"
 }
 
+test_put_basedir()
+{
+    local releasedir="."
+    local packages="$releasedir/packages"
+    local machine_arch="i386"
+    local machine="i386"
+    local expected="$packages/$release/$machine"
+    local result
+
+    result="$(_put_basedir)"
+
+    assertEquals "$expected" "$result"
+}
+
+test_put_basedir_difference_machine_arch_and_machine_pattern()
+{
+    local releasedir="."
+    local packages="$releasedir/packages"
+    local machine_arch="x86_64"
+    local machine="amd64"
+    local expected="$packages/$release/$machine-$machine_arch"
+    local result
+
+    result="$(_put_basedir)"
+
+    assertEquals "$expected" "$result"
+}
+
+test_is_nbpkg_daily_build()
+{
+    local nbpkg_build_config="yes"
+    local nbpkg_build_target="daily"
+
+    assertTrue _is_nbpkg_daily_build
+}
+
+test_is_nbpkg_daily_build_not_set_config()
+{
+    local nbpkg_build_config=""
+    local nbpkg_build_target="daily"
+
+    assertFalse _is_nbpkg_daily_build
+}
+
+test_is_nbpkg_daily_build_not_daily()
+{
+    local nbpkg_build_config="yes"
+    local nbpkg_build_target=""
+
+    assertFalse _is_nbpkg_daily_build
+}
+
 . ./common.sh
 . ../lib/Package
+. ../lib/Common
 . "$SHUNIT2"

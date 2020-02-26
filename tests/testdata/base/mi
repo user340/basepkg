@@ -1,0 +1,5 @@
+./bin/rcorder					base-obsolete		obsolete
+./bin/rcp					base-netutil-root
+./bin/rm					base-util-root
+./bin/rmail					base-obsolete		obsolete
+./bin/rmdir					base-util-root
