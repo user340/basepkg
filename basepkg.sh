@@ -219,19 +219,19 @@ EOF
     exit 1
 fi
 
-libbasepkg="./lib"
+LIBBASEPKG="./lib"
 
-. "$libbasepkg/valid_MACHINE_ARCH"
-. "$libbasepkg/Command"
-. "$libbasepkg/Common"
-. "$libbasepkg/Logging"
-. "$libbasepkg/NetBSD"
-. "$libbasepkg/Package"
+. "$LIBBASEPKG/valid_MACHINE_ARCH"
+. "$LIBBASEPKG/Command"
+. "$LIBBASEPKG/Common"
+. "$LIBBASEPKG/Logging"
+. "$LIBBASEPKG/NetBSD"
+. "$LIBBASEPKG/Package"
 
 _usage()
 {
     cat <<_usage_
-Usage: $progname [--arch architecture] [--category category]
+Usage: $PROGNAME [--arch architecture] [--category category]
                   [--destdir destdir] [--machine machine] [--obj objdir]
                   [--releasedir releasedir] [--src srcdir]
                   [--with-nbpkg-build-config config] [--enable-nbpkg-build]
@@ -281,24 +281,25 @@ nl='
 tab='	'
 
 PWD="$(pwd)"
-progname=${0##*/}
-host="$(hostname)"
-opsys="$(uname)"
-osversion="$(uname -r)"
-pkgtoolversion="$(pkg_create -V)"
-utcdate="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
+PROGNAME=${0##*/}
+HOST="$(hostname)"
+OPSYS="$(uname)"
+OSVERSION="$(uname -r)"
+PKGTOOLVERSION="$(pkg_create -V)"
+UTCDATE="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 user="${USER:-root}"
-param="usr/include/sys/param.h"
-tmp_deps="/tmp/culldeps"
-homepage="https://github.com/user340/basepkg"
-mail_address="uki@e-yuuki.org"
+PARAM="usr/include/sys/param.h"
+HOMEPAGE="https://github.com/user340/basepkg"
+MAINTAINER="uki@e-yuuki.org"
 log="$PWD/.basepkg.log"
 obj="/usr/obj"
 src="/usr/src"
 category="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
 pkgdb="/var/db/basepkg"
 
-[ $# = 0 ] && _usage
+if [ $# = 0 ]; then
+    _usage
+fi
 
 machine="$(uname -m)"
 machine_arch=""
@@ -425,9 +426,13 @@ fi
 
 _bomb_if_not_found "$install_script"
 
-test "X$release" != "X" || _bomb "cannot resolve \$release"
+if [ "X$release" != "X" ]; then
+    _bomb "cannot resolve \$release"
+fi
 
-test $# -eq 0 && _usage
+if [ $# -eq 0 ]; then
+    _usage
+fi
 
 for cmd in hostname mktemp pkg_create; do
     _bomb_if_command_not_found "$cmd"

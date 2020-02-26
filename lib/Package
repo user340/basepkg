@@ -23,7 +23,7 @@ _split_category()
         -v moduledir="$moduledir" \
         -v machine="$machine" \
         -v release_k="$release_k" \
-        -f "$libbasepkg/awk/obsolete_filter.awk" \
+        -f "$LIBBASEPKG/awk/obsolete_filter.awk" \
         "$ad" "$mi" "$md" "$module" "$rescue" "$rescue_ad" \
         "$rescue_machine" "$shl" "$stl"
 }
@@ -71,7 +71,7 @@ _generate_PLIST()
     _logging "===> _generate_PLIST()"
 
     for i in $category; do
-        awk -f "$libbasepkg/awk/categorizing_files_into_package.awk" \
+        awk -f "$LIBBASEPKG/awk/categorizing_files_into_package.awk" \
             "$workdir/$i/FILES" > "$workdir/$i/CATEGORIZED"
 
         for package_directory in "$workdir/$i"/*; do
@@ -89,13 +89,13 @@ _generate_PLIST()
 _generate_BUILD_INFO()
 {
     cat << _BUILD_INFO_
-OPSYS=$opsys
-OS_VERSION=$osversion
+OPSYS=$OPSYS
+OS_VERSION=$OSVERSION
 OBJECT_FMT=ELF
 MACHINE_ARCH=$machine_arch
-PKGTOOLS_VERSION=$pkgtoolversion
-HOMEPAGE=$homepage
-MAINTAINER=$mail_address
+PKGTOOLS_VERSION=$PKGTOOLVERSION
+HOMEPAGE=$HOMEPAGE
+MAINTAINER=$MAINTAINER
 _BUILD_INFO_
 }
 
@@ -154,7 +154,7 @@ _generate_CONTENTS()
     fi
 
     echo "@name $pkgname-$release"
-    echo "@comment Packaged at $utcdate UTC by $user@$host"
+    echo "@comment Packaged at $UTCDATE UTC by $user@$HOST"
 
     _check_package_dependency_of "$pkgname" | sort -u
 
@@ -477,11 +477,11 @@ _mk_kernel_package()
 
     # Information of build environment.
     cat > "$package/+BUILD_INFO" << _BUILD_INFO_
-OPSYS=$opsys
-OS_VERSION=$osversion
+OPSYS=$OPSYS
+OS_VERSION=$OSVERSION
 OBJECT_FMT=ELF
 MACHINE_ARCH=$machine_arch
-PKGTOOLS_VERSION=$pkgtoolversion
+PKGTOOLS_VERSION=$PKGTOOLVERSION
 _BUILD_INFO_
 
     # Short description of package.
@@ -497,7 +497,7 @@ _DESC_
     # Package contents.
     cat > "$package/+CONTENTS" << _CONTENTS_
 @name $pkgname-$release
-@comment Packaged at $utcdate UTC by $user@$host
+@comment Packaged at $UTCDATE UTC by $user@$HOST
 @cwd /
 netbsd
 _CONTENTS_

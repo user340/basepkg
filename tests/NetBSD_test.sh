@@ -98,45 +98,45 @@ _setup_param()
 test_osrelease_to_current()
 {
     local destdir="/"
-    local param="$(_setup_param "current")"
+    local PARAM="$(_setup_param "current")"
     local result="$(_osrelease)"
 
     assertEquals "9.99.25" "$result"
 
-    _teardown_remove_given_file "$param"
+    _teardown_remove_given_file "$PARAM"
 }
 
 test_osrelease_with_k_to_current()
 {
     local destdir="/"
-    local param="$(_setup_param "current")"
+    local PARAM="$(_setup_param "current")"
     local result="$(_osrelease -k)"
 
     assertEquals "9.99.25" "$result"
 
-    _teardown_remove_given_file "$param"
+    _teardown_remove_given_file "$PARAM"
 }
 
 test_osrelease_to_stable()
 {
     local destdir="/"
-    local param="$(_setup_param "stable")"
+    local PARAM="$(_setup_param "stable")"
     local result="$(_osrelease)"
 
     assertEquals "8.1_STABLE" "$result"
 
-    _teardown_remove_given_file "$param"
+    _teardown_remove_given_file "$PARAM"
 }
 
 test_osrelease_with_k_to_stable()
 {
     local destdir="/"
-    local param="$(_setup_param "stable")"
+    local PARAM="$(_setup_param "stable")"
     local result="$(_osrelease -k)"
 
     assertEquals "8.1" "$result"
 
-    _teardown_remove_given_file "$param"
+    _teardown_remove_given_file "$PARAM"
 }
 
 . ./common.sh

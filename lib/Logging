@@ -7,7 +7,7 @@ _begin_logging()
     _logging "===> NetBSD version:     $release"
     _logging "===> MACHINE:            $machine"
     _logging "===> MACHINE_ARCH:       $machine_arch"
-    _logging "===> Build platform:     $opsys $osversion $(uname -m)"
+    _logging "===> Build platform:     $OPSYS $OSVERSION $(uname -m)"
 }
 
 _logging()

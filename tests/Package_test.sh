@@ -52,20 +52,20 @@ etc"
 
 test_generate_BUILD_INFO()
 {
-    local opsys="NetBSD"
-    local osversion="9.99.43"
+    local OPSYS="NetBSD"
+    local OSVERSION="9.99.43"
     local machine_arch="x86_64"
-    local pkgtoolversion="20200101"
-    local homepage="https://github.com/user340/basepkg"
-    local mail_address="uki@127.0.0.1"
+    local PKGTOOLVERSION="20200101"
+    local HOMEPAGE="https://github.com/user340/basepkg"
+    local MAINTAINER="uki@127.0.0.1"
 
-    local expected="OPSYS=$opsys
-OS_VERSION=$osversion
+    local expected="OPSYS=$OPSYS
+OS_VERSION=$OSVERSION
 OBJECT_FMT=ELF
 MACHINE_ARCH=$machine_arch
-PKGTOOLS_VERSION=$pkgtoolversion
-HOMEPAGE=$homepage
-MAINTAINER=$mail_address"
+PKGTOOLS_VERSION=$PKGTOOLVERSION
+HOMEPAGE=$HOMEPAGE
+MAINTAINER=$MAINTAINER"
     local result
 
     result="$(_generate_BUILD_INFO)"

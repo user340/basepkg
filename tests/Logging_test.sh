@@ -69,10 +69,10 @@ _get_expected_by_begin_logging()
     local release="9.0"
     local machine="amd64"
     local machine_arch="x86_64"
-    local opsys="NetBSD"
-    local osversion="9.0"
+    local OPSYS="NetBSD"
+    local OSVERSION="9.0"
 
-    printf "===> basepkg.sh command: %s\\n===> basepkg.sh started: %s\\n===> NetBSD version:     %s\\n===> MACHINE:            %s\\n===> MACHINE_ARCH:       %s\\n===> Build platform:     %s %s %s" "$commandline" "$(date)" "$release" "$machine" "$machine_arch" "$opsys" "$osversion" "$(uname -m)"
+    printf "===> basepkg.sh command: %s\\n===> basepkg.sh started: %s\\n===> NetBSD version:     %s\\n===> MACHINE:            %s\\n===> MACHINE_ARCH:       %s\\n===> Build platform:     %s %s %s" "$commandline" "$(date)" "$release" "$machine" "$machine_arch" "$OPSYS" "$OSVERSION" "$(uname -m)"
 }
 
 test_begin_logging()
@@ -83,8 +83,8 @@ test_begin_logging()
     local release="9.0"
     local machine="amd64"
     local machine_arch="x86_64"
-    local opsys="NetBSD"
-    local osversion="9.0"
+    local OPSYS="NetBSD"
+    local OSVERSION="9.0"
 
     log="$(_setup_logging)"
     result="$(_begin_logging)"
