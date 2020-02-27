@@ -254,7 +254,7 @@ Usage: $PROGNAME [--arch architecture] [--category category]
                                 [Default: result of \`uname -m\`]
     --obj                       Set obj to NetBSD binaries.
                                 [Default: /usr/obj]
-    --releasedir                Set releasedir.
+    --releasedir                Set RELEASEDIR.
     --src                       Set NetBSD source directory.
                                 [Default: /usr/src]
     --with-nbpkg-buld-config    WIP (Don't use it unless you are developer.)
@@ -351,11 +351,11 @@ while [ $# -gt 0 ]; do
         shift
         ;;
     --releasedir=*)
-        releasedir=$(_getopt "$1")
+        RELEASEDIR=$(_getopt "$1")
         ;;
     --releasedir)
         test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        releasedir="$2"
+        RELEASEDIR="$2"
         shift
         ;;
     --src=*)
@@ -401,9 +401,9 @@ if [ -z "$machine_arch" ]; then
 fi
 
 DESTDIR=${DESTDIR:-"$OBJ/destdir.$machine"}
-releasedir=${releasedir:-.}
-release="$(_osrelease -a)"
-release_k="$(_osrelease -k)"
+RELEASEDIR=${releasedir:-.}
+RELEASE="$(_osrelease -a)"
+RELEASE_K="$(_osrelease -k)"
 sets="$SRC/distrib/sets"
 lists="$sets/lists"
 comments="$sets/comments"
@@ -412,21 +412,21 @@ deps="$sets/deps"
 install_script="$PWD/sets/install"
 deinstall_script="$PWD/sets/deinstall"
 attrs="$sets/attrs"
-workdir="$releasedir/work/$release/$machine"
-packages="$releasedir/packages"
+workdir="$RELEASEDIR/work/$RELEASE/$machine"
+packages="$RELEASEDIR/packages"
 kernobj="$OBJ/sys/arch/$machine/compile"
 start=$(date)
 
 # quirks: overwritten for "nbpkg-build" system
 if [ "X$nbpkg_build_config" != "X" ] && [ -f "$nbpkg_build_config" ]; then
    . "$nbpkg_build_config"
-   release="$nbpkg_build_id" # e.g. 8.0.20181029
+   RELEASE="$nbpkg_build_id" # e.g. 8.0.20181029
 fi
 
 _bomb_if_not_found "$install_script"
 
-if [ "X$release" != "X" ]; then
-    _bomb "cannot resolve \$release"
+if [ "X$RELEASE" != "X" ]; then
+    _bomb "cannot resolve \$RELEASE"
 fi
 
 if [ $# -eq 0 ]; then

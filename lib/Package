@@ -4,7 +4,7 @@
 _split_category()
 {
     local ad mi md module rescue rescue_ad rescue_machine shl stl
-    local moduledir="stand/$machine/$release_k/modules"
+    local moduledir="stand/$machine/$RELEASE_K/modules"
     local category_dir="$lists/$1"
 
     _remove_if_exists "$workdir/$1/FILES"
@@ -22,7 +22,7 @@ _split_category()
     awk -v category="$1" \
         -v moduledir="$moduledir" \
         -v machine="$machine" \
-        -v release_k="$release_k" \
+        -v release_k="$RELEASE_K" \
         -f "$LIBBASEPKG/awk/obsolete_filter.awk" \
         "$ad" "$mi" "$md" "$module" "$rescue" "$rescue_ad" \
         "$rescue_machine" "$shl" "$stl"
@@ -137,7 +137,7 @@ _check_package_dependency_of()
         if [ "X$nbpkg_build_config" != "X" ];then
             _ext_give_release_number_to "$depend"
         else
-            echo "@pkgdep $depend>=$release"
+            echo "@pkgdep $depend>=$RELEASE"
         fi
 
         if [ "$depend" = "base-sys-root" ]; then
@@ -159,7 +159,7 @@ _generate_CONTENTS()
         prefix="/var/tmp/basepkg"
     fi
 
-    echo "@name $pkgname-$release"
+    echo "@name $pkgname-$RELEASE"
     echo "@comment Packaged at $UTCDATE UTC by $USER@$HOST"
 
     _check_package_dependency_of "$pkgname" | sort -u
@@ -353,16 +353,16 @@ _generate_PRESERVE()
 
     cut -f 1 "$attrs" | while read -r attrs_pkg; do
         attrs_path=$(find "$workdir" -name "$attrs_pkg" -type d)
-        printf "%s-%s" "$attrs_pkg" "$release" > "$attrs_path/+PRESERVE"
+        printf "%s-%s" "$attrs_pkg" "$RELEASE" > "$attrs_path/+PRESERVE"
     done
 }
 
 _put_basedir()
 {
    if [ "X$machine_arch" != "X$machine" ]; then
-     echo "$packages/$release/$machine-$machine_arch"
+     echo "$packages/$RELEASE/$machine-$machine_arch"
    else
-     echo "$packages/$release/$machine"
+     echo "$packages/$RELEASE/$machine"
    fi
 }
 
@@ -400,7 +400,7 @@ _do_pkg_create()
 
     local _basedir=$(_put_basedir)
     _mkdir_if_not_exists "$_basedir"
-    mv "./$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
+    mv "./$pkgname.tgz" "$_basedir/$pkgname-$RELEASE.tgz"
 }
 
 _mk_checksum()
@@ -488,7 +488,7 @@ _DESC_
 
     # Package contents.
     cat > "$package/+CONTENTS" << _CONTENTS_
-@name $pkgname-$release
+@name $pkgname-$RELEASE
 @comment Packaged at $UTCDATE UTC by $USER@$HOST
 @cwd /
 netbsd
@@ -515,7 +515,7 @@ _CONTENTS_
 
     _basedir=$(_put_basedir)
     _mkdir_if_not_exists "$_basedir"
-    mv "$PWD/$pkgname.tgz" "$_basedir/$pkgname-$release.tgz"
+    mv "$PWD/$pkgname.tgz" "$_basedir/$pkgname-$RELEASE.tgz"
 }
 
 _make_all_kernel_packages()

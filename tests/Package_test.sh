@@ -6,7 +6,7 @@
 test_split_category()
 {
     local machine="amd64"
-    local release_k="9.99.48"
+    local RELEASE_K="9.99.48"
     local lists="./testdata"
     local workdir="./testdata"
     local LIBBASEPKG="../lib"
@@ -94,9 +94,9 @@ MAINTAINER=$MAINTAINER"
 test_check_package_dependency_of()
 {
     local deps="/home/uki/src/cvs.NetBSD.org/src/distrib/sets/deps"
-    local release="9.99.48"
-    local expected="@pkgdep base-sys-usr>=$release
-@pkgdep base-sys-root>=$release"
+    local RELEASE="9.99.48"
+    local expected="@pkgdep base-sys-usr>=$RELEASE
+@pkgdep base-sys-root>=$RELEASE"
     local result
 
     result="$(_check_package_dependency_of "base-c-bin")"
@@ -112,7 +112,7 @@ test_check_package_dependency_of_package_which_has_no_dependency()
     }
 
     local deps="/home/uki/src/cvs.NetBSD.org/src/distrib/sets/deps"
-    local release="9.99.48"
+    local RELEASE="9.99.48"
     local expected="test-package-bin Unknown package dependency."
     local result
 
@@ -262,11 +262,11 @@ $(command -v perl)"
 
 test_put_basedir()
 {
-    local releasedir="."
-    local packages="$releasedir/packages"
+    local RELEASEDIR="."
+    local packages="$RELEASEDIR/packages"
     local machine_arch="i386"
     local machine="i386"
-    local expected="$packages/$release/$machine"
+    local expected="$packages/$RELEASE/$machine"
     local result
 
     result="$(_put_basedir)"
@@ -276,11 +276,11 @@ test_put_basedir()
 
 test_put_basedir_difference_machine_arch_and_machine_pattern()
 {
-    local releasedir="."
-    local packages="$releasedir/packages"
+    local RELEASEDIR="."
+    local packages="$RELEASEDIR/packages"
     local machine_arch="x86_64"
     local machine="amd64"
-    local expected="$packages/$release/$machine-$machine_arch"
+    local expected="$packages/$RELEASE/$machine-$machine_arch"
     local result
 
     result="$(_put_basedir)"

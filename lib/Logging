@@ -4,7 +4,7 @@ _begin_logging()
 {
     _logging "===> basepkg.sh command: $COMMANDLINE"
     _logging "===> basepkg.sh started: $(date)"
-    _logging "===> NetBSD version:     $release"
+    _logging "===> NetBSD version:     $RELEASE"
     _logging "===> MACHINE:            $machine"
     _logging "===> MACHINE_ARCH:       $machine_arch"
     _logging "===> Build platform:     $OPSYS $OSVERSION $(uname -m)"

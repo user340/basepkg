@@ -66,13 +66,13 @@ test_logfile_exists_and_is_writable()
 _get_expected_by_begin_logging()
 {
     local COMMANDLINE="./basepkg.sh"
-    local release="9.0"
+    local RELEASE="9.0"
     local machine="amd64"
     local machine_arch="x86_64"
     local OPSYS="NetBSD"
     local OSVERSION="9.0"
 
-    printf "===> basepkg.sh command: %s\\n===> basepkg.sh started: %s\\n===> NetBSD version:     %s\\n===> MACHINE:            %s\\n===> MACHINE_ARCH:       %s\\n===> Build platform:     %s %s %s" "$COMMANDLINE" "$(date)" "$release" "$machine" "$machine_arch" "$OPSYS" "$OSVERSION" "$(uname -m)"
+    printf "===> basepkg.sh command: %s\\n===> basepkg.sh started: %s\\n===> NetBSD version:     %s\\n===> MACHINE:            %s\\n===> MACHINE_ARCH:       %s\\n===> Build platform:     %s %s %s" "$COMMANDLINE" "$(date)" "$RELEASE" "$machine" "$machine_arch" "$OPSYS" "$OSVERSION" "$(uname -m)"
 }
 
 test_begin_logging()
@@ -80,7 +80,7 @@ test_begin_logging()
     local log
     local result
     local COMMANDLINE="./basepkg.sh"
-    local release="9.0"
+    local RELEASE="9.0"
     local machine="amd64"
     local machine_arch="x86_64"
     local OPSYS="NetBSD"
