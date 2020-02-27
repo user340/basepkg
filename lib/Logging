@@ -2,7 +2,7 @@
 
 _begin_logging()
 {
-    _logging "===> basepkg.sh command: $commandline"
+    _logging "===> basepkg.sh command: $COMMANDLINE"
     _logging "===> basepkg.sh started: $(date)"
     _logging "===> NetBSD version:     $release"
     _logging "===> MACHINE:            $machine"
@@ -12,14 +12,14 @@ _begin_logging()
 
 _logging()
 {
-    printf "%s\\n" "$@" | tee -a "$log"
+    printf "%s\\n" "$@" | tee -a "$LOG"
 }
 
 _end_logging()
 {
     _logging "===> basepkg.sh ended:   $(date)"
     printf "===> Summary of log:\\n"
-    sed -e "s/^===>/    /g" "$log"
+    sed -e "s/^===>/    /g" "$LOG"
     printf "===> .\\n"
-    rm -f "$log"
+    rm -f "$LOG"
 }

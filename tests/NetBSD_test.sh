@@ -97,7 +97,7 @@ _setup_param()
 
 test_osrelease_to_current()
 {
-    local destdir="/"
+    local DESTDIR="/"
     local PARAM="$(_setup_param "current")"
     local result="$(_osrelease)"
 
@@ -108,7 +108,7 @@ test_osrelease_to_current()
 
 test_osrelease_with_k_to_current()
 {
-    local destdir="/"
+    local DESTDIR="/"
     local PARAM="$(_setup_param "current")"
     local result="$(_osrelease -k)"
 
@@ -119,7 +119,7 @@ test_osrelease_with_k_to_current()
 
 test_osrelease_to_stable()
 {
-    local destdir="/"
+    local DESTDIR="/"
     local PARAM="$(_setup_param "stable")"
     local result="$(_osrelease)"
 
@@ -130,7 +130,7 @@ test_osrelease_to_stable()
 
 test_osrelease_with_k_to_stable()
 {
-    local destdir="/"
+    local DESTDIR="/"
     local PARAM="$(_setup_param "stable")"
     local result="$(_osrelease -k)"
 

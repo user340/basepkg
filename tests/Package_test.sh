@@ -30,13 +30,14 @@ test_make_package_directory_of()
     {
         :
     }
+    local CATEGORY="."
+
     # shellcheck disable=SC2034
     local workdir="./testdata"
     # shellcheck disable=SC2034
-    local category="."
-    local expected="$workdir/$category/test-base-example
-$workdir/$category/test-obsolete
-$workdir/$category/test-package-example"
+    local expected="$workdir/$CATEGORY/test-base-example
+$workdir/$CATEGORY/test-obsolete
+$workdir/$CATEGORY/test-package-example"
     local result
 
     result="$(_make_package_directories_of ".")"
@@ -56,7 +57,7 @@ test_make_package_directories()
         echo "$@"
     }
 
-    local category="base etc"
+    local CATEGORY="base etc"
     local expected="===> _make_package_directories()
 base
 etc"

@@ -32,7 +32,7 @@ _split_categories()
 {
     local working_place
 
-    for i in $category; do
+    for i in $CATEGORY; do
         working_place="$workdir/$i"
 
         _mkdir_if_not_exists "$working_place"
@@ -61,7 +61,7 @@ _make_package_directories()
 {
     _logging "===> _make_package_directories()"
 
-    for i in $category; do
+    for i in $CATEGORY; do
         _make_package_directories_of "$i"
     done
 }
@@ -70,7 +70,7 @@ _generate_PLIST()
 {
     _logging "===> _generate_PLIST()"
 
-    for i in $category; do
+    for i in $CATEGORY; do
         awk -f "$LIBBASEPKG/awk/categorizing_files_into_package.awk" \
             "$workdir/$i/FILES" > "$workdir/$i/CATEGORIZED"
 
@@ -160,25 +160,25 @@ _generate_CONTENTS()
     fi
 
     echo "@name $pkgname-$release"
-    echo "@comment Packaged at $UTCDATE UTC by $user@$HOST"
+    echo "@comment Packaged at $UTCDATE UTC by $USER@$HOST"
 
     _check_package_dependency_of "$pkgname" | sort -u
 
     echo "@cwd $prefix"
     while read -r object; do
-        if [ -d "$destdir/$object" ]; then
+        if [ -d "$DESTDIR/$object" ]; then
             filename=$(echo "$object" | sed 's%\/%\\\/%g')
             awk '
             $1 ~ /^\.\/'"$filename"'$/{
                 print $0
-            }' "$destdir/etc/mtree/set.$setname" \
+            }' "$DESTDIR/etc/mtree/set.$setname" \
             | sed 's%^\.\/%%' \
             | awk '
             {
                 print "@exec install -d -o root -g wheel -m "substr($5, 6) " "$1
             } '
         fi
-        if [ -f "$destdir/$object" ]; then
+        if [ -f "$DESTDIR/$object" ]; then
             echo "$object"
         fi
     done < "$package/PLIST" | sort 
@@ -188,7 +188,7 @@ _show_each_file_size_in_CONTENTS_of()
 {
     # Sum of file size.
     grep -v '^@' < "$1/+CONTENTS" \
-        | xargs -I % ls -l "$destdir/"% \
+        | xargs -I % ls -l "$DESTDIR/"% \
         | awk '{sum+=$5} END{print sum}'
 
     # Sum of directory size.
@@ -324,10 +324,10 @@ _generate_INSTALL()
 
     # For +FILES routine which is conained in sets/install script.
     grep -v -e "^@" "$package/+CONTENTS" | while read -r file; do
-        test "$(file "$obj/$file" | cut -d " " -f 2)" = "symbolic" && continue
+        test "$(file "$OBJ/$file" | cut -d " " -f 2)" = "symbolic" && continue
         if [ "${file%%/*}" = "etc" ]; then
-            if [ -f "$destdir/$file" ]; then
-                user_group_mode=$(grep -e "^\\./$file " "$destdir/etc/mtree/set.etc" \
+            if [ -f "$DESTDIR/$file" ]; then
+                user_group_mode=$(grep -e "^\\./$file " "$DESTDIR/etc/mtree/set.etc" \
                                     | cut -d " " -f 3 -f 4 -f 5 \
                                     | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
                                     | tr '\n' ' '
@@ -373,9 +373,9 @@ _do_pkg_create()
     local option="-v -l -U
     -B $workdir/$1/+BUILD_INFO
     -i $workdir/$1/+INSTALL
-    -K $pkgdb
+    -K $PKGDB
     -k $workdir/$1/+DEINSTALL
-    -p $destdir
+    -p $DESTDIR
     -c $workdir/$1/+COMMENT
     -d $workdir/$1/+DESC
     -f $workdir/$1/+CONTENTS
@@ -457,11 +457,10 @@ _make_all_packages()
 
 _mk_kernel_package()
 {
-    local category="base"
     local pkgname="base-kernel-$1"
-    local package="$workdir/$category/$pkgname"
+    local package="$workdir/base/$pkgname"
 
-    if [ ! -f "$obj/sys/arch/$machine/compile/$1/netbsd" ]; then
+    if [ ! -f "$OBJ/sys/arch/$machine/compile/$1/netbsd" ]; then
         _error "$1/netbsd not found."
         return 1
     fi
@@ -490,13 +489,13 @@ _DESC_
     # Package contents.
     cat > "$package/+CONTENTS" << _CONTENTS_
 @name $pkgname-$release
-@comment Packaged at $UTCDATE UTC by $user@$HOST
+@comment Packaged at $UTCDATE UTC by $USER@$HOST
 @cwd /
 netbsd
 _CONTENTS_
 
     # Size of kernel.
-    du "$obj/sys/arch/$machine/compile/$1/netbsd" \
+    du "$OBJ/sys/arch/$machine/compile/$1/netbsd" \
         | cut -f 1 \
         > "$package/+SIZE_PKG"
 
@@ -509,10 +508,10 @@ _CONTENTS_
     -c "$package/+COMMENT" \
     -d "$package/+DESC" \
     -f "$package/+CONTENTS" \
-    -p "$obj/sys/arch/$machine/compile/$1" \
+    -p "$OBJ/sys/arch/$machine/compile/$1" \
     -s "$package/+SIZE_PKG" \
     -S "$package/+SIZE_ALL" \
-    -K "$pkgdb" "$pkgname" || _bomb "kernel: pkg_create"
+    -K "$PKGDB" "$pkgname" || _bomb "kernel: pkg_create"
 
     _basedir=$(_put_basedir)
     _mkdir_if_not_exists "$_basedir"

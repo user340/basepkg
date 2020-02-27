@@ -10,7 +10,7 @@ _error()
 _bomb()
 {
     printf "ERROR: %s\\n *** PACKAGING ABORTED ***\\n" "$@"
-    _remove_if_exists "$log"
+    _remove_if_exists "$LOG"
     kill $toppid
     exit 1
 }

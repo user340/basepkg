@@ -127,7 +127,7 @@ _osrelease()
 {
     local option="$1"
 
-    exec < "$destdir/$PARAM"
+    exec < "$DESTDIR/$PARAM"
 
     # In this function, "comment_start" and "NetBSD" are unreferenced variables.
     while

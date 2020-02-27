@@ -249,7 +249,7 @@ Usage: $PROGNAME [--arch architecture] [--category category]
     --category                  Set category.
                                 [Default: "base comp etc games man misc text"]
     --destdir                   Set destdir.
-                                [Default: $obj/destdir.$machine]
+                                [Default: $OBJ/destdir.$machine]
     --machine                   Set machine type for MACHINE_ARCH.
                                 [Default: result of \`uname -m\`]
     --obj                       Set obj to NetBSD binaries.
@@ -287,15 +287,14 @@ OPSYS="$(uname)"
 OSVERSION="$(uname -r)"
 PKGTOOLVERSION="$(pkg_create -V)"
 UTCDATE="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
-user="${USER:-root}"
 PARAM="usr/include/sys/param.h"
 HOMEPAGE="https://github.com/user340/basepkg"
 MAINTAINER="uki@e-yuuki.org"
-log="$PWD/.basepkg.log"
-obj="/usr/obj"
-src="/usr/src"
-category="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
-pkgdb="/var/db/basepkg"
+LOG="$PWD/.basepkg.log"
+OBJ="/usr/obj"
+SRC="/usr/src"
+CATEGORY="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
+PKGDB="/var/db/basepkg"
 
 if [ $# = 0 ]; then
     _usage
@@ -303,7 +302,7 @@ fi
 
 machine="$(uname -m)"
 machine_arch=""
-commandline="$0 $*"
+COMMANDLINE="$0 $*"
 
 # extension modules
 nbpkg_build_enable=0
@@ -320,19 +319,19 @@ while [ $# -gt 0 ]; do
         shift
         ;;
     --category=*)
-        category=$(_getopt "$1")
+        CATEGORY=$(_getopt "$1")
         ;;
     --category)
         test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        category="$2"
+        CATEGORY="$2"
         shift
         ;;
     --destdir=*)
-        destdir=$(_getopt "$1")
+        DESTDIR=$(_getopt "$1")
         ;;
     --destdir)
         test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        destdir="$2"
+        DESTDIR="$2"
         shift
         ;;
     --machine=*)
@@ -344,11 +343,11 @@ while [ $# -gt 0 ]; do
         shift
         ;;
     --obj=*)
-        obj=$(_getopt "$1")
+        OBJ=$(_getopt "$1")
         ;;
     --obj)
         test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        obj="$2"
+        OBJ="$2"
         shift
         ;;
     --releasedir=*)
@@ -360,11 +359,11 @@ while [ $# -gt 0 ]; do
         shift
         ;;
     --src=*)
-        src=$(_getopt "$1")
+        SRC=$(_getopt "$1")
         ;;
     --src)
         test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        src="$2"
+        SRC="$2"
         shift
         ;;
     --with-nbpkg-build-config=*)
@@ -401,11 +400,11 @@ if [ -z "$machine_arch" ]; then
     _validate_arch
 fi
 
-destdir=${destdir:-"$obj/destdir.$machine"}
+DESTDIR=${DESTDIR:-"$OBJ/destdir.$machine"}
 releasedir=${releasedir:-.}
 release="$(_osrelease -a)"
 release_k="$(_osrelease -k)"
-sets="$src/distrib/sets"
+sets="$SRC/distrib/sets"
 lists="$sets/lists"
 comments="$sets/comments"
 descrs="$sets/descrs"
@@ -415,7 +414,7 @@ deinstall_script="$PWD/sets/deinstall"
 attrs="$sets/attrs"
 workdir="$releasedir/work/$release/$machine"
 packages="$releasedir/packages"
-kernobj="$obj/sys/arch/$machine/compile"
+kernobj="$OBJ/sys/arch/$machine/compile"
 start=$(date)
 
 # quirks: overwritten for "nbpkg-build" system
