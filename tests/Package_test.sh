@@ -7,8 +7,8 @@ test_split_category()
 {
     local machine="amd64"
     local RELEASE_K="9.99.48"
-    local lists="./testdata"
-    local workdir="./testdata"
+    local LISTS="./testdata"
+    local WORKDIR="./testdata"
     local LIBBASEPKG="../lib"
     local expected="bin/rcp base-netutil-root
 bin/rm base-util-root
@@ -33,11 +33,11 @@ test_make_package_directory_of()
     local CATEGORY="."
 
     # shellcheck disable=SC2034
-    local workdir="./testdata"
+    local WORKDIR="./testdata"
     # shellcheck disable=SC2034
-    local expected="$workdir/$CATEGORY/test-base-example
-$workdir/$CATEGORY/test-obsolete
-$workdir/$CATEGORY/test-package-example"
+    local expected="$WORKDIR/$CATEGORY/test-base-example
+$WORKDIR/$CATEGORY/test-obsolete
+$WORKDIR/$CATEGORY/test-package-example"
     local result
 
     result="$(_make_package_directories_of ".")"
@@ -93,7 +93,7 @@ MAINTAINER=$MAINTAINER"
 
 test_check_package_dependency_of()
 {
-    local deps="/home/uki/src/cvs.NetBSD.org/src/distrib/sets/deps"
+    local DEPS="/home/uki/src/cvs.NetBSD.org/src/distrib/sets/deps"
     local RELEASE="9.99.48"
     local expected="@pkgdep base-sys-usr>=$RELEASE
 @pkgdep base-sys-root>=$RELEASE"
@@ -111,7 +111,7 @@ test_check_package_dependency_of_package_which_has_no_dependency()
         echo "$@"
     }
 
-    local deps="/home/uki/src/cvs.NetBSD.org/src/distrib/sets/deps"
+    local DEPS="/home/uki/src/cvs.NetBSD.org/src/distrib/sets/deps"
     local RELEASE="9.99.48"
     local expected="test-package-bin Unknown package dependency."
     local result
@@ -183,12 +183,12 @@ test_calculate_sum_of_file_size()
 
 test_print_description()
 {
-    local descrs="./testdata/descrs"
+    local DESCRS="./testdata/descrs"
     local expected="This is test package. Unavailable in upstream or production
 environment. This description is multi line."
     local result
 
-    result="$(_print_description "test-package-bin" "$descrs")"
+    result="$(_print_description "test-package-bin" "$DESCRS")"
 
     assertEquals "$expected" "$result"
 }
@@ -263,10 +263,10 @@ $(command -v perl)"
 test_put_basedir()
 {
     local RELEASEDIR="."
-    local packages="$RELEASEDIR/packages"
+    local PACKAGES="$RELEASEDIR/packages"
     local machine_arch="i386"
     local machine="i386"
-    local expected="$packages/$RELEASE/$machine"
+    local expected="$PACKAGES/$RELEASE/$machine"
     local result
 
     result="$(_put_basedir)"
@@ -277,10 +277,10 @@ test_put_basedir()
 test_put_basedir_difference_machine_arch_and_machine_pattern()
 {
     local RELEASEDIR="."
-    local packages="$RELEASEDIR/packages"
+    local PACKAGES="$RELEASEDIR/packages"
     local machine_arch="x86_64"
     local machine="amd64"
-    local expected="$packages/$RELEASE/$machine-$machine_arch"
+    local expected="$PACKAGES/$RELEASE/$machine-$machine_arch"
     local result
 
     result="$(_put_basedir)"

@@ -49,12 +49,12 @@ _clean_workdir()
 {
     _logging "===> _clean_workdir()"
 
-    _remove_directory_if_exists_and_writable "$workdir"
+    _remove_directory_if_exists_and_writable "$WORKDIR"
 }
 
 _clean_packages()
 {
     _logging "_clean_packages()"
 
-    _remove_directory_if_exists_and_writable "$packages"
+    _remove_directory_if_exists_and_writable "$PACKAGES"
 }

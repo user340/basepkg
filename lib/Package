@@ -5,9 +5,9 @@ _split_category()
 {
     local ad mi md module rescue rescue_ad rescue_machine shl stl
     local moduledir="stand/$machine/$RELEASE_K/modules"
-    local category_dir="$lists/$1"
+    local category_dir="$LISTS/$1"
 
-    _remove_if_exists "$workdir/$1/FILES"
+    _remove_if_exists "$WORKDIR/$1/FILES"
 
     ad="$(_print_if_file_exists "$category_dir/ad.$machine")"
     mi="$(_print_if_file_exists "$category_dir/mi")"
@@ -33,7 +33,7 @@ _split_categories()
     local working_place
 
     for i in $CATEGORY; do
-        working_place="$workdir/$i"
+        working_place="$WORKDIR/$i"
 
         _mkdir_if_not_exists "$working_place"
 
@@ -50,7 +50,7 @@ _split_categories()
 
 _make_package_directories_of()
 {
-    local working_place="$workdir/$1"
+    local working_place="$WORKDIR/$1"
 
     awk '{print $2}' "$working_place/FILES" | sort -u | while read -r pkgname; do
         _mkdir_if_not_exists "$working_place/$pkgname"
@@ -72,16 +72,16 @@ _generate_PLIST()
 
     for i in $CATEGORY; do
         awk -f "$LIBBASEPKG/awk/categorizing_files_into_package.awk" \
-            "$workdir/$i/FILES" > "$workdir/$i/CATEGORIZED"
+            "$WORKDIR/$i/FILES" > "$WORKDIR/$i/CATEGORIZED"
 
-        for package_directory in "$workdir/$i"/*; do
+        for package_directory in "$WORKDIR/$i"/*; do
             test -d "$package_directory" || continue
             awk '
             /^'"$(basename "$package_directory")"'/ {
                 for (i = 2; i <= NF; i++) {
                     print $i
                 }
-            }' "$workdir/$i/CATEGORIZED" > "$package_directory/PLIST"
+            }' "$WORKDIR/$i/CATEGORIZED" > "$package_directory/PLIST"
         done
     done
 }
@@ -124,11 +124,11 @@ _ext_give_release_number_to()
 
 _check_package_dependency_of()
 {
-    if ! grep -q -E "^$1" "$deps"; then
+    if ! grep -q -E "^$1" "$DEPS"; then
         _error "$1 Unknown package dependency."
         return 1
     fi
-    awk '/^'"$1"'/{print $2}' "$deps" | while read -r depend; do
+    awk '/^'"$1"'/{print $2}' "$DEPS" | while read -r depend; do
         if [ ! "$depend" ]; then
             return 1
         fi
@@ -153,7 +153,7 @@ _generate_CONTENTS()
     local setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
     local pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
     local prefix="/"
-    local package="$workdir/$1"
+    local package="$WORKDIR/$1"
 
     if [ "$setname" = "etc" ]; then
         prefix="/var/tmp/basepkg"
@@ -203,7 +203,7 @@ _calculate_sum_of_file_size()
 
 _generate_SIZE_PKG()
 {
-    local package="$workdir/$1"
+    local package="$WORKDIR/$1"
 
     # Sum of file and directory size.
     _calculate_sum_of_file_size "$package" > "$package/+SIZE_PKG"
@@ -211,12 +211,12 @@ _generate_SIZE_PKG()
 
 _generate_SIZE_ALL()
 {
-    local package="$workdir/$1"
+    local package="$WORKDIR/$1"
 
     grep '^@pkgdep' "$package/+CONTENTS" \
         | cut -d " " -f 2 \
         | awk 'FS=">=" {print $1}' \
-        | xargs -I % find "$workdir" -type d -name % \
+        | xargs -I % find "$WORKDIR" -type d -name % \
         | xargs -I % cat %/+SIZE_PKG \
         | awk '{sum+=$1} END{print sum}' \
         > "$package/+SIZE_ALL.tmp"
@@ -244,10 +244,10 @@ _print_description()
 _generate_DESC_and_COMMENT()
 {
     local pkgname="${1#*/}"
-    local package="$workdir/$1"
+    local package="$WORKDIR/$1"
 
-    _print_description "$pkgname" "$descrs"   > "$package/+DESC"
-    _print_description "$pkgname" "$comments" > "$package/+COMMENT"
+    _print_description "$pkgname" "$DESCRS"   > "$package/+DESC"
+    _print_description "$pkgname" "$COMMENTS" > "$package/+COMMENT"
 }
 
 _replace_cmdstr()
@@ -312,14 +312,14 @@ _replace_cmdstr()
 
 _generate_INSTALL()
 {
-    local package="$workdir/$1"
+    local package="$WORKDIR/$1"
     local user_group_mode=""
     local _mode=""
     local _user=""
     local _group=""
 
     _remove_if_exists "$package/+INSTALL"
-    _replace_cmdstr "$install_script" > "$package/+INSTALL"
+    _replace_cmdstr "$INSTALL_SCRIPT" > "$package/+INSTALL"
     _bomb_if_not_found "$package/+CONTENTS"
 
     # For +FILES routine which is conained in sets/install script.
@@ -344,15 +344,15 @@ _generate_INSTALL()
 
 _generate_DEINSTALL()
 {
-    _replace_cmdstr "$deinstall_script" > "$workdir/$1/+DEINSTALL"
+    _replace_cmdstr "$DEINSTALL_SCRIPT" > "$WORKDIR/$1/+DEINSTALL"
 }
 
 _generate_PRESERVE()
 {
     local attrs_path=""
 
-    cut -f 1 "$attrs" | while read -r attrs_pkg; do
-        attrs_path=$(find "$workdir" -name "$attrs_pkg" -type d)
+    cut -f 1 "$ATTRS" | while read -r attrs_pkg; do
+        attrs_path=$(find "$WORKDIR" -name "$attrs_pkg" -type d)
         printf "%s-%s" "$attrs_pkg" "$RELEASE" > "$attrs_path/+PRESERVE"
     done
 }
@@ -360,9 +360,9 @@ _generate_PRESERVE()
 _put_basedir()
 {
    if [ "X$machine_arch" != "X$machine" ]; then
-     echo "$packages/$RELEASE/$machine-$machine_arch"
+     echo "$PACKAGES/$RELEASE/$machine-$machine_arch"
    else
-     echo "$packages/$RELEASE/$machine"
+     echo "$PACKAGES/$RELEASE/$machine"
    fi
 }
 
@@ -371,17 +371,17 @@ _do_pkg_create()
     local setname="${1%/*}" # E.g. "base/base-sys-root" --> "base"
     local pkgname="${1#*/}" # E.g. "base/base-sys-root" --> "base-sys-root"
     local option="-v -l -U
-    -B $workdir/$1/+BUILD_INFO
-    -i $workdir/$1/+INSTALL
+    -B $WORKDIR/$1/+BUILD_INFO
+    -i $WORKDIR/$1/+INSTALL
     -K $PKGDB
-    -k $workdir/$1/+DEINSTALL
+    -k $WORKDIR/$1/+DEINSTALL
     -p $DESTDIR
-    -c $workdir/$1/+COMMENT
-    -d $workdir/$1/+DESC
-    -f $workdir/$1/+CONTENTS
-    -s $workdir/$1/+SIZE_PKG
-    -S $workdir/$1/+SIZE_ALL"
-    local package="$workdir/$1"
+    -c $WORKDIR/$1/+COMMENT
+    -d $WORKDIR/$1/+DESC
+    -f $WORKDIR/$1/+CONTENTS
+    -s $WORKDIR/$1/+SIZE_PKG
+    -S $WORKDIR/$1/+SIZE_ALL"
+    local package="$WORKDIR/$1"
     local prefix
 
     if [ -f "$package/+PRESERVE" ]; then
@@ -417,7 +417,7 @@ _mk_checksum()
 
 _find_package_directory()
 {
-    find "$workdir" -type d -name '*-*-*' | sed "s|$workdir/||g"
+    find "$WORKDIR" -type d -name '*-*-*' | sed "s|$WORKDIR/||g"
 }
 
 _is_nbpkg_daily_build()
@@ -430,7 +430,7 @@ _make_all_packages()
     _logging "===> _make_all_packages()"
 
     _find_package_directory | while read -r pkg; do
-        local package="$workdir/$pkg"
+        local package="$WORKDIR/$pkg"
 
         _generate_BUILD_INFO > "$package/+BUILD_INFO"
         _generate_CONTENTS "$pkg" > "$package/+CONTENTS"
@@ -458,7 +458,7 @@ _make_all_packages()
 _mk_kernel_package()
 {
     local pkgname="base-kernel-$1"
-    local package="$workdir/base/$pkgname"
+    local package="$WORKDIR/base/$pkgname"
 
     if [ ! -f "$OBJ/sys/arch/$machine/compile/$1/netbsd" ]; then
         _error "$1/netbsd not found."
@@ -525,7 +525,7 @@ _make_all_kernel_packages()
 
     # shellcheck disable=SC2086
     # shellcheck disable=SC2012
-    ls $kernobj | while read -r kernel_name; do
+    ls $KERNOBJ | while read -r kernel_name; do
         _mk_kernel_package "$kernel_name"
     done
 }

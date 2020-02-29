@@ -404,18 +404,17 @@ DESTDIR=${DESTDIR:-"$OBJ/destdir.$machine"}
 RELEASEDIR=${releasedir:-.}
 RELEASE="$(_osrelease -a)"
 RELEASE_K="$(_osrelease -k)"
-sets="$SRC/distrib/sets"
-lists="$sets/lists"
-comments="$sets/comments"
-descrs="$sets/descrs"
-deps="$sets/deps"
-install_script="$PWD/sets/install"
-deinstall_script="$PWD/sets/deinstall"
-attrs="$sets/attrs"
-workdir="$RELEASEDIR/work/$RELEASE/$machine"
-packages="$RELEASEDIR/packages"
-kernobj="$OBJ/sys/arch/$machine/compile"
-start=$(date)
+SETS="$SRC/distrib/sets"
+LISTS="$SETS/lists"
+COMMENTS="$SETS/comments"
+DESCRS="$SETS/descrs"
+DEPS="$SETS/deps"
+INSTALL_SCRIPT="$PWD/sets/install"
+DEINSTALL_SCRIPT="$PWD/sets/deinstall"
+ATTRS="$SETS/attrs"
+WORKDIR="$RELEASEDIR/work/$RELEASE/$machine"
+PACKAGES="$RELEASEDIR/packages"
+KERNOBJ="$OBJ/sys/arch/$machine/compile"
 
 # quirks: overwritten for "nbpkg-build" system
 if [ "X$nbpkg_build_config" != "X" ] && [ -f "$nbpkg_build_config" ]; then
@@ -423,7 +422,7 @@ if [ "X$nbpkg_build_config" != "X" ] && [ -f "$nbpkg_build_config" ]; then
    RELEASE="$nbpkg_build_id" # e.g. 8.0.20181029
 fi
 
-_bomb_if_not_found "$install_script"
+_bomb_if_not_found "$INSTALL_SCRIPT"
 
 if [ "X$RELEASE" != "X" ]; then
     _bomb "cannot resolve \$RELEASE"
