@@ -312,6 +312,53 @@ test_is_nbpkg_daily_build_not_daily()
     assertFalse _is_nbpkg_daily_build
 }
 
+template_do_pkg_create()
+{
+    mv()
+    {
+        :
+    }
+    pkg_create()
+    {
+        echo "$@"
+    }
+    _mkdir_if_not_exists()
+    {
+        :
+    }
+    _put_basedir()
+    {
+        :
+    }
+    local WORKDIR="work"
+    local PKGDB="/var/db/basepkg"
+    local DESTDIR="/usr/pkg/basepkg/destdir"
+    local pkg="$1"
+    local prefix="$2"
+    local expected="-v -l -U -B $WORKDIR/$pkg/+BUILD_INFO -i $WORKDIR/$pkg/+INSTALL -K $PKGDB -k $WORKDIR/$pkg/+DEINSTALL -p $DESTDIR -c $WORKDIR/$pkg/+COMMENT -d $WORKDIR/$pkg/+DESC -f $WORKDIR/$pkg/+CONTENTS -s $WORKDIR/$pkg/+SIZE_PKG -S $WORKDIR/$pkg/+SIZE_ALL -I $prefix ${pkg##*/}"
+    local result
+
+    result="$(_do_pkg_create "$pkg")"
+
+    assertEquals "$expected" "$result"
+}
+
+test_do_pkg_create()
+{
+    local pkg="base/base-test-package"
+    local prefix="/"
+
+    template_do_pkg_create "$pkg" "$prefix"
+}
+
+test_do_pkg_create_to_etc_package()
+{
+    local pkg="etc/etc-test-package"
+    local prefix="/var/tmp/basepkg"
+
+    template_do_pkg_create "$pkg" "$prefix"
+}
+
 . ./common.sh
 . ../lib/Package
 . ../lib/Common

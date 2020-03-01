@@ -310,6 +310,14 @@ _replace_cmdstr()
         -e "s%@PERL5@%$(command -v perl)%" "$1"
 }
 
+_get_user_group_mode_values()
+{
+    grep -e "^\\./$1 " "$DESTDIR/etc/mtree/set.etc" \
+        | cut -d " " -f 3 -f 4 -f 5 \
+        | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
+        | tr '\n' ' '
+}
+
 _generate_INSTALL()
 {
     local package="$WORKDIR/$1"
@@ -327,11 +335,7 @@ _generate_INSTALL()
         test "$(file "$OBJ/$file" | cut -d " " -f 2)" = "symbolic" && continue
         if [ "${file%%/*}" = "etc" ]; then
             if [ -f "$DESTDIR/$file" ]; then
-                user_group_mode=$(grep -e "^\\./$file " "$DESTDIR/etc/mtree/set.etc" \
-                                    | cut -d " " -f 3 -f 4 -f 5 \
-                                    | xargs -n 1 -I % expr x% : "x[^=]*=\\(.*\\)" \
-                                    | tr '\n' ' '
-                                )
+                user_group_mode="$(_get_user_group_mode_values "$file")"
                 _mode=$(echo "$user_group_mode" | cut -d " " -f 3)
                 _user=$(echo "$user_group_mode" | cut -d " " -f 1)
                 _group=$(echo "$user_group_mode" | cut -d " " -f 2)
@@ -396,7 +400,7 @@ _do_pkg_create()
     option="$option -I $prefix"
 
     # shellcheck disable=SC2086
-    /usr/pkg/sbin/pkg_create $option "$pkgname" || _bomb "$1: pkg_create"
+    pkg_create $option "$pkgname" || _bomb "$1: pkg_create"
 
     local _basedir=$(_put_basedir)
     _mkdir_if_not_exists "$_basedir"
@@ -502,7 +506,7 @@ _CONTENTS_
     # XXX: Size all.
     cp "$package/+SIZE_PKG" "$package/+SIZE_ALL"
 
-    /usr/pkg/sbin/pkg_create -v -l -U \
+    pkg_create -v -l -U \
     -B "$package/+BUILD_INFO" \
     -I "/" \
     -c "$package/+COMMENT" \
