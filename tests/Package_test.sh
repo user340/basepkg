@@ -359,6 +359,58 @@ test_do_pkg_create_to_etc_package()
     template_do_pkg_create "$pkg" "$prefix"
 }
 
+test_print_kernel_package_description()
+{
+    local pkg="base-kernel-GENERIC"
+    local expected="NetBSD $pkg Kernel"
+    local result
+
+    result="$(_print_kernel_pacakge_description "$pkg")"
+
+    assertEquals "$expected" "$result"
+}
+
+test_print_kernel_package_contents()
+{
+    local RELEASE="9.99.40"
+    local UTCDATE="Mon Mar  2 11:38:26 UTC 2020"
+    local HOST="localhost"
+    local pkg="base-kernel-GENERIC"
+    local expected="@name $pkg-$RELEASE
+@comment Packaged at $UTCDATE UTC by $USER@$HOST
+@cwd /
+netbsd"
+    local result
+
+    result="$(_print_kernel_package_contents "$pkg")"
+
+    assertEquals "$expected" "$result"
+}
+
+test_make_all_kernel_packages()
+{
+    _logging()
+    {
+        :
+    }
+    _mk_kernel_package()
+    {
+        echo "$@"
+    }
+    ls()
+    {
+        echo "$@"
+    }
+
+    local KERNOBJ="GENERIC ALL"
+    local expected="GENERIC ALL"
+    local result
+
+    result="$(_make_all_kernel_packages)"
+
+    assertEquals "$expected" "$result"
+}
+
 . ./common.sh
 . ../lib/Package
 . ../lib/Common

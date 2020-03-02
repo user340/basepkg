@@ -459,6 +459,21 @@ _make_all_packages()
     cd "$_basedir" && _mk_checksum
 }
 
+_print_kernel_pacakge_description()
+{
+    echo "NetBSD $1 Kernel"
+}
+
+_print_kernel_package_contents()
+{
+    cat << _CONTENTS_
+@name $1-$RELEASE
+@comment Packaged at $UTCDATE UTC by $USER@$HOST
+@cwd /
+netbsd
+_CONTENTS_
+}
+
 _mk_kernel_package()
 {
     local pkgname="base-kernel-$1"
@@ -472,31 +487,16 @@ _mk_kernel_package()
     _mkdir_if_not_exists "$package"
 
     # Information of build environment.
-    cat > "$package/+BUILD_INFO" << _BUILD_INFO_
-OPSYS=$OPSYS
-OS_VERSION=$OSVERSION
-OBJECT_FMT=ELF
-MACHINE_ARCH=$machine_arch
-PKGTOOLS_VERSION=$PKGTOOLVERSION
-_BUILD_INFO_
+    _generate_BUILD_INFO > "$package/+BUILD_INFO"
 
     # Short description of package.
-    cat > "$package/+COMMENT" << _COMMENT_
-NetBSD $1 Kernel
-_COMMENT_
+    _print_kernel_pacakge_description "$1" > "$package/+COMMENT"
 
-    # Description of package.
-    cat > "$package/+DESC" << _DESC_
-NetBSD $1 Kernel
-_DESC_
+    # Full description of package.
+    _print_kernel_pacakge_description "$1" > "$package/+DESC"
 
     # Package contents.
-    cat > "$package/+CONTENTS" << _CONTENTS_
-@name $pkgname-$RELEASE
-@comment Packaged at $UTCDATE UTC by $USER@$HOST
-@cwd /
-netbsd
-_CONTENTS_
+    _print_kernel_package_contents "$package" > "$package/+CONTENTS"
 
     # Size of kernel.
     du "$OBJ/sys/arch/$machine/compile/$1/netbsd" \
