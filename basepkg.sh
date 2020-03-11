@@ -424,7 +424,7 @@ fi
 
 _bomb_if_not_found "$INSTALL_SCRIPT"
 
-if [ "X$RELEASE" != "X" ]; then
+if [ "X$RELEASE" == "X" ]; then
     _bomb "cannot resolve \$RELEASE"
 fi
 

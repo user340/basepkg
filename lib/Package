@@ -1,31 +1,26 @@
 #!/bin/sh
 # shellcheck disable=SC2039
 
+_get_all_category_matched_files()
+{
+    local moduledir="stand/$machine/$RELEASE_K/modules"
+
+    find "$LISTS" -name "$2" \
+        -exec awk -v category="$1" \
+                  -v moduledir="$moduledir" \
+                  -v machine="$machine" \
+                  -v release_k="$RELEASE_K" \
+                  -f "$LIBBASEPKG/awk/obsolete_filter.awk" {} \;
+}
+
 _split_category()
 {
-    local ad mi md module rescue rescue_ad rescue_machine shl stl
-    local moduledir="stand/$machine/$RELEASE_K/modules"
-    local category_dir="$LISTS/$1"
-
     _remove_if_exists "$WORKDIR/$1/FILES"
 
-    ad="$(_print_if_file_exists "$category_dir/ad.$machine")"
-    mi="$(_print_if_file_exists "$category_dir/mi")"
-    md="$(_print_if_file_exists "$category_dir/md.$machine")"
-    module="$(_print_if_file_exists "$category_dir/module.mi")"
-    rescue="$(_print_if_file_exists "$category_dir/rescue.mi")"
-    rescue_ad="$(_print_if_file_exists "$category_dir/rescue.ad.$machine")"
-    rescue_machine="$(_print_if_file_exists "$category_dir/rescue.$machine")"
-    shl="$(_print_if_file_exists "$category_dir/shl.mi")"
-    stl="$(_print_if_file_exists "$category_dir/stl.mi")"
-
-    awk -v category="$1" \
-        -v moduledir="$moduledir" \
-        -v machine="$machine" \
-        -v release_k="$RELEASE_K" \
-        -f "$LIBBASEPKG/awk/obsolete_filter.awk" \
-        "$ad" "$mi" "$md" "$module" "$rescue" "$rescue_ad" \
-        "$rescue_machine" "$shl" "$stl"
+    for data in "ad.$machine" "mi" "md.$machine" "module.mi" "rescue.mi" \
+                "rescue.ad.$machine" "rescue.$machine" "shl.mi" "stl.mi"; do
+        _get_all_category_matched_files "$1" "$data"
+    done
 }
 
 _split_categories()
