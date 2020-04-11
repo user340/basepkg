@@ -130,9 +130,8 @@ _osrelease()
     exec < "$DESTDIR/$PARAM"
 
     # In this function, "comment_start" and "NetBSD" are unreferenced variables.
-    while
-        # shellcheck disable=SC2034
-        read -r define ver_tag rel_num comment_start NetBSD rel_text rest; do
+    # shellcheck disable=SC2034
+    while read -r define ver_tag rel_num comment_start NetBSD rel_text rest; do
         [ "$define" = "#define" ] || continue;
         [ "$ver_tag" = "__NetBSD_Version__" ] || continue
         break

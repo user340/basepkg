@@ -3,18 +3,44 @@
 # shellcheck disable=SC1091
 # shellcheck disable=SC2039
 
-test_getarch_in_amd64()
+# valid pattern
+test_getarch_in_evbarm()
 {
-    local machine="amd64"
+    local machine="evbarm"
     local result="$(_getarch)"
-    local expect="MACHINE=$machine\nMACHINE_ARCH=x86_64"
+    local expect="MACHINE=$machine\nMACHINE_ARCH=earm"
 
     assertEquals "$(echo -e $expect)" "$result"
 }
 
-test_getarch_in_evbarm()
+# NO_DEFAULT pattern
+test_getarch_in_evbmips()
+{
+    local machine="evbmips"
+    local result="$(_getarch)"
+    local expect=""
+
+    assertEquals "$(echo -e $expect)" "$result"
+}
+
+# ALIAS pattern
+test_getarch_in_ocats()
+{
+    local machine="ocats"
+    local result="$(_getarch)"
+    local expect="MACHINE=cats\nMACHINE_ARCH=arm"
+
+    assertEquals "$(echo -e $expect)" "$result"
+}
+
+# including blank line or comment pattern
+test_getarch_with_blank_line_in_valid_MACHINE_ARCH()
 {
     local machine="evbarm"
+    valid_MACHINE_ARCH="
+# test
+ 
+$valid_MACHINE_ARCH"
     local result="$(_getarch)"
     local expect="MACHINE=$machine\nMACHINE_ARCH=earm"
 
