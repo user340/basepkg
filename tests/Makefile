@@ -4,12 +4,14 @@ KCOV_OPT+=	--exclude-pattern=valid_MACHINE_ARCH
 KCOV_OPT+=	--debug-force-bash-stderr
 KCOV_OPT+=	/tmp/kcov
 
-UNITTEST=	Command_test.sh
-UNITTEST+=	Logging_test.sh
-UNITTEST+=	NetBSD_test.sh
-UNITTEST+=	Package_test.sh
-UNITTEST+=	categorizing_files_into_package_test.sh
+KCOVTEST=	Command_test.sh
+KCOVTEST+=	Logging_test.sh
+KCOVTEST+=	NetBSD_test.sh
+KCOVTEST+=	Package_test.sh
+
+UNITTEST=	categorizing_files_into_package_test.sh
 UNITTEST+=	obsolete_filter_test.sh
+UNITTEST+=	${KCOVTEST}
 
 unittest:
 .for test in ${UNITTEST}
@@ -17,6 +19,6 @@ unittest:
 .endfor
 
 coverage:
-.for test in ${UNITTEST}
+.for test in ${KCOVTEST}
 	${KCOV} ${KCOV_OPT} ${test}
 .endfor
