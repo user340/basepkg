@@ -20,7 +20,8 @@ Please contact to Yuuki Enomoto <uki@e-yuuki.org> to bug-report, question, discu
     * [2.3. Presentations](#23-presentations)
 * [3. TODO](#3-todo)
 * [4. Contributors](#4-contributors)
-    * [4.1. How to contribute](#41-how-to-contribute)
+* [5. How to contribute](#5-how-to-contribute)
+* [LICENSE](#license)
 
 <!-- vim-markdown-toc -->
 
@@ -159,7 +160,7 @@ The presentations about basepkg are here.
 * Ken'ichi Fukamachi (www.fml.org)
 * Cybertrust Japan Co., Ltd. (www.cybertrust.co.jp, www.miraclelinux.com)
 
-### 4.1. How to contribute
+## 5. How to contribute
 
 * __Be user of basepkg__
 * Create issues on GitHub. Please make use of labels.
@@ -167,3 +168,9 @@ The presentations about basepkg are here.
 * Fork the repository; hack it.
 * Send pull-request.
 * and more!
+
+Please read [CONTRIBUTING.md](/CONTRIBUTING.md) for more details.
+
+## LICENSE
+
+BSD 2-Clause License. Refer [LICENSE](/LICENSE) for full text.
