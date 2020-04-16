@@ -428,10 +428,6 @@ if [ "X$RELEASE" == "X" ]; then
     _bomb "cannot resolve \$RELEASE"
 fi
 
-if [ $# -eq 0 ]; then
-    _usage
-fi
-
 for cmd in hostname mktemp pkg_create; do
     _bomb_if_command_not_found "$cmd"
 done
