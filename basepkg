@@ -275,6 +275,15 @@ _getopt()
     expr "x$1" : "x[^=]*=\\(.*\\)"
 }
 
+_check_non_posix_commands()
+{
+    local non_posix="hostname mktemp pkg_create pkg_admin"
+
+    for cmd in $non_posix; do
+        _bomb_if_command_not_found "$cmd"
+    done
+}
+
 # define new line and tab
 nl='
 '
@@ -428,9 +437,7 @@ if [ "X$RELEASE" == "X" ]; then
     _bomb "cannot resolve \$RELEASE"
 fi
 
-for cmd in hostname mktemp pkg_create; do
-    _bomb_if_command_not_found "$cmd"
-done
+_check_non_posix_commands
 
 case $1 in
 pkg)
