@@ -11,7 +11,7 @@ Please contact to Yuuki Enomoto <uki@e-yuuki.org> to bug-report, question, discu
 * [1. Usage](#1-usage)
     * [1.1. Build the NetBSD distribution](#11-build-the-netbsd-distribution)
     * [1.2. Install pkgtools/pkg\_install](#12-install-pkgtoolspkg_install)
-    * [1.3. Run basepkg.sh](#13-run-basepkgsh)
+    * [1.3. Run basepkg](#13-run-basepkg)
     * [1.4. How to install package](#14-how-to-install-package)
     * [1.5. pkgsrc-wip](#15-pkgsrc-wip)
 * [2. Background](#2-background)
@@ -65,7 +65,7 @@ Build it using `build.sh`.
 
 ### 1.2. Install pkgtools/pkg\_install
 
-basepkg requires [pkgtools/pkg\_install](http://pkgsrc.se/pkgtools/pkg_install) package. We recommend that install the package from pkgsrc to run `basepkg.sh`.
+basepkg requires [pkgtools/pkg\_install](http://pkgsrc.se/pkgtools/pkg_install) package. We recommend that install the package from pkgsrc to run `basepkg`.
 
 This is way of get pkgsrc. Skip the section if you understand or done it.
 
@@ -84,13 +84,13 @@ Run `make install clean clean-depends`.
 
 Or you can use `pkgin` instead of pkgsrc. [pkgin](http://pkgin.net) is a binary package manager for pkgsrc.
 
-### 1.3. Run basepkg.sh
+### 1.3. Run basepkg
 
-Run `basepkg.sh` with pkg and kern option.
+Run `basepkg` with pkg and kern option.
 
 ```
-# ./basepkg.sh pkg
-# ./basepkg.sh kern
+# ./basepkg pkg
+# ./basepkg kern
 ```
 
 Packages are created under the packages/<release-version>/<machine>-<machine_arch> directory.
@@ -118,7 +118,7 @@ basepkg was imported to [pkgsrc-wip](https://pkgsrc.org/wip). You can install ba
 # make install clean clean-depends
 ```
 
-`basepkg.sh`, README and others are installed to /usr/pkg/basepkg. You can run `basepkg.sh` on /usr/pkg/basepkg directory. Packages are generated in /usr/pkg/basepkg/packages directory.
+`basepkg`, README and others are installed to /usr/pkg/basepkg. You can run `basepkg` on /usr/pkg/basepkg directory. Packages are generated in /usr/pkg/basepkg/packages directory.
 
 ## 2. Background
 

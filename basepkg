@@ -30,7 +30,7 @@
 # We doesn't test the following features:
 #   * testing the shell support $(...) command substitution with unbalanced
 #     parentheses. Because the test is ignorering in original code.
-#   * testing getopts and getopt feature because basepkg.sh doesn't call these
+#   * testing getopts and getopt feature because basepkg doesn't call these
 #     command.
 
 errmsg=''		# error message, if not empty

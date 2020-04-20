@@ -65,21 +65,21 @@ test_logfile_exists_and_is_writable()
 
 _get_expected_by_begin_logging()
 {
-    local COMMANDLINE="./basepkg.sh"
+    local COMMANDLINE="./basepkg"
     local RELEASE="9.0"
     local machine="amd64"
     local machine_arch="x86_64"
     local OPSYS="NetBSD"
     local OSVERSION="9.0"
 
-    printf "===> basepkg.sh command: %s\\n===> basepkg.sh started: %s\\n===> NetBSD version:     %s\\n===> MACHINE:            %s\\n===> MACHINE_ARCH:       %s\\n===> Build platform:     %s %s %s" "$COMMANDLINE" "$(date)" "$RELEASE" "$machine" "$machine_arch" "$OPSYS" "$OSVERSION" "$(uname -m)"
+    printf "===> basepkg command: %s\\n===> basepkg started: %s\\n===> NetBSD version:     %s\\n===> MACHINE:            %s\\n===> MACHINE_ARCH:       %s\\n===> Build platform:     %s %s %s" "$COMMANDLINE" "$(date)" "$RELEASE" "$machine" "$machine_arch" "$OPSYS" "$OSVERSION" "$(uname -m)"
 }
 
 test_begin_logging()
 {
     local log
     local result
-    local COMMANDLINE="./basepkg.sh"
+    local COMMANDLINE="./basepkg"
     local RELEASE="9.0"
     local machine="amd64"
     local machine_arch="x86_64"
@@ -98,7 +98,7 @@ _get_expected_by_end_logging()
 
     now="$(date)"
 
-    printf "===> basepkg.sh ended:   %s\\n===> Summary of log:\\nthis is test string.\\n     basepkg.sh ended:   %s\\n===> .\\n" "$now" "$now"
+    printf "===> basepkg ended:   %s\\n===> Summary of log:\\nthis is test string.\\n     basepkg ended:   %s\\n===> .\\n" "$now" "$now"
 }
 
 test_end_logging()

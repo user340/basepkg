@@ -28,5 +28,5 @@ Our coding style is here.
 - Global variable should be large characters
 - Local variable should be small characters with `local` command
 - Function name should be start with `_`. for example, `_function_name(){}`
-- In `basepkg.sh`, specify and check commands that are not defined in POSIX for portability
+- In `basepkg`, specify and check commands that are not defined in POSIX for portability
 - Keep small function for readability
