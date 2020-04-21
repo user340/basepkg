@@ -1,12 +1,20 @@
 #!/bin/sh
 
+_load_config()
+{
+    if [ -f "$CONFIG" ]; then
+        . "$CONFIG"
+    else
+        _bomb "$CONFIG not found"
+        exit 1
+    fi
+}
+
 _usage()
 {
     cat <<_usage_
 Usage: $PROGNAME [--arch architecture] [--category category]
-                  [--destdir destdir] [--machine machine] [--obj objdir]
-                  [--releasedir releasedir] [--src srcdir]
-                  [--with-nbpkg-build-config config] [--enable-nbpkg-build]
+                  [--destdir destdir] [--machine machine] [--releasedir releasedir]
                   operation
 
  Operations:
@@ -18,19 +26,11 @@ Usage: $PROGNAME [--arch architecture] [--category category]
  Options:
     --arch                      Set machine_arch to architecture.
                                 [Default: deduced from "machine"]
-    --category                  Set category.
-                                [Default: "base comp etc games man misc text"]
     --destdir                   Set destdir.
                                 [Default: $OBJ/destdir.$machine]
     --machine                   Set machine type for MACHINE_ARCH.
                                 [Default: result of \`uname -m\`]
-    --obj                       Set obj to NetBSD binaries.
-                                [Default: /usr/obj]
     --releasedir                Set RELEASEDIR.
-    --src                       Set NetBSD source directory.
-                                [Default: /usr/src]
-    --with-nbpkg-buld-config    WIP (Don't use it unless you are developer.)
-    --enable-nbpkg-build        WIP (Don't use it unless you are developer.)
     -h | --help                 Show this message and exit.
 _usage_
     exit 1

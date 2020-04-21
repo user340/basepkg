@@ -3,15 +3,57 @@
 # shellcheck disable=SC1091
 # shellcheck disable=SC2039
 
+test_load_config()
+{
+    CONFIG="../etc/basepkg.conf"
+
+    _load_config
+
+    assertEquals "0" "$?"
+}
+
+test_load_config_invalid_path_pattern()
+{
+    CONFIG="xxxxx"
+
+    local result="$(_load_config)"
+    local expected="$CONFIG not found"
+
+    assertEquals "$result" "$expected"
+}
+
+test_value_is_available_by_load_config()
+{
+    CONFIG="../etc/basepkg.conf"
+
+    _load_config
+
+    test -n "$SRC"
+    assertEquals "0" "$?"
+    test -n "$OBJ"
+    assertEquals "0" "$?"
+    test -n "$LOG"
+    assertEquals "0" "$?"
+    test -n "$HOMEPAGE"
+    assertEquals "0" "$?"
+    test -n "$MAINTAINER"
+    assertEquals "0" "$?"
+    test -n "$CATEGORY"
+    assertEquals "0" "$?"
+    test -n "$PKGDB"
+    assertEquals "0" "$?"
+
+    test -n "$INVALID"
+    assertEquals "1" "$?"
+}
+
 test_usage()
 {
     local PROGNAME="basepkg"
     local OBJ="."
     local machine="amd64"
     local expected="Usage: $PROGNAME [--arch architecture] [--category category]
-                  [--destdir destdir] [--machine machine] [--obj objdir]
-                  [--releasedir releasedir] [--src srcdir]
-                  [--with-nbpkg-build-config config] [--enable-nbpkg-build]
+                  [--destdir destdir] [--machine machine] [--releasedir releasedir]
                   operation
 
  Operations:
@@ -23,19 +65,11 @@ test_usage()
  Options:
     --arch                      Set machine_arch to architecture.
                                 [Default: deduced from \"machine\"]
-    --category                  Set category.
-                                [Default: \"base comp etc games man misc text\"]
     --destdir                   Set destdir.
                                 [Default: $OBJ/destdir.$machine]
     --machine                   Set machine type for MACHINE_ARCH.
                                 [Default: result of \`uname -m\`]
-    --obj                       Set obj to NetBSD binaries.
-                                [Default: /usr/obj]
     --releasedir                Set RELEASEDIR.
-    --src                       Set NetBSD source directory.
-                                [Default: /usr/src]
-    --with-nbpkg-buld-config    WIP (Don't use it unless you are developer.)
-    --enable-nbpkg-build        WIP (Don't use it unless you are developer.)
     -h | --help                 Show this message and exit."
     local result="$(_usage)"
 

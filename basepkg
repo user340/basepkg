@@ -223,6 +223,7 @@ LIBBASEPKG="./lib"
 
 . "$LIBBASEPKG/valid_MACHINE_ARCH"
 . "$LIBBASEPKG/Command"
+. "$LIBBASEPKG/CommandLine"
 . "$LIBBASEPKG/Common"
 . "$LIBBASEPKG/Logging"
 . "$LIBBASEPKG/NetBSD"
@@ -241,13 +242,7 @@ OSVERSION="$(uname -r)"
 PKGTOOLVERSION="$(pkg_create -V)"
 UTCDATE="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 PARAM="usr/include/sys/param.h"
-HOMEPAGE="https://github.com/user340/basepkg"
-MAINTAINER="uki@e-yuuki.org"
-LOG="$PWD/.basepkg.log"
-OBJ="/usr/obj"
-SRC="/usr/src"
-CATEGORY="base comp etc games man misc modules text xbase xcomp xetc xfont xserver"
-PKGDB="/var/db/basepkg"
+CONFIG="$PWD/etc/basepkg.conf"
 
 if [ $# = 0 ]; then
     _usage
@@ -256,10 +251,6 @@ fi
 machine="$(uname -m)"
 machine_arch=""
 COMMANDLINE="$0 $*"
-
-# extension modules
-nbpkg_build_enable=0
-nbpkg_build_config=""
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -271,12 +262,12 @@ while [ $# -gt 0 ]; do
         machine_arch="$2"
         shift
         ;;
-    --category=*)
-        CATEGORY=$(_getopt "$1")
+    --config=*)
+        CONFIG=$(_getopt "$1")
         ;;
-    --category)
+    --config)
         test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        CATEGORY="$2"
+        CONFIG="$2"
         shift
         ;;
     --destdir=*)
@@ -295,14 +286,6 @@ while [ $# -gt 0 ]; do
         machine="$2"
         shift
         ;;
-    --obj=*)
-        OBJ=$(_getopt "$1")
-        ;;
-    --obj)
-        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        OBJ="$2"
-        shift
-        ;;
     --releasedir=*)
         RELEASEDIR=$(_getopt "$1")
         ;;
@@ -310,25 +293,6 @@ while [ $# -gt 0 ]; do
         test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
         RELEASEDIR="$2"
         shift
-        ;;
-    --src=*)
-        SRC=$(_getopt "$1")
-        ;;
-    --src)
-        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        SRC="$2"
-        shift
-        ;;
-    --with-nbpkg-build-config=*)
-        nbpkg_build_config=$(_getopt "$1")
-        ;;
-    --with-nbpkg-build-config)
-        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        nbpkg_build_config="$2"
-        shift
-        ;;
-    --enable-nbpkg-build)
-        nbpkg_build_enable=1;
         ;;
     -h|--help)
         _usage
@@ -346,6 +310,8 @@ done
 set -u
 umask 0022
 export LC_ALL=C LANG=C
+
+_load_config
 
 if [ -z "$machine_arch" ]; then
     eval "$(_getarch)"
