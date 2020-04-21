@@ -127,7 +127,7 @@ _osrelease()
 {
     local option="$1"
 
-    exec < "$DESTDIR/$PARAM"
+    exec < "$PARAM"
 
     # In this function, "comment_start" and "NetBSD" are unreferenced variables.
     # shellcheck disable=SC2034

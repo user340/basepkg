@@ -250,7 +250,6 @@ OPSYS="$(uname)"
 OSVERSION="$(uname -r)"
 PKGTOOLVERSION="$(pkg_create -V)"
 UTCDATE="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
-PARAM="usr/include/sys/param.h"
 
 if [ $# = 0 ]; then
     _usage
@@ -288,6 +287,7 @@ if [ -z "$machine_arch" ]; then
 fi
 
 DESTDIR=${DESTDIR:-"$OBJ/destdir.$machine"}
+PARAM="$DESTDIR/usr/include/sys/param.h"
 RELEASE="$(_osrelease -a)"
 RELEASE_K="$(_osrelease -k)"
 SETS="$SRC/distrib/sets"
