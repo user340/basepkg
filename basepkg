@@ -30,8 +30,6 @@
 # We doesn't test the following features:
 #   * testing the shell support $(...) command substitution with unbalanced
 #     parentheses. Because the test is ignorering in original code.
-#   * testing getopts and getopt feature because basepkg doesn't call these
-#     command.
 
 errmsg=''		# error message, if not empty
 shelltest=false		# if true, exit after testing the shell
@@ -147,6 +145,17 @@ if test -z "$errmsg"; then
     fi
 fi
 
+# Does the shell support getopts or getopt?
+#
+if test -z "$errmsg"; then
+    if ! (
+	eval 'type getopts || type getopt'
+	) >/dev/null 2>&1
+    then
+	errmsg='Shell does not support getopts or getopt.'
+    fi
+fi
+
 #
 # If shelltest is true, exit now, reporting whether or not the shell is good.
 #
@@ -242,70 +251,29 @@ OSVERSION="$(uname -r)"
 PKGTOOLVERSION="$(pkg_create -V)"
 UTCDATE="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
 PARAM="usr/include/sys/param.h"
-CONFIG="$PWD/etc/basepkg.conf"
 
 if [ $# = 0 ]; then
     _usage
 fi
 
+COMMANDLINE="$0 $*"
+# May changed by command line options.
+CONFIG="$PWD/etc/basepkg.conf"
+RELEASEDIR="."
 machine="$(uname -m)"
 machine_arch=""
-COMMANDLINE="$0 $*"
 
-while [ $# -gt 0 ]; do
-    case $1 in
-    --arch=*)
-        machine_arch=$(_getopt "$1")
-        ;;
-    --arch)
-        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        machine_arch="$2"
-        shift
-        ;;
-    --config=*)
-        CONFIG=$(_getopt "$1")
-        ;;
-    --config)
-        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        CONFIG="$2"
-        shift
-        ;;
-    --destdir=*)
-        DESTDIR=$(_getopt "$1")
-        ;;
-    --destdir)
-        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        DESTDIR="$2"
-        shift
-        ;;
-    --machine=*)
-        machine=$(_getopt "$1")
-        ;;
-    --machine)
-        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        machine="$2"
-        shift
-        ;;
-    --releasedir=*)
-        RELEASEDIR=$(_getopt "$1")
-        ;;
-    --releasedir)
-        test -z "$2" && (_error "What is $1 parameter?" ; exit 1)
-        RELEASEDIR="$2"
-        shift
-        ;;
-    -h|--help)
-        _usage
-        ;;
-    -|--)
-        break
-        ;;
-    *)
-        break
-        ;;
+while getopts a:c:d:m:r:h OPT; do
+    case $OPT in
+    a)     machine_arch=$OPTARG ;;
+    c)     CONFIG=$OPTARG ;;
+    d)     DESTDIR=$OPTARG ;;
+    m)     machine=$OPTARG ;;
+    r)     RELEASEDIR=$OPTARG ;;
+    h|\?)  _usage ;;
     esac
-    shift
 done
+shift `expr $OPTIND - 1`
 
 set -u
 umask 0022
@@ -320,7 +288,6 @@ if [ -z "$machine_arch" ]; then
 fi
 
 DESTDIR=${DESTDIR:-"$OBJ/destdir.$machine"}
-RELEASEDIR=${releasedir:-.}
 RELEASE="$(_osrelease -a)"
 RELEASE_K="$(_osrelease -k)"
 SETS="$SRC/distrib/sets"

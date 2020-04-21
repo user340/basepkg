@@ -52,9 +52,7 @@ test_usage()
     local PROGNAME="basepkg"
     local OBJ="."
     local machine="amd64"
-    local expected="Usage: $PROGNAME [--arch architecture] [--category category]
-                  [--destdir destdir] [--machine machine] [--releasedir releasedir]
-                  operation
+    local expected="Usage: $PROGNAME [-a architecture] [-c config] [-d destdir] [-m machine] [-r releasedir] operation
 
  Operations:
     pkg                         Create packages.
@@ -63,14 +61,15 @@ test_usage()
     cleanpkg                    Clean package directories.
 
  Options:
-    --arch                      Set machine_arch to architecture.
+    -a                          Set machine_arch to architecture.
                                 [Default: deduced from \"machine\"]
-    --destdir                   Set destdir.
+    -c                          Specify config path
+    -d                          Set destdir.
                                 [Default: $OBJ/destdir.$machine]
-    --machine                   Set machine type for MACHINE_ARCH.
+    -m                          Set machine type for MACHINE_ARCH.
                                 [Default: result of \`uname -m\`]
-    --releasedir                Set RELEASEDIR.
-    -h | --help                 Show this message and exit."
+    -r                          Set RELEASEDIR.
+    -h                          Show this message and exit."
     local result="$(_usage)"
 
     assertEquals "$expected" "$result"
