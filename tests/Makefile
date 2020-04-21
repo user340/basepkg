@@ -5,6 +5,7 @@ KCOV_OPT+=	--debug-force-bash-stderr
 KCOV_OPT+=	/tmp/kcov
 
 KCOVTEST=	Command_test.sh
+KCOVTEST=	CommandLine_test.sh
 KCOVTEST+=	Logging_test.sh
 KCOVTEST+=	NetBSD_test.sh
 KCOVTEST+=	Package_test.sh

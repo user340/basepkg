@@ -1,0 +1,57 @@
+#!/bin/sh
+
+_usage()
+{
+    cat <<_usage_
+Usage: $PROGNAME [--arch architecture] [--category category]
+                  [--destdir destdir] [--machine machine] [--obj objdir]
+                  [--releasedir releasedir] [--src srcdir]
+                  [--with-nbpkg-build-config config] [--enable-nbpkg-build]
+                  operation
+
+ Operations:
+    pkg                         Create packages.
+    kern                        Create kernel package.
+    clean                       Clean working directories.
+    cleanpkg                    Clean package directories.
+
+ Options:
+    --arch                      Set machine_arch to architecture.
+                                [Default: deduced from "machine"]
+    --category                  Set category.
+                                [Default: "base comp etc games man misc text"]
+    --destdir                   Set destdir.
+                                [Default: $OBJ/destdir.$machine]
+    --machine                   Set machine type for MACHINE_ARCH.
+                                [Default: result of \`uname -m\`]
+    --obj                       Set obj to NetBSD binaries.
+                                [Default: /usr/obj]
+    --releasedir                Set RELEASEDIR.
+    --src                       Set NetBSD source directory.
+                                [Default: /usr/src]
+    --with-nbpkg-buld-config    WIP (Don't use it unless you are developer.)
+    --enable-nbpkg-build        WIP (Don't use it unless you are developer.)
+    -h | --help                 Show this message and exit.
+_usage_
+    exit 1
+}
+
+_getopt()
+{
+    # Example:
+    #   --obj=/usr/obj
+    #         ^^^^^^^^^
+    #          take it
+    #
+    # In this example, returned "/usr/obj"
+    expr "x$1" : "x[^=]*=\\(.*\\)"
+}
+
+_check_non_posix_commands()
+{
+    local non_posix="hostname mktemp pkg_create pkg_admin"
+
+    for cmd in $non_posix; do
+        _bomb_if_command_not_found "$cmd"
+    done
+}
