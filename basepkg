@@ -272,7 +272,7 @@ while getopts a:c:d:m:r:h OPT; do
     h|\?)  _usage ;;
     esac
 done
-shift `expr $OPTIND - 1`
+shift $((OPTIND - 1))
 
 set -u
 umask 0022
