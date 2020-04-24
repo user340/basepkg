@@ -46,6 +46,13 @@ _getopt()
     expr "x$1" : "x[^=]*=\\(.*\\)"
 }
 
+_check_release_number_could_resolve()
+{
+    if [ "X$RELEASE" = "X" ]; then
+        _bomb "cannot resolve \$RELEASE"
+    fi
+}
+
 _check_non_posix_commands()
 {
     local non_posix="hostname mktemp pkg_create pkg_admin"

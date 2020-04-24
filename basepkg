@@ -228,7 +228,7 @@ EOF
     exit 1
 fi
 
-LIBBASEPKG="./lib"
+LIBBASEPKG="$PWD/lib"
 
 . "$LIBBASEPKG/valid_MACHINE_ARCH"
 . "$LIBBASEPKG/Command"
@@ -237,24 +237,24 @@ LIBBASEPKG="./lib"
 . "$LIBBASEPKG/Logging"
 . "$LIBBASEPKG/NetBSD"
 . "$LIBBASEPKG/Package"
+. "$LIBBASEPKG/plugins/nbpkg"
+
+if [ $# = 0 ]; then
+    _usage
+    exit 1
+fi
 
 # define new line and tab
 nl='
 '
 tab='	'
 
-PWD="$(pwd)"
 PROGNAME=${0##*/}
 HOST="$(hostname)"
 OPSYS="$(uname)"
 OSVERSION="$(uname -r)"
 PKGTOOLVERSION="$(pkg_create -V)"
 UTCDATE="$(env TZ=UTC LOCALE=C date '+%Y-%m-%d %H:%M')"
-
-if [ $# = 0 ]; then
-    _usage
-fi
-
 COMMANDLINE="$0 $*"
 # May changed by command line options.
 CONFIG="$PWD/etc/basepkg.conf"
@@ -273,10 +273,6 @@ while getopts a:c:d:m:r:h OPT; do
     esac
 done
 shift $((OPTIND - 1))
-
-set -u
-umask 0022
-export LC_ALL=C LANG=C
 
 _load_config
 
@@ -304,17 +300,17 @@ KERNOBJ="$OBJ/sys/arch/$machine/compile"
 
 # quirks: overwritten for "nbpkg-build" system
 if [ "X$nbpkg_build_config" != "X" ] && [ -f "$nbpkg_build_config" ]; then
-   . "$nbpkg_build_config"
-   RELEASE="$nbpkg_build_id" # e.g. 8.0.20181029
+    . "$nbpkg_build_config"
+    RELEASE="$nbpkg_build_id" # e.g. 8.0.20181029
 fi
 
 _bomb_if_not_found "$INSTALL_SCRIPT"
-
-if [ "X$RELEASE" == "X" ]; then
-    _bomb "cannot resolve \$RELEASE"
-fi
-
+_check_release_number_could_resolve
 _check_non_posix_commands
+
+set -u
+umask 0022
+export LC_ALL=C LANG=C
 
 case $1 in
 pkg)

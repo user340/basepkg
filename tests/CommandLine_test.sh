@@ -84,6 +84,32 @@ test_getopt()
     assertEquals "$expected" "$result"
 }
 
+test_check_release_number_could_resolve()
+{
+    _bomb()
+    {
+        echo "$@"
+    }
+    RELEASE="9.99.99"
+    local result="$(_check_release_number_could_resolve)"
+    local expected=""
+
+    assertEquals "$result" "$expected"
+}
+
+test_check_release_number_could_resolve_fail_pattern()
+{
+    _bomb()
+    {
+        echo "$@"
+    }
+    RELEASE=""
+    local result="$(_check_release_number_could_resolve)"
+    local expected="cannot resolve \$RELEASE"
+
+    assertEquals "$result" "$expected"
+}
+
 test_check_non_posix_commands()
 {
     hostname()
