@@ -56,28 +56,43 @@ _make_package_directories()
 {
     _logging "===> _make_package_directories()"
 
-    for i in $CATEGORY; do
-        _make_package_directories_of "$i"
+    for _set in $CATEGORY; do
+        _make_package_directories_of "$_set"
     done
+}
+
+_categorizing_files_into_package()
+{
+    local script="$LIBBASEPKG/awk/categorizing_files_into_package.awk"
+
+    awk -f "$script" "$WORKDIR/$1/FILES"
+}
+
+_print_PLIST()
+{
+    awk '
+    /^'"$(basename "$2")"'/ {
+        for (i = 2; i <= NF; i++) {
+            print $i
+        }
+    }' "$WORKDIR/$1/CATEGORIZED"
 }
 
 _generate_PLIST()
 {
-    _logging "===> _generate_PLIST()"
+    for package in "$WORKDIR/$1"/*; do
+        test -d "$package" || continue
+        _print_PLIST "$1" "$package" > "$package/PLIST"
+    done
+}
 
-    for i in $CATEGORY; do
-        awk -f "$LIBBASEPKG/awk/categorizing_files_into_package.awk" \
-            "$WORKDIR/$i/FILES" > "$WORKDIR/$i/CATEGORIZED"
+_generate_all_PLIST()
+{
+    _logging "===> _generate_all_PLIST()"
 
-        for package_directory in "$WORKDIR/$i"/*; do
-            test -d "$package_directory" || continue
-            awk '
-            /^'"$(basename "$package_directory")"'/ {
-                for (i = 2; i <= NF; i++) {
-                    print $i
-                }
-            }' "$WORKDIR/$i/CATEGORIZED" > "$package_directory/PLIST"
-        done
+    for _set in $CATEGORY; do
+        _categorizing_files_into_package "$_set" > "$WORKDIR/$_set/CATEGORIZED"
+        _generate_PLIST "$_set"
     done
 }
 

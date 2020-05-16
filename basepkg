@@ -26,6 +26,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+###############################################################################
+#
+# Begin shell feature test
+#
+###############################################################################
+
 # Shell feature test code that imported from NetBSD build.sh.
 # We doesn't test the following features:
 #   * testing the shell support $(...) command substitution with unbalanced
@@ -228,16 +234,31 @@ EOF
     exit 1
 fi
 
+###############################################################################
+#
+# End shell feature test
+#
+###############################################################################
+
+_load_module()
+{
+    local module="$1"
+
+    if [ -f "$module" ]; then
+        . "$module"
+    fi
+}
+
 LIBBASEPKG="$PWD/lib"
 
-. "$LIBBASEPKG/valid_MACHINE_ARCH"
-. "$LIBBASEPKG/Command"
-. "$LIBBASEPKG/CommandLine"
-. "$LIBBASEPKG/Common"
-. "$LIBBASEPKG/Logging"
-. "$LIBBASEPKG/NetBSD"
-. "$LIBBASEPKG/Package"
-. "$LIBBASEPKG/plugins/nbpkg"
+_load_module "$LIBBASEPKG/valid_MACHINE_ARCH"
+_load_module "$LIBBASEPKG/Command"
+_load_module "$LIBBASEPKG/CommandLine"
+_load_module "$LIBBASEPKG/Common"
+_load_module "$LIBBASEPKG/Logging"
+_load_module "$LIBBASEPKG/NetBSD"
+_load_module "$LIBBASEPKG/Package"
+_load_module "$LIBBASEPKG/plugins/nbpkg"
 
 if [ $# = 0 ]; then
     _usage
@@ -317,7 +338,7 @@ pkg)
     _begin_logging
     _split_categories
     _make_package_directories
-    _generate_PLIST
+    _generate_all_PLIST
     _generate_PRESERVE
     _make_all_packages
     _end_logging
