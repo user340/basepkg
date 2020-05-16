@@ -72,7 +72,7 @@ _get_expected_by_begin_logging()
     local OPSYS="NetBSD"
     local OSVERSION="9.0"
 
-    printf "===> basepkg command: %s\\n===> basepkg started: %s\\n===> NetBSD version:     %s\\n===> MACHINE:            %s\\n===> MACHINE_ARCH:       %s\\n===> Build platform:     %s %s %s" "$COMMANDLINE" "$(date)" "$RELEASE" "$machine" "$machine_arch" "$OPSYS" "$OSVERSION" "$(uname -m)"
+    printf "===> basepkg command:    %s\\n===> basepkg started:    %s\\n===> NetBSD version:     %s\\n===> MACHINE:            %s\\n===> MACHINE_ARCH:       %s\\n===> Build platform:     %s %s %s" "$COMMANDLINE" "$(date)" "$RELEASE" "$machine" "$machine_arch" "$OPSYS" "$OSVERSION" "$(uname -m)"
 }
 
 test_begin_logging()

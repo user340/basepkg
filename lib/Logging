@@ -1,18 +1,18 @@
 #!/bin/sh
 
+_logging()
+{
+    printf "%s\\n" "$@" | tee -a "$LOG"
+}
+
 _begin_logging()
 {
-    _logging "===> basepkg command: $COMMANDLINE"
-    _logging "===> basepkg started: $(date)"
+    _logging "===> basepkg command:    $COMMANDLINE"
+    _logging "===> basepkg started:    $(date)"
     _logging "===> NetBSD version:     $RELEASE"
     _logging "===> MACHINE:            $machine"
     _logging "===> MACHINE_ARCH:       $machine_arch"
     _logging "===> Build platform:     $OPSYS $OSVERSION $(uname -m)"
-}
-
-_logging()
-{
-    printf "%s\\n" "$@" | tee -a "$LOG"
 }
 
 _end_logging()

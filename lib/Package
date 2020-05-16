@@ -15,10 +15,15 @@ _get_all_category_matched_files()
 
 _split_category()
 {
-    _remove_if_exists "$WORKDIR/$1/FILES"
-
-    for data in "ad.$machine" "mi" "md.$machine" "module.mi" "rescue.mi" \
-                "rescue.ad.$machine" "rescue.$machine" "shl.mi" "stl.mi"; do
+    for data in "ad.$machine" \
+                "mi" \
+                "md.$machine" \
+                "module.mi" \
+                "rescue.mi" \
+                "rescue.ad.$machine" \
+                "rescue.$machine" \
+                "shl.mi" \
+                "stl.mi"; do
         _get_all_category_matched_files "$1" "$data"
     done
 }
@@ -27,17 +32,18 @@ _split_categories()
 {
     local working_place
 
-    for i in $CATEGORY; do
-        working_place="$WORKDIR/$i"
+    for _set in $CATEGORY; do
+        working_place="$WORKDIR/$_set"
 
         _mkdir_if_not_exists "$working_place"
+        _remove_if_exists "$WORKDIR/$_set/FILES"
 
-        _logging "===> _split_category() $i"
+        _logging "===> _split_category() $_set"
 
         # Why 
         #    _split_category "$i" >> "$working_place/FILES"
         # not working? I don't understand.
-        _split_category "$i" | tee "$working_place/FILES" > /dev/null 2>&1
+        _split_category "$_set" | tee "$working_place/FILES" > /dev/null 2>&1
 
         _bomb_if_not_found "$working_place/FILES"
     done
