@@ -68,6 +68,32 @@ etc"
     assertEquals "$expected" "$result"
 }
 
+test_categorizing_files_into_package(){
+    local LIBBASEPKG="../lib"
+    local WORKDIR="."
+    local expected="test-package-example ./sbin/example ./bin/example
+test-obsolete ./bin/obsolete
+test-base-example ./etc/test"
+    local result="$(_categorizing_files_into_package "testdata")"
+
+    assertEquals "$expected" "$result"
+}
+
+test_print_PLIST()
+{
+    basename()
+    {
+        echo "$@"
+    }
+
+    local WORKDIR="."
+    local expected="./sbin/example
+./bin/example"
+    local result="$(_print_PLIST "testdata" "test-package-example")"
+
+    assertEquals "$expected" "$result"
+}
+
 test_generate_BUILD_INFO()
 {
     local OPSYS="NetBSD"

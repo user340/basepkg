@@ -1,0 +1,4 @@
+test-package-example ./sbin/example ./bin/example
+test-obsolete ./bin/obsolete
+test-base-example ./etc/test
+
